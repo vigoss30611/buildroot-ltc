@@ -1,0 +1,16 @@
+
+
+config INFOTM_CAMIF                                         
+    tristate "InfoTM imapx SOC camera camif driver"                
+    depends on VIDEO_V4L2 && I2C && VIDEO_V4L2_SUBDEV_API        
+    select VIDEOBUF2_DMA_CONTIG                                  
+	---help---                                                   
+    This is a v4l2 driver for IMPAX-CAMIF SoC series camera        
+    host interface (CAMIF).                                      
+config CAMIF_EXTRA_OCLK
+    tristate "select yes if camif host need extra Mclk output"                
+    depends on INFOTM_CAMIF        
+config IMAPX_Q3EVB_V1_1
+    tristate "select yes if q3evb_v1.1"                
+    depends on CAMIF_EXTRA_OCLK        
+

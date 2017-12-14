@@ -1,0 +1,79 @@
+menuconfig INFOTM_DISPLAY2
+	bool "Infotm display2 support"
+	default n
+        select FB_CFB_FILLRECT
+        select FB_CFB_COPYAREA
+        select FB_CFB_IMAGEBLIT
+	help
+	  This enables support for the display2 driver
+
+if INFOTM_DISPLAY2
+
+choice DISPLAY2_LOGO
+	bool "kernel logo"
+        default DISPLAY2_NOLOGO
+        help
+          kernel logo
+
+config DISPLAY2_NOLOGO
+	bool "No Logo"
+	help
+	  no kernel logo
+
+config DISPLAY2_LOGO1
+        bool "Logo1"
+        help
+          logo1
+
+config DISPLAY2_LOGO2
+        bool "Logo2"
+        help
+          logo2
+
+config DISPLAY2_LOGO3
+        bool "Logo3"
+        help
+          logo3
+
+config DISPLAY2_LOGO4
+        bool "Logo4"
+        help
+          logo4
+
+config DISPLAY2_LOGO5
+        bool "Logo5"
+        help
+          logo5
+
+endchoice
+
+choice DISPLAY2_LOGO_SCALE
+	bool "logo scale"
+	default DISPLAY2_LOGO_SCALE_NONSCALE
+	help
+	  kernel logo scale type
+
+config DISPLAY2_LOGO_SCALE_NONSCALE
+	bool "None scale"
+	help
+	  not scale, centered on the screen
+
+config DISPLAY2_LOGO_SCALE_FIT
+	bool "Fit screen, keep ratio, may have black area"
+	help
+	  fit screen, keep ratio, may have black area
+
+config DISPLAY2_LOGO_SCALE_STRETCH
+	bool "Stretch to cover full screen, not keep ratio"
+	help
+	  stretch to cover full screen, not keep ratio
+
+endchoice
+
+config DISPLAY2_LOGO_BACKGROUND
+	string "logo background color (in RGB888 HEX format)"
+	default "0"
+	help
+	  overlay background color for kernel logo display, in RGB888 HEX format, e.g 0x8800FF
+
+endif

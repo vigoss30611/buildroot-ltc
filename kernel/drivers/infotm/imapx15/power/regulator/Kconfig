@@ -1,0 +1,6 @@
+
+config IMAP_REGULATOR_TPS65910
+        tristate "tps65910-REGULATOR"
+        help
+         tps65910 regulator driver 
+

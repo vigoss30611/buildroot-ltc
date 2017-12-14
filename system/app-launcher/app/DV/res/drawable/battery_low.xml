@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list android:oneshot="false"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:duration="750" android:drawable="@drawable/icon_batt_00" />
+    <item android:duration="750" android:drawable="@drawable/bg_empty" />
+    
+<!--     <item android:duration="750" android:drawable="@drawable/icon_batt_01" /> -->
+<!--     <item android:duration="750" android:drawable="@drawable/icon_batt_02" /> -->
+<!--     <item android:duration="750" android:drawable="@drawable/icon_batt_03" /> -->
+<!--     <item android:duration="750" android:drawable="@drawable/icon_batt_04" /> -->
+<!--     <item android:duration="750" android:drawable="@drawable/icon_batt_05" /> -->
+<!--     <item android:duration="750" android:drawable="@drawable/icon_batt_06" /> -->
+<!--     <item android:duration="750" android:drawable="@drawable/icon_batt_07" /> -->
+</animation-list>

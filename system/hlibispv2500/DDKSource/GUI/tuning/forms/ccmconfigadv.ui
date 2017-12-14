@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CCMConfigAdv</class>
+ <widget class="QDialog" name="CCMConfigAdv">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>607</width>
+    <height>787</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>CCM Configuration (advanced)</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="6" column="0" colspan="2">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok|QDialogButtonBox::RestoreDefaults</set>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>2</number>
+     </property>
+     <widget class="QWidget" name="tab_3">
+      <attribute name="title">
+       <string>Main</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_8">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Nb iterations</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="label_7">
+         <property name="text">
+          <string>Change probability</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>Temperature strength</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QSpinBox" name="nIterations">
+         <property name="minimum">
+          <number>1000</number>
+         </property>
+         <property name="maximum">
+          <number>1000000000</number>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>Nb warm iterations</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0" colspan="2">
+        <widget class="QCheckBox" name="gammaDisplay">
+         <property name="text">
+          <string>Apply gamma correction to the displayed images</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QDoubleSpinBox" name="temperatureStr"/>
+       </item>
+       <item row="3" column="0">
+        <widget class="QCheckBox" name="normalise">
+         <property name="text">
+          <string>Normalise matrix lines to 1</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QSpinBox" name="nWarm">
+         <property name="minimum">
+          <number>500</number>
+         </property>
+         <property name="maximum">
+          <number>1000000000</number>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QCheckBox" name="errorCurve">
+         <property name="text">
+          <string>Display error curve tab</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QCheckBox" name="CIE94">
+         <property name="text">
+          <string>Use CIE94 error metric</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0" colspan="2">
+        <widget class="QGroupBox" name="lumcorr_grp">
+         <property name="title">
+          <string>Weighted white patch average (WBC)</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="0">
+           <widget class="QDoubleSpinBox" name="luminanceR">
+            <property name="suffix">
+             <string> xR</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QDoubleSpinBox" name="luminanceG">
+            <property name="suffix">
+             <string> xG</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QDoubleSpinBox" name="luminanceB">
+            <property name="suffix">
+             <string> xB</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QCheckBox" name="verboseLog">
+         <property name="text">
+          <string>Verbose logging</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QSpinBox" name="changeProb">
+         <property name="suffix">
+          <string>%</string>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>100</number>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <spacer name="verticalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>WBC Limits</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_6">
+       <item row="2" column="0">
+        <widget class="QGroupBox" name="max_grp">
+         <property name="title">
+          <string>Maximum</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="1" column="4">
+           <widget class="QDoubleSpinBox" name="max_off1"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QDoubleSpinBox" name="max_mat3"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QDoubleSpinBox" name="max_mat0"/>
+          </item>
+          <item row="1" column="1">
+           <widget class="QDoubleSpinBox" name="max_mat4"/>
+          </item>
+          <item row="0" column="4">
+           <widget class="QDoubleSpinBox" name="max_off0"/>
+          </item>
+          <item row="0" column="1">
+           <widget class="QDoubleSpinBox" name="max_mat1"/>
+          </item>
+          <item row="0" column="2">
+           <widget class="QDoubleSpinBox" name="max_mat2"/>
+          </item>
+          <item row="1" column="2">
+           <widget class="QDoubleSpinBox" name="max_mat5"/>
+          </item>
+          <item row="1" column="3">
+           <widget class="QLabel" name="label_2">
+            <property name="maximumSize">
+             <size>
+              <width>20</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>+</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="4">
+           <widget class="QDoubleSpinBox" name="max_off2"/>
+          </item>
+          <item row="2" column="2">
+           <widget class="QDoubleSpinBox" name="max_mat8"/>
+          </item>
+          <item row="2" column="1">
+           <widget class="QDoubleSpinBox" name="max_mat7"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QDoubleSpinBox" name="max_mat6"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QGroupBox" name="useMaxWBC_grp">
+         <property name="title">
+          <string>Use maximum WBC gain</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_5">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Maximum gain</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QDoubleSpinBox" name="maxWBCGain"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="0">
+        <widget class="QGroupBox" name="min_grp">
+         <property name="title">
+          <string>Minimum</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="2" column="0">
+           <widget class="QDoubleSpinBox" name="min_mat6"/>
+          </item>
+          <item row="1" column="4">
+           <widget class="QDoubleSpinBox" name="min_off1"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QDoubleSpinBox" name="min_mat3"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QDoubleSpinBox" name="min_mat0"/>
+          </item>
+          <item row="1" column="1">
+           <widget class="QDoubleSpinBox" name="min_mat4"/>
+          </item>
+          <item row="0" column="4">
+           <widget class="QDoubleSpinBox" name="min_off0"/>
+          </item>
+          <item row="0" column="1">
+           <widget class="QDoubleSpinBox" name="min_mat1"/>
+          </item>
+          <item row="0" column="2">
+           <widget class="QDoubleSpinBox" name="min_mat2"/>
+          </item>
+          <item row="1" column="2">
+           <widget class="QDoubleSpinBox" name="min_mat5"/>
+          </item>
+          <item row="1" column="3">
+           <widget class="QLabel" name="label">
+            <property name="maximumSize">
+             <size>
+              <width>20</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>+</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="4">
+           <widget class="QDoubleSpinBox" name="min_off2"/>
+          </item>
+          <item row="2" column="2">
+           <widget class="QDoubleSpinBox" name="min_mat8"/>
+          </item>
+          <item row="2" column="1">
+           <widget class="QDoubleSpinBox" name="min_mat7"/>
+          </item>
+         </layout>
+         <zorder>min_mat0</zorder>
+         <zorder>min_mat1</zorder>
+         <zorder>min_mat2</zorder>
+         <zorder>min_mat3</zorder>
+         <zorder>min_mat4</zorder>
+         <zorder>min_mat5</zorder>
+         <zorder>label</zorder>
+         <zorder>min_off1</zorder>
+         <zorder>min_off0</zorder>
+         <zorder>min_off2</zorder>
+         <zorder>min_mat8</zorder>
+         <zorder>min_mat7</zorder>
+         <zorder>min_mat6</zorder>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_2">
+      <attribute name="title">
+       <string>Target Patches</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_7">
+       <item row="0" column="0">
+        <widget class="QScrollArea" name="target_area">
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="scrollAreaWidgetContents">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>565</width>
+            <height>696</height>
+           </rect>
+          </property>
+          <layout class="QGridLayout" name="_2">
+           <item row="2" column="0" colspan="2">
+            <widget class="QGroupBox" name="groupBox">
+             <property name="title">
+              <string>Patch colour (R, G, B - no gamma)</string>
+             </property>
+             <property name="flat">
+              <bool>true</bool>
+             </property>
+             <layout class="QGridLayout" name="target_layout"/>
+            </widget>
+           </item>
+           <item row="3" column="0" colspan="2">
+            <widget class="QGroupBox" name="patchWeigths_grp">
+             <property name="title">
+              <string>Patch weights</string>
+             </property>
+             <property name="flat">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QSpinBox" name="blackPatch"/>
+           </item>
+           <item row="0" column="1">
+            <widget class="QSpinBox" name="whitePatch"/>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_9">
+             <property name="text">
+              <string>Black patch</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_8">
+             <property name="text">
+              <string>White patch</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>luminanceR</tabstop>
+  <tabstop>luminanceG</tabstop>
+  <tabstop>luminanceB</tabstop>
+  <tabstop>maxWBCGain</tabstop>
+  <tabstop>min_mat0</tabstop>
+  <tabstop>min_mat1</tabstop>
+  <tabstop>min_mat2</tabstop>
+  <tabstop>min_mat3</tabstop>
+  <tabstop>min_mat4</tabstop>
+  <tabstop>min_mat5</tabstop>
+  <tabstop>min_mat6</tabstop>
+  <tabstop>min_mat7</tabstop>
+  <tabstop>min_mat8</tabstop>
+  <tabstop>min_off0</tabstop>
+  <tabstop>min_off1</tabstop>
+  <tabstop>min_off2</tabstop>
+  <tabstop>max_mat0</tabstop>
+  <tabstop>max_mat1</tabstop>
+  <tabstop>max_mat2</tabstop>
+  <tabstop>max_mat3</tabstop>
+  <tabstop>max_mat4</tabstop>
+  <tabstop>max_mat5</tabstop>
+  <tabstop>max_mat6</tabstop>
+  <tabstop>max_mat7</tabstop>
+  <tabstop>max_mat8</tabstop>
+  <tabstop>max_off0</tabstop>
+  <tabstop>max_off1</tabstop>
+  <tabstop>max_off2</tabstop>
+  <tabstop>whitePatch</tabstop>
+  <tabstop>blackPatch</tabstop>
+  <tabstop>groupBox</tabstop>
+  <tabstop>patchWeigths_grp</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>CIE94</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>patchWeigths_grp</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>91</x>
+     <y>98</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>91</x>
+     <y>303</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

@@ -1,0 +1,603 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MIEWidget</class>
+ <widget class="QWidget" name="MIEWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>640</width>
+    <height>643</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MIEWidget</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="3" column="0">
+    <widget class="QGroupBox" name="lumaGainsControl_gb">
+     <property name="title">
+      <string>Luma gains control</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="2">
+       <widget class="VisionLive::DoubleSlider" name="gain0_sl" native="true"/>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Gain 0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QDoubleSpinBox" name="gain0_sb">
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Gain 1</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QDoubleSpinBox" name="gain1_sb">
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Gain 2</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QDoubleSpinBox" name="gain2_sb">
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Gain 3</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QDoubleSpinBox" name="gain3_sb">
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="VisionLive::DoubleSlider" name="gain1_sl" native="true"/>
+      </item>
+      <item row="2" column="2">
+       <widget class="VisionLive::DoubleSlider" name="gain2_sl" native="true"/>
+      </item>
+      <item row="3" column="2">
+       <widget class="VisionLive::DoubleSlider" name="gain3_sl" native="true"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QGroupBox" name="outputControl_gb">
+     <property name="title">
+      <string>Output control</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_5">
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Contrast</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string>Contrast center</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_13">
+        <property name="text">
+         <string>Center Colour</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="2">
+       <widget class="QCheckBox" name="showSelection_cb">
+        <property name="text">
+         <string>Show selected colours</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="label_12">
+        <property name="text">
+         <string>Hue</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QDoubleSpinBox" name="brightness_sb">
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="label_14">
+        <property name="text">
+         <string>Projected output</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QDoubleSpinBox" name="contrast_sb">
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QDoubleSpinBox" name="contrastCenter_sb">
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Brightness</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QDoubleSpinBox" name="hue_sb">
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QDoubleSpinBox" name="saturation_sb">
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_11">
+        <property name="text">
+         <string>Saturation</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="VisionLive::DoubleSlider" name="brightness_sl" native="true"/>
+      </item>
+      <item row="2" column="2">
+       <widget class="VisionLive::DoubleSlider" name="contrast_sl" native="true"/>
+      </item>
+      <item row="4" column="2">
+       <widget class="VisionLive::DoubleSlider" name="saturation_sl" native="true"/>
+      </item>
+      <item row="5" column="2">
+       <widget class="VisionLive::DoubleSlider" name="hue_sl" native="true"/>
+      </item>
+      <item row="3" column="2">
+       <widget class="VisionLive::DoubleSlider" name="contrastCenter_sl" native="true"/>
+      </item>
+      <item row="6" column="1" colspan="2">
+       <layout class="QHBoxLayout" name="centerInputColourLayout"/>
+      </item>
+      <item row="7" column="1" colspan="2">
+       <layout class="QHBoxLayout" name="centerOutputColourLayout"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QGroupBox" name="lumaSlicePos_gb">
+     <property name="title">
+      <string>Luma slices position</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="2" column="0" colspan="2">
+       <layout class="QGridLayout" name="lumaLayout"/>
+      </item>
+      <item row="1" column="1">
+       <widget class="QDoubleSpinBox" name="lumaMax_sb">
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QDoubleSpinBox" name="lumaMin_sb">
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Maximum</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Minimum</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="1" rowspan="2">
+    <widget class="QGroupBox" name="chromaControl_gb">
+     <property name="title">
+      <string>Chroma control</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="1">
+       <widget class="QDoubleSpinBox" name="cbCenter_sb">
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QDoubleSpinBox" name="crCenter_sb">
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_15">
+        <property name="text">
+         <string>Cb center</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QDoubleSpinBox" name="chromaExtent1_sb">
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QDoubleSpinBox" name="chromaExtent2_sb">
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QDoubleSpinBox" name="chromaExtent0_sb">
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QDoubleSpinBox" name="rotation_sb">
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="label_19">
+        <property name="text">
+         <string>Extent 0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_18">
+        <property name="text">
+         <string>Rotation</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_16">
+        <property name="text">
+         <string>Cr center</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_17">
+        <property name="text">
+         <string>Aspect</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QDoubleSpinBox" name="aspect_sb">
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1">
+       <widget class="QDoubleSpinBox" name="chromaExtent3_sb">
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_20">
+        <property name="text">
+         <string>Extent 1</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0">
+       <widget class="QLabel" name="label_22">
+        <property name="text">
+         <string>Extent 3</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="label_21">
+        <property name="text">
+         <string>Extent 2</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="VisionLive::DoubleSlider" name="cbCenter_sl" native="true"/>
+      </item>
+      <item row="1" column="2">
+       <widget class="VisionLive::DoubleSlider" name="crCenter_sl" native="true"/>
+      </item>
+      <item row="2" column="2">
+       <widget class="VisionLive::DoubleSlider" name="aspect_sl" native="true"/>
+      </item>
+      <item row="3" column="2">
+       <widget class="VisionLive::DoubleSlider" name="rotation_sl" native="true"/>
+      </item>
+      <item row="5" column="2">
+       <widget class="VisionLive::DoubleSlider" name="chromaExtent0_sl" native="true"/>
+      </item>
+      <item row="6" column="2">
+       <widget class="VisionLive::DoubleSlider" name="chromaExtent1_sl" native="true"/>
+      </item>
+      <item row="7" column="2">
+       <widget class="VisionLive::DoubleSlider" name="chromaExtent2_sl" native="true"/>
+      </item>
+      <item row="8" column="2">
+       <widget class="VisionLive::DoubleSlider" name="chromaExtent3_sl" native="true"/>
+      </item>
+      <item row="4" column="0" colspan="3">
+       <widget class="Line" name="line">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="MIEWidget_sliceSelectionLayout">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Slice Selection</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="slice0_rb">
+       <property name="text">
+        <string>Slice 0</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="slice1_rb">
+       <property name="text">
+        <string>Slice 1</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="slice2_rb">
+       <property name="text">
+        <string>Slice 2</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="slice3_rb">
+       <property name="text">
+        <string>Slice 3</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="5" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="4" column="1" rowspan="2">
+    <layout class="QGridLayout" name="chromaViewLayout"/>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QCheckBox" name="enable_cb">
+       <property name="text">
+        <string>Enable</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="import_btn">
+       <property name="text">
+        <string>Import</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="6" column="1">
+    <spacer name="horizontalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>VisionLive::DoubleSlider</class>
+   <extends>QWidget</extends>
+   <header>doubleslider.hpp</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>enable_cb</tabstop>
+  <tabstop>slice0_rb</tabstop>
+  <tabstop>slice1_rb</tabstop>
+  <tabstop>slice2_rb</tabstop>
+  <tabstop>slice3_rb</tabstop>
+  <tabstop>lumaMin_sb</tabstop>
+  <tabstop>lumaMax_sb</tabstop>
+  <tabstop>gain0_sb</tabstop>
+  <tabstop>gain1_sb</tabstop>
+  <tabstop>gain2_sb</tabstop>
+  <tabstop>gain3_sb</tabstop>
+  <tabstop>showSelection_cb</tabstop>
+  <tabstop>brightness_sb</tabstop>
+  <tabstop>contrast_sb</tabstop>
+  <tabstop>contrastCenter_sb</tabstop>
+  <tabstop>saturation_sb</tabstop>
+  <tabstop>hue_sb</tabstop>
+  <tabstop>cbCenter_sb</tabstop>
+  <tabstop>crCenter_sb</tabstop>
+  <tabstop>aspect_sb</tabstop>
+  <tabstop>rotation_sb</tabstop>
+  <tabstop>chromaExtent0_sb</tabstop>
+  <tabstop>chromaExtent1_sb</tabstop>
+  <tabstop>chromaExtent2_sb</tabstop>
+  <tabstop>chromaExtent3_sb</tabstop>
+  <tabstop>import_btn</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

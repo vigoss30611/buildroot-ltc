@@ -1,0 +1,17 @@
+config BR2_PACKAGE_LIBMINIGUI
+	bool "libmingui"
+	default n
+	help
+	  Osa communication lib
+
+	  http://www.infotm.com/osa/
+
+if BR2_PACKAGE_LIGLIBMINIGUI 
+menu "Install Options"
+	config  BR2_PACKAGE_LIGLIBMINIGUI_INSTALL_SHARED
+		bool "Install Shared"
+		default y
+		help
+	  		install shared library into target dir
+endmenu
+endif

@@ -1,0 +1,78 @@
+#!/bin/bash
+#!/bin/bash
+WORKSPACE=`pwd`
+TOOLCHAIN_PREFIX=`basename output/host/usr/arm-*`
+OUTPUT_DIR=${WORKSPACE}/output
+CROSS_COMPILE=${OUTPUT_DIR}/host/usr/bin/${TOOLCHAIN_PREFIX}-
+SYSTEM_DIR=${OUTPUT_DIR}/system
+RAMDISK_DIR=${OUTPUT_DIR}/ramdisk
+TOOLCHAIN_ROOTFS=${OUTPUT_DIR}/host/usr/${TOOLCHAIN_PREFIX}/sysroot
+help(){
+    echo -e "usage :  must run in qsdk root dir"
+    echo -e "\t app target_rootfs config config_file"
+    echo -e "\t app target_rootfs make"
+    echo -e "\t app target_rootfs install"
+    echo -e "\t app target_rootfs clean"
+}
+
+busybox_config(){
+    echo -e "-->config busybox"
+    if [[ ! -f $1 ]];then
+        echo -e "config file is not exist"
+        exit 1
+    fi
+    cp $1 ${WORKSPACE}/busybox/.config
+}
+busybox_menuconfig(){
+    echo -e "-->menuconfig busybox"
+    make ARCH=arm PREFIX="${target_rootfs}" CROSS_COMPILE="${CROSS_COMPILE}"  CONFIG_PREFIX="${target_rootfs}"   -C ${WORKSPACE}/busybox  menuconfig
+}
+busybox_make(){
+    echo -e "-->make busybox"
+    make ARCH=arm PREFIX="${target_rootfs}" CROSS_COMPILE="${CROSS_COMPILE}"  CONFIG_PREFIX="${target_rootfs}"   -C ${WORKSPACE}/busybox
+}
+busybox_install(){
+    echo -e "-->install busybox"
+    make ARCH=arm PREFIX="${target_rootfs}" CROSS_COMPILE="${CROSS_COMPILE}"  CONFIG_PREFIX="${target_rootfs}"   -C ${WORKSPACE}/busybox  install > /dev/null
+}
+busybox_clean(){
+    echo -e "-->clean busybox"
+    make ARCH=arm PREFIX="${target_rootfs}" CROSS_COMPILE="${CROSS_COMPILE}"  CONFIG_PREFIX="${target_rootfs}"   -C ${WORKSPACE}/busybox  clean
+}
+busybox_distclean(){
+    echo -e "-->clean busybox"
+    make ARCH=arm PREFIX="${target_rootfs}" CROSS_COMPILE="${CROSS_COMPILE}"  CONFIG_PREFIX="${target_rootfs}"   -C ${WORKSPACE}/busybox  distclean
+}
+if [[ $# < 2 ]];then
+    help
+    exit 1
+fi
+if [[ ! -d tools ]];then
+    help
+    exit 1
+fi
+target_rootfs=`pwd`/$1
+
+case $2 in
+    config )
+        busybox_config  $3
+        ;;
+    menuconfig )
+        busybox_menuconfig  $3
+        ;;
+    make )
+        busybox_make
+        ;;
+    install )
+        busybox_install 
+        ;;
+    clean )
+        busybox_clean
+        ;;
+    distclean )
+        busybox_distclean
+        ;;
+    * )
+        help
+        ;;
+esac

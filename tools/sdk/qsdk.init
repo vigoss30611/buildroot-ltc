@@ -1,0 +1,84 @@
+#!/bin/bash
+if [[ ! -d tools ]] ; then
+    echo -e "!!! must run me in qsdk root dir"
+fi
+source tools/qsdk.env
+WORKSPACE=`pwd`
+init_rootfs_dir(){
+    cd $1
+    mkdir -p bin \
+             dev \
+             etc \
+             home \
+             lib \
+             lib/modules \
+             media \
+             mnt \
+             root \
+             sbin \
+             sys \
+             tmp \
+             usr/bin \
+             usr/lib \
+             usr/sbin \
+             var
+
+    ln -sf lib lib32
+    chmod 777 -R tmp
+
+}
+init_output(){
+  # rm -rf output
+    mkdir -p ${OUTPUT_DIR} \
+         ${OUTPUT_DIR}/system \
+         ${OUTPUT_DIR}/ramdisk \
+         ${OUTPUT_DIR}/host \
+         ${OUTPUT_DIR}/images \
+         ${OUTPUT_DIR}
+    init_rootfs_dir  ${OUTPUT_DIR}/system
+    init_rootfs_dir  ${OUTPUT_DIR}/ramdisk
+    #tree  -L 2 ${OUTPUT_DIR}
+}
+init_ramdisk(){
+    #echo -e "-->init ramdisk files"
+    cp -rf ${WORKSPACE}/file_system/ramdisk/*   ${RAMDISK_DIR}/
+}
+init_toolchain_qsdk(){
+    cd ${WORKSPACE}
+    #echo -e "-->copy toolchain to working dir"
+    cp -rf toolchain/*  output/host/
+	rm output/host/Kconfig
+    rm -rf ${TOOLCHAIN_ROOTFS}/usr/lib
+    rm -rf ${TOOLCHAIN_ROOTFS}/usr/include
+    ln -sf ${WORKSPACE}/file_system/system/usr/lib   ${TOOLCHAIN_ROOTFS}/usr/
+    ln -sf ${WORKSPACE}/file_system/system/usr/include   ${TOOLCHAIN_ROOTFS}/usr/
+    ln -sf ${WORKSPACE}/file_system/system   output/staging
+}
+fix_pkgconfig(){
+    #echo -e "--> fix pkg config path"
+    cd ${WORKSPACE}
+    tools/sdk/pkgfix ${WORKSPACE} >  output/host/usr/bin/pkg-config
+}
+init_qsdk(){
+    init_output
+    init_toolchain_qsdk
+    fix_pkgconfig
+    init_ramdisk
+    tools/setproduct.sh
+}
+if [[ $# > 0 ]] ; then
+    case $1 in
+        clean )
+            echo "clean qsdk"
+            rm -rfv ${WORKSPACE}/output
+            ;;
+        init )
+            init_qsdk
+            ;;
+        * )
+            echo -e "just run with init/clean"
+            exit 1
+    esac
+else
+    init_qsdk
+fi

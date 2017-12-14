@@ -1,0 +1,5 @@
+config BR2_PACKAGE_APP_DEMOS
+    bool "app demos"
+    default n
+    help
+        app demos

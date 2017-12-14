@@ -1,0 +1,10 @@
+
+
+../../../../../../output/host/usr/bin/arm-buildroot-linux-uclibcgnueabihf-gcc \
+    -Wall  -fpic -D_GNU_SOURCE -O3 -DNDEBUG -DION_USE \
+    -I. -I../../source/inc -I../../source/dwl -I../memalloc -I../ldriver/kernel_26x/ -I../../source/common -I../../source/inc/ -I../../../include  -I../../source/ldriver/kernel_26x  -I/include   \
+    -DTARGET_SYSTEM=FS_LINUX -DDEC_MODULE_PATH=\"/dev/vdec_g1\" -DMEMALLOC_MODULE_PATH=\"/dev/memalloc\" \
+    -c \
+    dwl_x170_linux_irq.c dwl_linux_lock.c dwl_linux.c 
+
+../../../../../../output/host/usr/bin/arm-buildroot-linux-uclibcgnueabihf-ar -rcs -o ./libg1dec_dwl.a *.o

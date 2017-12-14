@@ -1,0 +1,52 @@
+{
+   readme/dl_open
+   Memcheck:Leak
+   fun:malloc
+   fun:_dl_map_object_deps
+   fun:dl_open_worker
+   fun:_dl_catch_error
+   fun:_dl_open
+   fun:do_dlopen
+   fun:_dl_catch_error
+   fun:dlerror_run
+   fun:__libc_dlopen_mode
+   fun:pthread_cancel_init
+   fun:pthread_cancel
+   ...
+}
+{
+   readme/DebugCond
+   Memcheck:Cond
+   fun:_itoa_word
+   fun:vfprintf
+   fun:vsprintf
+   fun:sprintf
+   fun:IMG_CI_DebugRegisterPrint
+   ...
+}
+{
+   readme/DebugValue8
+   Memcheck:Value8
+   fun:_itoa_word
+   fun:vfprintf
+   fun:vsprintf
+   fun:sprintf
+   fun:IMG_CI_DebugRegisterPrint
+   ...
+}
+{
+   readme/TConfleak
+   Memcheck:Leak
+   fun:malloc
+   fun:TCONF_TXT_TargetConfigure
+   fun:TCONF_TargetConfigure
+   fun:TARGET_Initialise
+   fun:TALSETUP_Initialise
+   fun:KRN_CI_DriverCreate
+   fun:_ZN28CI_Driver_init_finalise_Test8TestBodyEv
+   fun:_ZN7testing8internal38HandleSehExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
+   fun:_ZN7testing8internal35HandleExceptionsInMethodIfSupportedINS_4TestEvEET0_PT_MS4_FS3_vEPKc
+   fun:_ZN7testing4Test3RunEv
+   fun:_ZN7testing8TestInfo3RunEv
+   fun:_ZN7testing8TestCase3RunEv
+}

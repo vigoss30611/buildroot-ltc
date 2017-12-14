@@ -1,0 +1,25 @@
+#! /bin/sh
+
+case "$1" in
+	start|"")
+		modprobe ddk_sensor i2c_addr=0x21 mipi=1 lanes=4 freq=410
+		modprobe hx280enc_265
+		modprobe vdec_g1
+#		modprobe vdec_g2
+		modprobe Felix ui32ClkRate=360000000
+		modprobe hx280enc_h1  g_h1_clk=400
+        initpath=
+        if [ -f "/mnt/config/.infotm_uvc_enable" ]; then 
+            initpath="/root/.videobox/uvc.json"
+        fi
+		videoboxd $initpath
+		;;
+	stop)
+		killall videoboxd
+		;;
+	*)
+		echo "Usage: videobox {start|stop}" >&2
+		exit 1
+		;;
+esac
+

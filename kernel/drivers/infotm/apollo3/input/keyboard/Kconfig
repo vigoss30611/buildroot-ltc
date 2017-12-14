@@ -1,0 +1,28 @@
+menuconfig APOLLO3_KEYBOARD
+	bool "apollo3 Keyboards and keypads"
+if APOLLO3_KEYBOARD
+	config APOLLO3_GPIO_KEYS
+	tristate "apollo3 GPIO Keys"
+	default n
+	help
+	  Say Y here if you want to use the GPIO keys of apollo3.
+
+	config APOLLO3_POWER_KEY_IP6313
+	tristate "apollo3 ip6313 power Key"
+	default n
+	help
+	  Say Y here if you want to use the IP6313 power key of apollo3.
+
+	config APOLLO3_POWER_KEY_FPGA
+	depends on APOLLO3_FPGA_PLATFORM 
+	tristate "apollo3 fpga power Key"
+	default n
+	help
+	  Say Y here if you want to use the IP6203 power key of apollo3.
+
+	config APOLLO3_POWER_KEY_IP6303
+	tristate "apollo3 ip6303 power Key"
+	default n
+	help
+	  Say Y here if you want to use the IP6303 power key of apollo3.
+endif

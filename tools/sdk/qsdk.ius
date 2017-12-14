@@ -1,0 +1,24 @@
+#!/bin/bash
+help(){
+   echo -e "usage:"
+   echo -e "\t app ixl_file target_ius"
+}
+. tools/qsdk.env
+copy_rootfs(){
+    rootfs_name=`cat $1 |grep rootfs |tr -d '\\r'|awk -F "/" '{print $NF}'`
+    prefix=`echo ${rootfs_name} | awk  -F "."  '{print $2}'`
+    if [[ $prefix == "ext4" ]]; then
+       prefix="ext2"
+    fi
+    echo "copy target rootfs files"
+    cp -rfv ${IMAGES_DIR}/system.${prefix}  ${IMAGES_DIR}/${rootfs_name}
+    cp -rfv ${IMAGES_DIR}/system.tar  ${IMAGES_DIR}/rootfs.tar
+}
+if [[ $# < 2 ]] ;then
+   help
+   exit 1
+fi
+
+copy_rootfs  $1
+${HOST_BIN_DIR}/iuw  mkius  $1
+mv a.ius  $2

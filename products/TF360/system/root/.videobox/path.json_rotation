@@ -1,0 +1,53 @@
+{
+	"isp": {
+		"ipu": "v2500",
+		"args": {
+			"mode": 4,
+			"flip": 2,
+			"name": "OV683Dual",
+			"config": "/root/.ispddk/config-normal.txt"
+		},
+		"port": {
+			"out": {
+				"w": 1904,
+                "h": 960,
+				"pixel": "nv12",
+				"fps": 30,
+                "bind": { 
+                    "encavc0": "frame",
+                    "jpegfull": "in",
+                    "jpeg": "in"
+                }
+            },
+            "cap": {
+                "w": 3008,
+                "h": 1504,
+                "pip_x": 0,
+                "pip_y": 0,
+                "pip_w": 3008,
+                "pip_h": 1504,
+                "bind": {"jpegfull":"in"}
+            }
+        }
+
+    },
+
+    "encavc0": {
+       "ipu": "h1264",
+       "args": {
+           "rotate":"90R"
+       },
+       "port": {
+           "frame": {
+               "w": 1920,
+               "h": 960,
+               "pip_x": 0,
+               "pip_y": 0,
+               "pip_w": 1904,
+               "pip_h": 960
+           }
+       }
+    },
+    "jpeg": { "ipu": "h1jpeg", "args": { "mode": "trigger"}},
+    "jpegfull": { "ipu": "h1jpeg", "args": { "mode": "trigger"}}
+}

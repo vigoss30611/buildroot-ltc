@@ -1,0 +1,88 @@
+{
+	"isp": {
+		"ipu": "v2500",
+		"port": {
+			"out": {
+				"w": 1920,
+				"h": 1080,
+				"pip_x": 0,
+				"pip_y": 14,
+				"pip_w": 1920,
+				"pip_h": 1080,
+				"pixel": "nv12",
+				"fps":25,
+				"bind": {"ispost": "in"}
+			},
+			"his": {
+				"bind": { "vam": "in" }
+			}
+		}
+	},
+
+	"marker0": {
+                "ipu": "marker",
+                "args": {
+                        "mode": "nv12"
+                },
+                "port": {
+                        "out": {
+                                "w": 800,
+                                "h": 64,
+                                "pixel": "nv12",
+                                "bind": { "ispost": "ov0" }
+                        }
+                }
+        },
+
+	"ispost": {
+		"ipu": "ispostv2",
+		"args": {
+			"dn_enable": 1,
+			"dn_target_index": 11,
+            "buffers" : 2
+		},
+		"port": {
+			"ov0":{
+				"pip_x": 560,
+				"pip_y": 952
+			},
+			"dn": {
+				"w": 1920,
+				"h": 1080,
+				"pixel": "nv12"
+			},
+            "uo":{
+                "w": 1920,
+				"h": 1080,
+				"pixel": "nv12",
+				"bind": { "enc1080p": "frame"}
+            },
+			"ss0":{
+				"w": 640,
+				"h": 360,
+				"pixel": "nv12",
+				"bind": { "encvga": "frame", "jpeg": "in"}
+			}
+		}
+	},
+	"jpeg": {
+		"ipu":"h1jpeg",
+		"args": {
+			"mode": "trigger",
+			"buffer_size": 622080
+		}
+	},
+	"enc1080p": {
+		"ipu": "h1264",
+		"args":{
+			"buffer_size":4194304
+		}
+    },
+    "encvga": {
+		"ipu": "h1264",
+		"args":{
+			"buffer_size":524288
+		}
+    },
+    "vam": { "ipu": "vamovement"}
+}

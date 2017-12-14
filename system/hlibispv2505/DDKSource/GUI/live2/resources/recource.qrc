@@ -1,0 +1,18 @@
+<!DOCTYPE RCC><RCC version="1.0">
+ <qresource prefix="/files">
+   <file>connect_icon.png</file>
+   <file>disconnect_icon.png</file>
+   <file>play_icon.png</file>
+   <file>pause_icon.png</file>
+   <file>record_icon.png</file>
+   <file>gallery_icon.png</file>
+   <file>hwinfo_icon.png</file>
+   <file>histogram_icon.png</file>
+   <file>DPF_icon.png</file>
+   <file>checkBox_checked_icon.png</file>
+   <file>comboBox_arrow_icon.png</file>
+   <file>radioButton_checked_icon.png</file>
+   <file>radioButton_unchecked_icon.png</file>
+ </qresource>
+ </RCC>
+ 

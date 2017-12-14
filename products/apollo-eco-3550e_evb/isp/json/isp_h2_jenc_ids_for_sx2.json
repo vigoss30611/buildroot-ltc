@@ -1,0 +1,52 @@
+{
+    "isp": {
+        "ipu": "v2500",
+        "args": {
+            "skipframe": 1,
+            "nbuffers": 3
+        },
+
+        "port": {
+            "out": {
+                "w": 1280,
+                "h": 720,
+                "pixel_format": "nv12",
+                "bind": { "display":"osd0", "h265":"frame" }
+            },
+            "cap": {
+                "w": 1280,
+                "h": 720,
+                "bind": {"jpeg":"in"}
+            }
+        }
+    },
+
+    "h265":{
+        "ipu": "vencoder",
+        "args": {
+            "encode_type": "h265"
+        },
+        "port":{
+            "stream":{
+                "bind":{ "filesink":"in" }
+            }
+        }
+    },
+
+    "filesink":{
+        "ipu":"filesink",
+        "args":{
+            "data_path":"/mnt/sd0/h264Test.h264"
+        }
+    },
+
+    "jpeg": {
+        "ipu": "jenc",
+        "args": {
+            "mode": "trigger"
+        }
+    },
+
+    "display": { "ipu": "ids"}
+}
+

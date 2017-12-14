@@ -1,0 +1,18 @@
+ menuconfig INFOTM_DRV_IMAPX15                          
+     bool "Infotm iMAPx15 Series Support"           
+     depends on ARCH_IMAPX15 && INFOTM_SPECIAL      
+     help                                            
+         Infotm iMAPx15 Series support              
+                                                     
+ if INFOTM_DRV_IMAPX15                                  
+source "drivers/infotm/imapx15/clk/Kconfig"
+source "drivers/infotm/imapx15/power/Kconfig"
+source "drivers/infotm/imapx15/gpio/Kconfig"
+source "drivers/infotm/imapx15/input/Kconfig"
+source "drivers/infotm/imapx15/mtd/Kconfig"
+source "drivers/infotm/imapx15/g2d/Kconfig"
+source "drivers/infotm/imapx15/emif/Kconfig"
+#source "drivers/infotm/imapx15/adc/Kconfig"
+                                                     
+ endif                                               
+

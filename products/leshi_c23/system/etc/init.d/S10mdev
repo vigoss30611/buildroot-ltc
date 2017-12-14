@@ -1,0 +1,35 @@
+#!/bin/sh
+#
+# Start mdev....
+#
+
+case "$1" in
+  start)
+	echo "Starting mdev new..."
+	echo /sbin/mdev >/proc/sys/kernel/hotplug
+	echo 1050000 > /sys/class/regulator/regulator.1/microvolts
+	echo -e "\n\n"
+	echo 0x05535a > /sys/class/pmu-debug/reg
+	echo "0x05:  `cat /sys/class/pmu-debug/reg`"
+	echo 0x19ffff > /sys/class/pmu-debug/reg
+	echo "0x19:  `cat /sys/class/pmu-debug/reg`"
+	echo 0x10 > /sys/class/pmu-debug/reg
+	echo "last:  `cat /sys/class/pmu-debug/reg`"
+	echo 0x10ffff > /sys/class/pmu-debug/reg
+	echo "clear: `cat /sys/class/pmu-debug/reg`"
+
+	/sbin/mdev -s
+
+    echo 50 >/proc/sys/vm/dirty_writeback_centisecs
+    echo 50 >/proc/sys/vm/dirty_expire_centisecs 
+    ;;
+  stop)
+	;;
+  restart|reload)
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?

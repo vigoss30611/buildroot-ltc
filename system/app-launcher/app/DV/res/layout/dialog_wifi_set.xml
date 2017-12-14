@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:background="@android:drawable/dialog_frame"
+    android:gravity="center" >
+    
+    
+    <EditText
+        android:id="@+id/wifi_set_name" 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:singleLine="true"/>
+    
+    <EditText
+        android:id="@+id/wifi_set_pswd" 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:singleLine="true"/>
+    
+</LinearLayout>

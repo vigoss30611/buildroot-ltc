@@ -1,0 +1,79 @@
+config BR2_PACKAGE_QLIBVPLAY
+	bool "qlibvplay"
+	help
+		Qlibvplay deal with QSDK media issues
+if BR2_PACKAGE_QLIBVPLAY
+menu "Options"
+	config  BR2_PACKAGE_QLIBVPLAY_GDBDEBUG
+		bool "Gdb Debug"
+		default n
+		help
+	  		enable gdb debug support
+	config  BR2_PACKAGE_QLIBVPLAY_TEST_UTILS
+		bool "Test Utils"
+		default n
+		help
+	  		enable test utils install to system
+	config  BR2_PACKAGE_QLIBVPLAY_FRAGMENTED
+		bool "Fragemented File"
+		default n
+		help
+	  		enable fragmented mp4/mov support
+	config  BR2_PACKAGE_QLIBVPLAY_RECORDER_CACHE_TIME
+		string "Recorder Cache Time"
+		default 3
+		help
+	  		recorder normal mode cache time
+	config  BR2_PACKAGE_QLIBVPLAY_PLAYER_CACHE_TIME
+		string "Player Cache Time"
+		default 1
+		help
+	  		Player cache time
+	config  BR2_PACKAGE_QLIBVPLAY_RECORDER_SPS_MODIFY
+		bool "Recorder sps modify"
+		default y
+		help
+	  		Recorder h264 sps modify support
+choice
+	prompt "Log Level"
+	default BR2_PACKAGE_QLIBVPLAY_LOGLEVEL_TRC
+	help
+	  Select the WiFi module you wish to use.
+
+config BR2_PACKAGE_QLIBVPLAY_LOGLEVEL_TRC
+	bool "TRC"
+	help
+	  log level trace.
+
+
+config BR2_PACKAGE_QLIBVPLAY_LOGLEVEL_DBG
+	bool "DEBUG"
+	help
+	  log level debug.
+
+config BR2_PACKAGE_QLIBVPLAY_LOGLEVEL_INFO
+	bool "INFO"
+	help
+	  log level info.
+
+config BR2_PACKAGE_QLIBVPLAY_LOGLEVEL_WARN
+	bool "WARN"
+	help
+	  log level warning.
+
+config BR2_PACKAGE_QLIBVPLAY_LOGLEVEL_ERR
+	bool "ERROR"
+	help
+	  log level error.
+
+endchoice
+
+config BR2_PACKAGE_QLIBVPLAY_LOGLEVEL
+	string
+	default 1         if BR2_PACKAGE_QLIBVPLAY_LOGLEVEL_TRC
+	default 2         if BR2_PACKAGE_QLIBVPLAY_LOGLEVEL_DBG
+	default 3         if BR2_PACKAGE_QLIBVPLAY_LOGLEVEL_INFO
+	default 4         if BR2_PACKAGE_QLIBVPLAY_LOGLEVEL_WARN
+	default 5         if BR2_PACKAGE_QLIBVPLAY_LOGLEVEL_ERR
+endmenu
+endif

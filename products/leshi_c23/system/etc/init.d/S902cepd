@@ -1,0 +1,16 @@
+#! /bin/sh
+
+case "$1" in
+	start|"")
+		cepd &
+        #boot_selector
+		;;
+	stop)
+		killall cepd
+		;;
+	*)
+		echo "Usage: cepd {start|stop}" >&2
+		exit 1
+		;;
+esac
+

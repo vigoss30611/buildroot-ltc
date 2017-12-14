@@ -1,0 +1,87 @@
+config BR2_PACKAGE_QLIBWIFI
+	bool "qlibwifi"
+	help
+		QSDK Wi-Fi manager, HAL and APIs
+
+
+if BR2_PACKAGE_QLIBWIFI
+choice
+	prompt "Wi-Fi Module"
+	default BR2_WIFI_HARDWARE_MODULE_B
+	help
+	  Select the WiFi module you wish to use.
+
+config BR2_WIFI_HARDWARE_MODULE_B
+	bool "bcm6210"
+	help
+	  BCM6210 hardware module name.
+
+config BR2_WIFI_HARDWARE_MODULE_B1
+	bool "bcm6212"
+	help
+	  BCM6212 hardware module name.
+
+config BR2_WIFI_HARDWARE_MODULE_B2
+	bool "bcm6214"
+	help
+	  BCM6214 hardware module name.
+
+config BR2_WIFI_HARDWARE_MODULE_B3
+	bool "bcm6236"
+	help
+	  BCM6236 hardware module name.	  	  
+
+config BR2_WIFI_HARDWARE_MODULE_R
+	bool "rtl8188"
+	help
+	  RTL8188 hardware module name.
+
+config BR2_WIFI_HARDWARE_MODULE_R1
+	bool "rtl8189"
+	help
+	  RTL8189 hardware module name.
+
+config BR2_PACKAGE_QLIBWIFI_NONE
+	bool "none"
+	help
+	  No hardware module select
+endchoice
+
+config BR2_WIFI_HARDWARE_MODULE
+        string
+        default "bcm6210"        if BR2_WIFI_HARDWARE_MODULE_B
+        default "bcm6212"        if BR2_WIFI_HARDWARE_MODULE_B1
+        default "bcm6214"        if BR2_WIFI_HARDWARE_MODULE_B2
+        default "bcm6236"        if BR2_WIFI_HARDWARE_MODULE_B3        
+        default "rtl8188"        if BR2_WIFI_HARDWARE_MODULE_R
+        default "rtl8189"        if BR2_WIFI_HARDWARE_MODULE_R1
+
+choice
+	prompt "Wi-Fi Mode"
+	default BR2_WIFI_STA_AND_AP_MODE
+	help
+	  Select Wi-Fi mode as you wish.
+
+config BR2_WIFI_STA_AND_AP_MODE
+    bool "STA and AP"
+	help
+    Wi-Fi STA and AP mode.
+
+config BR2_WIFI_STA_MODE
+	bool "STA"
+	help
+    Wi-Fi STA mode.
+
+config BR2_WIFI_AP_MODE
+	bool "AP"
+	help
+    Wi-Fi AP mode.
+endchoice
+
+config BR2_WIFI_MODE
+        string
+        default "both"        if BR2_WIFI_STA_AND_AP_MODE
+        default "sta"        if BR2_WIFI_STA_MODE
+        default "ap"        if BR2_WIFI_AP_MODE
+ 
+endif

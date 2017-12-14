@@ -1,0 +1,7 @@
+sensor,apollo3-sx2,
+vsync,1,
+hsync,1,
+i2c_mode,1,
+i2c_bits,16,
+parallel,1,
+

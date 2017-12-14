@@ -1,0 +1,27 @@
+#!/bin/sh 
+event_mount="mount"
+event_insert="insert"
+event_umount="umount"
+event_remove="remove"
+
+case $ACTION in
+    add)
+        usleep 50
+        if [ ! -e "/dev/mmcblk0p1" ]; then
+            mkdir /mnt/sd0
+            mount /dev/mmcblk0 /mnt/sd0
+            if [ "$?" = "0" ]; then
+                eventsend $event_mount /dev/mmcblk0
+            else
+                echo -e "o\nn\np\n1\n\n\nw\n" | fdisk /dev/mmcblk0
+            fi
+        fi
+        ;;
+    remove)
+        eventsend $event_remove /dev/mmcblk0
+        sync
+        umount -l /mnt/sd*
+        eventsend $event_umount
+        rm -rf /mnt/sd*
+        ;;
+esac

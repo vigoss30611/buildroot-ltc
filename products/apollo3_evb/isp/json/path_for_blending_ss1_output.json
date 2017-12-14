@@ -1,0 +1,56 @@
+{
+
+       	"dgframe0": {
+		"ipu":"dg-frame",
+		"args":{
+			"frames": 3,
+                        "mode":"picture",
+			"data":"/root/.ispost/Calibration_Room_1920x960_NV12.yuv"
+		},
+		"port": {
+			"out":{
+				"w":1920,
+				"h":960,
+                                "minfps": 30,
+                                "maxfps": 30,
+				"pixel":"nv12",
+				"bind":{ "ispost":"in"}
+			}
+		}
+	},
+
+	"ispost": {
+		"ipu": "ispostv2",
+		"args": {
+		           "buffers": 3,
+                           "fisheye": 1,
+                           "blendscale": 1,
+		           "fcefile":"/root/.videobox/fcefile_for_blending.json", 
+			   "dn_enable": 1
+			},
+		"port": {
+			"dn": {
+				"w": 1920,
+				"h": 960,
+				"pixel": "nv12"
+			},
+                        "uo": {
+                                "w": 1920, 
+                                "h": 960,
+                                "pixel": "nv12",
+                                "export": 1
+			},
+                        "ss1": {
+                                "w": 960,
+                                "h": 480,
+                                "pixel": "nv12",
+                                "bind":{ "display":"osd0" }
+                        }
+
+		}
+	},
+
+        "display": { "ipu": "ids"}
+
+}
+

@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>CI Appendix: Adding a new DebugFS counter &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="next" title="CI Appendix: Frame Size Computation" href="ci_appendix_alloc.html" />
+    <link rel="prev" title="Appendix: Errors troubleshooting" href="../building_errors.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="ci_appendix_alloc.html" title="CI Appendix: Frame Size Computation"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="../building_errors.html" title="Appendix: Errors troubleshooting"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li><li>CI Appendix: Adding a new DebugFS counter</li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="ci-appendix-adding-a-new-debugfs-counter">
+<span id="isp-ci-adding-debugfs-counter"></span><h1>CI Appendix: Adding a new DebugFS counter<a class="headerlink" href="#ci-appendix-adding-a-new-debugfs-counter" title="Permalink to this headline">¶</a></h1>
+<p>The DebugFS interface allows a direct read of some variables from a file in
+the <code class="docutils literal"><span class="pre">/sys/kernel/FELIX</span></code> folder (usually 1 file per variable).</p>
+<p>To enable it the driver must be compiled with the cmake option
+<code class="docutils literal"><span class="pre">CI_DEBUG_FUNCTIONS</span></code> turned on (see <a class="reference internal" href="../getting_started.html#isp-gsg-ddk-cmake-ci-options"><span>Getting Started
+Guide</span></a>).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The user needs to have root privileges to access <code class="docutils literal"><span class="pre">/sys/kernel/debug</span></code>
+unless the folder permissions were modified.</p>
+</div>
+<p>Most of the handling of the DebugFS variables is done in
+<code class="docutils literal"><span class="pre">kernel_src/ci_init_km.c</span></code>:</p>
+<ul class="simple">
+<li>Add the <code class="docutils literal"><span class="pre">struct</span> <span class="pre">dentry</span></code> pointer must be defined next to the others</li>
+<li>Add a macro containing the name of the entry file with <code class="docutils literal"><span class="pre">DEBUGFS_</span></code> prefix</li>
+<li>Add the variable that will be used a global variable</li>
+<li><code class="docutils literal"><span class="pre">KRN_CI_ResetDebugFS()</span></code> should be updated to reset the variable to a
+default state</li>
+<li><code class="docutils literal"><span class="pre">DebugFs_Create()</span></code> in <code class="docutils literal"><span class="pre">ci_init_km.c</span></code> should be modified so that the
+DebugFS entry is created into the FELIX folder</li>
+</ul>
+<p>Other files may need modification too. If the variable should be used in CI
+(for example in the interrupt handler or to keep track of the number of
+triggered shot) <a class="reference external" href="../doxygen/ci__debug_8h.html">ci_debug.h</a> should be modified to include the
+previously defined variable as an extern. If the variable should be used in
+the DG then <a class="reference external" href="../doxygen/dg__debug_8h.html">dg_debug.h</a> should be modified to include the extern
+variable. Of course the files using this variable should check for the
+<code class="docutils literal"><span class="pre">CI_DEBUGFS</span></code> pre-processor macro before accessing the variable.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">CI Appendix: Adding a new DebugFS counter</a></li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../building_errors.html"
+                        title="previous chapter">Appendix: Errors troubleshooting</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="ci_appendix_alloc.html"
+                        title="next chapter">CI Appendix: Frame Size Computation</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

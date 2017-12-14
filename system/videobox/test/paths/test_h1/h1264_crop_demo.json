@@ -1,0 +1,46 @@
+{
+	"isp": {
+		"ipu": "v2500",
+		"args": {
+			"mode": 6,
+			"name": "AR330MIPI",
+			"config": "/root/.ispddk/config-normal.txt"
+		},
+		"port": {
+			"out": {
+				"w": 1920,
+				"h": 1088,
+				"pixel": "nv12",
+				"bind": { "display": "osd0", "h1264":"frame" }
+			}
+		}
+	},
+
+	"h1264":{
+		"ipu": "vencoder",
+		"args":{
+			"encode_type":"h264",
+			"rotate":"90R"
+		},
+		"port":{
+			"frame":{
+				"pip_x":32,
+				"pip_y":32,
+				"pip_w":640,
+				"pip_h":480
+			},
+			"stream":{
+				"bind":{ "filesink":"in" }
+			}
+		}
+	},
+
+	"filesink":{
+		"ipu":"filesink",
+		"args":{
+			"data_path":"/tmp/h264Test.h264"
+		}
+	},
+
+	"display": { "ipu": "ids"}
+}

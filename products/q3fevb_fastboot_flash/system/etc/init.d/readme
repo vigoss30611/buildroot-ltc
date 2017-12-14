@@ -1,0 +1,5 @@
+Note:
+S900initdir  S904tutk still need to exchange,depend on below two limits:
+1.In App(such as S904tutk) level need enable ebcoder cache mode, the API is vplay_set_cache_mode(recorder, 1)
+2.The time between App starts and SD card mounts do not cost too long, the data cached in this time should be less than the value which setting in json file(buffer_size).Or,cached data may be droped and even cause media wrong
+

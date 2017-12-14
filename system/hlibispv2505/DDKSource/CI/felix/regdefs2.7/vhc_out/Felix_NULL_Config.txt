@@ -1,0 +1,108 @@
+-- ----------------------------------------------------------------------------
+--
+-- Target Abstraction Layer configuration file for FELIX HW
+--
+-- MEMORY_MAP ... END_MEMORY_MAP
+-- This section of the configuration file defines the memory map; the device
+-- addresses, register banks, slave ports and memory banks.
+-- NOTE: Addresses, offsets etc can be either in decimal or hex; 256 or 0x100
+--
+-- DEVICE  <device name>  <base address> 
+-- Defines a device and its base address.
+--
+-- REGISTER  <name>  <device name>  <offset>  <size>  <irq|"NO_IRQ">
+-- Defines a bank of register associated with a device; its offset from the
+-- base of the device, the size (in bytes) and interrupt request number -
+-- if the register bank can generate interrupts.
+--
+-- MEMORY  <name|"DEFAULT"> [ <base address>  <size>  <guard band> ]
+-- Defines a region of memory; its base address, size (in bytes) and any
+-- guard band requirements.
+--
+-- Example memory definitions:
+--
+-- Defines the default memory regions which will be allocated in the region 
+-- 0x10000000 to 0x1FFFFFFF with no guard band:
+--     MEMORY  DEFAULT  0x10000000  0x20000000  0x100
+--
+-- Defines a named memory region "MEM_SYS_MEM" that will be allocated 
+-- within the DEFAULT region:
+--     MEMORY  MEM_SYS_MEM
+--
+-- Defines a separate named memory region which will be allocated in the 
+-- region 0x40000000 to 0x4FFFFFFF with a guard band of at least 0x100 
+-- bytes between allocations:
+--     MEMORY  MEM_BANK  0x40000000  0x10000000  0x100
+--
+-- ----------------------------------------------------------------------------
+
+MEMORY_MAP
+
+-- setting the device
+DEVICE FELIX  0x00000000 0x00800000 0x10000000 0 0x000000000
+
+-- ----- Registers inside Felix IP -----
+-- Core registers
+REGISTER REG_FELIX_CORE FELIX 0x00000000 0x000007FF 0
+
+-- Gamma look up table registers
+REGISTER REG_FELIX_GMA_LUT FELIX 0x00000C00 0x000003FF NO_IRQ
+
+-- Per-context registers
+-- REGISTER REG_FELIX_CONTEXT FELIX 0x00001000 0x00001FFF NO_IRQ
+REGISTER REG_FELIX_CONTEXT_0 FELIX 0x00001000 0x00000FFF NO_IRQ
+REGISTER REG_FELIX_CONTEXT_1 FELIX 0x00002000 0x00000FFF NO_IRQ
+
+-- MMU registers
+REGISTER REG_FELIX_MMU FELIX 0x00009000 0x000001FF 0
+
+-- internal data generator registers, this includes the connected gasket
+REGISTER REG_FELIX_DG_IIF_0 FELIX 0x0000A000 0x000000FF NO_IRQ
+
+-- registers for gaskets which receive data from external DG/imagers - one regbank per gaskets
+REGISTER REG_FELIX_GASKET_0 FELIX 0x0000C000 0x000001FF NO_IRQ
+REGISTER REG_FELIX_GASKET_1 FELIX 0x0000C200 0x000001FF NO_IRQ
+REGISTER REG_FELIX_GASKET_2 FELIX 0x0000C400 0x000001FF NO_IRQ
+REGISTER REG_FELIX_GASKET_3 FELIX 0x0000C600 0x000001FF NO_IRQ
+
+-- ----- Registers outside Felix IP, debug only -----
+-- External data generators (only for debug)
+REGISTER REG_TEST_DG_0 FELIX 0x0000E000 0x000001FF NO_IRQ
+REGISTER REG_TEST_DG_1 FELIX 0x0000E200 0x000001FF NO_IRQ
+REGISTER REG_TEST_DG_2 FELIX 0x0000E400 0x000001FF NO_IRQ
+REGISTER REG_TEST_DG_3 FELIX 0x0000E600 0x000001FF NO_IRQ
+
+-- Test MMU registers
+REGISTER REG_TEST_MMU FELIX 0x00010000 0x000001FF 0
+
+-- Control PLL for DPHY
+REGISTER REG_GASK_PHY_0 FELIX 0x00016000 0x000001FF NO_IRQ
+
+-- Test IO regbank for monitoring felix and adding latency
+REGISTER REG_TEST_IO FELIX 0x00014000 0x000000FF 0
+
+-- SCB (I2C bus) setup registers (only FPGA)
+REGISTER REG_TEST_SCB FELIX 0x00015000 0x000000FF NO_IRQ
+
+-- PDP and PLL registers (BAR0 on FPGA)
+REGISTER REG_FPGA_BAR0_PDP FELIX 0x00020000 0x0000FFFF NO_IRQ
+REGISTER REG_FPGA_BAR0_PLL FELIX 0x00020000 0x0000FFFF NO_IRQ
+
+-- System memory size (256 MB)
+MEMORY SYSMEM FELIX 0x00000000 0x10000000 0x00000000
+
+END_MEMORY_MAP
+
+-- ----------------------------------------------------------------------------
+--
+-- Wrapper of interface
+--
+-- ----------------------------------------------------------------------------
+
+WRAPPER
+
+-- Null TAL interface for unit testing config...
+CONTROL 20000  0x00000700
+
+END_WRAPPER
+

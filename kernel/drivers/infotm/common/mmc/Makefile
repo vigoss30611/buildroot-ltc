@@ -1,0 +1,2 @@
+obj-$(CONFIG_INFOTM_DWC_MMC_V240) += dw_mmc_240/
+obj-$(CONFIG_INFOTM_DWC_MMC_V280) += dw_mmc_280/

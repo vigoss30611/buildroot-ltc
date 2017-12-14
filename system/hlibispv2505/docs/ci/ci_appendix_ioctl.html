@@ -1,0 +1,842 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>CI Appendix: System calls mapping &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="next" title="CI Appendix: Debugging a Page Fault" href="ci_appendix_mmufault.html" />
+    <link rel="prev" title="CI Appendix: Frame Size Computation" href="ci_appendix_alloc.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="ci_appendix_mmufault.html" title="CI Appendix: Debugging a Page Fault"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="ci_appendix_alloc.html" title="CI Appendix: Frame Size Computation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li><li>CI Appendix: System calls mapping</li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="ci-appendix-system-calls-mapping">
+<span id="isp-ci-system-calls-mapping"></span><h1>CI Appendix: System calls mapping<a class="headerlink" href="#ci-appendix-system-calls-mapping" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_DriverInit()</span></code>:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/group___c_i___a_p_i___d_r_i_v_e_r.html#ga32f2d72505f1ac25503ce41edbd6a665">CI_DriverInit()</a> creates a connection object and adds it to the
+driver&#8217;s list.</p>
+<p><strong>System call</strong>: <code class="docutils literal"><span class="pre">open()</span></code></p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___d_e_v___c_i.html#gac9f73ae79884950a347eb529bed573da">DEV_CI_Open()</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_DriverFinalise()</span></code>:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/group___c_i___a_p_i___d_r_i_v_e_r.html#ga5413979339c9345c449550b3e9ab7e6e">CI_DriverFinalise()</a> delegates to <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#gafd4e8e81a0357b83d033671a95d6acab">INT_CI_DriverDisconnect()</a>.</p>
+<p>Destroys the connection object and removes it from the driver&#8217;s list.</p>
+<p><strong>System call</strong>: <code class="docutils literal"><span class="pre">close()</span></code></p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___d_e_v___c_i.html#gaeb0757c3e276761865d2b956fe935787">DEV_CI_Close()</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Several functions:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">Delegates to different other functions depending on the IOCTL command
+received as detailed in <a class="reference internal" href="#isp-ci-ioctl-tables"><span>CI Appendix: IOCTL tables</span></a>.</p>
+<p><strong>System call</strong>: <code class="docutils literal"><span class="pre">ioctl()</span></code></p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___d_e_v___c_i.html#ga6647b900cbc2487fef65e4487d3cf3b5">DEV_CI_Ioctl()</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_PipelineAllocateBuffer()</span></code>:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/ci__api_8h.html#a51a5289974c9ea89dae9362ce3403748">CI_PipelineAllocateBuffer()</a> is allocating device memory and
+mapping it to user-space.</p>
+<p>Memory mapping is done only to share frames memory in user space and
+kernel space without having to copy any data.</p>
+<p>The kernel function looks for the given memory offset in connection’s
+list of non-mapped buffers.</p>
+<p>Calls <code class="docutils literal"><span class="pre">memunmap()</span></code> on failure on previously mapped buffers for that
+call, see <code class="docutils literal"><span class="pre">CI_PipelineDeregisterBuffer()</span></code> for details on unmapping.</p>
+<p><strong>System call</strong>: <code class="docutils literal"><span class="pre">memmap()</span></code></p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___d_e_v___c_i.html#gac566f9a78756f26ab7caadc953f1b4cd">DEV_CI_Mmap()</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_PipelineImportBuffer()</span></code>:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/ci__api_8h.html#a73cbc9a4ec455ea9a343b7cb881e88dd">CI_PipelineImportBuffer()</a> is importing memory allocated by an
+external allocator (supported by the selected SYS_MEM implementation).</p>
+<p>See <code class="docutils literal"><span class="pre">CI_PipelineAllocateBuffer()</span></code> about memory mapping as it is the
+same process.</p>
+<p><strong>System call</strong>: <code class="docutils literal"><span class="pre">memmap()</span></code></p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___d_e_v___c_i.html#gac566f9a78756f26ab7caadc953f1b4cd">DEV_CI_Mmap()</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_PipelineAllocateLSHMatrix</span></code>:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/ci__api_8h.html#a430993375aa1f8a39ed63a4d1d1a80cb">CI_PipelineAllocateLSHMatrix()</a> is allocating a LSH de-shading grid
+of a given size using the same IOCTL mechanism than
+<a class="reference external" href="../doxygen/ci__api_8h.html#a51a5289974c9ea89dae9362ce3403748">CI_PipelineAllocateBuffer()</a> and <a class="reference external" href="../doxygen/ci__api_8h.html#a73cbc9a4ec455ea9a343b7cb881e88dd">CI_PipelineImportBuffer()</a>. It
+will therefore call follow a similar memory mapping process.</p>
+<p>The memory mapping process is the same than for
+<a class="reference external" href="../doxygen/ci__api_8h.html#a51a5289974c9ea89dae9362ce3403748">CI_PipelineAllocateBuffer()</a>.</p>
+<p>Un-mapping is done with <a class="reference external" href="../doxygen/ci__pipeline_8c.html#a85effb9816ae07f9707a0c7add259c6d">CI_PipelineDeregisterLSHMatrix()</a>.</p>
+<p><strong>System call</strong>: <code class="docutils literal"><span class="pre">memmap()</span></code></p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___d_e_v___c_i.html#gac566f9a78756f26ab7caadc953f1b4cd">DEV_CI_Mmap()</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_DatagenAllocateFrame()</span></code>:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/ci__api_8h.html#a62eb3c2b8e1003bf86e2046f4ce8bc0c">CI_DatagenAllocateFrame()</a> is allocating device memory for the
+internal data-generator.</p>
+<p>See <code class="docutils literal"><span class="pre">CI_PipelineAllocateBuffer()</span></code> about memory mapping as it is the
+same process.</p>
+<p><strong>System call</strong>: <code class="docutils literal"><span class="pre">memmap()</span></code></p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___d_e_v___c_i.html#gac566f9a78756f26ab7caadc953f1b4cd">DEV_CI_Mmap()</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_PipelineDeregisterBuffer()</span></code>:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first"><code class="docutils literal"><span class="pre">memumap()</span></code> is called when handling errors at creation of buffers
+(unmapped already mapped buffers) resuling in same path on the kernel
+side.</p>
+<p><a class="reference external" href="../doxygen/ci__api_8h.html#a0ad9a3c911ac85e4fb8149abbcea123c">CI_PipelineDeregisterBuffer()</a> destroys of a Buffer of Frame object.</p>
+<p><strong>System call</strong>: <code class="docutils literal"><span class="pre">memunmap()</span></code></p>
+<p><strong>Kernel function</strong>: Not needed for real driver (done by OS)</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_PipelineDeregisterLSHMatrix</span></code>:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first"><code class="docutils literal"><span class="pre">memumap()</span></code> is called when handling errors at creation of buffers
+(unmapped already mapped buffers) resuling in same path on the kernel
+side.</p>
+<p><a class="reference external" href="../doxygen/ci__pipeline_8c.html#a85effb9816ae07f9707a0c7add259c6d">CI_PipelineDeregisterLSHMatrix()</a> destroys a LSH grid object.</p>
+<p><strong>System call</strong>: <code class="docutils literal"><span class="pre">memunmap()</span></code></p>
+<p><strong>Kernel function</strong>: Not needed for real driver (done by OS)</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_DatagenDestroyFrame()</span></code>:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/ci__intdg_8c.html#aba9b76eb47c1d1f76c113777ce36baf4">CI_DatagenDestroyFrame()</a> destroys a data-generator frame.</p>
+<p><strong>System call</strong>: <code class="docutils literal"><span class="pre">memunmap()</span></code></p>
+<p class="last"><strong>Kernel function</strong>: Not needed for real driver (done by OS)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="ci-appendix-ioctl-tables">
+<span id="isp-ci-ioctl-tables"></span><h1>CI Appendix: IOCTL tables<a class="headerlink" href="#ci-appendix-ioctl-tables" title="Permalink to this headline">¶</a></h1>
+<p>This paragraph maps the different calls from the user-side CI library to the
+kernel side functions that are done through <code class="docutils literal"><span class="pre">ioctl()</span></code>. This information
+can be found in <a class="reference external" href="../doxygen/ci__ioctrl_8h.html">ci_ioctrl.h</a> in the kernel sources.</p>
+<p>Any return value from <code class="docutils literal"><span class="pre">ioctl()</span></code> that is negative is always considered
+erroneous. The kernel side converts IMG errors into <code class="docutils literal"><span class="pre">errno</span></code> values that
+are then reconverted in IMG errors on the user side (see
+<a class="reference internal" href="ci_library.html#isp-ci-img-errors-and-errno-values"><span>IMG Errors and Errno values</span></a>).</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This table of IOCTL may be incomplete or incorrect but gives a good
+starting point to get information about the different IOCTL available for
+the CI layer. Check the <a class="reference external" href="../doxygen/ci__ioctrl_8h.html">ci_ioctrl.h</a> and <code class="docutils literal"><span class="pre">ci_ioctl_km.c</span></code> on the
+kernel side for more information.</p>
+</div>
+<div class="section" id="driver-commands">
+<span id="isp-ci-ioctl-driver-commands"></span><h2>Driver commands<a class="headerlink" href="#driver-commands" title="Permalink to this headline">¶</a></h2>
+<p>Driver commands are used to get shared information about the driver. It also
+allows changing some of the shared data (e.g. line-store and gamma look up
+table). These commands should come from <code class="docutils literal"><span class="pre">ci_api.c</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_DriverInit()</span></code>:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/group___c_i___a_p_i___d_r_i_v_e_r.html#ga32f2d72505f1ac25503ce41edbd6a665">CI_DriverInit()</a> is called just after <code class="docutils literal"><span class="pre">open()</span></code> to get the
+information about the HW from the registers.</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#ga67bf487c6871f5a186f47ba36b1d6e78">CI_IOCTL_INFO</a></p>
+<p><strong>Parameters to kernel</strong>: none</p>
+<p><strong>Parameters to user</strong>: <a class="reference external" href="../doxygen/struct_c_i___c_o_n_n_e_c_t_i_o_n.html">CI_CONNECTION</a> <code class="docutils literal"><span class="pre">*</span></code></p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#gab3fd8f359d616735c9e39039015bdb15">INT_CI_DriverConnect()</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_DriverGetLinestore()</span></code>:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/group___c_i___a_p_i___d_r_i_v_e_r.html#ga7085e0eee81ea4c0127cc9142e03f102">CI_DriverGetLinestore()</a> requests an updated version of the
+line-store structure from kernel-side.</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#ga3a6e8c572d5f9d13e266a18f625fa027">CI_IOCTL_LINE_GET</a></p>
+<p><strong>Parameters to kernel</strong>: none</p>
+<p><strong>Parameters to user</strong>: <a class="reference external" href="../doxygen/struct_c_i___l_i_n_e_s_t_o_r_e.html">CI_LINESTORE</a> <code class="docutils literal"><span class="pre">*</span></code></p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#gab84f6d3908e6d10047c8347e8eb87de9">INT_CI_DriverGetLineStore()</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_DriverSetLinestore()</span></code>:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/group___c_i___a_p_i___d_r_i_v_e_r.html#ga880e0dc76a7863997a67b89a5b3ec25b">CI_DriverSetLinestore()</a> can be used to propose a new line-store
+configuration using the knowledge about the sensor.</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#gaac04220d4566a7a11c456394ca1d190e">CI_IOCTL_LINE_SET</a></p>
+<p><strong>Parameters to kernel</strong>: <a class="reference external" href="../doxygen/struct_c_i___l_i_n_e_s_t_o_r_e.html">CI_LINESTORE</a> <code class="docutils literal"><span class="pre">*</span></code></p>
+<p><strong>Parameters to user</strong>: none</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#gaa77a7b197647d7b0f2e6459c4af40b4d">INT_CI_DriverSetLineStore()</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_DriverGetGammaLUT()</span></code>:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/group___c_i___a_p_i___d_r_i_v_e_r.html#gace5141674b6d3212187a4eceb775134b">CI_DriverGetGammaLUT()</a> requests an updated version of the Gamma
+LUT from kernel-side.</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#ga9fa1f26483153a48f9c27ec59d61d375">CI_IOCTL_GMAL_GET</a></p>
+<p><strong>Parameters to kernel</strong>: none</p>
+<p><strong>Parameters to user</strong>: <a class="reference external" href="../doxygen/struct_c_i___m_o_d_u_l_e___g_m_a___l_u_t.html">CI_MODULE_GMA_LUT</a> <code class="docutils literal"><span class="pre">*</span></code></p>
+<p><strong>Kernel function</strong>: <code class="docutils literal"><span class="pre">INT_CI_DriverGetGammaLUT()</span></code></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_DriverSetGammaLUT()</span></code>:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/group___c_i___a_p_i___d_r_i_v_e_r.html#ga4fb779117778eb1f08c6d99700614304">CI_DriverSetGammaLUT()</a> can be used to propose a new Gamma LUT to
+the kernel side.</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#ga6d0ba7d7bb38e59e566019142533ee7a">CI_IOCTL_GMAL_SET</a></p>
+<p><strong>Parameters to kernel</strong>: <a class="reference external" href="../doxygen/struct_c_i___m_o_d_u_l_e___g_m_a___l_u_t.html">CI_MODULE_GMA_LUT</a> <code class="docutils literal"><span class="pre">*</span></code></p>
+<p><strong>Parameters to user</strong>: none</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#gadf0d0e560e0cb6e376bc8f8c9ba8a0e5">INT_CI_DriverSetGammaLUT()</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_DriverGetTimestamp()</span></code>:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/group___c_i___a_p_i___d_r_i_v_e_r.html#gab0ee5ca19e1b9be82f31b8052a6546df">CI_DriverGetTimestamp()</a> allows to access to the HW register that
+contains the timestamp information.</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#ga0335b1ff7c638fc67e5d1056acd7cad0">CI_IOCTL_TIME_GET</a></p>
+<p><strong>Parameters to kernel</strong>: none</p>
+<p><strong>Parameters to user</strong>: <code class="docutils literal"><span class="pre">uint32</span> <span class="pre">*</span></code></p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#gaa08d8573c8c8ca9a2af9e8847439ac7c">INT_CI_DriverGetTimestamp()</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_DriverGetAvailableInternalDPFBuffer()</span></code>:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/group___c_i___a_p_i___d_r_i_v_e_r.html#ga2b3a5e902ebaad5346170564467aaef7">CI_DriverGetAvailableInternalDPFBuffer()</a> alows to access the
+current status of the DPF internal buffer (shared between all contexts).</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#ga4403d169700e23e0d26e322afee1dbf5">CI_IOCTL_DPFI_GET</a></p>
+<p><strong>Parameters to kernel</strong>: none</p>
+<p><strong>Parameters to user</strong>: <code class="docutils literal"><span class="pre">uint32</span> <span class="pre">*</span></code></p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#ga5036e8a42c3f59459254194e4c9326a9">INT_CI_DriverGetDPFInternal()</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_DriverGetRTMInfo()</span></code>:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/group___c_i___a_p_i___d_r_i_v_e_r.html#ga12b51f6318b32ab94ea84fb847aef270">CI_DriverGetRTMInfo()</a> allows to access the Real Time Monitoring
+to debug the HW state (called RTM_A). This will give the status of the
+pipeline at this point of time. This will also read all of the context
+status registers.</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#ga48c71af5ffd48b9f17c23949ec3ce959">CI_IOCTL_RTM_GET</a></p>
+<p><strong>Parameters to kernel</strong>: none</p>
+<p><strong>Parameters to user</strong>: <a class="reference external" href="../doxygen/struct_c_i___r_t_m___i_n_f_o.html">CI_RTM_INFO</a> <code class="docutils literal"><span class="pre">*</span></code></p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#ga42e8ca2260313e76b036819c6bd71458">INT_CI_DriverGetRTM()</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_DriverDebugRegRead</span></code> and <code class="docutils literal"><span class="pre">CI_DriverDebugRegWrite</span></code>:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><div class="first admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">These two functions only work if the kernel module was compiled with
+debug functions (macro CI_DEBUG_FCT, see
+<a class="reference internal" href="../getting_started.html#isp-gsg-ddk-cmake-ci-options"><span>CI options</span></a> for CMake switch to enable it).</p>
+</div>
+<p><a class="reference external" href="../doxygen/group___c_i___a_p_i___d_r_i_v_e_r.html#ga7888492ac8dff65529d4920d4466faa2">CI_DriverDebugRegRead()</a> allows the user-space to read any register
+and <a class="reference external" href="../doxygen/group___c_i___a_p_i___d_r_i_v_e_r.html#ga8624e043dca768b547db21e70348fb9a">CI_DriverDebugRegWrite()</a> to write any register.</p>
+<p>The choice of reading or writing is the parameters
+(<a class="reference external" href="../doxygen/struct_c_i___d_e_b_u_g___r_e_g___p_a_r_a_m.html">CI_DEBUG_REG_PARAM</a>). The register bank is chosen with an
+enumerator.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>It is also possible to read memory using that function using the
+<code class="docutils literal"><span class="pre">CI_BANK_MEM</span></code> bank. <strong>The offset has to be the CPU-mapped virtual
+address.</strong></p>
+<p class="last">Reading memory is not possible when running the fake driver.</p>
+</div>
+<p>If the kernel-side driver was compiled without the debug functions this
+IOCTL will be ignored and treated as an invalid command
+(return <code class="docutils literal"><span class="pre">-ENOTTY</span></code>).</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#ga079bfcd5db5a890970de13302e4e8000">CI_IOCTL_DBG_REG</a></p>
+<p><strong>Parameters to kernel</strong>: <a class="reference external" href="../doxygen/struct_c_i___d_e_b_u_g___r_e_g___p_a_r_a_m.html">CI_DEBUG_REG_PARAM</a> <code class="docutils literal"><span class="pre">*</span></code></p>
+<p><strong>Parameters to user</strong>: <a class="reference external" href="../doxygen/struct_c_i___d_e_b_u_g___r_e_g___p_a_r_a_m.html">CI_DEBUG_REG_PARAM</a> <code class="docutils literal"><span class="pre">*</span></code></p>
+<p class="last"><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#gac5abea37c990a2572ee6dd6b4befff24">INT_CI_DebugReg()</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="configuration-commands">
+<span id="isp-ci-ioctl-configuration-commands"></span><h2>Configuration commands<a class="headerlink" href="#configuration-commands" title="Permalink to this headline">¶</a></h2>
+<p>Configuration commands are used to update the Pipeline object from user to
+kernel and add/remove allocated buffers. These commands should come from
+<code class="docutils literal"><span class="pre">ci_pipeline.c</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_PipelineRegister()</span></code>:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/ci__pipeline_8c.html#ac58083e73de580cc3d031d6bb51b982f">CI_PipelineRegister()</a> registers the Pipeline configuration to the
+kernel-side. The kernel-side creates a new <a class="reference external" href="../doxygen/struct_k_r_n___c_i___p_i_p_e_l_i_n_e.html">KRN_CI_PIPELINE</a> object.</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#gaa9477b6322158bf3b69bd38c359ff82d">CI_IOCTL_PIPE_REG</a></p>
+<p><strong>Parameters to kernel</strong>: <a class="reference external" href="../doxygen/struct_c_i___p_i_p_e_l_i_n_e.html">CI_PIPELINE</a> <code class="docutils literal"><span class="pre">*</span></code></p>
+<p><strong>Parameters to user</strong>: <code class="docutils literal"><span class="pre">int</span></code> Pipeline’s ID as IOCTL return code; must
+be &gt;0</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#ga0f1cc033e4f2b5351a7df0ee42fa8ef6">INT_CI_PipelineRegister()</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_PipelineDestroy()</span></code>:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/ci__pipeline_8c.html#ab2eebab344901442861826a88741db08">CI_PipelineDestroy()</a> deregisters the Pipeline configuration from
+the kernel-side. The <a class="reference external" href="../doxygen/struct_k_r_n___c_i___p_i_p_e_l_i_n_e.html">KRN_CI_PIPELINE</a> object is also destroyed.</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#ga032f7f94cc29b58266d6a3cf7b8dad23">CI_IOCTL_PIPE_DEL</a></p>
+<p><strong>Parameters to kernel</strong>: <code class="docutils literal"><span class="pre">int</span></code> Pipeline’s ID</p>
+<p><strong>Parameters to user</strong>: none</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#gabb3d3fc0af9a2f922ab619d51805b51b">INT_CI_PipelineDeregister()</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_PipelineHasWaiting()</span></code>:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/ci__pipeline_8c.html#a9297fd44bd64713d365641743af543b4">CI_PipelineHasWaiting()</a> allows to know the number of captured
+frames that can be acquired by the user.</p>
+<p><strong>IOCTL command</strong>: <code class="docutils literal"><span class="pre">CI_IOCTL_PIPE_WAIT</span></code></p>
+<p><strong>Parameters to kernel</strong>: <code class="docutils literal"><span class="pre">int</span></code> Pipeline’s ID</p>
+<p><strong>Parameters to user</strong>: <code class="docutils literal"><span class="pre">int</span></code> (as IOCTL return code) number of waiting
+frames – changed to Boolean in user-space</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#ga12ad8a735ec9e02a60a2f4d09016c209">INT_CI_PipelineHasWaiting()</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_PipelineHasAvailable()</span></code>:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/ci__api_8h.html#abd21911468d9fa3f7e08b95aeac9d18d">CI_PipelineHasAvailable()</a> allows to know the number of frames
+that can potentially be captured (this depends on the HW waiting list as
+well).</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#gaabfb3de24a4c527a3f0ced316980ef43">CI_IOCTL_PIPE_AVL</a></p>
+<p><strong>Parameters to kernel</strong>: <a class="reference external" href="../doxygen/struct_c_i___h_a_s___a_v_a_i_l.html">CI_HAS_AVAIL</a> <code class="docutils literal"><span class="pre">*</span></code>, including Pipeline’s
+ID</p>
+<p><strong>Parameters to user</strong>: <a class="reference external" href="../doxygen/struct_c_i___h_a_s___a_v_a_i_l.html">CI_HAS_AVAIL</a> <code class="docutils literal"><span class="pre">*</span></code> updated number of
+available shots and buffers</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#ga5ca872ab985156e59d6ea544c9b70fc6">INT_CI_PipelineHasAvailable()</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_PipelineHasPending()</span></code>:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/ci__pipeline_8c.html#aa9c69bf7138bf1fc4fe577516d585f5e">CI_PipelineHasPending()</a> allows to know the number of frames that
+were submitted to the HW but are not captured yet. This is not
+guaranteed to be correct but can be used as information of fullness of
+the pipeline.</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#gabc87e7d9f97faaa0ebc9b5740d36e786">CI_IOCTL_PIPE_PEN</a></p>
+<p><strong>Parameters to kernel</strong>: <code class="docutils literal"><span class="pre">int</span></code> Pipeline’s ID</p>
+<p><strong>Parameters to user</strong>: <code class="docutils literal"><span class="pre">int</span></code> (as IOCTL return code) 0 if no frames
+are pending, 1 if some frames are pending</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#gae9e82877337637ad3aca0d994ff2a0c9">INT_CI_PipelineHasPending()</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_PipelineAddPool()</span></code>:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/ci__pipeline_8c.html#aca436eae50b4a115a0530f1949e8ed74">CI_PipelineAddPool()</a> allocate enough device memory for a
+configuration for 1 Shot (not image data). Once the IOCTL succeeded the
+user side calls <code class="docutils literal"><span class="pre">mmap()</span></code> to have access to the new information available
+to user-space.</p>
+<p>When user-space needs several Shots this function has to be called once
+per Shot.</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#gaea204f0d6fe0a08598581ec3fcf3bbef">CI_IOCTL_PIPE_ADD</a></p>
+<p><strong>Parameters to kernel</strong>: <a class="reference external" href="../doxygen/struct_c_i___p_o_o_l___p_a_r_a_m.html">CI_POOL_PARAM</a> <code class="docutils literal"><span class="pre">*</span></code>, including Pipeline’s
+ID</p>
+<p><strong>Parameters to user</strong>: <a class="reference external" href="../doxygen/struct_c_i___p_o_o_l___p_a_r_a_m.html">CI_POOL_PARAM</a> <code class="docutils literal"><span class="pre">*</span></code> update with
+information to perform the memory mapping and computed values</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#ga975adfe19eb48aa50f2cc7beb6dc96fc">INT_CI_PipelineAddShot()</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_PipelineDeleteShots()</span></code>:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/ci__api_8h.html#a9c65c9fced8257189f5298177099a31e">CI_PipelineDeleteShots()</a> deletes all the allocated Shots for a
+Pipeline. Once the IOCTL succeeded the <code class="docutils literal"><span class="pre">munmap()</span></code> is called and
+user-side list cleared.</p>
+<p>The capture should not be running and all acquired shots should have
+been released by the user.</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#ga866db3f4bcec2859400e845981bc111e">CI_IOCTL_PIPE_REM</a></p>
+<p><strong>Parameters to kernel</strong>: <code class="docutils literal"><span class="pre">int</span></code> Pipeline’s ID</p>
+<p><strong>Parameters to user</strong>: none</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#ga5d4ce5a6f840a95e1fdc5405dc869ab9">INT_CI_PipelineDeleteShots()</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_PipelineUpdate()</span></code>:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/ci__api_8h.html#a26880cfbfe14effcaf33e72c72148a0d">CI_PipelineUpdate()</a> updates the kernel-side
+<span>KRN_CI_PIPELINE::userPipeline</span> from the one currently available
+in user-side. A module flag can be used to update the structure module
+by module. The ASAP flag can be set to 1 to force the update on already
+submitted frames.</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#gaf63ae47ccb5caeb0edb3f4c9989086f9">CI_IOCTL_PIPE_UPD</a></p>
+<p><strong>Parameters to kernel</strong>: <a class="reference external" href="../doxygen/struct_c_i___p_i_p_e___p_a_r_a_m.html">CI_PIPE_PARAM</a> <code class="docutils literal"><span class="pre">*</span></code> containing user pipeline
+structure, ID, update mask to only update some modules and the ASAP flag</p>
+<p><strong>Parameters to user</strong>: none</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#ga93345f93cd3adfc28818f09db13f18ae">INT_CI_PipelineUpdate()</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_PipelineImportBuffer()</span></code> and <code class="docutils literal"><span class="pre">CI_PieplineAllocateBuffer()</span></code>:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">Information to allocate or import an image buffer.
+Created buffer is mapped to user-space.
+When user-space needs several Buffers this ioctl is called once per Buffer.</p>
+<p>This can be done when the capture is started but will require the buffer
+to be mapped to the MMU (may require MMU cache flushing which may add
+memory latency).</p>
+<p>The size of the buffer can be 0 to let the kernel-space compute it using
+<a class="reference external" href="../doxygen/ci__alloc__info_8h.html">ci_alloc_info.h</a> or the size can be provided to the kernel side but
+must respect the system&#8217;s limitations.
+The buffer can also be imported if a file descriptor is provided and the
+SYS_MEM interface was compiled with an import capability.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The user-space functions are calling <code class="docutils literal"><span class="pre">IMG_CI_PipelineCreateBuffer()</span></code>
+to delegate the work.</p>
+<p class="last">The called kernel function will use
+<a class="reference external" href="../doxygen/group___k_r_n___c_i___a_p_i.html#ga8677d13fa3955e8371f46ad4e308f310">KRN_CI_PipelineCreateBuffer()</a> function.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last"><a class="reference external" href="../doxygen/ci__api_8h.html#a430993375aa1f8a39ed63a4d1d1a80cb">CI_PipelineAllocateLSHMatrix()</a> also uses that ioctl but is
+treated in its own section as the behaviour in user-space and
+kernel-space is slightly different.</p>
+</div>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#gaec0faaca37818c04fa24ac2ce5b91dd2">CI_IOCTL_CREATE_BUFF</a></p>
+<p><strong>Parameters to kernel</strong>: <a class="reference external" href="../doxygen/struct_c_i___a_l_l_o_c___p_a_r_a_m.html">CI_ALLOC_PARAM</a> <code class="docutils literal"><span class="pre">*</span></code> containing
+Pipeline’s ID, file descriptor if importing, type of output buffer</p>
+<p><strong>Parameters to user</strong>: <a class="reference external" href="../doxygen/struct_c_i___a_l_l_o_c___p_a_r_a_m.html">CI_ALLOC_PARAM</a> <code class="docutils literal"><span class="pre">*</span></code> updated information
+to perform the memory mapping and computed size</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#ga4dbeff49338ef6b18cf23af5b88dfe11">INT_CI_PipelineCreateBuffer()</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_PipelineAllocateLSHMatrix()</span></code>:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first">Information to allocate a LSH de-shading grid. Unlike for allocation of
+image buffers the size HAS to be given.
+Created buffer is mapped to user-space.</p>
+<p>When user-space needs several Buffers this ioctl is called once per Buffer.</p>
+<p>This can be done when the capture is started but will require the buffer
+to be mapped to the MMU (may require MMU cache flushing which may add
+memory latency).</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last"><a class="reference external" href="../doxygen/ci__api_8h.html#a73cbc9a4ec455ea9a343b7cb881e88dd">CI_PipelineImportBuffer()</a> and <a class="reference external" href="../doxygen/ci__api_8h.html#a51a5289974c9ea89dae9362ce3403748">CI_PipelineAllocateBuffer()</a>
+also uses that ioctl but is treated in its own section as the behaviour
+in user-space and kernel-space is slightly different.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The called kernel function will use the
+<a class="reference external" href="../doxygen/group___k_r_n___c_i___a_p_i.html#gafa5052a0fd8e8ee00bea9371e80f7221">KRN_CI_PipelineCreateLSHBuffer()</a> function.</p>
+</div>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#gaec0faaca37818c04fa24ac2ce5b91dd2">CI_IOCTL_CREATE_BUFF</a></p>
+<p><strong>Parameters to kernel</strong>: <a class="reference external" href="../doxygen/struct_c_i___a_l_l_o_c___p_a_r_a_m.html">CI_ALLOC_PARAM</a> <code class="docutils literal"><span class="pre">*</span></code> containing
+Pipeline’s ID, size</p>
+<p><strong>Parameters to user</strong>: <a class="reference external" href="../doxygen/struct_c_i___a_l_l_o_c___p_a_r_a_m.html">CI_ALLOC_PARAM</a> <code class="docutils literal"><span class="pre">*</span></code> updated information
+to perform the memory mapping</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#ga4dbeff49338ef6b18cf23af5b88dfe11">INT_CI_PipelineCreateBuffer()</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_PipelineDeregisterBuffer()</span></code>:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/ci__api_8h.html#a0ad9a3c911ac85e4fb8149abbcea123c">CI_PipelineDeregisterBuffer()</a> to liberate an allocated/imported
+image buffer.</p>
+<p>This can be done on available buffers only. If the capture is started this
+requires unmapping from the MMU (may require MMU cache flushing which may
+add memory latency).</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last"><a class="reference external" href="../doxygen/ci__pipeline_8c.html#a85effb9816ae07f9707a0c7add259c6d">CI_PipelineDeregisterLSHMatrix()</a> also uses that ioctl but is
+treated in its own section as the behaviour in user-space and
+kernel-space is slightly different.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The called kernel function will use the
+<a class="reference external" href="../doxygen/group___k_r_n___c_i___a_p_i.html#gaf255f68411a63f895f013b9f7a540395">KRN_CI_PipelineDeregisterBuffer()</a> function.</p>
+</div>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#ga2cdb3d61c9263d5c3ff6b1e727eae960">CI_IOCTL_DEREG_BUFF</a></p>
+<p><strong>Parameters to kernel</strong>: <a class="reference external" href="../doxygen/struct_c_i___a_l_l_o_c___p_a_r_a_m.html">CI_ALLOC_PARAM</a> <code class="docutils literal"><span class="pre">*</span></code> containing
+Pipeline’s ID and buffer ID</p>
+<p><strong>Parameters to user</strong>: none</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#gac910e0fc22297bf237cef67f5e6f196b">INT_CI_PipelineDeregBuffer()</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_PipelineDeregisterLSHMatrix()</span></code>:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/ci__pipeline_8c.html#a85effb9816ae07f9707a0c7add259c6d">CI_PipelineDeregisterLSHMatrix()</a> to liberate an allocated LSH grid.</p>
+<p>This can be done on matrices not currently in use by the HW. If the capture
+is started this requires unmapping from the MMU (may require MMU cache
+flushing which may add memory latency).</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last"><a class="reference external" href="../doxygen/ci__api_8h.html#a0ad9a3c911ac85e4fb8149abbcea123c">CI_PipelineDeregisterBuffer()</a> also uses that ioctl but is
+treated in its own section as the behaviour in user-space and
+kernel-space is slightly different.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The called kernel function will use the
+<a class="reference external" href="../doxygen/group___k_r_n___c_i___a_p_i.html#ga51b7433b7fc9481a2d05ea82d7d3062f">KRN_CI_PipelineDeregisterLSHBuffer()</a> function.</p>
+</div>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#ga2cdb3d61c9263d5c3ff6b1e727eae960">CI_IOCTL_DEREG_BUFF</a></p>
+<p><strong>Parameters to kernel</strong>: <a class="reference external" href="../doxygen/struct_c_i___a_l_l_o_c___p_a_r_a_m.html">CI_ALLOC_PARAM</a> <code class="docutils literal"><span class="pre">*</span></code> containing
+Pipeline’s ID and buffer ID</p>
+<p><strong>Parameters to user</strong>: none</p>
+<p class="last"><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#gac910e0fc22297bf237cef67f5e6f196b">INT_CI_PipelineDeregBuffer()</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="capture-commands">
+<span id="isp-ci-ioctl-capture-commands"></span><h2>Capture commands<a class="headerlink" href="#capture-commands" title="Permalink to this headline">¶</a></h2>
+<p>Commands used to control the capture process. These commands should be comming
+from <code class="docutils literal"><span class="pre">ci_pipeline.c</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_PipelineStartCapture()</span></code>:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/ci__pipeline_8c.html#a002694801e9486b95cf5317eaff35079">CI_PipelineStartCapture()</a> asks the kernel-side to reserve the HW
+needed for this Pipeline configuration (can fail if HW is not available).</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#ga757a34ff2f2d66036485de944697f47a">CI_IOCTL_CAPT_STA</a></p>
+<p><strong>Parameters to kernel</strong>: <code class="docutils literal"><span class="pre">int</span></code> Pipeline&#8217;s ID</p>
+<p><strong>Parameters to user</strong>: none</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#gad552a8693024ed46faf81c8c9eb9c2da">INT_CI_PipelineStartCapture()</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_PipelineStopCapture()</span></code>:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/ci__pipeline_8c.html#aabbe040af50acfca35ac3215515a553a">CI_PipelineStopCapture()</a> releases the reserved HW needed for this
+Pipeline configuration.</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#ga772ea91967586de55d03f9edd54d2aae">CI_IOCTL_CAPT_STP</a></p>
+<p><strong>Parameters to kernel</strong>: <code class="docutils literal"><span class="pre">int</span></code> Pipeline&#8217;s ID</p>
+<p><strong>Parameters to user</strong>: none</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#ga2c45a08327c38fa40072fa1d2eadae18">INT_CI_PipelineStopCapture()</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_PipelineTriggerShoot()</span></code> and <code class="docutils literal"><span class="pre">CI_PipelineTriggerShootNB()</span></code>:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/ci__api_8h.html#a7184dc54c0f349c2b906a2cb0e72e09e">CI_PipelineTriggerShoot()</a> adds a frame to the pending list of the
+HW. Can fail if there is no available frame. If the HW pending list is
+full the blocking version will sleep until an element is available in
+the HW list, the non-blocking version will return an error code.</p>
+<p>The specified version can be used to specify which buffer to use for the
+capture if the Pipeline was configured accordingly.</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#gab086ae5d18bddb6a1aedabf6272e05a8">CI_IOCTL_CAPT_TRG</a></p>
+<p><strong>Parameters to kernel</strong>: <a class="reference external" href="../doxygen/struct_c_i___b_u_f_f_e_r___t_r_i_g_g.html">CI_BUFFER_TRIGG</a> <code class="docutils literal"><span class="pre">*</span></code> containing
+Pipeline&#8217;s ID, blocking flag and optionally encoder and display buffer
+IDs to use</p>
+<p><strong>Parameters to user</strong>: none</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#gad9d069fd5982b7802940644c4366a87d">INT_CI_PipelineTriggerShoot()</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_PipelineAcquireShot()</span></code> and <code class="docutils literal"><span class="pre">CI_PipelineAcquireShotNB()</span></code>:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/ci__pipeline_8c.html#ac9dc03a702b9b32278524f07eec5199f">CI_PipelineAcquireShot()</a> and <a class="reference external" href="../doxygen/ci__pipeline_8c.html#abff403258b4bf3aca679aa7a2bc0d67e">CI_PipelineAcquireShotNB()</a>
+request a frame from the Processed list. The given frame is moved to the
+Sent list and cannot be used until released. The function may sleep
+until a frame becomes available, unless the non-blocking version (NB) is
+used and an error code will be returned.</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#gaa4119504e9291e286a0277a09a9dc045">CI_IOCTL_CAPT_BAQ</a></p>
+<p><strong>Parameters to kernel</strong>: <a class="reference external" href="../doxygen/struct_c_i___b_u_f_f_e_r___p_a_r_a_m.html">CI_BUFFER_PARAM</a> <code class="docutils literal"><span class="pre">*</span></code> containing
+Pipeline&#8217;s ID, blocking flag</p>
+<p><strong>Parameters to user</strong>: <a class="reference external" href="../doxygen/struct_c_i___b_u_f_f_e_r___p_a_r_a_m.html">CI_BUFFER_PARAM</a> <code class="docutils literal"><span class="pre">*</span></code> updated with Shot&#8217;s
+ID and size information</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#gaec7c46f11744962a3fb9042aa40e16dc">INT_CI_PipelineAcquireShot()</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_PipelineReleaseShot()</span></code>:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/ci__pipeline_8c.html#a3999470b136d79c1c7dce5f56a8caff7">CI_PipelineReleaseShot()</a> moves back an acquired frame to the
+Available list and can be re-used for captures.</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#ga4e41176a77645efd7003339158ad24e7">CI_IOCTL_CAPT_BRE</a></p>
+<p><strong>Parameters to kernel</strong>: <a class="reference external" href="../doxygen/struct_c_i___b_u_f_f_e_r___t_r_i_g_g.html">CI_BUFFER_TRIGG</a> <code class="docutils literal"><span class="pre">*</span></code> Pipeline&#8217;s ID and
+Shot</p>
+<p><strong>Parameters to user</strong>: none</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#ga749ba577962d77da2a8fd8ab08fa9f96">INT_CI_PipelineReleaseShot()</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_PipelineIsStarted()</span></code>:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/ci__api_8h.html#ac007fd86550db3eb46f263db3f700d41">CI_PipelineIsStarted()</a> synchronises the user-side from
+kernel-side started status (when status is unexpected because
+resume/suspend may have been called).</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#ga7c205a462ef38a9eea7dff9b8815fdec">CI_IOCTL_CAPT_ISS</a></p>
+<p><strong>Parameters to kernel</strong>: <code class="docutils literal"><span class="pre">int</span></code> Pipeline&#8217;s ID</p>
+<p><strong>Parameters to user</strong>: <code class="docutils literal"><span class="pre">int</span></code> (status as IOCTL return) 0 is stopped, 1
+is started and &lt;0 is error</p>
+<p class="last"><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#ga0c7c3d029b7963d039146af3e9f8b0c5">INT_CI_PipelineIsStarted()</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="gasket-commands">
+<span id="isp-ci-ioctl-gasket-commands"></span><h2>Gasket commands<a class="headerlink" href="#gasket-commands" title="Permalink to this headline">¶</a></h2>
+<p>These commands are used to control the HW gasket reservation. These commands
+should come from <code class="docutils literal"><span class="pre">ci_gasket.c</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_GasketAcquire()</span></code>:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">Use <a class="reference external" href="../doxygen/group___c_i___a_p_i___g_a_s_k_e_t.html#ga091c5dff2a2a6db28ba48b84a0712d3b">CI_GasketAcquire()</a> for the Connection object to acquire the
+specified gasket. If successful write the given configuration to the
+gasket registers.</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#gaa6db8ad618fe15037e63aeec4519a02b">CI_IOCTL_GASK_ACQ</a></p>
+<p><strong>Parameters to kernel</strong>: <a class="reference external" href="../doxygen/struct_c_i___g_a_s_k_e_t.html">CI_GASKET</a> <code class="docutils literal"><span class="pre">*</span></code> containing gasket
+number and configuration to apply</p>
+<p><strong>Parameters to user</strong>: none</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#gafc07669cba9ca8111f1424f0be191f04">INT_CI_GasketAcquire()</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_GasketRelease()</span></code>:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/group___c_i___a_p_i___g_a_s_k_e_t.html#ga01447bc07e5e65ef986319914d9f5737">CI_GasketRelease()</a> releases the specified gasket. Successful only
+if the Connection is the same than the one that acquired the gasket.</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#gafd8e511a5a04e33a669b82988947ad8f">CI_IOCTL_GASK_REL</a></p>
+<p><strong>Parameters to kernel</strong>: <code class="docutils literal"><span class="pre">IMG_UINT8</span></code> gasket ID</p>
+<p><strong>Parameters to user</strong>: none</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#ga6c9dcc5002dd1336f2a598f6eb4bf703">INT_CI_GasketRelease()</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_GasketGetInfo()</span></code>:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">Use <a class="reference external" href="../doxygen/group___c_i___a_p_i___g_a_s_k_e_t.html#gab0798b36249913ad0a4d57d208d68c6f">CI_GasketGetInfo()</a> to get information about a given gasket.
+Possible even if the gasket is not available.</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#ga7531490e9d4d57ad058591d4f04efab6">CI_IOCTL_GASK_NFO</a></p>
+<p><strong>Parameters to kernel</strong>: <a class="reference external" href="../doxygen/struct_c_i___g_a_s_k_e_t___p_a_r_a_m.html">CI_GASKET_PARAM</a> <code class="docutils literal"><span class="pre">*</span></code> containing gasket
+number and <a class="reference external" href="../doxygen/struct_c_i___g_a_s_k_e_t___i_n_f_o.html">CI_GASKET_INFO</a> to use for output.</p>
+<p><strong>Parameters to user</strong>: <a class="reference external" href="../doxygen/struct_c_i___g_a_s_k_e_t___i_n_f_o.html">CI_GASKET_INFO</a> <code class="docutils literal"><span class="pre">*</span></code></p>
+<p class="last"><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#ga0cf8db7b7e2237ae1fafbf8fda3b4759">INT_CI_GasketGetInfo()</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="internal-data-generator-commands">
+<span id="isp-ci-ioctl-internal-dg-commands"></span><h2>Internal Data Generator commands<a class="headerlink" href="#internal-data-generator-commands" title="Permalink to this headline">¶</a></h2>
+<p>Commands used to control the IIF Datagen. These commands should come from
+<code class="docutils literal"><span class="pre">ci_intdg.c</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_DatagenCreate()</span></code> and <code class="docutils literal"><span class="pre">CI_DatagenDestroy()</span></code>:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/ci__api_8h.html#a9d77c4d098daca972ed0ec35edb1b663">CI_DatagenCreate()</a> creates an internal data-generator object that
+can then be destroyed using <a class="reference external" href="../doxygen/ci__api_8h.html#a4eeafd70e5ab12c94e2343f62e86ce1b">CI_DatagenDestroy()</a>.</p>
+<p>When registering an object given identifier is &lt;0. When destroying
+an object the identifier is &gt;0 (0 is an invalid identifier).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><a class="reference external" href="../doxygen/ci__api_8h.html#a4eeafd70e5ab12c94e2343f62e86ce1b">CI_DatagenDestroy()</a> deletes all remaining frames calling
+<a class="reference external" href="../doxygen/ci__intdg_8c.html#aba9b76eb47c1d1f76c113777ce36baf4">CI_DatagenDestroyFrame()</a>.</p>
+</div>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#ga31aca11695fd112e061da01a33136cb9">CI_IOCTL_INDG_REG</a></p>
+<p><strong>Parameters to kernel</strong>: <code class="docutils literal"><span class="pre">int</span></code> as the Datagen object identifier, if &lt;0
+means the data-generator object should be created.</p>
+<p><strong>Parameters to user</strong>: datagen ID as IOCTL return code (when
+registering only); must be &gt;0.</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#ga815bd249eba9abcd24a9ae6d5a7263e9">INT_CI_DatagenRegister()</a> (including destruction)</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_DatagenStart()</span></code>:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/ci__api_8h.html#a1f87296c819714cbc51ad99ed3866b0e">CI_DatagenStart()</a> acquires HW to start capturing frames.</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#ga68d43a0fedb4fb57fc5517e786b99ad5">CI_IOCTL_INDG_STA</a></p>
+<p><strong>Parameters to kernel</strong>: <a class="reference external" href="../doxygen/struct_c_i___d_g___p_a_r_a_m.html">CI_DG_PARAM</a> <code class="docutils literal"><span class="pre">*</span></code> containing datagen ID
+and its configuration</p>
+<p><strong>Parameters to user</strong>: none</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#ga347ca79bc5d95a8a0a2dcda82cbd31c5">INT_CI_DatagenStart()</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_DatagenIsStarted()</span></code>:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">Use <a class="reference external" href="../doxygen/ci__intdg_8c.html#a67b03cc9e21bce41ada15dab2242a66e">CI_DatagenIsStarted()</a> to know if the datagen is started. May
+have been stopped because of errors or suspend/resume.</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#ga4709a02d56828672374c3af012d2e04a">CI_IOCTL_INDG_ISS</a></p>
+<p><strong>Parameters to kernel</strong>: <code class="docutils literal"><span class="pre">int</span></code> as datagen ID</p>
+<p><strong>Parameters to user</strong>: 1 if started, 0 otherwise.</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#gae187c9c138829cec78e27974cc8dd044">INT_CI_DatagenIsStarted()</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_DatagenStop()</span></code>:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first"><a class="reference external" href="../doxygen/ci__api_8h.html#aa3d9422a36c95074f81d75ef5ae50094">CI_DatagenStop()</a> stops a started Data Generator. Releases the
+acquired HW.</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#gaf519bbe88e8fff92524bd8490598c712">CI_IOCTL_INDG_STP</a></p>
+<p><strong>Parameters to kernel</strong>: <code class="docutils literal"><span class="pre">int</span></code> as datagen ID</p>
+<p><strong>Parameters to user</strong>: none</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#ga92bb041b4f59242f7a40f6b7fe2020cf">INT_CI_DatagenStop()</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_DatagenAllocateFrame()</span></code>:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">Use <a class="reference external" href="../doxygen/ci__api_8h.html#a62eb3c2b8e1003bf86e2046f4ce8bc0c">CI_DatagenAllocateFrame()</a> to allocate a frame for the
+data-generator.</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#ga6abc0b9c6c1e6e60021c919607945b53">CI_IOCTL_INDG_ALL</a></p>
+<p><strong>Parameters to kernel</strong>: <a class="reference external" href="../doxygen/struct_c_i___d_g___f_r_a_m_e_i_n_f_o.html">CI_DG_FRAMEINFO</a> <code class="docutils literal"><span class="pre">*</span></code> containing the
+frame size and datagen ID</p>
+<p><strong>Parameters to user</strong>: <a class="reference external" href="../doxygen/struct_c_i___d_g___f_r_a_m_e_i_n_f_o.html">CI_DG_FRAMEINFO</a> <code class="docutils literal"><span class="pre">*</span></code> updated with frame
+ID and mmap ID</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#ga7ed525bacdf9e24ed36cb9fe896f074d">INT_CI_DatagenAllocate()</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_DatagenGetAvailableFrame()</span></code> and <code class="docutils literal"><span class="pre">CI_DatagenGetFrame()</span></code>:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first">Acquire a frame that is available for conversion.
+<a class="reference external" href="../doxygen/ci__intdg_8c.html#ac024016ad8ae18386dbd24630eb3f2e9">CI_DatagenGetAvailableFrame()</a> get 1st available frame while
+<a class="reference external" href="../doxygen/ci__intdg_8c.html#a5f13b9ee34d6d1d9725382a92a30e28f">CI_DatagenGetFrame()</a> allows to specify a frame ID.</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#ga2bbcaaa83eff8da7575b0880d462a81c">CI_IOCTL_INDG_ACQ</a></p>
+<p><strong>Parameters to kernel</strong>: <a class="reference external" href="../doxygen/struct_c_i___d_g___f_r_a_m_e_i_n_f_o.html">CI_DG_FRAMEINFO</a> <code class="docutils literal"><span class="pre">*</span></code> containing
+datagen ID and frameID (0 to get 1st available)</p>
+<p><strong>Parameters to user</strong>: <a class="reference external" href="../doxygen/struct_c_i___d_g___f_r_a_m_e_i_n_f_o.html">CI_DG_FRAMEINFO</a> <code class="docutils literal"><span class="pre">*</span></code> updated with frame
+ID</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#gae61315e0ae8384f9633a1ef0a6fb3ed2">INT_CI_DatagenAcquireFrame()</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_DatagenInsertFrame()</span></code> and <code class="docutils literal"><span class="pre">CI_DatagenReleaseFrame()</span></code>:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">Release an acquired frame either as a frame trigger with
+<a class="reference external" href="../doxygen/ci__api_8h.html#aaa0a587e4aff0cd5c7f1f43749f7dfe0">CI_DatagenInsertFrame()</a> or just as a cancelled release with
+<a class="reference external" href="../doxygen/ci__api_8h.html#ac1ed6ab597482d04704a53790b176c17">CI_DatagenReleaseFrame()</a>.</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#ga22a3c049b63627df405bc440f3ad78b4">CI_IOCTL_INDG_TRG</a></p>
+<p><strong>Parameters to kernel</strong>: <a class="reference external" href="../doxygen/struct_c_i___d_g___f_r_a_m_e_t_r_i_g.html">CI_DG_FRAMETRIG</a> <code class="docutils literal"><span class="pre">*</span></code> with frame and
+datagen information as well as other options needed for the frame to be
+triggered (or no more information for release).</p>
+<p><strong>Parameters to user</strong>: none</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#gada12ae00acf317318e8ed74791dc11fc">INT_CI_DatagenTrigger()</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_DatagenWaitProcessedFrame()</span></code>:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first">Wait for a triggered frame to be fully processed by the data-generator.
+When fully processed the frame is pushed back to the available list.</p>
+<p>This can be blocking or wait for the semaphore timeout.</p>
+<p><strong>Parameters to kernel</strong>: <a class="reference external" href="../doxygen/struct_c_i___d_g___f_r_a_m_e_w_a_i_t.html">CI_DG_FRAMEWAIT</a> <code class="docutils literal"><span class="pre">*</span></code> with datagen
+information and blocking option.</p>
+<p><strong>Parameters to user</strong>: none</p>
+<p><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#gaf2ee6609af3193b640720bbfe58b3cfb">INT_CI_DatagenWaitProcessed()</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">CI_DatagenDestroyFrame()</span></code>:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">Use <a class="reference external" href="../doxygen/ci__intdg_8c.html#aba9b76eb47c1d1f76c113777ce36baf4">CI_DatagenDestroyFrame()</a> to free a specific frame device memory.</p>
+<p><strong>IOCTL command</strong>: <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#ga22a3c049b63627df405bc440f3ad78b4">CI_IOCTL_INDG_TRG</a></p>
+<p><strong>Parameters to kernel</strong>: <a class="reference external" href="../doxygen/struct_c_i___d_g___f_r_a_m_e_t_r_i_g.html">CI_DG_FRAMETRIG</a> <code class="docutils literal"><span class="pre">*</span></code> with the frame
+and datagen information.</p>
+<p><strong>Parameters to user</strong>: none</p>
+<p class="last"><strong>Kernel function</strong>: <a class="reference external" href="../doxygen/group___i_n_t___c_i.html#gacb8716be18b08b40378b254e6f5cc246">INT_CI_DatagenFreeFrame()</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">CI Appendix: System calls mapping</a></li>
+<li><a class="reference internal" href="#ci-appendix-ioctl-tables">CI Appendix: IOCTL tables</a><ul>
+<li><a class="reference internal" href="#driver-commands">Driver commands</a></li>
+<li><a class="reference internal" href="#configuration-commands">Configuration commands</a></li>
+<li><a class="reference internal" href="#capture-commands">Capture commands</a></li>
+<li><a class="reference internal" href="#gasket-commands">Gasket commands</a></li>
+<li><a class="reference internal" href="#internal-data-generator-commands">Internal Data Generator commands</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="ci_appendix_alloc.html"
+                        title="previous chapter">CI Appendix: Frame Size Computation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="ci_appendix_mmufault.html"
+                        title="next chapter">CI Appendix: Debugging a Page Fault</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

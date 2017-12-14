@@ -1,0 +1,131 @@
+
+project frameworks/av/
+--- a/media/libstagefright/codecs/avc/enc/SoftAVCEncoder.cpp
++++ b/media/libstagefright/codecs/avc/enc/SoftAVCEncoder.cpp
+@@ -70,7 +70,7 @@ static LevelConversion ConversionTable[] = {
+     { OMX_VIDEO_AVCLevel12, AVC_LEVEL1_2, 396 },
+     { OMX_VIDEO_AVCLevel13, AVC_LEVEL1_3, 396 },
+     { OMX_VIDEO_AVCLevel2,  AVC_LEVEL2,   396 },
+-#if 0
++#if 1 
+     // encoding speed is very poor if video resolution
+     // is higher than CIF or if level is higher than 2
+     { OMX_VIDEO_AVCLevel21, AVC_LEVEL2_1, 792 },
+@@ -162,7 +162,7 @@ SoftAVCEncoder::SoftAVCEncoder(
+             callbacks, appData, component),
+       mIDRFrameRefreshIntervalInSec(1),
+       mAVCEncProfile(AVC_BASELINE),
+-      mAVCEncLevel(AVC_LEVEL2),
++      mAVCEncLevel(AVC_LEVEL5_1),
+       mNumInputFrames(-1),
+       mPrevTimestampUs(-1),
+       mStarted(false),
+diff --git a/media/libstagefright/omx/Android.mk b/media/libstagefright/omx/Android.mk
+index aaa8334..75e4713 100644
+--- a/media/libstagefright/omx/Android.mk
++++ b/media/libstagefright/omx/Android.mk
+@@ -19,7 +19,8 @@ LOCAL_SRC_FILES:=                     \
+ LOCAL_C_INCLUDES += \
+         $(TOP)/frameworks/av/media/libstagefright \
+         $(TOP)/frameworks/native/include/media/hardware \
+-        $(TOP)/frameworks/native/include/media/openmax
++        $(TOP)/frameworks/native/include/media/openmax \
++        $(TOP)/hardware/img/v2500/Android/gralloc
+ 
+ LOCAL_SHARED_LIBRARIES :=               \
+         libbinder                       \
+diff --git a/media/libstagefright/omx/SoftVideoEncoderOMXComponent.cpp b/media/libstagefright/omx/SoftVideoEncoderOMXComponent.cpp
+index b2d3623..46aaca3 100644
+--- a/media/libstagefright/omx/SoftVideoEncoderOMXComponent.cpp
++++ b/media/libstagefright/omx/SoftVideoEncoderOMXComponent.cpp
+@@ -24,6 +24,7 @@
+ #include "include/SoftVideoEncoderOMXComponent.h"
+ 
+ #include <hardware/gralloc.h>
++#include <gralloc_priv.h>
+ #include <media/hardware/HardwareAPI.h>
+ #include <media/stagefright/foundation/ADebug.h>
+ #include <media/stagefright/foundation/ALooper.h>
+@@ -499,6 +500,7 @@ const uint8_t *SoftVideoEncoderOMXComponent::extractGraphicBuffer(
+     int format;
+     size_t srcStride;
+     size_t srcVStride;
++    uint32_t usage=0;
+     if (usingGraphicBuffer) {
+         if (srcSize < 4 + sizeof(GraphicBuffer *)) {
+             ALOGE("Metadata is too small (%zu vs %zu)", srcSize, 4 + sizeof(GraphicBuffer *));
+@@ -506,6 +508,7 @@ const uint8_t *SoftVideoEncoderOMXComponent::extractGraphicBuffer(
+         }
+ 
+         GraphicBuffer *buffer = *(GraphicBuffer **)(src + 4);
++        usage = buffer->usage;
+         handle = buffer->handle;
+         format = buffer->format;
+         srcStride = buffer->stride;
+@@ -525,11 +528,30 @@ const uint8_t *SoftVideoEncoderOMXComponent::extractGraphicBuffer(
+         }
+ 
+         handle = *(buffer_handle_t *)(src + 4);
+-        // assume HAL_PIXEL_FORMAT_RGBA_8888
+-        // there is no way to get the src stride without the graphic buffer
+-        format = HAL_PIXEL_FORMAT_RGBA_8888;
+-        srcStride = width * 4;
+-        srcVStride = height;
++        const private_handle_t* ph = static_cast<const private_handle_t *>(handle);
++
++        format = ph->attrs.format;
++        usage = ph->attrs.usage;
++        srcStride = ph->attrs.stride;
++        srcVStride = ph->attrs.height;
++    }
++    // Handle implementation defined format for different usages
++    if (format == HAL_PIXEL_FORMAT_IMPLEMENTATION_DEFINED) {
++        ALOGD("%s: IMPLEMENTATION_DEFINED buffer requested, usage=%x", __FUNCTION__, usage);
++
++        if ((usage & GRALLOC_USAGE_HW_VIDEO_ENCODER) ||
++            ((usage & GRALLOC_USAGE_HW_CAMERA_ZSL) ==
++                      GRALLOC_USAGE_HW_CAMERA_ZSL)) {
++            // YUV buffers used by Camera output - Encoder input (NV21)
++            format = HAL_PIXEL_FORMAT_YCbCr_420_888;
++        } else if (usage & (GRALLOC_USAGE_HW_TEXTURE |
++                    GRALLOC_USAGE_HW_COMPOSER |
++                    GRALLOC_USAGE_HW_FB)) {
++            // RGB buffers used by Camera / Display output.
++            format = HAL_PIXEL_FORMAT_RGBA_8888;
++        } else {
++            ALOGE("%s: Not expected buffer usage (%#x)!", __FUNCTION__, usage);
++        }
+     }
+ 
+     size_t neededSize =
+@@ -566,8 +588,8 @@ const uint8_t *SoftVideoEncoderOMXComponent::extractGraphicBuffer(
+             ycbcr.cr = (uint8_t *)bits + srcStride * srcVStride;
+             ycbcr.cb = (uint8_t *)ycbcr.cr + (srcStride >> 1) * (srcVStride >> 1);
+             ycbcr.chroma_step = 1;
+-            ycbcr.cstride = srcVStride >> 1;
+-            ycbcr.ystride = srcVStride;
++            ycbcr.cstride = srcStride >> 1;
++            ycbcr.ystride = srcStride;
+             ConvertFlexYUVToPlanar(dst, dstStride, dstVStride, &ycbcr, width, height);
+             break;
+         case HAL_PIXEL_FORMAT_YCrCb_420_SP:  // YCrCb / YVU semiplanar, NV21
+@@ -576,8 +598,8 @@ const uint8_t *SoftVideoEncoderOMXComponent::extractGraphicBuffer(
+             ycbcr.cr = (uint8_t *)bits + srcStride * srcVStride;
+             ycbcr.cb = (uint8_t *)ycbcr.cr + 1;
+             ycbcr.chroma_step = 2;
+-            ycbcr.cstride = srcVStride;
+-            ycbcr.ystride = srcVStride;
++            ycbcr.cstride = srcStride;
++            ycbcr.ystride = srcStride;
+             ConvertFlexYUVToPlanar(dst, dstStride, dstVStride, &ycbcr, width, height);
+             break;
+         case HAL_PIXEL_FORMAT_YCbCr_420_888:
+@@ -591,7 +613,7 @@ const uint8_t *SoftVideoEncoderOMXComponent::extractGraphicBuffer(
+                     format == HAL_PIXEL_FORMAT_BGRA_8888);
+             break;
+         default:
+-            ALOGE("Unsupported pixel format %#x", format);
++            ALOGE("Unsupported pixel format %#x usage %#x", format, usage);
+             dst = NULL;
+             break;
+     }

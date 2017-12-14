@@ -1,0 +1,11 @@
+config BR2_PACKAGE_FISHEYE_K_TOOL
+	bool "Fisheye Calibration Tool"
+    default n
+    select  BR2_PACKAGE_LIBGRIDTOOLS
+	help
+		Fisheye Calibration Tool
+
+if BR2_PACKAGE_FISHEYE_K_TOOL
+
+
+endif

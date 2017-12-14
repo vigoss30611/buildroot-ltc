@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GMAWidget</class>
+ <widget class="QWidget" name="GMAWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>643</width>
+    <height>363</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>GMA Widget</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="2">
+    <widget class="QPushButton" name="editGreen_btn">
+     <property name="text">
+      <string>Edit Green</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="6">
+    <widget class="QPushButton" name="remove_btn">
+     <property name="text">
+      <string>Remove</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QPushButton" name="new_btn">
+     <property name="text">
+      <string>Export to new Gamma LUT</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3">
+    <widget class="QPushButton" name="editBlue_btn">
+     <property name="text">
+      <string>Edit Blue</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QPushButton" name="editRed_btn">
+     <property name="text">
+      <string>Edit Red</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="5">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="0" column="4">
+    <widget class="QComboBox" name="range_lb">
+     <item>
+      <property name="text">
+       <string>Register</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Preview 0 - 255</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="7">
+    <widget class="QTabWidget" name="colourTabs_tw">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="redTab">
+      <attribute name="title">
+       <string>Red</string>
+      </attribute>
+      <layout class="QGridLayout" name="redTabLayout"/>
+     </widget>
+     <widget class="QWidget" name="greenTab">
+      <attribute name="title">
+       <string>Green</string>
+      </attribute>
+      <layout class="QGridLayout" name="greenTabLayout"/>
+     </widget>
+     <widget class="QWidget" name="blueTab">
+      <attribute name="title">
+       <string>Blue</string>
+      </attribute>
+      <layout class="QGridLayout" name="blueTabLayout"/>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

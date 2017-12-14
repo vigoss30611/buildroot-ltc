@@ -1,0 +1,24 @@
+{
+    "isp": {
+        "ipu": "v2500",
+        "args": {
+            "mode": 4,
+            "flip": 2,
+            "name": "OV683Dual",
+            "config": "/root/.ispddk/config-normal.txt"
+        },
+        "port": {
+            "out": {
+                "w": 1920,
+                "h": 960,
+                "pixel_format": "nv12",
+                "fps": 30,
+                "bind": {
+                    "jpeg-uvc": "in"
+                }
+            }
+        }
+    },
+
+    "jpeg-uvc": { "ipu": "h1jpeg", "args": { "mode": "auto"}}
+}

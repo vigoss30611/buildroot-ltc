@@ -1,0 +1,23 @@
+ui_print("extracting 'normal' images..");
+package_extract_file("kernel", "/mnt/android/kernel");
+package_extract_file("ramdisk.img", "/mnt/android/ramdisk.img");
+package_extract_file("system.img", "/mnt/android/system.img");
+run_program("/sbin/busybox", "sync");
+ui_print("done.");
+
+ui_print("extracting 'wipe' images (if present)..");
+package_extract_file("cache.img", "/mnt/android/cache.img");
+package_extract_file("misc.img", "/mnt/android/misc.img");
+package_extract_file("userdata.img", "/mnt/android/userdata.img");
+run_program("/sbin/busybox", "sync");
+ui_print("done.");
+
+ui_print("extracting 'recovery' images (if present)..");
+package_extract_file("grub.cfg", "/mnt/android/grub.cfg");
+package_extract_file("grubenv", "/mnt/android/grubenv");
+package_extract_file("kernel-recovery", "/mnt/android/kernel-recovery");
+package_extract_file("ramdisk-recovery.img", "/mnt/android/ramdisk-recovery.img");
+run_program("/sbin/busybox", "sync");
+ui_print("done.");
+
+ui_print("OK!");

@@ -1,0 +1,485 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Automatic Exposure (AE) &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="up" title="ISP Control Library" href="ispc_library.html" />
+    <link rel="next" title="Automatic White Balance (AWB)" href="ispc_controls_awb.html" />
+    <link rel="prev" title="Implemented Statistics Modules" href="ispc_statistics.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="ispc_controls_awb.html" title="Automatic White Balance (AWB)"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="ispc_statistics.html" title="Implemented Statistics Modules"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="ispc_library.html" accesskey="U">ISP Control Library</a> &raquo;</li><li>Automatic Exposure (AE)</li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="automatic-exposure-ae">
+<span id="isp-icm-ae"></span><h1>Automatic Exposure (AE)<a class="headerlink" href="#automatic-exposure-ae" title="Permalink to this headline">¶</a></h1>
+<p>The automatic exposure algorithm is designed to control the programmed sensor
+exposure time and gain aiming to reach a target ‘brightness’ value for the
+image. The ‘brightness’ concept, as used in this context, does not represent an
+actual average of the image intensity but a value related to the image
+brightness but computed in a more elaborate way (for example taking into
+account the location information, under/over exposed pixels, etc.) The auto
+exposure algorithm employed also includes a flicker rejection mechanism by
+calculating the exposure time and gain combination to be programmed in the
+sensor in a way in which the light flickering effect is avoided or minimized
+(when possible). Note that the target sensors are for mobile market and
+therefore it is assumed that we do not have control over the aperture.</p>
+<p>In this document and in the available code there are two differentiated
+concepts than can lead to confusion: &#8220;exposure value&#8221; and &#8220;exposure time&#8221;.
+The &#8220;exposure time&#8221; concept corresponds to the amount of exposure time
+programmed in the sensor. On the other hand &#8220;exposure value&#8221; represents a
+combination of the exposure time and the gain:</p>
+<div class="math">
+\[\text{exposure value} = \text{exposure time} \cdot \text{gain}\]</div>
+<p>Therefore the exposure value is a combination of the programmed exposure time
+and gain and equivalent exposure values can be obtained with different
+combinations of exposure times and gains. Ideally, assuming the camera
+capturing the same scene, different captures with different exposure times and
+gains but the same combined exposure should produce images with approximately
+the same brightness measurement.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Both exposure time and exposure value are sometimes shortened in the
+comments and code to ‘exposure’ only, in which cases the context should
+help to specify what of the two concepts we are talking about.</p>
+</div>
+<div class="section" id="code-organization">
+<span id="isp-ae-code"></span><h2>Code organization<a class="headerlink" href="#code-organization" title="Permalink to this headline">¶</a></h2>
+<p>The AE control is implemented in the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_e.html">ControlAE</a> class in the ISPControl 2
+library. Such class, as the rest of the control algorithms for the capture,
+inherits from the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> class and the main entry point is the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_e.html#a3f553cbb0c7d57bc8493ed728188d7b8">ControlAE::update()</a> function. The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_e.html#a3f553cbb0c7d57bc8493ed728188d7b8">ControlAE::update()</a> function of
+every control module registered in a given Camera instance is called once per
+captured shot (unless it is set up in a different way),  being able to update
+whatever parameters are required regularly.  The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_e.html#a3f553cbb0c7d57bc8493ed728188d7b8">ControlAE::update()</a>
+function receives an <a class="reference external" href="../doxygen/struct_i_s_p_c_1_1_metadata.html">ISPC::Metadata</a> structure containing the metadata
+corresponding to a shot as generated by the pipeline.  Within the update
+function in <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_e.html">ControlAE</a> the code is split in three steps:</p>
+<ol class="arabic simple">
+<li>Calculate a brightness metering from the shot metadata: Carried out in the
+call to <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_e.html#a33d50762f0ab88e46b680736e8c92cef">ControlAE::getBrightnessMetering()</a> function.</li>
+<li>Calculate update values for gain and exposure time to be programmed in the
+sensor. Values are based on the previous ones programmed in the sensor,
+maximum and minimum exposure time and gain for the sensor, light flicker
+frequency, etc.</li>
+<li>Program the updated exposure time and gain in the sensor with the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html#ab1d6cb76a40e88e503d8373e05ff9bee">setExposure()</a> and <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html#a734a5ca7c0df308c56f0f850ba44a802">setGain()</a></li>
+</ol>
+</div>
+<div class="section" id="statistics-configuration">
+<span id="isp-ae-statistics"></span><h2>Statistics Configuration<a class="headerlink" href="#statistics-configuration" title="Permalink to this headline">¶</a></h2>
+<p>The AE algorithm computes the brightness measure making use of V2500 statistics
+modules. Therefore such modules must be configured in a proper manner in order
+for the AE to operate properly.</p>
+<p>The used statistics come from the image histograms (<em>HIS</em> module) and
+potentially from the exposure clipping statistics as well (EXS) although the
+latter ones have not been used in the current AE implementation and are not
+taken into consideration.</p>
+<p>The HIS statistics are in principle configurable using the Felix setup file but
+whatever configuration is specified there is overridden by the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_e.html">ControlAE</a>
+module once it starts operating. The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_e.html#a456525e45b16e599c571e458d8966289">ControlAE::configureStatistics()</a>
+function is in charge of the configuration and is called in the first call to
+the module <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_e.html#a3f553cbb0c7d57bc8493ed728188d7b8">ControlAE::update()</a> function.</p>
+<p>The histogram extraction configuration must be configured so the histogram
+range covers the whole image pixels possible range when the image reaches the
+HIS module. That is, the beginning of the histogram range should correspond to
+pixels which receive no (or a negligible) amount of light. The end of the
+histogram range must correspond with the pixels maximum clipping value. If the
+range is set up incorrectly the AE algorithm won’t work properly.  Note that
+the tone mapper relies also on the image histogram and the same requirements
+for the histogram range configuration.</p>
+<p>By default the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control.html#ad99769892f54effbec2274cb7af945ed">configureStatistics()</a> function sets up the histogram
+range between the -64 and 64 value range (expressed in a s8.x precision for the
+input values in the HIS module). Therefore, instead of expecting to change the
+histogram configuration it is expected that the previous modules in the
+pipeline are configured in a way which yields to such valid pixel values range.
+Also the histogram 7x7 grid is configured to cover as much area as possible
+from the input image (using the image size obtained from the sensor mode) while
+centring the grid in the image.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For more information on the configuration of the HIS module check the TRM
+and the rest of the module related documentation.</p>
+</div>
+</div>
+<div class="section" id="algorithm-overview">
+<span id="isp-ae-algorithm"></span><h2>Algorithm overview<a class="headerlink" href="#algorithm-overview" title="Permalink to this headline">¶</a></h2>
+<p>As described above the code for the AE is split in two parts: First getting a
+brightness measure from the image and then using the calculated brightness, the
+target one and other parameters to compute the next exposure time and gain
+values to be programmed in the sensor.</p>
+<div class="section" id="brightness-measurement">
+<span id="isp-ae-brightness"></span><h3>Brightness measurement<a class="headerlink" href="#brightness-measurement" title="Permalink to this headline">¶</a></h3>
+<p>The brightness measurement is calculated making use mainly of the 7x7 histogram
+grid placed centred in the image and covering the largest possible area
+(without going out of bounds). The measurement is weighted so larger weight is
+assigned to the central regions of the image and therefore a proper exposure in
+the centre of the image will have more priority than in the areas close to the
+image borders. There are two 7x7 weights matrices defined in the code which are
+combined:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">WEIGHT_7x7_A</span></code> matrix represents a very spread centred priority weights
+array (so the difference between the central grid tiles and the rest of tiles
+in the grid is not very high).</li>
+<li><code class="docutils literal"><span class="pre">WEIGHT_7x7_B</span></code> weight matrix is also centre weighted but with much larger
+weights in the central area compared with the surrounding tiles.</li>
+</ul>
+<p>Some of the functions in the code (like <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_e.html#a5d0ce8c8dc85f15f7f48a1749f99015c">getWeightedStatsBlended()</a>) apply
+a mixture of both matrices’ weights combined with a given combination weight so
+the algorithms can be tuned to be more or less centre-based.</p>
+<p>All the brightness metering calculations are encapsulated in the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_e.html#a33d50762f0ab88e46b680736e8c92cef">getBrightnessMetering()</a> function and from the 7x7 histogram grid several
+7x7 arrays of statistics are gathered: average brightness per tile and
+overexposed/underexposed measurements per tile. The under/over exposed values
+are just a measurement of a large amount of pixels in the tile being under/over
+exposed (or close to being under/over exposed). A brightness metering value is
+calculated by combining the previously enumerated measurements.</p>
+<p>There&#8217;s also a simple backlight detection mechanism: a 7x7 grid defining
+foreground/background tiles (see <code class="docutils literal"><span class="pre">BACKLIGHT_7x7</span></code> matrix in the code) is used
+to compute the average brightness of the image in areas considered as
+background/foreground (no changes of orientation in the image are taken into
+account). When there is large difference between background and foreground a
+‘backlight accumulator’ value is increased. Such value is used as weight to
+apply two different brightness calculation approaches. Summarizing, if a big
+difference between background and foreground is present for a prolonged amount
+of time bigger weight will be given to the foreground brightness metering so
+the AE will try to adapt to that area of the image.</p>
+<p>The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_e.html#a33d50762f0ab88e46b680736e8c92cef">getBrightnessMetering()</a> function returns a value between -1 and 1
+(-1 would correspond with a totally black frame while 1 while correspond with a
+totally overexposed, white, frame).  For more details check the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_e.html#a33d50762f0ab88e46b680736e8c92cef">getBrightnessMetering()</a> function and code comments on auxiliary
+functions.</p>
+</div>
+<div class="section" id="calculation-of-exposure-time-and-gain">
+<span id="ispc-ae-exposureandgain"></span><h3>Calculation of exposure time and gain<a class="headerlink" href="#calculation-of-exposure-time-and-gain" title="Permalink to this headline">¶</a></h3>
+<p>For each iteration the exposure time and gain to be programmed in the sensor
+for the following capture are calculated based on the previous shot brightness
+measurement, the previously programmed sensor exposure time and gain and the
+brightness target. The algorithm estimates what would be exposure value
+required to get the desired brightness and then calculates the combination of
+exposure time and gain applied according to the light flickering frequency and
+sensor configuration constraints.</p>
+<p>It must be noted that the estimated exposure value is not just applied straight
+away as a too abrupt change in the sensor settings could yield to AE
+oscillations and also it must be considered that the exposure value is
+estimated. Therefore only incremental changes are made in the exposure time and
+gain until the desired brightness measurement is obtained smoothly. In the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_e.html">ControlAE</a> class the update speed is controlled with
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_t_n_m.html#a939cfc32af06335b305abd52b844e459">setUpdateSpeed()</a> function which allows controlling the speed of the
+sensor settings updates.</p>
+<p>All the calculations for the AE settings are carried out in the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_e.html#a390f26e14466ac3831dad96fcddc89b8">getAutoExposure()</a> function in the following steps:</p>
+<ul class="simple">
+<li>The new target exposure value is calculated in the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_e.html#a3d2afbaccf6ded7525103c5d5226630d">autoExposureCtrl()</a>
+function already including the speed control.</li>
+<li>If one of the gain or exposure time values are fixed to a pre-set value the
+other one is calculated accordingly.</li>
+<li>If exposure or/and gain are not fixed, the transfer function is applied for
+given target exposure value, providing exposure time and gain components.</li>
+<li>Once exposure time and gain are calculated, if the flicker rejection is
+activated the exposure time and gain values are corrected to avoid flickering
+with the call to the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_e.html#a5c0ca9aca03652e2d56fbdbc808c5ac7">getFlickerExposure()</a> function.</li>
+<li>Finally if the sensor has a discreet set of possible values for the exposure
+time the gain and exposure time are corrected in the call to the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_e.html#a040378de591f89c96beb29ef75e8789b">adjustExposureStep()</a> function.</li>
+</ul>
+<p>The behavior of transfer function calculating sensor exposure and sensor gain
+for given target exposure value has been described below:</p>
+<ul>
+<li><p class="first">For lower range of exposure time, the function maintains <cite>theoretical</cite> gain
+at constant value 1.0 with the exposure time function growing continuously up
+to some specified level below or equal to sensor frame duration, called
+<strong>target exposure</strong>. This guarantees no reduction of capture FPS.</p>
+<blockquote>
+<div><div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Because the real sensor value is corrected using <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_e.html#a040378de591f89c96beb29ef75e8789b">adjustExposureStep()</a>,
+the gain must be modified accordingly and will differ from theoretical value.
+This can be seen as sawtooth-like line on the
+<a class="reference internal" href="#ispc-ae-diagrams"><span>Diagrams</span></a> on Zone 0 blue gain line.</p>
+</div>
+</div></blockquote>
+<p>For the case of disabled flicker rejection, this knee point of exposure time
+is equal to the frame duration for current sensor mode (light blue dashed line
+on first diagram below).</p>
+<p>If flicker rejection is being applied, the <strong>target exposure</strong>  is the
+runtime calculated duration equal to integer number of flicker periods less
+or equal to the sensor frame duration. It is represented as light green
+dashed line on second diagram below.</p>
+</li>
+<li><p class="first">After exposure time reaches the level of <strong>target exposure</strong>, it&#8217;s is being
+maintained at constant level by increasing gain value up to <strong>target gain</strong>,
+which is represented by dark green dashed line.</p>
+</li>
+<li><p class="first">After the gain reaches <strong>target gain</strong>, the function cannot maintain constant
+FPS anymore. From this point, the value of gain is maintained below or equal
+to target gain, and the exposure time is allowed to increase up to the <strong>max AE
+exposure</strong>, which is the absolute maximum exposure AE algorithm can reach.
+It should be noted that this value is software limit only and should be set
+below the maximum exposure the sensor hardware can handle.</p>
+<blockquote>
+<div><div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If flicker reduction is enabled, <strong>max AE exposure</strong> value is rounded down
+to nearest integer number of flicker periods. This level is represented
+as light green dashed line on the second diagram below.</p>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">After exposure reaches <strong>max AE exposure</strong>, it is maintained at this maximum
+level, and the target exposure is being tracked by increasing gain up to
+the level of <strong>max AE gain</strong>. The final gain applied in sensor is clipped to
+this value.</p>
+</li>
+<li><p class="first">Everything above <strong>max AE gain</strong> causes the final capture to be underexposed.
+This state can be read by calling <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_e.html#ab4e13d2f79111c1623174a3d954d512e">isUnderexposed()</a> method.</p>
+</li>
+</ul>
+<p>For flicker reduction cases, the exposure time grows in steps of flicker period.
+This means 20ms step for 50Hz and 16.(6)ms for 60Hz AC power supplies. The output
+gain is corrected accordingly to maintain target exposure.</p>
+</div>
+<div class="section" id="diagrams">
+<span id="ispc-ae-diagrams"></span><h3>Diagrams<a class="headerlink" href="#diagrams" title="Permalink to this headline">¶</a></h3>
+<p>The diagrams below visualize the transfer function converting target exposure to
+(exposure time, gain) pairs, as implemented in <cite>ControlAE</cite> module.</p>
+<p>The sensor exposure time is represented on left vertical axis, and sensor gain on the
+right. The horizontal axis represents the samples for increasing target
+exposure (not shown on the diagram).</p>
+<p>Both diagrams were captured for sensor FPS equal to 18 frames per second.</p>
+<div class="figure align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/AE_algorithm_noflicker_lines.png"><img alt="../_images/AE_algorithm_noflicker_lines.png" src="../_images/AE_algorithm_noflicker_lines.png" style="width: 673.5px; height: 476.4px;" /></a>
+<p class="caption"><span class="caption-text">Visualization of auto exposure algorithm with disabled flicker reduction.</span></p>
+</div>
+<div class="figure align-center" id="id3">
+<a class="reference internal image-reference" href="../_images/AE_algorithm_60Hz_lines.png"><img alt="../_images/AE_algorithm_60Hz_lines.png" src="../_images/AE_algorithm_60Hz_lines.png" style="width: 673.5px; height: 476.4px;" /></a>
+<p class="caption"><span class="caption-text">Visualization of auto exposure algorithm with flicker reduction set to 60Hz</span></p>
+</div>
+<p>Flicker rejection can be enabled or disabled in the ControlAE class with the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_e.html#ad98c08572fd2f6c435b6315cb5705cd1">enableFlickerRejection()</a> function.</p>
+</div>
+</div>
+<div class="section" id="ae-high-level-parameters">
+<span id="isp-ae-hlp"></span><h2>AE High Level Parameters<a class="headerlink" href="#ae-high-level-parameters" title="Permalink to this headline">¶</a></h2>
+<p>This Control Module configures the sensor’s exposure and gain to use
+according the HIS statistics gathered.</p>
+<dl class="docutils">
+<dt>AE_BRACKET_SIZE:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,1]</p>
+<p><strong>Defaults:</strong> 0.05</p>
+<p class="last">Margin around the target brightness which we will consider as a proper
+exposure (no changes in the exposure settings will be carried out).</p>
+</dd>
+<dt>AE_FLICKER_REJECTION:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Take flicker rejection into account when computed desired exposure.</p>
+</dd>
+<dt>AE_FLICKER_AUTODETECT:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p><strong>Defaults:</strong> 1</p>
+<p class="last">Enable use of autodetected flicker frequency read from <a class="reference internal" href="ispc_statistics.html#isp-ispc-fld"><span>Flicker Detection (FLD)</span></a>
+module statistics.</p>
+</dd>
+<dt>AE_FLICKER_FREQ:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [1,200]</p>
+<p class="last"><strong>Defaults:</strong> 50</p>
+</dd>
+<dt>AE_TARGET_BRIGHTNESS:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [-1,1]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Desired brightness.</p>
+</dd>
+<dt>AE_UPDATE_SPEED:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,1]</p>
+<p><strong>Defaults:</strong> 1</p>
+<p class="last">Update speed for the exposure. Increase if AE works slowly, reduce if AE
+doesn&#8217;t converge (oscillates).</p>
+</dd>
+<dt>AE_TARGET_GAIN:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [1,MAX_DOUBLE]</p>
+<p><strong>Defaults:</strong> MAX_DOUBLE</p>
+<p class="last">Knee point above which AE allows decrease of current FPS rate by increasing
+sensor exposure above current sensor frame duration.</p>
+</dd>
+<dt>AE_MAX_GAIN:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [1,MAX_DOUBLE]</p>
+<p><strong>Defaults:</strong> MAX_DOUBLE</p>
+<p class="last">Maximum gain AE module can set in sensor. This is software only limit,
+purposed to be set below maximum gain supported by sensor.</p>
+</dd>
+<dt>AE_MAX_EXPOSURE:</dt>
+<dd><p class="first"><strong>Format:</strong> long int range [1,MAX_LONG_INT]</p>
+<p><strong>Defaults:</strong> MAX_LONG_INT</p>
+<p class="last">Maximum exposure AE module can set in sensor in microseconds.
+This is software only limit, purposed to be set below maximum exposure
+supported by sensor.
+Practical values are less than 200ms.</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Automatic Exposure (AE)</a><ul>
+<li><a class="reference internal" href="#code-organization">Code organization</a></li>
+<li><a class="reference internal" href="#statistics-configuration">Statistics Configuration</a></li>
+<li><a class="reference internal" href="#algorithm-overview">Algorithm overview</a><ul>
+<li><a class="reference internal" href="#brightness-measurement">Brightness measurement</a></li>
+<li><a class="reference internal" href="#calculation-of-exposure-time-and-gain">Calculation of exposure time and gain</a></li>
+<li><a class="reference internal" href="#diagrams">Diagrams</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ae-high-level-parameters">AE High Level Parameters</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="ispc_statistics.html"
+                        title="previous chapter">Implemented Statistics Modules</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="ispc_controls_awb.html"
+                        title="next chapter">Automatic White Balance (AWB)</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

@@ -1,0 +1,33 @@
+#!/bin/bash
+echo -e "rootfs ->"${ROOTFS_DIR}
+echo -e "rootfs name ->"${ROOTFS_NAME}
+echo -e "images dir ->"${IMAGES_DIR}
+echo -e "build dir ->"${BUILD_DIR}
+
+chown -R 0:0 ${ROOTFS_DIR}
+mkdir -p ${BUILD_DIR}
+#touch ${ROOTFS_DIR}/etc/shadow
+#touch ${ROOTFS_DIR}/etc/shadow-
+#touch ${ROOTFS_DIR}/etc/passwd
+#touch ${ROOTFS_DIR}/etc/passwd-
+#touch ${ROOTFS_DIR}/etc/random-
+#touch ${ROOTFS_DIR}/etc/random-seed
+echo '\n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n' > ${BUILD_DIR}/_users_table.txt
+
+makedevs -d ${BUILD_DIR}/device_table.txt  ${ROOTFS_DIR}
+mkusers ${BUILD_DIR}/_users_table.txt ${ROOTFS_DIR}
+echo -e "\n-->make ext2/ext4 images"
+GEN=2 REV=0 genext2fs.sh -d ${ROOTFS_DIR}   ${IMAGES_DIR}/${ROOTFS_NAME}.ext2
+echo -e "\n-->make squashfs images"
+mksquashfs ${ROOTFS_DIR} ${IMAGES_DIR}/${ROOTFS_NAME}.squashfs -noappend -comp xz && chmod 0644 ${IMAGES_DIR}/${ROOTFS_NAME}.squashfs
+echo -e "\n-->make tar images"
+tar -c""f ${IMAGES_DIR}/${ROOTFS_NAME}.tar -C ${ROOTFS_DIR}/../ `basename ${ROOTFS_DIR}` 
+echo -e "\n-->make cpio images"
+old_pwd=`pwd`
+cd ${ROOTFS_DIR}
+pwd
+find . | cpio --quiet -o -H newc >     ${IMAGES_DIR}/${ROOTFS_NAME}.cpio
+#find . | cpio --quiet -o -H newc >   /dev/null
+cd ${old_pwd}
+echo -e "\ndone"
+

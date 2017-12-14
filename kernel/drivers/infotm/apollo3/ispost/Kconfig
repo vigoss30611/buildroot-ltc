@@ -1,0 +1,10 @@
+ #
+ #  Ispost device configuration
+ #
+ #
+config INFOTM_ISPOST
+        tristate "Infotm Ispost driver"
+        default y
+        help
+               Infotm ispost device driver support
+

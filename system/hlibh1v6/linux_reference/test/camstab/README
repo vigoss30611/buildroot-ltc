@@ -1,0 +1,115 @@
+===============================================================================
+            Video Stabilization Standalone Encoder Testing for Versatile
+===============================================================================
+
+NOTE:
+This test setup is for versatile and does not apply directly to integrator or
+Linux workstation testing.
+
+the location of the toolchain and ip addresses are examples here
+and can of cource change.
+
+===============================================================================
+
+
+===============================================================================
+                          Setting up the environment
+===============================================================================
+
+1. Log into the tool-chain workstation. Current toolchain requires GLIBC_2.3
+>ssh hantrodom16
+
+2. Source the tool-chain settings script
+> source /afs/hantro.com/i386_linux24/usr/arm/arm-2005q3-2-arm-none-linux-gnueabi-i686-pc-linux-gnu/settings.csh
+
+3. Check out current tag from git
+> git clone projects/gforce/git/h1_encoder
+> git checkout -b <current_tag>
+
+4. Check "Master" Makefile
+> cd h1_encoder/software/linux_reference
+> nedit Makefile
+	- set traces if needed
+	- set wanted format (INCLUDE_VIDSTAB = y, other n or all y)
+    - polling based or not
+    - uncomment -DASIC_WAVE_TRACE_TRIGGER if you want support for Logic Analyzer tracing
+        
+5 Compile kernel modules    
+
+5.1 Compile encoder kernel modlue. Set the path for the kernel sources correctly.
+> cd h1_encoder/software/linux_reference/kernel_module
+>make
+
+5.2 Compile linear memory allocater kernel module. Set the path for the kernel sources correctly.
+> cd h1_encoder/software/linux_reference/memalloc
+>make
+
+There are scripts for loading these modules! "driver_load.sh" and "memalloc_load.sh"
+
+6. Compile testing program
+> cd h1_encoder/software/linux_reference/test/camstab
+> make clean libclean versatile
+
+7. Copy the encoder and scripts to a place where the versatile board can
+mount. At the moment this is done by copying to directory /export/work with 
+the machine hlabc4 which has AFS access.
+
+> ssh hlabc4
+> cp h1_encoder/software/linux_reference/test/camstab/videostabtest /export/work/your_work_dir
+> cp h1_encoder/software/linux_reference/kernel_module/hx280enc.ko /export/work/your_work_dir
+> cp h1_encoder/software/linux_reference/kernel_module/driver_load.sh /export/work/your_work_dir
+> cp h1_encoder/software/linux_reference/memalloc/memalloc.ko /export/work/your_work_dir
+> cp h1_encoder/software/linux_reference/kernel_module/memalloc_load.sh /export/work/your_work_dir
+
+You might also have to change test data path in the scripts, depending where
+your test data is.
+
+
+8. log on to the versatile board, as root
+
+> telnet vp1
+> cd /export/work/your_work_dir
+
+Load kernel modules!
+> ./driver_load.sh
+> ./memalloc_load.sh alloc_method=2
+
+===============================================================================
+                            Running encoder test scripts
+===============================================================================
+
+Standalone VS is using the H264 pipeline stabilization cases, so you need that parameter file.
+
+Run test case number 1750
+> ./test_vs.sh 1750
+
+Run all test cases
+> ./test_vs.sh all
+
+Compare results for test case 1750 (uses 'cmp' and can be very heavy)
+Good idea to run on a workstation.
+> ./checkcase_cs.sh 1750
+
+Compare results for all test cases
+> ./checkall_vs.sh
+
+if you want CSV file report (dont forget to update TAGs in the script)
+> ./checkall_vs.sh -csv
+
+Run testcase 1750 and trigger Logic Analyzer at frame 6
+Encoder library had to be compiled with -DASIC_WAVE_TRACE_TRIGGER
+
+> ./test_vs.sh 1750 1750 6
+
+===============================================================================
+                            Possible problems
+===============================================================================
+
+Possible reasons for errors:
+Did make use the corrent system settings ("make versatile")?
+Was the memory base set corretly? and the wanted EWL file used?
+Correct tool-chain?
+Are the paths defined correctly in the scripts?
+
+Kernel modules loaded? check dmesg
+

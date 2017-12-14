@@ -1,0 +1,28 @@
+menuconfig INFOTM_MFD
+  bool "iMAPx910 mfd drivers support"
+  help
+    iMAPx910 mfd drivers support
+
+if INFOTM_MFD
+
+config MFD_RICOH618
+  bool "Ricoh R5T618 Power Management system device"
+  depends on I2C && GPIOLIB && GENERIC_HARDIRQS
+  select MFD_CORE
+  default n
+    help
+    If you say yes here you get support for the Ricoh R5T618
+    Power Management system device.
+    This driver provides common support for accessing the device,
+    additional drivers must be enabled in order to use the
+    functionality of the device.
+
+config MFD_MP8845C
+  bool "mp8845c chip"
+  depends on I2C && GPIOLIB && GENERIC_HARDIRQS
+  select MFD_CORE
+  default n
+  help
+    mp8845c chip.
+
+endif

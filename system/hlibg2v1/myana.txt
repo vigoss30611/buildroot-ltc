@@ -1,0 +1,109 @@
+
+typedef struct DecoderInstance_ {
+  struct DecoderWrapper dec;
+  enum DecodingState state;
+  FifoInst input_queue;
+  pthread_t decode_thread;
+  pthread_t output_thread;
+  pthread_mutex_t cs_mutex;
+  pthread_mutex_t eos_mutex;
+  pthread_mutex_t resource_mutex;
+  pthread_cond_t eos_cond;
+  pthread_cond_t resource_cond;
+  u8 eos_ready;
+  u8 resources_acquired;
+  struct Command* current_command;
+  struct DecOutput buffer_status;
+  struct DecClientHandle client;
+  struct DecSequenceInfo sequence_info;
+  struct DWL dwl;
+  const void* dwl_inst;
+  u8 pending_eos; /* TODO(vmr): slightly ugly, figure out better way. */
+  u32 max_num_of_decoded_pics;
+  u32 num_of_decoded_pics;
+  struct DecInput prev_input;
+  /* TODO(mheikkinen) this is a temporary handler for stream decoded callback
+   * until HEVC gets delayed sync implementation */
+  void (*stream_decoded)(void* inst);
+} DecoderInstance;
+
+two threads:
+thread OutputLoop：wait for one pic ready and process it
+thread DecodeLoop：wait one command and process it 
+HevcOutputThread : 
+
+mutex/condition var:
+  pthread_mutex_t cs_mutex; //state
+  pthread_mutex_t eos_mutex; // end of stream
+  pthread_mutex_t resource_mutex;
+  pthread_cond_t eos_cond; //end of stream
+  pthread_cond_t resource_cond;
+
+call back:
+struct DecClientHandle {
+  ClientInst client;
+  ClientInitialized* Initialized;
+  ClientHeadersDecoded* HeadersDecoded;
+  ClientBufferDecoded* BufferDecoded;
+  ClientPictureReady* PictureReady;
+  ClientEndOfStream* EndOfStream;
+  ClientReleased* Released;
+  ClientNotifyError* NotifyError;
+};
+
+// call back
+struct DecClientHandle client_if = {
+      &client,        InitializedCb, HeadersDecodedCb, BufferDecodedCb,
+      PictureReadyCb, EndOfStreamCb, ReleasedCb,       NotifyErrorCb, };
+
+// action:( decode, getNextPicture, ...)
+      inst->dec.init = HevcInit;
+      inst->dec.GetInfo = HevcGetInfo;
+      inst->dec.decode = HevcDecode;
+      inst->dec.NextPicture = HevcNextPicture;
+      inst->dec.PictureConsumed = HevcPictureConsumed;
+      inst->dec.EndOfStream = HevcEndOfStream;
+      inst->dec.release = HevcRelease;
+      inst->stream_decoded = HevcStreamDecoded; 
+
+DecInit-》DecodeLoop-》l_Initialize（） -》 inst->client.Initialized
+DecInit-》DecodeLoop-》pop(COMMAND_DECODE) -> l_DecodeHevc() -》inst->dec.decode/inst->client.HeadersDecoded/CommandCompleted
+    -- inst->client.HeadersDecoded->HeadersDecodedCb->DecSetPictureBuffers -> pthread_cond_signal(&inst->resource_cond);
+    -- CommandCompleted-》inst->stream_decoded-》HevcStreamDecoded-》inst->client.BufferDecoded(client, inst->current_command->params.decInput) -> BufferDecodedCb->DispatchBufferForDecoding(client->demuxer.ReadPacket)->DecDecode(copy to decInput)->push COMMAND_DECODE
+
+DecInit-》DecodeLoop-》inst->client.PictureReady -> PostProcessPicture->DecPictureConsumed/client->yuvsink.WritePicture->FilesinkWritePic
+
+OutputLoop-》inst->dec.NextPicture -> HevcNextPicture
+DecInit-》DecodeLoop-》Decode-》inst->dec.decode-》HevcDecode-》HevcDecDecode-》
+
+DecodeLoop->WaitForResources -> pthread_cond_wait(&inst->resource_cond)
+
+enum DecodingState {
+  DECODER_WAITING_HEADERS,
+  DECODER_WAITING_RESOURCES,
+  DECODER_DECODING,
+  DECODER_SHUTTING_DOWN
+};
+
+
+InitializedCb/BufferDecodedCb->DispatchBufferForDecoding->
+
+HevcStreamDecoded-> inst->client.BufferDecoded
+
+
+
+related files:
+av_g2_bench.c   (from dectestbench.c)
+av_g2_bench.h   
+av_g2_dec.c  ( module for g2 dec)
+av_g2_input.c ( test module for g2 input)
+
+picture address:
+HevcNextPicture () 
+    pic->g2_luma.virtual_address = (u32*)hpic.output_picture;
+    pic->g2_luma.bus_address = hpic.output_picture_bus_address;
+
+Trace of decode slow issue:
+HevcOutputThread -> HevcDecPictureConsumed -> PopOutputPic -> ClearOutput -> pthread_cond_signal(&fb_list->ref_count_cv); 
+HevcDecode -> HevcAllocateDpbImage -> GetFreePicBuffer -> pthread_cond_wait(&fb_list->ref_count_cv);
+

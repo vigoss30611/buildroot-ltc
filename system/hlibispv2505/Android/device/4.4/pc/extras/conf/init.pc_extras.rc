@@ -1,0 +1,61 @@
+# Wifi support
+service wpa_supplicant /system/bin/logwrapper /system/bin/wpa_supplicant \
+                       -g@android:wpa_wlan0 \
+                       -iwlan0 -Dnl80211 \
+                       -c/data/misc/wifi/wpa_supplicant.conf \
+                       -O/data/misc/wifi/sockets \
+                       -e/data/misc/wifi/entropy.bin
+	class main
+	socket wpa_wlan0 dgram 660 wifi wifi
+	disabled
+	oneshot
+
+service p2p_supplicant /system/bin/logwrapper /system/bin/wpa_supplicant \
+                       -g@android:wpa_wlan0 \
+                       -ip2p0 -Dnl80211 \
+                       -c/data/misc/wifi/p2p_supplicant.conf \
+                       -N -iwlan0 -Dnl80211 \
+                       -c/data/misc/wifi/wpa_supplicant.conf \
+                       -O/data/misc/wifi/sockets \
+                       -e/data/misc/wifi/entropy.bin
+	class main
+	socket wpa_wlan0 dgram 660 wifi wifi
+	disabled
+	oneshot
+
+service dhcpcd_wlan0 /system/bin/dhcpcd -aABDKL
+	class main
+	disabled
+	oneshot
+
+service dhcpcd_p2p /system/bin/dhcpcd -aABKL
+	class main
+	disabled
+	oneshot
+
+service iprenew_wlan0 /system/bin/dhcpcd -n
+	class main
+	disabled
+	oneshot
+
+service iprenew_p2p /system/bin/dhcpcd -n
+	class main
+	disabled
+	oneshot
+
+# When wifi is up and running we need to delete the default route from the
+# wired connection. We do this twice, cause there could be more than one entry.
+on property:dhcp.wlan0.ipaddress=*
+	restart del_eth0_route
+	restart del_eth0_route
+
+service del_eth0_route /system/bin/ip route del default dev eth0
+	class main
+	user root
+	group root
+	disabled
+	oneshot
+
+# Our gps emulation
+service local_gps /system/bin/local_gps
+	class core

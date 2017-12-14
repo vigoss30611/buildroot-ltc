@@ -1,0 +1,10 @@
+ #                                                 
+ #  Clock device configuration                     
+ #                                                 
+ #                                                 
+menuconfig CORONAMPW_CLK                           
+        bool "CORONAMPW clock driver support"
+		depends on COMMON_CLK
+        default n                                  
+        help                                       
+               Infotm input device driver suport   

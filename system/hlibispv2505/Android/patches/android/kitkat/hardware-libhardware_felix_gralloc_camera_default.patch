@@ -1,0 +1,40 @@
+From 28cfc9129513889e5c6f9bf0896c1b175cda3de6 Mon Sep 17 00:00:00 2001
+From: Marcin Mielczarczyk <marcin.mielczarczyk@imgtec.com>
+Date: Mon, 17 Nov 2014 14:01:34 +0100
+Subject: [PATCH] ion/gralloc: Felix camera and gralloc becomes default in the
+ system.
+
+---
+ include/hardware/camera_common.h |    2 +-
+ include/hardware/gralloc.h       |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/hardware/camera_common.h b/include/hardware/camera_common.h
+index 3a1233f..8dfb803 100644
+--- a/include/hardware/camera_common.h
++++ b/include/hardware/camera_common.h
+@@ -32,7 +32,7 @@ __BEGIN_DECLS
+ /**
+  * The id of this module
+  */
+-#define CAMERA_HARDWARE_MODULE_ID "camera"
++#define CAMERA_HARDWARE_MODULE_ID "felix.camera"
+ 
+ /**
+  * Module versioning information for the Camera hardware module, based on
+diff --git a/include/hardware/gralloc.h b/include/hardware/gralloc.h
+index 6973f7c..952d99d 100644
+--- a/include/hardware/gralloc.h
++++ b/include/hardware/gralloc.h
+@@ -54,7 +54,7 @@ __BEGIN_DECLS
+ /**
+  * The id of this module
+  */
+-#define GRALLOC_HARDWARE_MODULE_ID "gralloc"
++#define GRALLOC_HARDWARE_MODULE_ID "felix.gralloc"
+ 
+ /**
+  * Name of the graphics device to open
+-- 
+1.7.9.5
+

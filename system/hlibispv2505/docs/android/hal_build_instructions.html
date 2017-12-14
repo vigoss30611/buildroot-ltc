@@ -1,0 +1,877 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Android Build Instructions &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="next" title="Vision Libraries Usage Instructions" href="../vision_libraries.html" />
+    <link rel="prev" title="Android Camera HAL" href="hal_camera_library.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../vision_libraries.html" title="Vision Libraries Usage Instructions"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="hal_camera_library.html" title="Android Camera HAL"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li><li>Android Build Instructions</li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="android-build-instructions">
+<span id="isp-android-build-instructions"></span><h1>Android Build Instructions<a class="headerlink" href="#android-build-instructions" title="Permalink to this headline">¶</a></h1>
+<p>These are some basic instructions to get started building the V2500 ISP drivers
+for Android.</p>
+<p>The instructions cover building the low level Linux drivers using an Android
+toolchain and kernel, it then also includes instructions on building the
+Android tree with the V2500 Camera HAL component. These instructions may
+require adjustments based on the platform in use, where possible this is
+highlighted.</p>
+<p>It is recommended to have read the <a class="reference internal" href="../getting_started.html#isp-getting-started-guide"><span>Getting Started Guide</span></a> before
+attempting to build for Android. Note that building for any platform will need
+some code modification as explained in the
+<a class="reference internal" href="../integration/platform.html#isp-platform-integration-guide"><span>Platform Integration Guide</span></a>.</p>
+<p>If using Imagination&#8217;s GPU the &#8220;vision libraries&#8221; should also be provided (as an
+external package). The android package contains options to enable integration
+of those libraries. More information is available in the
+<a class="reference internal" href="../vision_libraries.html#isp-vision-libraries-usage-instructions"><span>Vision Libraries Usage Instructions</span></a>.</p>
+<div class="section" id="build-instructions">
+<span id="isp-android-build-instructions1"></span><h2>Build instructions<a class="headerlink" href="#build-instructions" title="Permalink to this headline">¶</a></h2>
+<p>These instructions are targeted to build the emulator version of android using
+our CSIM in a virtual machine to replace the actual HW. Building instruction
+for a real HW should be very similar if not identical.</p>
+<div class="section" id="create-a-toolchain">
+<span id="isp-android-create-a-toolchain"></span><h3>Create a toolchain<a class="headerlink" href="#create-a-toolchain" title="Permalink to this headline">¶</a></h3>
+<p>Building the drivers for a specific Android system requires some tools specific
+to the platform being used. Building the tools/test apps which come with the
+drivers requires a compiler which supports STL which the prebuilt compiler that
+comes with the Android tree does not support. Because of this we would
+recommend using a standalone toolchain. This can either be downloaded from an
+outside source (e.g. CodeSourcery) or can be built from the Android NDK using</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>Android_root_path/ndk/build/tools/make-standalone-toolchain.sh <span class="se">\</span>
+--platform<span class="o">=</span>android-18 --install-dir<span class="o">=</span>/tmp/my-android-toolchain
+</pre></div>
+</div>
+<p>Make sure to use full path both for <code class="docutils literal"><span class="pre">make-standalone-toolchain.sh</span></code> file and
+for <code class="docutils literal"><span class="pre">--install-dir</span></code> argument.</p>
+</div>
+<div class="section" id="setup-toolchain-file">
+<span id="isp-android-setup-toolchain-file"></span><h3>Setup Toolchain file<a class="headerlink" href="#setup-toolchain-file" title="Permalink to this headline">¶</a></h3>
+<p>The V2500 build system needs to be made aware of this toolchain
+in order to build using the correct compiler and headers. To do this you must
+provide a customised CMake file that sets up some variables according to the
+desired toolchain. A sample one for an arm system is provided with this
+document. Edit or duplicate the sample and setup the variables
+<code class="docutils literal"><span class="pre">CMAKE_C_COMPILER</span></code> and <code class="docutils literal"><span class="pre">CMAKE_CXX_COMPILER</span></code> in the toolchain cmake file.</p>
+</div>
+<div class="section" id="configure-v2500-module-using-cmake">
+<span id="isp-android-configure-kernel-module-using-cmake"></span><h3>Configure V2500 Module using CMake<a class="headerlink" href="#configure-v2500-module-using-cmake" title="Permalink to this headline">¶</a></h3>
+<p>These instructions are relative to the delivered package sources as
+described in the <a class="reference internal" href="../getting_started.html#isp-getting-started-guide"><span>Getting Started Guide</span></a>. Note that the package
+required for the kernel module is separated from the Android package.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd </span>V2500_package_root/cmake
+<span class="nv">$ </span>cmake -DLINUX_KERNEL_BUILD_DIR<span class="o">=</span>&lt;Android kernel root path&gt; <span class="se">\</span>
+-DCMAKE_TOOLCHAIN_FILE<span class="o">=</span>&lt;path to Toolchain-arm.cmake&gt; -DANDROID_BUILD<span class="o">=</span>ON <span class="se">\</span>
+-DFORCE_32BIT_BUILD<span class="o">=</span>ON –DCI_EXT_DATA_GENERATOR<span class="o">=</span>ON ..
+</pre></div>
+</div>
+<p>This corresponds to the CMake step in the <a class="reference internal" href="../getting_started.html#isp-getting-started-guide"><span>Getting Started Guide</span></a>, but
+with additional parameters defining the Android Kernel headers
+and a toolchain to use.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <code class="docutils literal"><span class="pre">CI_EXT_DATA_GENERATOR</span></code> switch is optional as not supported by
+real HW. But when using the emulator with the simulator it is used to
+fake the sensor.</p>
+</div>
+<p>When trying to cross compile only the kernel module from another computer,
+it is possible that compiling the test applications is not needed (or even
+fails if ION is missing on the system&#8217;s user-space includes). The building
+of the test applications can be disabled by adding <code class="docutils literal"><span class="pre">–DBUILD_TEST_APPS=OFF</span></code>
+to the CMake flags.</p>
+<p>Additional important cmake flags used for development FPGA card are:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="o">-</span><span class="n">DCI_DEVICE</span><span class="o">=</span><span class="n">PCI</span> <span class="o">-</span><span class="n">DCI_ALLOC</span><span class="o">=</span><span class="n">PAGEALLOC</span> <span class="o">-</span><span class="n">DFPGA_REF_CLK</span><span class="o">=</span><span class="mi">40</span>
+</pre></div>
+</div>
+<p>For build systems which set a different location for kernel objects instead of
+default kernel sources directory, additional parameter has to be used:</p>
+<div class="highlight-python"><div class="highlight"><pre>-DLINUX_KERNEL_SOURCE_DIR=&lt;Android kernel sources path&gt;
+</pre></div>
+</div>
+<p>This is needed because Felix.ko build for Android needs to find specific ION
+headers, and it can&#8217;t be found in LINUX_KERNEL_BUILD_DIR (at least for
+kernels up to 3.10).</p>
+<p>For example, to build Felix.ko for Android-x86 distribution for FPGA machine,
+the following commands shall be issued:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>mkdir output_x86 <span class="o">&amp;&amp;</span> <span class="nb">cd </span>output_x86
+<span class="nv">$ </span>cmake -DCI_DEVICE<span class="o">=</span>PCI -DCI_ALLOC<span class="o">=</span>PAGEALLOC -DANDROID_BUILD<span class="o">=</span>ON <span class="se">\</span>
+-DFORCE_32BIT_BUILD<span class="o">=</span>ON <span class="se">\</span>
+-DLINUX_KERNEL_BUILD_DIR<span class="o">=</span><span class="nv">$ANDROID_PRODUCT_OUT</span>/obj/kernel/ <span class="se">\</span>
+-DLINUX_KERNEL_SOURCE_DIR<span class="o">=</span><span class="nv">$ANDROID_BUILD_TOP</span>/kernel <span class="se">\</span>
+-DCI_EXT_DATA_GENERATOR<span class="o">=</span>ON <span class="se">\</span>
+-DBUILD_TEST_APPS<span class="o">=</span>OFF -DFPGA_INSMOD_RECLOCK<span class="o">=</span>ON -DCI_HW_REF_CLK<span class="o">=</span><span class="m">40</span> <span class="se">\</span>
+../DDKSource
+<span class="nv">$ </span>make CI_Kernel_KO
+</pre></div>
+</div>
+</div>
+<div class="section" id="build-v2500-kernel-module">
+<span id="isp-android-build-kernel-module"></span><h3>Build V2500 kernel module<a class="headerlink" href="#build-v2500-kernel-module" title="Permalink to this headline">¶</a></h3>
+<p>It is important to know that the kernel module expects the Linux kernel
+being used to have modules enabled. To do this modify the kernel.config file
+and set</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">CONFIG_MODULES</span><span class="o">=</span>y
+</pre></div>
+</div>
+<p>then rebuild the kernel.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>make <span class="nv">ARCH</span><span class="o">=</span>arm <span class="nv">CROSS_COMPILE</span><span class="o">=</span>&lt;Cross compiler path&gt;
+</pre></div>
+</div>
+<p>This corresponds to the <a class="reference internal" href="../getting_started.html#isp-gsg-build-kernel-module"><span>Kernel-module build (GNU/Linux)</span></a> in the Getting
+Started Guide, with additional parameters defining the target architecture
+and compiler to use. Note that you should specify the architecture you are
+using, arm is used here as an example.</p>
+<div class="section" id="notes">
+<h4>Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="toolchain-not-used">
+<h5>Toolchain not used<a class="headerlink" href="#toolchain-not-used" title="Permalink to this headline">¶</a></h5>
+<p>If cmake was used to generate a build folder before the inclusion of the
+toolchain file described above then you will need to delete the
+<code class="docutils literal"><span class="pre">CMakeCache.txt</span></code> file. The easiest way to do this is by simply deleting
+the cmake folder and starting again.</p>
+</div>
+<div class="section" id="x86-build">
+<h5>x86 build<a class="headerlink" href="#x86-build" title="Permalink to this headline">¶</a></h5>
+<p>If you are building for an x86 platform then you will not need a cross
+compilation toolchain, you simply need to specify the kernel build directory
+for your Android kernel.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="building-android-camera-hal">
+<span id="isp-android-building-camera-hal"></span><h2>Building Android Camera HAL<a class="headerlink" href="#building-android-camera-hal" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="patch-the-android-tree">
+<h3>Patch the Android tree<a class="headerlink" href="#patch-the-android-tree" title="Permalink to this headline">¶</a></h3>
+<p>The Android Camera HAL component is built as part
+of the Android tree. It is dependent on having below patches applied to the
+tree:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">Android/patches/android/kitkat</span></code> – patches common for all targets</li>
+<li><code class="docutils literal"><span class="pre">Android/patches/android/kitkat/goldfish</span></code> – patches only for Android
+emulator (goldfish)</li>
+<li><code class="docutils literal"><span class="pre">Android/patches/android/kitkat/x86</span></code> – patches only for android-x86</li>
+</ul>
+<p>Apply these using:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd </span>Android_root_path
+<span class="nv">$ </span>patch -p1 &lt; V2500_package_root/Android/patches/android/kitkat/&lt;patch_name&gt;.patch
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Patch names convention is related to package root path, e.g.
+<code class="docutils literal"><span class="pre">device-generic-x86_imgion.patch</span></code> should be applied in dir
+<code class="docutils literal"><span class="pre">device/generic/x86</span></code>. There is also one manual correction needed. File
+<code class="docutils literal"><span class="pre">device-generic-x86_Felix_module.patch</span></code> contains path to kernel
+driver, which is specific for build PC used.</p>
+</div>
+</div>
+<div class="section" id="link-felix-camera-hal-to-android-tree">
+<span id="isp-android-link-hal-to-tree"></span><h3>Link Felix Camera HAL to Android tree<a class="headerlink" href="#link-felix-camera-hal-to-android-tree" title="Permalink to this headline">¶</a></h3>
+<p>To keep the modifications to the Android tree to a minimum we recommend keeping
+the camera HAL component in a separate location and linking it into the android
+tree using a symbolic link e.g.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd </span>Android_root_path/hardware
+<span class="nv">$ </span>mkdir -p img <span class="o">&amp;&amp;</span> <span class="nb">cd </span>img
+<span class="nv">$ </span>ln -s V2500_package_root v2500
+</pre></div>
+</div>
+</div>
+<div class="section" id="build-android-tree">
+<span id="isp-android-build-android-tree"></span><h3>Build Android Tree<a class="headerlink" href="#build-android-tree" title="Permalink to this headline">¶</a></h3>
+<p>It should now be possible to build the Android tree using</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd </span>Android_root_path
+<span class="nv">$ </span><span class="nb">source </span>build/envsetup.sh
+<span class="nv">$ </span>lunch aosp_arm-eng
+<span class="nv">$ </span>make -j 5
+</pre></div>
+</div>
+<p>Instead of <code class="docutils literal"><span class="pre">lunch</span> <span class="pre">aosp_arm-eng</span></code> choose the number which describes your
+platform i.e. <code class="docutils literal"><span class="pre">lunch</span> <span class="pre">&lt;number&gt;</span></code></p>
+<p>Run <code class="docutils literal"><span class="pre">lunch</span></code> without options to see available platforms.</p>
+</div>
+<div class="section" id="using-gpu-for-image-stabilization-and-face-detection">
+<span id="isp-android-using-gpu-in-hal"></span><h3>Using GPU for Image Stabilization and Face Detection<a class="headerlink" href="#using-gpu-for-image-stabilization-and-face-detection" title="Permalink to this headline">¶</a></h3>
+<p>If your hardware contains Imagination’s PowerVR G6230 GPU you can enable
+additional image stabilisation and face detection hardware acceleration. To
+be able to do so, you need Imagination’s Vision Library present in your
+Android source tree (<code class="docutils literal"><span class="pre">Android_root_path/hardware/img/gpu</span></code>). Library
+activation can be done by C pre-processor flag  <code class="docutils literal"><span class="pre">USE_GPU_LIB</span></code>, located in
+<code class="docutils literal"><span class="pre">FelixDefines.mk</span></code> file.</p>
+<p>Please note that for proper Vision Library compilation you need standalone
+NDK toolchain (look at
+<a class="reference external" href="https://developer.android.com/tools/sdk/ndk/index.html">https://developer.android.com/tools/sdk/ndk/index.html</a> for more
+information). You should use the same toolchain which was generated in the
+chapter <a class="reference internal" href="#isp-android-create-a-toolchain"><span>Create a toolchain</span></a>. The path to generated
+toolchain should be provided in <code class="docutils literal"><span class="pre">HALDefines.mk</span></code> file, located in Vision
+Library dir.</p>
+</div>
+</div>
+<div class="section" id="example-building-v2500-software-for-android-x86">
+<span id="isp-android-example1"></span><h2>Example: building V2500 software for android-x86<a class="headerlink" href="#example-building-v2500-software-for-android-x86" title="Permalink to this headline">¶</a></h2>
+<p>This section is an example on how we build the HAL for the android-x86 project.
+We use the android-x86 to test the HAL with our FPGA system in a desktop
+computer. The steps are similar with android AOSP.</p>
+<div class="section" id="getting-android-x86-sources">
+<span id="isp-android-getting-android-x86"></span><h3>Getting android-x86 sources<a class="headerlink" href="#getting-android-x86-sources" title="Permalink to this headline">¶</a></h3>
+<p>Get the sources for android-x86. We used version
+<code class="docutils literal"><span class="pre">android-x86-4.4-r1</span> <span class="pre">(kitkat-x86)</span></code> for this example.</p>
+</div>
+<div class="section" id="prepare-android-x86-kernel">
+<span id="isp-android-prepare-x86-kernel"></span><h3>Prepare android-x86 kernel<a class="headerlink" href="#prepare-android-x86-kernel" title="Permalink to this headline">¶</a></h3>
+<p>Android kernel is
+part of the android-x86 source tree. It’s being built automatically together
+with Android build. Kernel source tree can be found under following location:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">&lt;android-x86_root_dir&gt;/kernel</span></code></li>
+</ul>
+<p>This kernel needs to be patched using below file:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">Android/patches/kernel/x86/android_kernel_3_10.patch</span></code></li>
+</ul>
+<p>Default configuration of <code class="docutils literal"><span class="pre">android-x86</span></code> kernel should be also changed using
+below command:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>cp V2500_root_path/Android/patches/kernel/x86/felix_defconfig_3_10 <span class="se">\</span>
+&lt;android-x86_root_path&gt;/kernel/arch/x86/configs/android-x86_defconfig
+</pre></div>
+</div>
+<p>The kernel also needs an additional file if the i2c device will be used (our
+implementation uses <code class="docutils literal"><span class="pre">i2c-dev.h</span></code>). Add it if required as explained in the
+<a class="reference internal" href="#isp-android-compile-errors"><span>Compiling errors</span></a>.</p>
+</div>
+<div class="section" id="apply-android-x86-patches">
+<span id="isp-android-apply-x86-patches"></span><h3>Apply android-x86 patches<a class="headerlink" href="#apply-android-x86-patches" title="Permalink to this headline">¶</a></h3>
+<p>Apply patches from below locations:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">Android/patches/android/kitkat</span></code></li>
+<li><code class="docutils literal"><span class="pre">Android/patches/android/kitkat/x86</span></code></li>
+</ul>
+<p>e.g.:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd </span>frameworks/av
+<span class="nv">$ </span>patch –p1 &lt; <span class="se">\</span>
+V2500_root_path/Android/patches/android/kitkat/frameworks-av_stagefright_recording.patch
+</pre></div>
+</div>
+</div>
+<div class="section" id="link-the-v2500-ddk-sources">
+<span id="isp-android-link-ddk-souorces"></span><h3>Link the V2500 DDK sources<a class="headerlink" href="#link-the-v2500-ddk-sources" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd </span>Android_root_path/hardware
+<span class="nv">$ </span>mkdir -p img <span class="o">&amp;&amp;</span> <span class="nb">cd </span>img
+<span class="nv">$ </span>ln -s V2500_root_path v2500
+</pre></div>
+</div>
+</div>
+<div class="section" id="configure-and-build-v2500-kernel-module">
+<span id="isp-android-configure-kernel-module"></span><h3>Configure and build V2500 kernel module<a class="headerlink" href="#configure-and-build-v2500-kernel-module" title="Permalink to this headline">¶</a></h3>
+<p>Configure V2500 module using CMake:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>mkdir –p &lt;DDKSource_out_path&gt;
+<span class="nv">$ </span><span class="nb">cd </span>V2500_root_path/cmake
+<span class="nv">$ </span>cmake -DCI_DEVICE<span class="o">=</span>PCI -DCI_ALLOC<span class="o">=</span>PAGEALLOC -DANDROID_BUILD<span class="o">=</span>ON <span class="se">\</span>
+-DFORCE_32BIT_BUILD<span class="o">=</span>ON <span class="se">\</span>
+-DLINUX_KERNEL_BUILD_DIR<span class="o">=</span>&lt;android-x86_out_path&gt;/target/product/x86/obj/kernel/ <span class="se">\</span>
+..
+</pre></div>
+</div>
+<p>Build V2500 kernel module:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>make
+</pre></div>
+</div>
+<p>Successful build should generate below kernel module:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">V2500_package_root/cmake/CI/felix/felix_lib/km/Felix.ko</span></code></li>
+</ul>
+<p>Alternatively it could be installed and retrieved from the install location as
+described in the <a class="reference internal" href="../getting_started.html#isp-gsg-main-libraries"><span>Main Libraries</span></a> of the Getting Started Guide.</p>
+</div>
+<div class="section" id="configure-v2500-android-camera-hal">
+<span id="isp-android-configure-camera-hal"></span><h3>Configure V2500 Android Camera HAL<a class="headerlink" href="#configure-v2500-android-camera-hal" title="Permalink to this headline">¶</a></h3>
+<p>Edit and set needed features of Camera HAL in below file:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">V2500_package_root/FelixDefines.mk</span></code></li>
+</ul>
+<p>Most important setting is to select proper camera sensor.
+Set proper path to V2500 kernel module in file:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">Android_root_path/device/generic/x86/device.mk</span></code></li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>FELIX_MODULE_PATH := V2500_package_root/cmake/CI/felix/felix_lib/km/Felix.ko
+</pre></div>
+</div>
+</div>
+<div class="section" id="build-android-x86">
+<span id="isp-android-build-android-x86"></span><h3>Build android-x86<a class="headerlink" href="#build-android-x86" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd </span>Android_root_path
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">OUT_DIR_COMMON_BASE</span><span class="o">=</span>path_to_output_dir
+<span class="nv">$ </span><span class="nb">source </span>build/envsetup.sh
+<span class="nv">$ </span>lunch <span class="m">5</span> //<span class="o">(</span>android_x86-eng<span class="o">)</span>
+<span class="nv">$ </span>make
+</pre></div>
+</div>
+</div>
+<div class="section" id="build-legacy-camera-application">
+<span id="isp-android-build-legacy-camera-app"></span><h3>Build Legacy Camera application<a class="headerlink" href="#build-legacy-camera-application" title="Permalink to this headline">¶</a></h3>
+<p>To be able to use camera without GPU hardware acceleration, LegacyCamera
+application is used.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>mmm Android_root_path/packages/apps/LegacyCamera
+</pre></div>
+</div>
+</div>
+<div class="section" id="prepare-android-x86-images-for-grub">
+<span id="isp-android-prepare-img-for-grub"></span><h3>Prepare Android x86 images for GRUB<a class="headerlink" href="#prepare-android-x86-images-for-grub" title="Permalink to this headline">¶</a></h3>
+<p>Successful build generates Android x86 image files under following location:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">Android_root_path/target/product/x86</span></code></li>
+</ul>
+<p>Following files are needed to boot Android using GRUB:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">ramdisk.img</span></code></li>
+<li><code class="docutils literal"><span class="pre">kernel</span></code></li>
+<li><code class="docutils literal"><span class="pre">system.img</span></code></li>
+<li><code class="docutils literal"><span class="pre">initrd.img</span></code></li>
+</ul>
+<p><code class="docutils literal"><span class="pre">initrd.img</span></code> file is not automatically generated and following command needs
+to be executed:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd </span>Android_root_path
+<span class="nv">$ </span>make out/target/product/x86/initrd.img
+</pre></div>
+</div>
+<p>In case initrd.img needs modifications or some analysis, this file is generated
+from following directory:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">Android_root_path/bootable/newinstaller/initrd/</span></code></li>
+</ul>
+</div>
+<div class="section" id="configure-grub-to-run-android-x86-image">
+<span id="isp-android-config-grub"></span><h3>Configure GRUB to run Android x86 image<a class="headerlink" href="#configure-grub-to-run-android-x86-image" title="Permalink to this headline">¶</a></h3>
+<p>Add below GRUB menu item in <code class="docutils literal"><span class="pre">/etc/grub.d/40_custom</span></code> file</p>
+<div class="highlight-linux-config"><div class="highlight"><pre>menuentry <span class="s1">&#39;Android x86&#39;</span> --class gnu-linux --class gnu --class os {
+    echo <span class="s2">&quot;Loading Android x86 kernel 3.4.67+&quot;</span>
+    gfxmode $linux_gfx_mode
+    linux android_out_path/kernel androidboot.hardware=android_x86 vmalloc=768M nomodeset
+    initrd android_out_path/initrd.img
+}
+</pre></div>
+</div>
+<p>It’s important to pass nomodeset kernel parameter which disables hardware GPU
+acceleration. In such case Android uses regular frame buffer (instead of DRM)
+which can be shared with camera buffers. To select needed resolution,
+<code class="docutils literal"><span class="pre">vga=kernel</span></code> parameter should be set with one of below values:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="11%" />
+<col width="11%" />
+<col width="13%" />
+<col width="15%" />
+<col width="15%" />
+<col width="15%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Colour depth</th>
+<th class="head">640x480</th>
+<th class="head">800x600</th>
+<th class="head">1024x768</th>
+<th class="head">1280x1024</th>
+<th class="head">1400x1050</th>
+<th class="head">1600x1200</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>8 (256)</td>
+<td>769</td>
+<td>771</td>
+<td>773</td>
+<td>775</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>15 (32K)</td>
+<td>784</td>
+<td>787</td>
+<td>790</td>
+<td>793</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>16 (65K)</td>
+<td>785</td>
+<td>788</td>
+<td>791</td>
+<td>794</td>
+<td>834</td>
+<td>884</td>
+</tr>
+<tr class="row-odd"><td>24 (16M)</td>
+<td>786</td>
+<td>789</td>
+<td>792</td>
+<td>795</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p>Update grub configuration with following command (as root)</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>update-grub
+</pre></div>
+</div>
+</div>
+<div class="section" id="compiling-errors">
+<span id="isp-android-compile-errors"></span><h3>Compiling errors<a class="headerlink" href="#compiling-errors" title="Permalink to this headline">¶</a></h3>
+<p>Some Android versions do not compile due to missing Linux kernel headers (i.e.
+i2c-dev.h). In such a case there is a need to update kernel headers for Bionic.
+To update bionic headers, below steps should be executed:</p>
+<ol class="arabic simple">
+<li>Copy missing header to <code class="docutils literal"><span class="pre">external/kernel-headers/original</span></code> directory</li>
+<li>Enter <code class="docutils literal"><span class="pre">bionic/libc/kernel</span></code> directory</li>
+<li>Execute <code class="docutils literal"><span class="pre">tools/update_all.py</span></code> script</li>
+</ol>
+</div>
+<div class="section" id="android-x86-tips-and-tricks">
+<span id="isp-android-x86-tips-and-trics"></span><h3>Android-x86 tips and tricks<a class="headerlink" href="#android-x86-tips-and-tricks" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="persistent-data-partition">
+<h4>Persistent /data partition<a class="headerlink" href="#persistent-data-partition" title="Permalink to this headline">¶</a></h4>
+<p>To make Android data persistent, the best is to
+create <code class="docutils literal"><span class="pre">/data</span></code> directory on the hard disk.Creating data directory in the same
+location where the kernel and <code class="docutils literal"><span class="pre">initrd.img</span></code> file exist, cause automatic
+binding of data directory into Android system. It’s done by init process from
+<code class="docutils literal"><span class="pre">initrd.img</span></code> file.</p>
+</div>
+<div class="section" id="mount-ubuntu-partition-under-android-x86">
+<h4>Mount Ubuntu partition under <code class="docutils literal"><span class="pre">android-x86</span></code><a class="headerlink" href="#mount-ubuntu-partition-under-android-x86" title="Permalink to this headline">¶</a></h4>
+<p>It’s possible to mount hard disk
+partitions under <code class="docutils literal"><span class="pre">android-x86</span></code>. Hard disk partitions are detected under
+<code class="docutils literal"><span class="pre">/dev/block/sd*</span></code> location. Example of mounting Ubuntu partition:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>mount –t ext4 /dev/block/sda2 /data/ubuntu
+</pre></div>
+</div>
+</div>
+<div class="section" id="adb-remote-connection">
+<h4>ADB remote connection<a class="headerlink" href="#adb-remote-connection" title="Permalink to this headline">¶</a></h4>
+<p>ADB is able to connect using TCP/IP networking. Just execute below command:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>adb connect IP_address
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="example-building-android-camera-hal-for-aosp-lollipop">
+<h2>Example: Building Android Camera HAL for AOSP Lollipop<a class="headerlink" href="#example-building-android-camera-hal-for-aosp-lollipop" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This is an internal only section.</p>
+</div>
+<p>This section is an example of how we build the HAL for the Android Lollipop.
+We use the AOSP sources and test the HAL with PC containing FPGA card.</p>
+<div class="section" id="set-up-environment-variables">
+<h3>Set up environment variables<a class="headerlink" href="#set-up-environment-variables" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">export </span><span class="nv">ANDROID_ROOT</span><span class="o">=</span>/path/where/src/will/be/kept
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">FELIX_PATH</span><span class="o">=</span>/path/to/Android_DDK_HW_2.1
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">ANDROID_PRODUCT_OUT</span><span class="o">=</span><span class="nv">$ANDROID_ROOT</span>/out/target/product/pc
+</pre></div>
+</div>
+</div>
+<div class="section" id="getting-lollipop-sources">
+<h3>Getting Lollipop sources<a class="headerlink" href="#getting-lollipop-sources" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Main repo</li>
+</ul>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd</span> <span class="nv">$ANDROID_ROOT</span>
+<span class="nv">$ </span>repo init -u https://android.googlesource.com/platform/manifest <span class="se">\</span>
+       -b android-5.1.1_r4
+<span class="nv">$ </span><span class="nb">cd</span> .repo/manifests
+<span class="nv">$ </span>git checkout d3c00c789b3ab2f87c88c6d7b516d8cc8a41efcf default.xml
+</pre></div>
+</div>
+<ul class="simple">
+<li>Kernel sources</li>
+</ul>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd</span> <span class="nv">$ANDROID_ROOT</span>
+<span class="nv">$ </span>patch -N -p0 &lt; <span class="se">\</span>
+    <span class="nv">$FELIX_PATH</span>/Android/patches/android/lollipop/aosp_Lollipop_kernel_3.10.0_local_manifest.patch
+<span class="nv">$ </span>repo sync -c
+</pre></div>
+</div>
+</div>
+<div class="section" id="copy-imagination-specific-files">
+<h3>Copy Imagination specific files<a class="headerlink" href="#copy-imagination-specific-files" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd</span> <span class="nv">$ANDROID_ROOT</span>
+<span class="nv">$ </span>mkdir -p device/img
+<span class="nv">$ </span>cp -fa i<span class="nv">$FELIX_PATH</span>/Android/device/5.0/pc device/img/.
+</pre></div>
+</div>
+</div>
+<div class="section" id="patch-kernel">
+<h3>Patch kernel<a class="headerlink" href="#patch-kernel" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd</span> <span class="nv">$ANDROID_ROOT</span>
+
+<span class="nv">$ </span>cat <span class="nv">$FELIX_PATH</span>/Android/patches/kernel/x86/ion-staging-x86.patch <span class="se">\</span>
+    <span class="p">|</span> patch -N -p1
+<span class="nv">$ </span>cat <span class="nv">$FELIX_PATH</span>/Android/patches/kernel/x86/ion-staging-device-create.patch <span class="se">\</span>
+    <span class="p">|</span> patch -N -p0 -d kernel/common
+
+<span class="nv">$ </span>cp -fv <span class="nv">$FELIX_PATH</span>/Android/patches/kernel/x86/felix_defconfig_3.10.0_x86_L <span class="se">\</span>
+    <span class="nv">$ANDROID_ROOT</span>/kernel/common/arch/x86/configs/felix_defconfig
+</pre></div>
+</div>
+</div>
+<div class="section" id="configure-and-build-kernel">
+<h3>Configure and build kernel<a class="headerlink" href="#configure-and-build-kernel" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd</span> <span class="nv">$ANDROID_ROOT</span>
+<span class="nv">$ </span>make -C kernel/common <span class="nv">ARCH</span><span class="o">=</span>x86 <span class="nv">CROSS_COMPILE</span><span class="o">=</span> felix_defconfig
+
+<span class="nv">$ </span>make -C kernel/common <span class="nv">ARCH</span><span class="o">=</span>x86 <span class="nv">CROSS_COMPILE</span><span class="o">=</span> -j8 bzImage
+<span class="nv">$ </span>make -C kernel/common <span class="nv">ARCH</span><span class="o">=</span>x86 <span class="nv">CROSS_COMPILE</span><span class="o">=</span> -j8 modules
+<span class="nv">$ </span>make -C kernel/common <span class="nv">ARCH</span><span class="o">=</span>x86 <span class="nv">CROSS_COMPILE</span><span class="o">=</span> <span class="nv">M</span><span class="o">=</span><span class="nv">$FELIX_PATH</span>/Android/imgion modules
+</pre></div>
+</div>
+</div>
+<div class="section" id="update-bionic-c-lib">
+<h3>Update bionic c-lib<a class="headerlink" href="#update-bionic-c-lib" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>cp -fv <span class="nv">$ANDROID_ROOT</span>/kernel/common/include/uapi/linux/i2c-dev.h <span class="se">\</span>
+     <span class="nv">$ANDROID_ROOT</span>/external/kernel-headers/original/uapi/linux/.
+<span class="nv">$ </span><span class="nb">cd</span> <span class="nv">$ANDROID_ROOT</span>/bionic/libc/kernel/
+<span class="nv">$ </span>python tools/update_all.py
+</pre></div>
+</div>
+</div>
+<div class="section" id="link-felix-hal-code-into-the-android-tree">
+<h3>Link Felix HAL code into the Android tree<a class="headerlink" href="#link-felix-hal-code-into-the-android-tree" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd</span> <span class="nv">$ANDROID_ROOT</span>/hardware/
+<span class="nv">$ </span>mkdir -p img
+<span class="nv">$ </span><span class="nb">cd </span>img/
+<span class="nv">$ </span>ln -s <span class="nv">$FELIX_PATH</span> V2500
+</pre></div>
+</div>
+</div>
+<div class="section" id="build-the-driver">
+<h3>Build the driver<a class="headerlink" href="#build-the-driver" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">export </span><span class="nv">DDK_SRC</span><span class="o">=</span><span class="nv">$ANDROID_ROOT</span>/hardware/img/V2500/DDKSource
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">CMAKE_DIR</span><span class="o">=</span><span class="nv">$DDK_SRC</span>/obj
+<span class="nv">$ </span>mkdir -p <span class="nv">$CMAKE_DIR</span>
+<span class="nv">$ </span><span class="nb">cd</span> <span class="nv">$CMAKE_DIR</span>
+<span class="nv">$ </span>rm -rf *
+<span class="nv">$ </span>cmake -DCI_DEVICE<span class="o">=</span>PCI -DCI_ALLOC<span class="o">=</span>PAGEALLOC -DANDROID_BUILD<span class="o">=</span>ON <span class="se">\</span>
+    -DFORCE_32BIT_BUILD<span class="o">=</span>ON -DLINUX_KERNEL_BUILD_DIR<span class="o">=</span><span class="s2">&quot;</span><span class="nv">$ANDROID_ROOT</span><span class="s2">/kernel/common/&quot;</span> <span class="se">\</span>
+    -DCI_EXT_DATA_GENERATOR<span class="o">=</span>OFF -DBUILD_TEST_APPS<span class="o">=</span>OFF -DFPGA_REF_CLK<span class="o">=</span><span class="m">40</span> <span class="se">\</span>
+    -DFPGA_INSMOD_RECLOCK<span class="o">=</span>ON -DLINUX_KERNEL_SOURCE_DIR<span class="o">=</span><span class="s2">&quot;</span><span class="nv">$ANDROID_ROOT</span><span class="s2">/kernel/common&quot;</span> ..
+
+<span class="nv">$ </span>make
+
+<span class="nv">$ </span>ln -fvs <span class="nv">$CMAKE_DIR</span>/CI/felix/regdefs/regdefs <span class="nv">$DDK_SRC</span>/CI/felix/regdefs/include
+<span class="nv">$ </span>ln -fvs <span class="nv">$CMAKE_DIR</span>/CI/felix/regdefs/vhc_out <span class="nv">$DDK_SRC</span>/CI/felix/regdefs/vhc_out
+</pre></div>
+</div>
+</div>
+<div class="section" id="apply-patches">
+<h3>Apply patches<a class="headerlink" href="#apply-patches" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd</span> <span class="nv">$ANDROID_ROOT</span>/frameworks/av/
+<span class="nv">$ </span>patch -N -p1 &lt; <span class="se">\</span>
+    <span class="nv">$FELIX_PATH</span>/Android/patches/android/lollipop/frameworks-av-api1-rgb-preview-stream-format.patch
+<span class="nv">$ </span>patch -N -p1 &lt; <span class="se">\</span>
+    <span class="nv">$FELIX_PATH</span>/Android/patches/android/lollipop/frameworks-av_stagefright_recording.patch
+<span class="nv">$ </span><span class="nb">cd</span> <span class="nv">$ANDROID_ROOT</span>/hardware/libhardware/
+<span class="nv">$ </span>patch -N -p1 &lt; <span class="se">\</span>
+    <span class="nv">$FELIX_PATH</span>/Android/patches/android/lollipop/hardware-libhardware_felix_gralloc_camera_default.patch
+</pre></div>
+</div>
+</div>
+<div class="section" id="clear-old-generated-files">
+<h3>Clear old generated files<a class="headerlink" href="#clear-old-generated-files" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>rm -rf <span class="nv">$ANDROID_PRODUCT_OUT</span>/obj/SHARED_LIBRARIES/*felix*
+</pre></div>
+</div>
+</div>
+<div class="section" id="choose-camera-sensor">
+<h3>Choose camera sensor<a class="headerlink" href="#choose-camera-sensor" title="Permalink to this headline">¶</a></h3>
+<p>Edit $FELIX_PATH/FelixDefines.mk and choose sensor OV4688 or AR330.</p>
+</div>
+<div class="section" id="id4">
+<h3>Build Android<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd</span> <span class="nv">$ANDROID_ROOT</span>
+<span class="nv">$ </span>rm -fv <span class="nv">$ANDROID_ROOT</span>/out/target/product/pc/system/build.prop
+<span class="nv">$ </span><span class="nb">source </span>build/envsetup.sh
+<span class="nv">$ </span>lunch <span class="nv">$ANDROID_TARGET</span>
+<span class="nv">$ </span>make -j4
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s2">&quot;ro.kernel.qemu=1&quot;</span> &gt;&gt; out/target/product/pc/system/build.prop
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s2">&quot;ro.kernel.qemu.gles=0&quot;</span> &gt;&gt; out/target/product/pc/system/build.prop
+<span class="nv">$ </span>mmm packages/apps/LegacyCamera
+<span class="nv">$ </span>mmm packages/apps/Gallery
+<span class="nv">$ </span>mmm frameworks/av/cmds/stagefright
+</pre></div>
+</div>
+</div>
+<div class="section" id="install-kernel-modules">
+<h3>Install kernel modules<a class="headerlink" href="#install-kernel-modules" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd</span> <span class="nv">$ANDROID_ROOT</span>
+<span class="nv">$ </span>cp kernel/common/arch/x86/boot/bzImage <span class="nv">$ANDROID_PRODUCT_OUT</span>/vmlinuz
+<span class="nv">$ </span>make -C kernel/common <span class="nv">ARCH</span><span class="o">=</span>x86 <span class="nv">CROSS_COMPILE</span><span class="o">=</span> <span class="se">\</span>
+    <span class="nv">INSTALL_MOD_PATH</span><span class="o">=</span><span class="nv">$ANDROID_ROOT</span>/out/target/product/pc/system
+<span class="nv">$ </span>modules_install
+<span class="nv">$ </span>make -C kernel/common <span class="nv">ARCH</span><span class="o">=</span>x86 <span class="nv">CROSS_COMPILE</span><span class="o">=</span> <span class="nv">M</span><span class="o">=</span><span class="nv">$FELIX_PATH</span>/Android/imgion <span class="se">\</span>
+    <span class="nv">INSTALL_MOD_PATH</span><span class="o">=</span><span class="nv">$ANDROID_ROOT</span>/out/target/product/pc/system
+<span class="nv">$ </span>modules_install
+<span class="nv">$ </span>cp -fv <span class="nv">$CMAKE_DIR</span>/CI/felix/felix_lib/km/Felix.ko <span class="se">\</span>
+    <span class="nv">$ANDROID_PRODUCT_OUT</span>/system/lib/modules/.
+</pre></div>
+</div>
+</div>
+<div class="section" id="quick-android-image-regeneration">
+<h3>Quick android image regeneration<a class="headerlink" href="#quick-android-image-regeneration" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd</span> <span class="nv">$ANDROID_ROOT</span>
+<span class="nv">$ </span><span class="nb">source </span>build/envsetup.sh
+<span class="nv">$ </span>lunch <span class="nv">$ANDROID_TARGET</span>
+<span class="nv">$ </span>make snod
+</pre></div>
+</div>
+</div>
+<div class="section" id="finalizing">
+<h3>Finalizing<a class="headerlink" href="#finalizing" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Copy android image files to common directory</li>
+</ul>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>mkdir /boot/android
+<span class="nv">$ </span>cp <span class="nv">$ANDROID_PRODUCT_OUT</span>/system.img /boot/android/.
+<span class="nv">$ </span>cp <span class="nv">$ANDROID_PRODUCT_OUT</span>/ramdisk.img /boot/android/.
+<span class="nv">$ </span>cp <span class="nv">$ANDROID_PRODUCT_OUT</span>/vmlinuz /boot/android/.
+<span class="nv">$ </span>cp <span class="nv">$FELIX_PATH</span>/Android/BuildScripts/lollipop/AOSP/initrd.img /boot/android/.
+</pre></div>
+</div>
+<ul class="simple">
+<li>In grub.cfg add following entry</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>set gfxpayload=1280x1024x16
+
+menuentry &quot;Android-Lollipop&quot; {
+    linux /boot/android/vmlinuz root=/dev/ram0 androidboot.hardware=pc nomodeset
+    initrd /boot/android/initrd.img
+}
+</pre></div>
+</div>
+<ul class="simple">
+<li>Reboot PC and start Android</li>
+<li>Please remember to update camera sensor config file in Android system. Connect Android using adb and send a propper file to device</li>
+</ul>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>adb push <span class="nv">$FELIX_PATH</span>/sensorConfig/ov4688/FelixSetupOV4688.txt <span class="se">\</span>
+       /data/felix/FelixDemoParams11.txt
+</pre></div>
+</div>
+<p>Note, that target path/file name can be changed in FelixDefines.mk.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Android Build Instructions</a><ul>
+<li><a class="reference internal" href="#build-instructions">Build instructions</a><ul>
+<li><a class="reference internal" href="#create-a-toolchain">Create a toolchain</a></li>
+<li><a class="reference internal" href="#setup-toolchain-file">Setup Toolchain file</a></li>
+<li><a class="reference internal" href="#configure-v2500-module-using-cmake">Configure V2500 Module using CMake</a></li>
+<li><a class="reference internal" href="#build-v2500-kernel-module">Build V2500 kernel module</a><ul>
+<li><a class="reference internal" href="#notes">Notes</a><ul>
+<li><a class="reference internal" href="#toolchain-not-used">Toolchain not used</a></li>
+<li><a class="reference internal" href="#x86-build">x86 build</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#building-android-camera-hal">Building Android Camera HAL</a><ul>
+<li><a class="reference internal" href="#patch-the-android-tree">Patch the Android tree</a></li>
+<li><a class="reference internal" href="#link-felix-camera-hal-to-android-tree">Link Felix Camera HAL to Android tree</a></li>
+<li><a class="reference internal" href="#build-android-tree">Build Android Tree</a></li>
+<li><a class="reference internal" href="#using-gpu-for-image-stabilization-and-face-detection">Using GPU for Image Stabilization and Face Detection</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#example-building-v2500-software-for-android-x86">Example: building V2500 software for android-x86</a><ul>
+<li><a class="reference internal" href="#getting-android-x86-sources">Getting android-x86 sources</a></li>
+<li><a class="reference internal" href="#prepare-android-x86-kernel">Prepare android-x86 kernel</a></li>
+<li><a class="reference internal" href="#apply-android-x86-patches">Apply android-x86 patches</a></li>
+<li><a class="reference internal" href="#link-the-v2500-ddk-sources">Link the V2500 DDK sources</a></li>
+<li><a class="reference internal" href="#configure-and-build-v2500-kernel-module">Configure and build V2500 kernel module</a></li>
+<li><a class="reference internal" href="#configure-v2500-android-camera-hal">Configure V2500 Android Camera HAL</a></li>
+<li><a class="reference internal" href="#build-android-x86">Build android-x86</a></li>
+<li><a class="reference internal" href="#build-legacy-camera-application">Build Legacy Camera application</a></li>
+<li><a class="reference internal" href="#prepare-android-x86-images-for-grub">Prepare Android x86 images for GRUB</a></li>
+<li><a class="reference internal" href="#configure-grub-to-run-android-x86-image">Configure GRUB to run Android x86 image</a></li>
+<li><a class="reference internal" href="#compiling-errors">Compiling errors</a></li>
+<li><a class="reference internal" href="#android-x86-tips-and-tricks">Android-x86 tips and tricks</a><ul>
+<li><a class="reference internal" href="#persistent-data-partition">Persistent /data partition</a></li>
+<li><a class="reference internal" href="#mount-ubuntu-partition-under-android-x86">Mount Ubuntu partition under <code class="docutils literal"><span class="pre">android-x86</span></code></a></li>
+<li><a class="reference internal" href="#adb-remote-connection">ADB remote connection</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#example-building-android-camera-hal-for-aosp-lollipop">Example: Building Android Camera HAL for AOSP Lollipop</a><ul>
+<li><a class="reference internal" href="#set-up-environment-variables">Set up environment variables</a></li>
+<li><a class="reference internal" href="#getting-lollipop-sources">Getting Lollipop sources</a></li>
+<li><a class="reference internal" href="#copy-imagination-specific-files">Copy Imagination specific files</a></li>
+<li><a class="reference internal" href="#patch-kernel">Patch kernel</a></li>
+<li><a class="reference internal" href="#configure-and-build-kernel">Configure and build kernel</a></li>
+<li><a class="reference internal" href="#update-bionic-c-lib">Update bionic c-lib</a></li>
+<li><a class="reference internal" href="#link-felix-hal-code-into-the-android-tree">Link Felix HAL code into the Android tree</a></li>
+<li><a class="reference internal" href="#build-the-driver">Build the driver</a></li>
+<li><a class="reference internal" href="#apply-patches">Apply patches</a></li>
+<li><a class="reference internal" href="#clear-old-generated-files">Clear old generated files</a></li>
+<li><a class="reference internal" href="#choose-camera-sensor">Choose camera sensor</a></li>
+<li><a class="reference internal" href="#id4">Build Android</a></li>
+<li><a class="reference internal" href="#install-kernel-modules">Install kernel modules</a></li>
+<li><a class="reference internal" href="#quick-android-image-regeneration">Quick android image regeneration</a></li>
+<li><a class="reference internal" href="#finalizing">Finalizing</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="hal_camera_library.html"
+                        title="previous chapter">Android Camera HAL</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../vision_libraries.html"
+                        title="next chapter">Vision Libraries Usage Instructions</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

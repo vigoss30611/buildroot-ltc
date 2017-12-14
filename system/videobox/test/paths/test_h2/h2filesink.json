@@ -1,0 +1,34 @@
+{
+	"dg": {
+		"ipu": "dg-frame",
+		"port": {
+			"out": {
+				"w": 1920,
+				"h": 1088,
+				"pixel": "nv12",
+				"bind": { "enc0": "frame", "display": "osd0" }
+			}
+		}
+	},
+
+	"enc0": {
+		"ipu": "vencoder",
+        "args": {
+            "encode_type": "h265"
+        },
+		"port": {
+			"stream": {
+				"bind": { "sink": "in" }
+			}
+		}
+	},
+
+	"sink": {
+		"ipu": "filesink",
+		"args": {
+			"data_path": "/nfs/fsink.data"
+		}
+	},
+	"display": { "ipu": "ids"}
+}
+

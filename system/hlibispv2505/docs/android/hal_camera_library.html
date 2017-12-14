@@ -1,0 +1,3913 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Android Camera HAL &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="next" title="Android Build Instructions" href="hal_build_instructions.html" />
+    <link rel="prev" title="Light Based Control (LBC)" href="../ispc/ispc_controls_other.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="hal_build_instructions.html" title="Android Build Instructions"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="../ispc/ispc_controls_other.html" title="Light Based Control (LBC)"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li><li>Android Camera HAL</li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="android-camera-hal">
+<span id="id1"></span><h1>Android Camera HAL<a class="headerlink" href="#android-camera-hal" title="Permalink to this headline">¶</a></h1>
+<p>The section following contains detailed information about architecture,
+configuration and possible extensions of Android HAL library for V2500 image
+processors.</p>
+<p>As the mobile market was the primary target of V2500 ISP processors, the
+Hardware Abstraction Layer (HAL) library has been developed to enable
+support for V2500 IP in Android versions 4.4, 5.0 and later (code-named
+Kitkat and Lollipop respectively).</p>
+<p>The primary responsibility of camera HAL is to expose the ISP functionality
+via well documented <code class="docutils literal"><span class="pre">android.hardware.camera</span></code> and
+<code class="docutils literal"><span class="pre">android.hardware.camera2</span></code> interfaces to the user applications. In
+details, to be able to support more advanced camera applications, Android
+Camera HAL library shall support Camera HAL interface version 3.x defined in
+<code class="docutils literal"><span class="pre">camera3.h</span></code> header of Android sources. This C interface is used by the
+&#8216;media&#8217; android service (implemented in mediaserver daemon) to communicate
+directly with HAL library. More on this architecture can be read on Android
+camera stack online documentation page <a class="footnote-reference" href="#id7" id="id2">[1]</a>.</p>
+<p>The functionality of camera HAL library depends on the current version of
+ISPC+CI software pipeline stack. Therefore the Android build scripts
+provided will compile most of the needed dependencies automatically. The
+exception of this is the kernel Felix.ko module, which has to be built
+separately. For full building procedure, please refer to
+<a class="reference internal" href="hal_build_instructions.html#isp-android-build-instructions"><span>Android Build Instructions</span></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">V2500 may be referred as <code class="docutils literal"><span class="pre">Felix</span></code> in this section (its internal name).</p>
+</div>
+<p><strong>Document structure</strong></p>
+<p>The chapter <a class="reference internal" href="#android-hal-media-framework-context"><span>Context of Camera HAL in media framework</span></a> depicts the native
+environment where Camera HAL shared library is being used. The sub-chapter
+<a class="reference internal" href="#android-hal-use-cases"><span>Main use cases</span></a> lists the main <em>scenarii</em> and the module may
+hit during runtime of various camera applications. The chapter
+<a class="reference internal" href="#android-hal-architecture"><span>Library architecture</span></a> describes the high level structure of the
+library. Specifically, <a class="reference internal" href="#android-hal-class-hierarchy"><span>Class hierarchy</span></a> and
+<a class="reference internal" href="#android-hal-class-responsibilities"><span>Class responsibilities</span></a> describe the class dependencies
+and responsibility areas. Later on, the structure of the source code and
+build system variables has been described in
+<a class="reference internal" href="#android-hal-code-structure"><span>Structure of source code</span></a> and <a class="reference internal" href="#android-hal-build-system"><span>Build system</span></a>
+respectively. The next chapter, <a class="reference internal" href="#android-hal-implementation"><span>Implementation of Camera HAL v3.x</span></a>, details
+Camera HAL internals, such as description of capture request processing
+pipeline, specifics of jpeg processing and level of support for request
+metadata. Finally, the testing methodologies can be referred in
+<a class="reference internal" href="#android-hal-testing"><span>Testing Camera HAL</span></a>.</p>
+<div class="section" id="context-of-camera-hal-in-media-framework">
+<span id="android-hal-media-framework-context"></span><h2>Context of Camera HAL in media framework<a class="headerlink" href="#context-of-camera-hal-in-media-framework" title="Permalink to this headline">¶</a></h2>
+<p>Before reading the Camera HAL documentation, the reader is encouraged to become
+familiar with the architecture of Android media framework architecture,
+especially in part directly related with camera. The reference documentation is
+available under <a class="footnote-reference" href="#id7" id="id3">[1]</a>.</p>
+<div class="section" id="main-use-cases">
+<span id="android-hal-use-cases"></span><h3>Main use cases<a class="headerlink" href="#main-use-cases" title="Permalink to this headline">¶</a></h3>
+<p>The high level modes the camera can operate in a common Android based device are
+defined by <code class="docutils literal"><span class="pre">enum</span> <span class="pre">camera3_request_template_t</span></code> defined in <code class="docutils literal"><span class="pre">camera3.h</span></code> header.
+These are:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">CAMERA3_TEMPLATE_PREVIEW</span></code> Standard camera preview operation with 3A on auto.</li>
+<li><code class="docutils literal"><span class="pre">CAMERA3_TEMPLATE_STILL_CAPTURE</span></code> Standard camera high-quality still capture
+with 3A and flash on auto.</li>
+<li><code class="docutils literal"><span class="pre">CAMERA3_TEMPLATE_VIDEO_RECORD</span></code> Standard video recording plus preview with
+3A on auto, torch off.</li>
+<li><code class="docutils literal"><span class="pre">CAMERA3_TEMPLATE_VIDEO_SNAPSHOT</span></code> High-quality still capture while recording
+video. Application will include preview, video record, and full-resolution
+YUV or JPEG streams in request. Must not cause stuttering on video stream. 3A
+on auto.</li>
+<li><code class="docutils literal"><span class="pre">CAMERA3_TEMPLATE_ZERO_SHUTTER_LAG</span></code> Zero-shutter-lag mode. Application will
+request preview and full-resolution data for each frame, and reprocess it to
+JPEG when a still image is requested by user. Settings should provide
+highest-quality full-resolution images without compromising preview frame
+rate. 3A on auto.</li>
+<li><code class="docutils literal"><span class="pre">CAMERA3_TEMPLATE_MANUAL</span></code> A basic template for direct application control of
+capture parameters. All automatic control is disabled (auto-exposure,
+auto-white balance, auto-focus), and post-processing parameters are set to
+preview quality. The manual capture parameters (exposure, sensitivity, etc.)
+are set to reasonable defaults, but should be overridden by the application
+depending on the intended use case.</li>
+</ul>
+<p>These operation modes define different configurations HAL must be able to
+handle. Each mode can be translated into a set of output configurations the framework
+can request from the Camera HAL when it is in active state.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Each output stream requested can be configured to different
+pixel type and resolution.
+In practice, output buffers which are used in encoder, as application
+callbacks or Zero Shutter Lag purpose, are always internally allocated
+as YUV color space.
+Those used as display preview, are allocated as
+<code class="docutils literal"><span class="pre">IMPLEMENTATION_DEFINED</span></code> type.</p>
+<p class="last">On PC+FPGA based development platforms,
+preview buffers are internally allocated in gralloc as RGB32 due to
+no support for GPU hardware on such setups (sw fallback pixelflinger
+uses RGB).
+For GPU enabled platforms, YUV pixels may be chosen as the format for
+preview surfaces, so gralloc should internally allocate these buffers as
+YUV.</p>
+</div>
+<p>Below is the list of common low level stream combinations which can be requested
+as an effect of choosing one of camera templates:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="48%" />
+<col width="8%" />
+<col width="8%" />
+<col width="9%" />
+<col width="8%" />
+<col width="8%" />
+<col width="12%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" rowspan="2">&nbsp;</th>
+<th class="head" colspan="4">Output streams</th>
+<th class="head" colspan="2">Input stream</th>
+</tr>
+<tr class="row-even"><th class="head">YUV</th>
+<th class="head">RGB</th>
+<th class="head">JPEG</th>
+<th class="head">RAW</th>
+<th class="head">YUV</th>
+<th class="head">RAW</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td><p class="first">preview</p>
+<p>video recording</p>
+<p>application callback</p>
+<p class="last">RAW (optional)</p>
+</td>
+<td>0-3</td>
+<td>0-1</td>
+<td>N/A</td>
+<td>0-1</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-even"><td><p class="first">preview</p>
+<p>video recording</p>
+<p>non ZSL still capture (JPEG)</p>
+<p>application callback</p>
+<p class="last">RAW (optional)</p>
+</td>
+<td>0-3</td>
+<td>0-1</td>
+<td>1</td>
+<td>0-1</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-odd"><td>ZSL YUV to JPGEG reprocessing</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>1</td>
+<td>N/A</td>
+<td>1</td>
+<td>N/A</td>
+</tr>
+<tr class="row-even"><td>ZSL RAW to JPGEG reprocessing</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>1</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>1</td>
+</tr>
+<tr class="row-odd"><td>ZSL RAW to YUV reprocessing</td>
+<td>1</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>This table defines the requirements imposed on the ISP hardware, in order of
+minimum software processing needed for regular camera operation. More on this
+in <a class="reference internal" href="#android-hal-hw-requirements"><span>Hardware requirements</span></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Current implementation of HAL does not support RAW captures.</p>
+</div>
+</div>
+<div class="section" id="lifetime-of-camera-hal">
+<span id="android-hal-lifetime"></span><h3>Lifetime of Camera HAL<a class="headerlink" href="#lifetime-of-camera-hal" title="Permalink to this headline">¶</a></h3>
+<p>The camera library is loaded by the multimedia framework (<code class="docutils literal"><span class="pre">mediaserver</span></code>)
+directly after initialization of <code class="docutils literal"><span class="pre">media</span></code> service.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>In debugging process, the ability to manual control <code class="docutils literal"><span class="pre">mediaserver</span></code> state
+proves to be very useful. For this purpose, the <code class="docutils literal"><span class="pre">media</span></code> service
+can be manually stopped and started using the following adb shell commands:</p>
+<blockquote class="last">
+<div><div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>adb shell stop media
+<span class="nv">$ </span>adb shell start media
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<p>Then, Camera HAL interface is used to instantiate all existing cameras, read
+capabilities, and execute the sequence of calls which configure and enqueue
+capture requests in ISP processor.</p>
+<p>The following diagram depicts the common lifetime of Camera HAL in Android. The
+exact sequence of calls to HAL v3 interface has been visualized for better
+overview of the library interface flow.</p>
+<div class="figure align-center" id="android-hal-lifetime-fig">
+<p class="plantuml">
+<a href="../_images/plantuml-36933c6db74d11ace44a27f4a8dffa56d8c20e71.png"><img src="../_images/plantuml-36933c6db74d11ace44a27f4a8dffa56d8c20e71.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+ &#64;startuml
+ entity mediaserver
+
+ == Initialization ==
+
+ mediaserver -&gt; FelixCameraHAL : get_number_of_cameras()
+
+ FelixCameraHAL -&gt; FelixCameraHAL : getInstance()
+ activate FelixCameraHAL
+
+ loop for each sensor
+     FelixCameraHAL -&gt; FelixCameraHAL : instantiateCamera()
+     activate FelixCameraHAL
+     alt HAL built for Kitkat
+         create FelixCamera
+         FelixCameraHAL -&gt; FelixCamera : new()
+         FelixCameraHAL -&gt; FelixCamera : Initialize()
+         activate FelixCamera
+         ref over FelixCamera
+             1. parse configuration file
+             2. init sensor
+             3. alloc HW Capabilities
+             4. construct static metadata
+         end ref
+         FelixCameraHAL &lt;-- FelixCamera : NO_ERROR
+         deactivate FelixCamera
+     else HAL built for Lollipop
+         create FelixCamera3v2
+         FelixCameraHAL -&gt; FelixCamera3v2 : new()
+         FelixCameraHAL -&gt; FelixCamera3v2 : Initialize()
+         activate FelixCamera3v2
+         FelixCameraHAL &lt;-- FelixCamera3v2 : NO_ERROR
+         deactivate FelixCamera3v2
+     end
+     deactivate FelixCameraHAL
+ end
+
+ mediaserver &lt;-- FelixCameraHAL
+ deactivate FelixCameraHAL
+
+ mediaserver -&gt; FelixCameraHAL : get_camera_info()
+ mediaserver &lt;-- FelixCameraHAL
+
+ mediaserver -&gt; FelixCameraHAL : set_callbacks()
+ mediaserver &lt;-- FelixCameraHAL
+
+ ...
+ == Application opens the camera device ==
+
+ mediaserver -&gt; FelixCameraHAL : FelixCameraHAL::device_open() as open()
+ activate FelixCameraHAL
+ FelixCameraHAL -&gt; FelixCameraHAL : cameraDeviceOpen()
+ FelixCameraHAL -&gt; FelixCamera : connectCamera()
+ activate FelixCamera
+ ref over FelixCamera
+     1. start ProcessingThread
+     2. allocate JpegEncoder
+     3. create Hw Pipelines
+     4. allocate control modules
+     5. program default pipeline params
+ end ref
+ FelixCameraHAL &lt;-- FelixCamera : NO_ERROR
+ deactivate FelixCamera
+ mediaserver &lt;-- FelixCameraHAL : NO_ERROR
+ deactivate FelixCameraHAL
+
+ == Active capture ==
+
+ loop For each chosen camera use case
+     loop for each planned request type
+         mediaserver -&gt; FelixCamera : construct_default_request_settings()
+         activate FelixCamera
+         FelixCamera -&gt; FelixCamera : constructDefaultRequestSettings()
+         activate FelixCamera
+         mediaserver &lt;-- FelixCamera : camera_metadata_t*
+         deactivate FelixCamera
+         deactivate FelixCamera
+     end
+
+     mediaserver -&gt; FelixCamera : configure_streams()
+     activate FelixCamera
+     FelixCamera -&gt; FelixCamera : configureStreams()
+     activate FelixCamera
+     mediaserver &lt;-- FelixCamera : NO_ERROR
+     deactivate FelixCamera
+     deactivate FelixCamera
+
+     opt HALv3.0
+         note over FelixCamera
+             Buffers are preregistered in HAL3.0 only
+         end note
+         mediaserver -&gt; FelixCamera : register_stream_buffers()
+         activate FelixCamera
+         FelixCamera -&gt; FelixCamera : registerStreamBuffers()
+         activate FelixCamera
+         mediaserver &lt;-- FelixCamera : NO_ERROR
+         deactivate FelixCamera
+         deactivate FelixCamera
+     end
+     ... Live capture ...
+     loop For each capture request
+         mediaserver -&gt; FelixCamera : process_capture_request()
+         activate FelixCamera
+         FelixCamera -&gt; FelixCamera : processCaptureRequest()
+         activate FelixCamera
+         mediaserver &lt;-- FelixCamera : NO_ERROR
+         deactivate FelixCamera
+         deactivate FelixCamera
+     end
+ end
+ ...
+ == Device closure ==
+
+ mediaserver -&gt; FelixCamera : close()
+ activate FelixCamera
+ FelixCamera -&gt; FelixCamera : closeCamera()
+ activate FelixCamera
+ mediaserver &lt;-- FelixCamera : NO_ERROR
+ deactivate FelixCamera
+ deactivate FelixCamera
+
+ &#64;enduml" width="527px" height="1149px"/></a>
+</p>
+</div>
+</div>
+</div>
+<div class="section" id="library-architecture">
+<span id="android-hal-architecture"></span><h2>Library architecture<a class="headerlink" href="#library-architecture" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="class-hierarchy">
+<span id="android-hal-class-hierarchy"></span><h3>Class hierarchy<a class="headerlink" href="#class-hierarchy" title="Permalink to this headline">¶</a></h3>
+<p>The HAL library is structured into following main functional parts:</p>
+<ul class="simple">
+<li>Android Camera HAL interface modules</li>
+<li>Asynchronous capture request processing modules</li>
+<li>Hardware abstraction (capabilities and ISPC control)</li>
+<li>AAA handling modules</li>
+<li>Helper classes abstracting image processing and JPEG compression, buffer
+management</li>
+</ul>
+<p>The Camera HAL diagram shows the high level FelixCamera HAL hierarchy.</p>
+<div class="figure align-center">
+<p class="plantuml">
+<a href="../_images/plantuml-800895c1a2e142d7eb2d55be57bd8815ef2c3f75.png"><img src="../_images/plantuml-800895c1a2e142d7eb2d55be57bd8815ef2c3f75.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+ &#64;startuml
+
+ hide empty members
+
+ package &quot;Camera HAL&quot; {
+
+     class FelixCameraHAL &lt;&lt; singleton, factory &gt;&gt;
+
+     class &quot;android::struct camera_module_t&quot;
+     note top : Android HAL device interface
+
+     class &quot;android::struct camera3_device&quot;
+     note top : Android Camera HALv3\ninterface
+
+     class &quot;android::struct camera3_stream_t&quot;
+
+     class FelixCamera
+     note bottom: Implementation of\n HALv3.0 for Kitkat
+
+     class FelixCamera3v2
+     note bottom: Implementation of\n HALv3.2 for &gt;= Lollipop
+
+     class PrivateStreamInfo
+     note bottom: &quot;Configured streams&quot;
+
+     class ProcessingThread  &lt;&lt; thread &gt;&gt;
+     note bottom : Capture request\n processor thread&quot;
+
+     class FelixXXX
+     note right : FelixAF instantiated\nonly if lens support\nvariable focus
+
+     CaptureRequest o-- &quot;1&quot; FelixMetadata : Request metadata
+     ProcessingThread --&gt; ImgScaler : &lt;&lt;uses&gt;&gt;
+     JpegEncoder --&gt; ImgScaler : &lt;&lt;uses&gt;&gt;
+     ProcessingThread o-- &quot;0..*&quot; CaptureRequest : &lt;&lt;queue&gt;&gt;
+     FelixCamera --&gt; FelixMetadata : &lt;&lt;instantiates&gt;&gt;
+     FelixMetadata &quot;1&quot; &lt;-- JpegEncoder : Exif data source
+     &quot;android::struct camera_module_t&quot; --&gt; FelixCameraHAL : device_open()
+     FelixCameraHAL o-- &quot;0..2&quot; FelixCamera : &lt;&lt;owns&gt;&gt;
+     &quot;android::struct camera3_device&quot; &lt;|-- FelixCamera
+     &quot;android::struct camera3_stream_t&quot; --&gt; &quot;1&quot; PrivateStreamInfo : &lt;&lt;priv&gt;&gt;
+     FelixCamera o-- &quot;1&quot; CameraGpu : &lt;&lt;owns&gt;&gt;
+     FelixCamera o-- &quot;1&quot; HwCaps : &lt;&lt;owns&gt;&gt;
+     FelixCamera o-- &quot;0..*&quot; PrivateStreamInfo
+     FelixXXX &quot;2..3&quot; &lt;-- FelixCamera : &lt;&lt;instantiates&gt;&gt;
+     &quot;ISPC::&quot; --&gt; FelixXXX : &lt;&lt;owns&gt;&gt;
+     FelixCamera --&gt; &quot;1&quot; HwManager : &lt;&lt;uses&gt;&gt;
+     CaptureRequest --&gt; &quot;1&quot; HwManager : &lt;&lt;uses&gt;&gt;
+     ProcessingThread &quot;1&quot; --o FelixCamera : &lt;&lt;owns&gt;&gt;
+     FelixCamera --&gt; JpegEncoder : &lt;&lt;uses&gt;&gt;
+     FelixCamera --&gt; CaptureRequest : &lt;&lt;instantiates&gt;&gt;
+     FelixCamera &lt;|-- FelixCamera3v2
+ }
+ &#64;enduml" width="978px" height="646px"/></a>
+</p>
+</div>
+<p>The main <code class="docutils literal"><span class="pre">owner</span></code> class is <code class="docutils literal"><span class="pre">FelixCamera</span></code>, which represents an instance of a
+camera sensor connected to ISP pipeline, while exposing HAL 3.x interface to
+Android camera framework. The instance &#8216;owns&#8217; and &#8216;uses&#8217; <code class="docutils literal"><span class="pre">FelixProcessing</span></code>
+thread for the purpose of buffering capture requests, asynchronous request
+processing and sending back capture results to the framework.</p>
+<div class="figure align-center">
+<p class="plantuml">
+<a href="../_images/plantuml-d3c6dd854f6d395e2025bea47b70d78425d313ab.png"><img src="../_images/plantuml-d3c6dd854f6d395e2025bea47b70d78425d313ab.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+ &#64;startuml
+
+ hide empty members
+
+ package &quot;Request reprocessing&quot; {
+     class JpegEncoder::JpegListener
+     class JpegEncoder &lt;&lt; factory, thread &gt;&gt;
+     class JpegBasicIo &lt;&lt; abstract&gt;&gt;
+
+     class ExifWriter
+     note bottom: Depends on libexif
+
+     class JpegEncoderSw &lt;&lt; singleton &gt;&gt;
+     note bottom: Depends on libjpeg
+
+     class JpegEncoderHw &lt;&lt; singleton &gt;&gt;
+
+     ProcessingThread --|&gt; JpegEncoder::JpegListener
+     class JpegBasicIo &lt;|-- JpegEncoder
+     JpegBasicIo &lt;-- ExifWriter
+     JpegEncoder &lt;|-- JpegEncoderSw
+     JpegEncoder &lt;|-- JpegEncoderHw
+     JpegEncoder --&gt; JpegEncoderSw : &lt;&lt; instantiates &gt;&gt;
+     JpegEncoder --&gt; JpegEncoderHw : &lt;&lt; instantiates &gt;&gt;
+     ExifWriter &lt;-- JpegEncoder : &lt;&lt;uses&gt;&gt;
+     JpegEncoder::JpegListener &quot;1&quot; &lt;-- JpegEncoder : onJpegDone()
+ }
+
+ &#64;enduml" width="259px" height="323px"/></a>
+</p>
+</div>
+<div class="figure align-center">
+<p class="plantuml">
+<a href="../_images/plantuml-a3ae17d2423b1d8c59dd1a5ea2bbdc05f05e752a.png"><img src="../_images/plantuml-a3ae17d2423b1d8c59dd1a5ea2bbdc05f05e752a.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+ &#64;startuml
+
+ hide empty members
+
+ package &quot;ISPC library abstraction&quot; {
+     note &quot;Hardware manager abstraction class\nmulticontext support&quot; as HwManNote
+     HwManNote .. class HwManager
+     class HwTimeBase
+     class ISPC::Camera
+     class ISPC::Sensor
+
+     HwManager   *-- HwTimeBase
+     HwManager   o-- &quot;0..*&quot; ISPC::Camera
+     HwManager   o-- &quot;1&quot;    ISPC::Sensor
+ }
+
+ &#64;enduml" width="288px" height="186px"/></a>
+</p>
+</div>
+<div class="figure align-center">
+<p class="plantuml">
+<a href="../_images/plantuml-06b3b00cef528051482226498e10b2543f521dc2.png"><img src="../_images/plantuml-06b3b00cef528051482226498e10b2543f521dc2.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+ &#64;startuml
+
+ hide empty members
+
+ package &quot;Capture Request&quot; {
+     class CaptureRequest
+     class FelixMetadata
+     class &quot;android::struct camera3_stream_buffer_t&quot;
+     class ISPC::Shot
+
+     CaptureRequest --&gt; &quot;0..*&quot; &quot;android::struct camera3_stream_buffer_t&quot; : &quot;Request buffers&quot;
+     CaptureRequest o-- &quot;0..*&quot; ISPC::Shot : &quot;Programmed ISPC shots&quot;
+     CaptureRequest o-- &quot;1&quot; FelixMetadata : &quot;Request metadata&quot;
+ }
+
+ &#64;enduml" width="649px" height="229px"/></a>
+</p>
+</div>
+<div class="figure align-center">
+<p class="plantuml">
+<a href="../_images/plantuml-e1e69ca5f5600ab124136b1908956f6456cc1a3b.png"><img src="../_images/plantuml-e1e69ca5f5600ab124136b1908956f6456cc1a3b.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+ &#64;startuml
+
+ hide empty members
+
+ package &quot;ISPC AAA Control modules&quot; {
+     class ControlHalInterface &lt;&lt; abstract &gt;&gt;
+     class RegionHandler
+     class FelixXXX
+     note bottom : FelixAF, FelixAWB, FelixAE
+     class ISPC::ControlXXX
+     note top : ControlAF, ControlAWB, ControlAE
+
+     ControlHalInterface &lt;|-- FelixXXX
+     RegionHandler &lt;|-- FelixXXX
+     ISPC::ControlXXX &lt;|-- FelixXXX
+
+ }
+
+ &#64;enduml" width="334px" height="233px"/></a>
+</p>
+</div>
+<div class="figure align-center">
+<p class="plantuml">
+<a href="../_images/plantuml-fc762b677a3c8acd645a84bbb25d2fe42e18c1fa.png"><img src="../_images/plantuml-fc762b677a3c8acd645a84bbb25d2fe42e18c1fa.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+ &#64;startuml
+
+ hide empty members
+
+ package &quot;Image data processing&quot; {
+     class CameraGpu
+     note top : Face detection\nImage stabilization\nRolling shutter correction
+     class ImgScaler &lt;&lt; factory &gt;&gt;
+     class ScalerSw &lt;&lt; singleton &gt;&gt;
+     class ScalerHw &lt;&lt; singleton &gt;&gt;
+
+     ImgScaler &lt;|-- ScalerSw
+     ImgScaler &lt;|-- ScalerHw
+     ImgScaler --&gt; ScalerSw : &lt;&lt; instantiates &gt;&gt;
+     ImgScaler --&gt; ScalerHw : &lt;&lt; instantiates &gt;&gt;
+ }
+
+ &#64;enduml" width="269px" height="155px"/></a>
+</p>
+</div>
+</div>
+<div class="section" id="class-responsibilities">
+<span id="android-hal-class-responsibilities"></span><h3>Class responsibilities<a class="headerlink" href="#class-responsibilities" title="Permalink to this headline">¶</a></h3>
+<p>The library objects can be grouped into 7 different functionalities. These are:</p>
+<ol class="arabic simple">
+<li><a class="reference internal" href="#android-hal-class-interface"><span>Camera HAL v3.0 interface</span></a></li>
+<li><a class="reference internal" href="#android-hal-hw-handling"><span>Hardware abstraction</span></a></li>
+<li><a class="reference internal" href="#android-hal-cap-req"><span>Capture request processing</span></a></li>
+<li><a class="reference internal" href="#android-hal-aaa"><span>AAA handling</span></a></li>
+<li><a class="reference internal" href="#android-hal-jpeg-compr"><span>JPEG compressor</span></a></li>
+<li><a class="reference internal" href="#android-hal-img-proc"><span>Image processing</span></a></li>
+<li><a class="reference internal" href="#android-hal-helpers"><span>Helper classes</span></a></li>
+</ol>
+<p>The following paragraphs contain high level description, design pattern used and
+data flow of each class.</p>
+<div class="section" id="camera-hal-v3-0-interface">
+<span id="android-hal-class-interface"></span><h4>Camera HAL v3.0 interface<a class="headerlink" href="#camera-hal-v3-0-interface" title="Permalink to this headline">¶</a></h4>
+<p>This is the borderline between android framework and Camera HAL library. The
+classes expose the camera through <code class="docutils literal"><span class="pre">Camera</span> <span class="pre">module</span> <span class="pre">interface</span> <span class="pre">version</span> <span class="pre">2</span></code>
+(<code class="docutils literal"><span class="pre">FelixCameraHAL</span></code>) and Camera HAL device interface versions 3.0
+(<code class="docutils literal"><span class="pre">FelixCamera</span></code>) and 3.2 (<code class="docutils literal"><span class="pre">FelixCamera3v2</span></code>).</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">FelixCameraHAL</span></code>:</dt>
+<dd><p class="first">FelixCameraHAL is the camera instance factory. This class is responsible
+of construction and initialisation of up to two instances of
+<code class="docutils literal"><span class="pre">FelixCamera[3v2]</span></code> class. The instances and supported API version is being
+chosen statically at build time. Please refer to <a class="reference internal" href="#android-hal-config"><span>Library configuration</span></a>
+for configuration method.</p>
+<p>The design pattern of choice is a <code class="docutils literal"><span class="pre">Singleton</span></code>, which allows for
+deferred, in-place object construction.</p>
+<p><strong>Implementation details</strong></p>
+<p>Each supported instance of <code class="docutils literal"><span class="pre">FelixCamera</span></code> class is being constructed and
+stored in internal container by <code class="docutils literal"><span class="pre">FelixCameraHAL</span></code> constructor. This
+instance is eventually passed indirectly to the framework as
+<code class="docutils literal"><span class="pre">hw_device_t*</span></code> pointer in the call:</p>
+<div class="highlight-C++"><div class="highlight"><pre><span class="n">FelixCameraHAL</span><span class="o">::</span><span class="n">device_open</span><span class="p">(</span><span class="k">const</span> <span class="kt">hw_module_t</span><span class="o">*</span> <span class="n">module</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">name</span><span class="p">,</span>
+    <span class="kt">hw_device_t</span><span class="o">**</span> <span class="n">device</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>This effectively returns the pointer to <code class="docutils literal"><span class="pre">FelixCamera</span></code> object because the
+structure <code class="docutils literal"><span class="pre">camera3_device_t</span></code> is just an &#8216;C&#8217; extension of <code class="docutils literal"><span class="pre">hw_device_t</span></code>.</p>
+<p>These dependencies are shown on the Camera Inheritance tree diagram.</p>
+<div class="last figure align-center">
+<p class="plantuml">
+<a href="../_images/plantuml-4dc44382dfcb0c77982da0a21303ce3bb6260e4e.png"><img src="../_images/plantuml-4dc44382dfcb0c77982da0a21303ce3bb6260e4e.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+
+hide empty members
+
+package &quot;Camera Inheritance tree&quot; {
+
+class android::hw_device_t
+note right : Generic hardware device API descriptor
+class android::camera3_device_t
+note right : Camera device API descriptor
+class FelixCamera
+note right : Instantiated in Kitkat
+class FelixCamera3v2
+note right : Instantiated in Lollipop and later
+android::hw_device_t &lt;|-- android::camera3_device_t
+android::camera3_device_t &lt;|-- FelixCamera
+FelixCamera &lt;|-- FelixCamera3v2
+
+}
+&#64;enduml" width="325px" height="237px"/></a>
+</p>
+</div>
+</dd>
+<dt><code class="docutils literal"><span class="pre">FelixCamera</span></code>:</dt>
+<dd><p class="first">This class implements Camera HAL API 3.0 interface, which is the maximum
+HAL API version supported in Android Kitkat (tested on Android 4.4 and up).
+This class also takes the role of the base class of <code class="docutils literal"><span class="pre">FelixCamera3v2</span></code>
+build in Lollipop distributions and later.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Camera HAL v3.0 interface in Kitkat has been provided on the basis of
+support for early implementations of more advanced future camera drivers.
+As, at the same time, there was no official support for new high level
+<code class="docutils literal"><span class="pre">android.hardware.camera2</span></code> Java API, the media framework effectively
+translates legacy <strong>android.hardware.camera</strong> calls into native HAL 3.0
+api calls. In effect, only a subset of HAL 3.0 features is being utilized.</p>
+</div>
+<p><strong>Implementation details</strong></p>
+<p>The direct interface between the media framework and the HAL library is
+done using pointers to static member functions. An example of such
+interface call is:</p>
+<div class="highlight-C++"><div class="highlight"><pre><span class="k">static</span> <span class="kt">int</span> <span class="nf">initialize</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">camera3_device</span> <span class="o">*</span><span class="p">,</span>
+    <span class="k">const</span> <span class="kt">camera3_callback_ops_t</span> <span class="o">*</span><span class="n">callback_ops</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The interface call obtains the <code class="docutils literal"><span class="pre">FelixCamera</span></code> object instance from
+<code class="docutils literal"><span class="pre">struct</span> <span class="pre">camera3_device</span> <span class="pre">*</span></code> using simple cast operation (
+<code class="docutils literal"><span class="pre">FelixCamera::getInstance()</span></code>), and then pass
+the call parameters further to a actual implementation of API call in
+specific FelixCamera instance.</p>
+<p class="last">Each instance of the class is the owner of it&#8217;s own instances of
+<code class="docutils literal"><span class="pre">ProcessingThread</span></code>, <code class="docutils literal"><span class="pre">JpegEncoder</span></code>, <code class="docutils literal"><span class="pre">CameraGpu</span></code> and <code class="docutils literal"><span class="pre">HwCaps</span></code>,
+and contains the reference to <code class="docutils literal"><span class="pre">HwManager</span></code> singleton instance. It also
+stores camera metadata (static info and request related) and
+manages currently configured streams by means of storing the dynamic list of
+<code class="docutils literal"><span class="pre">PrivateStreamInfo</span></code> objects.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">FelixCamera3v2</span></code>:</dt>
+<dd><p class="first">This class implements Camera HAL API 3.2 interface, which is purposed
+for use in Android Lollipop and later (tested on Android 5.0 and up).
+Instead of aligning functionality of <code class="docutils literal"><span class="pre">FelixCamera</span></code> class to more advanced
+HAL 3v2 interface, the class inherits and extends <code class="docutils literal"><span class="pre">FelixCamera</span></code>. This
+approach has simplified maintenance of HAL functionality for Kitkat.</p>
+<p class="last">The separation made extension of static capabilities and default request
+metadata as well as addition of <code class="docutils literal"><span class="pre">flush()</span></code> call much easier.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="hardware-handling">
+<span id="android-hal-hw-handling"></span><h4>Hardware handling<a class="headerlink" href="#hardware-handling" title="Permalink to this headline">¶</a></h4>
+<p>The group providing abstraction of ISP hardware and ISPC libraries.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">HwCaps</span></code></dt>
+<dd><p class="first">This class is a container class meant for storing stream related
+hardware capabilities. The capabilities include supported pixel formats,
+resolutions and respective sensor modes and minimum frame durations. The
+caps are defined for all supported camera sensors and chosen at object
+construction phase.</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In order to add support for new sensors to HAL, this class must be
+extended with valid data.</p>
+</div>
+</dd>
+<dt><code class="docutils literal"><span class="pre">HwManager</span></code></dt>
+<dd><p class="first">HwManager class provides a separation layer between HAL and lower level
+ISPC and CI libraries, adds management of multiple contexts and their
+outputs and provides other helper methods.</p>
+<p><strong>Implementation details</strong></p>
+<p>The connection to CI kernel module is initialized at object construction
+time. Eventually, the HwManager object creates and configures the instance
+of <code class="docutils literal"><span class="pre">ISPC::Sensor</span></code>. This is done in order of reading the sensor parameters
+for early generation of static camera metadata. The camera pipelines
+(<code class="docutils literal"><span class="pre">ISPC::Camera</span></code> objects) are allocated when the application opens the
+camera HAL (<code class="docutils literal"><span class="pre">open_camera()</span></code>). Finally, the sensor object is connected to
+the main pipeline object.</p>
+<p>A large group of <code class="docutils literal"><span class="pre">HwManager</span></code> methods operate on initialized contexts,
+that is, for example <code class="docutils literal"><span class="pre">HwManager::startCapture(void)</span></code> starts the pipeline
+capture on all <code class="docutils literal"><span class="pre">ISPC::Camera</span></code> objects owned by the specific instance of
+<code class="docutils literal"><span class="pre">HwManager</span></code>.</p>
+<p>One of the most important methods provided by <code class="docutils literal"><span class="pre">HwManager</span></code> class is the</p>
+<div class="highlight-C++"><div class="highlight"><pre><span class="n">cameraHw_t</span><span class="o">*</span> <span class="n">HwManager</span><span class="o">::</span><span class="n">attachStream</span><span class="p">(</span>
+    <span class="k">const</span>
+    <span class="kt">camera3_stream_t</span><span class="o">*</span> <span class="k">const</span> <span class="n">newStream</span><span class="p">,</span> <span class="n">CI_BUFFTYPE</span><span class="o">&amp;</span> <span class="n">ciBuffType</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>This method is being used by <code class="docutils literal"><span class="pre">configure_streams()</span></code> call to attach the
+output stream to one of the available HW outputs in one of the configured
+HW contexts. The association is done by storing the pairing between stream
+and the context in internal <code class="docutils literal"><span class="pre">buffersMap</span></code> container. Other action done
+after pairing is configuration of the context output in <code class="docutils literal"><span class="pre">ISPC::ModuleOUT</span></code>
+module.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Output buffers purposed for capturing JPEG compressed images are allocated
+as BLOB type. As current HAL implementation uses software based JPEG
+compressor, this kind of buffers is not imported into ISP memory
+(that is, not mapped into ISP virtual memory space). Whether or not the
+BLOB buffers can be imported to HW MMU, is decided in
+<code class="docutils literal"><span class="pre">HwManager::getOutputParams()</span></code> method.</p>
+</div>
+<p><strong>Hardware access lock</strong></p>
+<p class="last">The <code class="docutils literal"><span class="pre">HwManager</span></code> class implements the global hardware lock mechanism, used
+internally by the class methods as well as exported to other entities by
+<code class="docutils literal"><span class="pre">android::Mutex</span> <span class="pre">HwManager::getHwLock()</span></code> method. This lock shall be used
+to control simultaneous access to ISPC library from more than one threads.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">HwTimeBase</span></code></dt>
+<dd><p class="first">Provides the time base synchronisation service for platforms, where the
+system clock read by <code class="docutils literal"><span class="pre">int64_t</span> <span class="pre">elapsedRealtimeNano()</span></code> call has different
+clock domain comparing to the 32 bit capture timestamps provided by v2500
+ISP hardware.</p>
+<p><strong>Implementation details</strong></p>
+<p>As, each capture result shall be returned with the high resolution
+timestamp reflecting the moment of exposition start, and the framework
+(especially video recorder) would compare the frame timestamps with system
+clock, the hardware timestamps must be synchronized to the system clock
+domain for comparison purpose.</p>
+<p>The principle of operation is very simple: the first capture after call
+to <code class="docutils literal"><span class="pre">HwManager::initHwNanoTimer()</span></code> stores the baseline system timestamp of
+the current capture session. This baseline comes from system clock and is
+converted to the HW clock domain using
+<code class="docutils literal"><span class="pre">uint64_t</span> <span class="pre">HwTimeBase::nsToHwClock(const</span> <span class="pre">nsecs_t</span> <span class="pre">nanoTime)</span></code>. The next
+timestamps are calculated by adding the calculated frame duration to the
+baseline. The resulting timestamp is converted back to system clock domain
+by <code class="docutils literal"><span class="pre">nsecs_t</span> <span class="pre">HwTimeBase::hwClockToNs(const</span> <span class="pre">uint64_t</span> <span class="pre">cycles)</span></code> and  returned
+with the capture to the framework.</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Because system clock and ISP clock can have different hardware sources,
+some measureable clock drift will occur between hardware clock domain
+converted to system clock domain and current system clock.
+In time, the drift may grow to values having negative impact on other
+parts of A/V pipeline (such as video encoder or sync with audio). As
+a countermeasure, the baseline correction can be optionally applied
+so the clock. This can be enabled at build time by setting
+<code class="docutils literal"><span class="pre">MONITOR_CLOCK_DRIFT</span></code> in <code class="docutils literal"><span class="pre">HwManager.cpp</span></code>, and would rebase the
+timestamp clock if the difference between system based and
+HW based timestamp grows above 1ms.</p>
+</div>
+</dd>
+</dl>
+</div>
+<div class="section" id="capture-request-processing">
+<span id="android-hal-cap-req"></span><h4>Capture request processing<a class="headerlink" href="#capture-request-processing" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">CaptureRequest</span></code></dt>
+<dd><p class="first">The capture request abstraction, represents the single capture request
+across the whole Camera HAL. It also carries the request&#8217;s metadata and
+&#8220;output buffer - hardware context&#8221; pairings.</p>
+<p>Provides the implementation of different request processing phases:</p>
+<ul class="last simple">
+<li>initial preprocessing</li>
+<li>programming to hardware</li>
+<li>shot acquisition from hardware</li>
+<li>sending capture results.</li>
+</ul>
+</dd>
+<dt><code class="docutils literal"><span class="pre">FelixMetadata</span></code></dt>
+<dd><p class="first">The class derives from <code class="docutils literal"><span class="pre">android::CameraMetadata</span></code> class and extends it
+by the various processing methods for various metadata:</p>
+<ul class="simple">
+<li>AAA regions</li>
+<li>crop region</li>
+<li>statistics</li>
+<li>exposure parameters</li>
+<li>jpeg</li>
+<li>GPS etc.</li>
+</ul>
+<p class="last">The class also contains storage for chosen parameters carried by
+previous capture request. This is useful in monitoring changes in status of
+crop region and effect mode.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">ProcessingThread</span></code></dt>
+<dd><p class="first">Implementation of asynchronous capture request processing thread.
+It provides an interface for queuing <code class="docutils literal"><span class="pre">CaptureRequest</span></code> objects, signalling
+successful capture results and querying the state of internal
+queue and flush operation.</p>
+<p><strong>Implementation details</strong></p>
+<p><code class="docutils literal"><span class="pre">ProcessingThread</span></code> derives from <code class="docutils literal"><span class="pre">android::Thread</span></code> and
+<code class="docutils literal"><span class="pre">JpegEncoder::JpegListener</span></code> in the purpose of asynchronous notification
+on finishing JPEG compression through
+<code class="docutils literal"><span class="pre">JpegEncoder::JpegListener::onJpegDone()</span></code> call. The class
+<code class="docutils literal"><span class="pre">android::Thread</span></code> adds the prototype of <code class="docutils literal"><span class="pre">bool</span> <span class="pre">threadLoop()</span></code> method, and
+its implementation <code class="docutils literal"><span class="pre">ProcesingThread::threadLoop()</span></code> is the actual request
+processing thread.</p>
+<p class="last">For more details on comunication between FelixCamera and threadLoop()
+please refer to <a class="reference internal" href="#android-hal-pipeline"><span>Pipeline of capture request processing</span></a>.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="aaa">
+<span id="android-hal-aaa"></span><h4>AAA<a class="headerlink" href="#aaa" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">ControlHalInterface</span></code></dt>
+<dd><p class="first">An Abstract base class purposed to define a standard interface between
+HAL custom AAA control modules and the rest of HAL library.</p>
+<p><strong>Implementation details</strong></p>
+<p>The interface consists of the following pure virtual functions:</p>
+<ul class="last">
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">status_t</span> <span class="pre">initialize(void);</span></code></dt>
+<dd><p class="first last">Post construction initialization of module</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">status_t</span> <span class="pre">processUrgentHALMetadata(FelixMetadata</span> <span class="pre">&amp;settings);</span></code></dt>
+<dd><p class="first last">Process AAA request metadata BEFORE enqueueing the shot in the ISP
+pipeline. Mainly used to program requested regions, sensor exposure
+settings etc. which apply for current request.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">status_t</span> <span class="pre">processDeferredHALMetadata(FelixMetadata</span> <span class="pre">&amp;settings);</span></code></dt>
+<dd><p class="first last">Postprocess AAA request metadata BEFORE acquiring the specific shot from
+ISP. Used to set the proper state machine input. The state machine will
+be executed in FelixXXX::update() method AFTER acquiring the shot.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">status_t</span> <span class="pre">updateHALMetadata(FelixMetadata</span> <span class="pre">&amp;settings);</span></code> Update</dt>
+<dd><p class="first last">request metadata fields related to specifiv AAA functionality Used to
+fill the metadata with shot statistics and current AAA state before
+sending capture result.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">status_t</span> <span class="pre">initRequestMetadata(FelixMetadata</span> <span class="pre">&amp;settings,</span> <span class="pre">int</span> <span class="pre">type);</span></code></dt>
+<dd><p class="first last">Initialization of request template related with specific AAA
+functionality</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">static</span> <span class="pre">void</span> <span class="pre">advertiseCapabilities(CameraMetadata</span> <span class="pre">&amp;info);</span></code></dt>
+<dd><p class="first last">Initialization of static camera info related with specific AAA
+functionality</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+<dt><code class="docutils literal"><span class="pre">FelixAF,</span> <span class="pre">FelixAE,</span> <span class="pre">FelixAWB</span></code></dt>
+<dd>Android Camera HAL specific AAA control modules. These modules are HAL
+specific &#8216;plug-ins&#8217; for <code class="docutils literal"><span class="pre">ISPC</span></code> library control module functionality, and
+are created as direct replacements for their base classes
+<code class="docutils literal"><span class="pre">ISPC::ControlAF</span></code>, <code class="docutils literal"><span class="pre">ISPC::ControlAE</span></code> and <code class="docutils literal"><span class="pre">ISPC::ControlAWB</span></code>. The
+classes implement common <code class="docutils literal"><span class="pre">ControlHalInterface</span></code> methods and a
+<code class="docutils literal"><span class="pre">RegionHandler&lt;&gt;</span></code> template class, for convenient handling of AAA regions.</dd>
+</dl>
+<p>For more on handling AAA metadata flow please refer to
+<a class="reference internal" href="#android-hal-metadata"><span>Metadata handling</span></a>.</p>
+</div>
+<div class="section" id="jpeg-compression">
+<span id="android-hal-jpeg-compr"></span><h4>JPEG compression<a class="headerlink" href="#jpeg-compression" title="Permalink to this headline">¶</a></h4>
+<p>This group of classes is responsible of encoding image data to JPEG format and
+generation of Exif embedded headers.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">JpegEncoder</span></code></dt>
+<dd><p class="first">This class implements common encoder operations and supports JPEG
+compression run in separate thread.</p>
+<p><strong>Implementation details</strong></p>
+<p><code class="docutils literal"><span class="pre">JpegEncoder</span></code> derives from <code class="docutils literal"><span class="pre">android::Thread</span></code> for threading support
+and an abstract base <code class="docutils literal"><span class="pre">JpegBasicIo</span></code>, for write operations inside jpeg data
+buffer. The proper implementation of <code class="docutils literal"><span class="pre">JpegBasicIo</span></code> has been left to it&#8217;s
+child classes.</p>
+<p>At the same time the class implements a static <code class="docutils literal"><span class="pre">JpegEncoder::get()</span></code>
+factory method which, depending on the <code class="docutils literal"><span class="pre">USE_HARDWARE_JPEG_COMPRESSOR</span></code>
+environment variable, instantiates software or hardware based Jpeg
+compressor object.</p>
+<p>Another supported interface is the external
+<code class="docutils literal"><span class="pre">JpegEncoder::JpegListener</span></code> object (usually caller of <code class="docutils literal"><span class="pre">JpegEncoder</span></code>)
+which is being asyncronously notified about finished compression by calling
+<code class="docutils literal"><span class="pre">onJpegDone()</span></code> on it.</p>
+<p>The proposed sequence to initialize the compression using provided
+<code class="docutils literal"><span class="pre">StreamBuffer</span></code> buffers and <code class="docutils literal"><span class="pre">FelixMetadata</span></code> container is:</p>
+<div class="last highlight-C++"><div class="highlight"><pre><span class="n">StreamBuffer</span> <span class="n">encoderInputBuffer</span><span class="p">;</span>
+<span class="n">StreamBuffer</span> <span class="n">encoderInputBuffer</span><span class="p">;</span>
+<span class="n">FelixMetadata</span> <span class="n">FrameSettings</span><span class="p">;</span>
+<span class="p">...</span>
+<span class="c1">// get or create instance of JpegEncoderSw</span>
+<span class="n">JpegEncoder</span><span class="o">&amp;</span> <span class="n">jpeg</span> <span class="o">=</span> <span class="n">JpegEncoder</span><span class="o">::</span><span class="n">get</span><span class="p">();</span>
+<span class="c1">// set buffers</span>
+<span class="n">jpeg</span><span class="p">.</span><span class="n">setInputBuffer</span><span class="p">(</span><span class="n">encoderInputBuffer</span><span class="p">);</span>
+<span class="n">jpeg</span><span class="p">.</span><span class="n">setOutputBuffer</span><span class="p">(</span><span class="n">encoderOutputBuffer</span><span class="p">);</span>
+<span class="n">jpeg</span><span class="p">.</span><span class="n">setRequestMetadata</span><span class="p">(</span><span class="n">FrameSettings</span><span class="p">);</span>
+<span class="c1">// the caller class derives from JpegEncoder::JpegListener</span>
+<span class="n">jpeg</span><span class="p">.</span><span class="n">setJpegListener</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+<span class="c1">// spawn the compression thread</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">jpeg</span><span class="p">.</span><span class="n">start</span><span class="p">()</span> <span class="o">!=</span> <span class="n">OK</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">UNKNOWN_ERROR</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="p">...</span>
+<span class="c1">// wait for asynchronous onJpegDone() call</span>
+</pre></div>
+</div>
+</dd>
+<dt><code class="docutils literal"><span class="pre">JpegEncoder::JpegListener</span></code></dt>
+<dd>This class defines a simple listener/observer pattern for every module
+using <code class="docutils literal"><span class="pre">JpegEncoder</span></code> class. The observer registration is made by
+<code class="docutils literal"><span class="pre">JpegEncoder::setJpegListener()</span></code> call and the observer notification is
+done by compression thread calling
+<code class="docutils literal"><span class="pre">JpegEncoder::JpegListener::onJpegDone()</span></code> method.</dd>
+<dt><code class="docutils literal"><span class="pre">JpegEncoderSw</span></code></dt>
+<dd><p class="first">The class implements purely software based JPEG image compression. The
+actual compression is done using external <code class="docutils literal"><span class="pre">libjpeg</span></code> library.</p>
+<p><strong>Implementation details</strong></p>
+<p class="last">The implementation consist of custom <code class="docutils literal"><span class="pre">libjpeg</span></code> callbacks and image
+data preparation with support for YUV420/422 and RGB24 buffers. Because of
+specific requirements on YUV image data organisation imposed by
+<code class="docutils literal"><span class="pre">libjpeg</span></code>, the deinterleaving code has been implemented so the input
+image data for the library is reorganized in separate Y-U-V or R-G-B planes.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">JpegBasicIo</span></code></dt>
+<dd>This is a simple byte write interface for <code class="docutils literal"><span class="pre">ExifWriter</span></code> class, designed
+to be implemented in JpegEncoder child classes. External <code class="docutils literal"><span class="pre">ExifWriter</span></code>
+object can use it to write the Exif data into current location of output
+buffer, known only by Jpeg encoder.</dd>
+<dt><code class="docutils literal"><span class="pre">ExifWriter</span></code></dt>
+<dd><p class="first">Abstraction for external <code class="docutils literal"><span class="pre">libexif</span></code> library implemented for Exif header
+generation with thumbnail support. The version of Exif header currently
+supported by Android Lollipop release is 2.1.</p>
+<p><strong>Implementation details</strong></p>
+<p>The object constructor is called with reference to <code class="docutils literal"><span class="pre">JpegBasicIo</span></code> and
+<code class="docutils literal"><span class="pre">FelixMetadata</span></code> objects. First provides byte byffer write operations, the
+latter is the container with source metadata to be written in Exif format.</p>
+<p>The Exif header generation is done in <code class="docutils literal"><span class="pre">writeApp1()</span></code> method.</p>
+<p>Please find below the list of exif tags directly generated by
+<code class="docutils literal"><span class="pre">ExifWriter</span></code> object. This list has been chosen as the bare minimum to
+pass the CTS tests suite in Lollipop:</p>
+<ul class="last simple">
+<li>EXIF_TAG_COMPRESSION</li>
+<li>EXIF_TAG_FOCAL_LENGTH</li>
+<li>EXIF_TAG_EXPOSURE_TIME</li>
+<li>EXIF_TAG_APERTURE_VALUE</li>
+<li>EXIF_TAG_ISO_SPEED_RATINGS</li>
+<li>EXIF_TAG_FLASH</li>
+<li>EXIF_TAG_WHITE_BALANCE</li>
+<li>EXIF_TAG_ORIENTATION</li>
+<li>EXIF_TAG_PIXEL_X_DIMENSION</li>
+<li>EXIF_TAG_PIXEL_Y_DIMENSION</li>
+<li>EXIF_TAG_COLOR_SPACE</li>
+<li>EXIF_TAG_COMPONENTS_CONFIGURATION</li>
+<li>EXIF_TAG_MODEL</li>
+<li>EXIF_TAG_MAKE</li>
+<li>EXIF_TAG_DATE_TIME</li>
+<li>EXIF_TAG_DATE_TIME_DIGITIZED</li>
+<li>EXIF_TAG_DATE_TIME_ORIGINAL</li>
+<li>EXIF_TAG_SUB_SEC_TIME</li>
+<li>EXIF_TAG_SUB_SEC_TIME_DIGITIZED</li>
+<li>EXIF_TAG_SUB_SEC_TIME_ORIGINAL</li>
+<li>EXIF_TAG_GPS_LATITUDE</li>
+<li>EXIF_TAG_GPS_LATITUDE_REF</li>
+<li>EXIF_TAG_GPS_LONGITUDE</li>
+<li>EXIF_TAG_GPS_LONGITUDE_REF</li>
+<li>EXIF_TAG_GPS_ALTITUDE</li>
+<li>EXIF_TAG_GPS_ALTITUDE_REF</li>
+<li>EXIF_TAG_GPS_TIME_STAMP</li>
+<li>EXIF_TAG_GPS_DATE_STAMP</li>
+<li>EXIF_TAG_GPS_PROCESSING_METHOD</li>
+<li>EXIF_TAG_JPEG_INTERCHANGE_FORMAT</li>
+<li>EXIF_TAG_JPEG_INTERCHANGE_FORMAT_LENGTH</li>
+</ul>
+</dd>
+</dl>
+<p>The complete execution flow of the Jpeg compression within Camera HAL has been
+pictured in <a class="reference internal" href="#android-hal-jpeg-request"><span>JPEG reprocessing request</span></a>.</p>
+</div>
+<div class="section" id="image-processing">
+<span id="android-hal-img-proc"></span><h4>Image processing<a class="headerlink" href="#image-processing" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">ImgScaler</span></code></dt>
+<dd><p class="first">The abstract base class and at the same time a factory for <code class="docutils literal"><span class="pre">ScalerSw</span></code>
+and <code class="docutils literal"><span class="pre">ScalerHw</span></code> specializations.</p>
+<p><strong>Implementation details</strong></p>
+<p>The specialized child classes are instantiated by calling</p>
+<div class="highlight-C++"><div class="highlight"><pre><span class="k">static</span> <span class="n">ImgScaler</span><span class="o">&amp;</span> <span class="n">ImgScaler</span><span class="o">::</span><span class="n">get</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>The actual scaling is done by implementation of</p>
+<div class="last highlight-C++"><div class="highlight"><pre><span class="kt">status_t</span> <span class="nf">scale</span><span class="p">(</span><span class="n">StreamBuffer</span><span class="o">&amp;</span> <span class="n">src</span><span class="p">,</span> <span class="n">StreamBuffer</span><span class="o">&amp;</span> <span class="n">dst</span><span class="p">);</span>
+</pre></div>
+</div>
+</dd>
+<dt><code class="docutils literal"><span class="pre">ScalerSw</span></code></dt>
+<dd>This child class of <code class="docutils literal"><span class="pre">ImgScaler</span></code> implements software based downscaling.
+The implementation supports YUV and RGB24 images.</dd>
+<dt><code class="docutils literal"><span class="pre">CameraGpu</span></code></dt>
+<dd><p class="first">This class is a wrapper around <code class="docutils literal"><span class="pre">camera_gpu</span></code> class defined in external
+<strong>Vision libraries</strong> library package for Android. The <code class="docutils literal"><span class="pre">camera_gpu</span></code>
+implements PoverVR based, accelerated image transformations like:</p>
+<ul class="last simple">
+<li>face detection</li>
+<li>image stabilization</li>
+<li>rolling shutter correction</li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="helper-classes">
+<span id="android-hal-helpers"></span><h4>Helper classes<a class="headerlink" href="#helper-classes" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">PrivateStreamInfo</span></code></dt>
+<dd><p class="first">This class represents an Camera HAL output stream. The instances of this
+class are managed by  <code class="docutils literal"><span class="pre">FelixCamera</span></code> and passed through <code class="docutils literal"><span class="pre">void*</span>
+<span class="pre">priv</span></code> pointer in <code class="docutils literal"><span class="pre">camera3_stream_t</span></code> structure.</p>
+<p><strong>Implementation details</strong></p>
+<p class="last">This class allows management of buffers accosiated with respective
+stream.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">StreamBuffer</span></code></dt>
+<dd>This class is a utility wrapper class around framework provided
+<code class="docutils literal"><span class="pre">camera3_stream_buffer_t</span></code> buffer descriptor. It abstracts different
+<code class="docutils literal"><span class="pre">mmap</span></code> implementations for YUV and RGB buffer types
+via``lock()/unlock()`` methods as well as easy association of current
+buffer with proper HW output from a group of available contexts.</dd>
+<dt><code class="docutils literal"><span class="pre">localStreamBuffer</span></code></dt>
+<dd>This class, derived from <code class="docutils literal"><span class="pre">StreamBuffer</span></code>, represents image buffers
+allocated in-place for HAL internal usage. It&#8217;s mainly used for allocation
+of local buffer purposed for non ZSL captures and for intermediate
+scaled/cropped images in JPEG compression execution flow.</dd>
+<dt><code class="docutils literal"><span class="pre">sRegion</span></code></dt>
+<dd>Extension of``android::Rect`` class providing means for managing these
+objects as tiled weighted regions. This class is used throughout all AAA
+control modules in HAL.</dd>
+<dt><code class="docutils literal"><span class="pre">RegionHandler&lt;&gt;</span></code></dt>
+<dd><p class="first">This abstract base class implements the means of management of weighted
+regions group.</p>
+<p>The support for different algorithms has been defined for internal use
+of AAA class deriving from <code class="docutils literal"><span class="pre">RegionHandler</span></code>.</p>
+<p>The predefined operation modes are:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">CENTER_WEIGHT</span></code> The output matrix calculation uses predefined matrix
+with centered weights (the weight is highest on center of the image and
+falls gradually  towards the egde tiles)</li>
+<li><code class="docutils literal"><span class="pre">BEST_TILE</span></code> The best tile from the weighted input set is determined
+and reported in <code class="docutils literal"><span class="pre">mBestRegion</span></code></li>
+<li><code class="docutils literal"><span class="pre">WEIGHTED_AVERAGE</span></code> This works like <code class="docutils literal"><span class="pre">CENTER_WEIGHT</span></code> but the weight
+matrix is provided in input region data.</li>
+<li><code class="docutils literal"><span class="pre">SINGLE_ROI</span></code> The AAA measurement works on single region only,
+therefore the use of <code class="docutils literal"><span class="pre">weight</span></code> factor in calculations is pointless.</li>
+</ul>
+<p>All algorithms should use <code class="docutils literal"><span class="pre">mCurrentRegions</span></code> as the source set for
+calculation of</p>
+<div class="highlight-C++"><div class="highlight"><pre><span class="n">output</span><span class="p">[</span><span class="n">tile</span><span class="p">]</span> <span class="o">=</span> <span class="n">sRegion</span><span class="p">[</span><span class="n">tile</span><span class="p">].</span><span class="n">weight</span> <span class="o">*</span> <span class="n">metering</span><span class="p">[</span><span class="n">tile</span><span class="p">];</span>
+</pre></div>
+</div>
+<p>product for each input tile.</p>
+<p>The result from the algorithm (the tile with the highest output value)
+may be stored in <code class="docutils literal"><span class="pre">mBestRegion</span></code> member, and used as needed in AAA module.</p>
+<p>For example, AF module would use the sharpest region to set and report
+the best focused region.</p>
+<p>The exact operation mode which should be applied for the current request
+should be determined by calling</p>
+<div class="highlight-C++"><div class="highlight"><pre><span class="kt">metering_mode_t</span> <span class="n">RegionHandler</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">getMeteringMode</span><span class="p">(</span>
+    <span class="k">const</span> <span class="kt">regions_t</span><span class="o">&amp;</span> <span class="n">regions</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>This method implements the rules for region handling, described in
+internal Android documentation file <strong>Android Camera HAL3.0 Properties</strong>
+<a class="footnote-reference" href="#id8" id="id4">[2]</a>.</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The exact choice which modes are supported and further implementation of
+chosen modes is left to specific AAA module.</p>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="structure-of-source-code">
+<span id="android-hal-code-structure"></span><h3>Structure of source code<a class="headerlink" href="#structure-of-source-code" title="Permalink to this headline">¶</a></h3>
+<p>The following structure depicts the most important nodes of Android Camera HAL
+source hierarchy:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ANDROID_BUILD_TOP/hardware/img/v2500
+    |
+    \- DDKSource               (ISP DDK)
+    \--Android
+    |   |
+    |   \--CTS                 (CTS test plans)
+    |   \--FelixCamera         (Camera HAL sources)
+    |   |   |
+    |   |   \--AAA             (AAA handling)
+    |   |   \--Helpers         (Helper classes)
+    |   |   \--JpegEncoder     (Jpeg encoder)
+    |   |   \--Scaler          (Scaler classes)
+    |   |   |
+    |   |   \--Android.mk
+    |   |
+    |   \--gralloc             (custom gralloc sources)
+    |       |
+    |       \Android.mk
+    |
+    \--FelixDefines.mk         (Build time configuration)
+    \--Android.mk              (Android build system Makefile)
+</pre></div>
+</div>
+</div>
+<div class="section" id="external-dependencies">
+<span id="android-hal-dependencies"></span><h3>External dependencies<a class="headerlink" href="#external-dependencies" title="Permalink to this headline">¶</a></h3>
+<p>the following lists all direct shared dependencies of <code class="docutils literal"><span class="pre">Felix</span></code> Camera HAL
+library.</p>
+<div class="section" id="libjpeg-so">
+<h4>libjpeg.so<a class="headerlink" href="#libjpeg-so" title="Permalink to this headline">¶</a></h4>
+<p>Software JPEG compression/decompression library. Provided in Android AOSP and
+built automatically by Android build system from
+<code class="docutils literal"><span class="pre">$ANDROID_BUILD_TOP/external/libexif</span></code>.</p>
+</div>
+<div class="section" id="libexif-so">
+<h4>libexif.so<a class="headerlink" href="#libexif-so" title="Permalink to this headline">¶</a></h4>
+<p>Exif data processing library. Provided in Android AOSP and built automatically
+by Android build system from <code class="docutils literal"><span class="pre">$ANDROID_BUILD_TOP/external/libexif</span></code>.</p>
+</div>
+<div class="section" id="libfelix-ispc-libfelix-sensor-libfelix-ci-libfelix-common">
+<h4>libfelix_ispc, libfelix_sensor, libfelix_ci, libfelix_common<a class="headerlink" href="#libfelix-ispc-libfelix-sensor-libfelix-ci-libfelix-common" title="Permalink to this headline">¶</a></h4>
+<p>Userspace interface for handling <code class="docutils literal"><span class="pre">Felix</span></code> ISP processors. Built from
+<code class="docutils literal"><span class="pre">DDKSource</span></code>. For more information please refer to
+<a class="reference internal" href="../ci/ci_library.html#isp-capture-interface"><span>Capture Interface</span></a> and <a class="reference internal" href="../ispc/ispc_library.html#isp-isp-control-library"><span>ISP Control Library</span></a> chapters.</p>
+</div>
+<div class="section" id="libcameragpu-so">
+<h4>libcameragpu.so<a class="headerlink" href="#libcameragpu-so" title="Permalink to this headline">¶</a></h4>
+<p>This shared module provides HAL interface for vision processing libraries which
+make use of Imagination Technologies GPU processors for the purpose of face
+detection, image stabilization, rolling shutter correction and other software
+based camera pipeline stages. The library and it&#8217;s own dependencies are
+provided by Imagination Technologies in separate package and are built
+independently from Camera HAL. For more information please read
+<a class="reference internal" href="../vision_libraries.html#isp-vision-libraries-usage-instructions"><span>Vision Libraries Usage Instructions</span></a>.</p>
+</div>
+<div class="section" id="android-native-framework">
+<h4>Android native framework<a class="headerlink" href="#android-native-framework" title="Permalink to this headline">¶</a></h4>
+<p>The Android framework dependencies used throughout HAL:</p>
+<ul class="simple">
+<li>libcamera_metadata.so</li>
+<li>liblog.so</li>
+<li>libutils.so</li>
+<li>libcutils.so</li>
+<li>libcamera_client.so</li>
+<li>libui.so</li>
+<li>libstlport.so</li>
+</ul>
+</div>
+</div>
+<div class="section" id="build-system">
+<span id="android-hal-build-system"></span><h3>Build system<a class="headerlink" href="#build-system" title="Permalink to this headline">¶</a></h3>
+<p>The Camera HAL build system has been integrated with Android build system using
+standard <code class="docutils literal"><span class="pre">Android.mk</span></code> files. The main script, placed under ISP Camera HAL
+root <code class="docutils literal"><span class="pre">$ANDROID_BUILD_TOP/hardware/img/v2500</span></code> location, is responsible for
+build-time configuration and serialization of HAL dependency builds
+(<code class="docutils literal"><span class="pre">libfelix_ispc,</span> <span class="pre">libfelix_sensor,</span> <span class="pre">libfelix_ci,</span> <span class="pre">libfelix_common,</span> <span class="pre">gralloc</span></code>).</p>
+<p>The <code class="docutils literal"><span class="pre">$ANDROID_BUILD_TOP/hardware/img/v2500/Android/FelixCamera/Android.mk</span></code>
+script, which is responsible of building main Camera HAL library, parses
+Android <code class="docutils literal"><span class="pre">$PLATFORM_VERSION</span></code> variable and decides on the version of HAL
+interface to be supported by Camera HAL library.</p>
+<p>In effect, under Android 4.x Kitkat, the library will be built with support for
+<strong>HAL v3.0</strong> (implemented in <code class="docutils literal"><span class="pre">FelixCamera.cpp</span></code>). For Android 5.x Lollipop and
+later, the library is built with <strong>HAL v3.2</strong> camera interface (implemented in
+<code class="docutils literal"><span class="pre">FelixCamera3v2.cpp</span></code>).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Due to backward compatibility reasons, <code class="docutils literal"><span class="pre">Felix</span></code> ISP Camera HAL implements
+support for both interface versions. This is because <strong>Kitkat</strong> media
+framework does not support Camera HAL interfaces later than v3.0.</p>
+<p class="last">For <strong>Lollipop</strong>, the Camera HAL library supports most recent interface
+version by design (the current is v3.2).</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The choice of supported version of HAL interface is done in two ways:</p>
+<ol class="arabic simple">
+<li>Value of major number of <code class="docutils literal"><span class="pre">$PLATFORM_VERSION</span></code> which switches optional
+build of &#8216;&#8217;FelixCamera3v2.cpp``</li>
+<li>The value of <code class="docutils literal"><span class="pre">CAMERA_DEVICE_API_VERSION_CURRENT</span></code> defined in
+<code class="docutils literal"><span class="pre">camera_common.h</span></code></li>
+</ol>
+<p>The latter is used for</p>
+<ul class="last simple">
+<li>Instantiation of specific camera device type (<code class="docutils literal"><span class="pre">FelixCamera</span></code> or
+<code class="docutils literal"><span class="pre">FelixCamera3v2</span></code>) in <code class="docutils literal"><span class="pre">FelixCameraHAL::instantiateCamera()</span></code>.</li>
+<li>Several <code class="docutils literal"><span class="pre">#ifdef</span></code> switches in code (used for smaller incompatibilities)</li>
+</ul>
+</div>
+<p>As the build target, the <code class="docutils literal"><span class="pre">LOCAL_MODULE</span></code> variable has been hardcoded to
+<code class="docutils literal"><span class="pre">felix.camera.default</span></code>. In effect, the target library filename is
+<code class="docutils literal"><span class="pre">felix.camera.default.so</span></code>.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>The currently hardcoded <code class="docutils literal"><span class="pre">LOCAL_MODULE</span></code> library name is dependend on
+the patch <code class="docutils literal"><span class="pre">hardware-libhardware_felix_gralloc_camera_default.patch</span></code>.
+This patch changes the default system-wide Camera HAL library prefix from
+<code class="docutils literal"><span class="pre">camera</span></code> to <code class="docutils literal"><span class="pre">felix.camera</span></code> used in media framework <code class="docutils literal"><span class="pre">hardware.c</span></code>
+HAL loader module.</p>
+<p>The customer is encouraged to switch the prefix back to <code class="docutils literal"><span class="pre">camera</span></code>
+for production platforms (by not applying the patch and updating the
+<code class="docutils literal"><span class="pre">Android.mk</span></code> accordingly.</p>
+<p class="last">For more info on configuring Android builds, please refer to
+<a class="reference internal" href="hal_build_instructions.html#isp-android-building-camera-hal"><span>Building Android Camera HAL</span></a>.</p>
+</div>
+<p>The build time configuration of the library is done via
+<code class="docutils literal"><span class="pre">$ANDROID_BUILD_TOP/hardware/img/v2500/FelixDefines.mk</span></code> text file. More on
+library configuration has been described in <a class="reference internal" href="#android-hal-config"><span>Library configuration</span></a>.</p>
+</div>
+<div class="section" id="hardware-requirements">
+<span id="android-hal-hw-requirements"></span><h3>Hardware requirements<a class="headerlink" href="#hardware-requirements" title="Permalink to this headline">¶</a></h3>
+<p>The requirements, which current version of Android Camera HAL imposes on
+<code class="docutils literal"><span class="pre">Felix</span></code> ISP processors, are listed below:</p>
+<div class="section" id="number-of-pipeline-contexts-for-each-opened-camera-instance">
+<h4>Number of pipeline contexts for each opened camera instance<a class="headerlink" href="#number-of-pipeline-contexts-for-each-opened-camera-instance" title="Permalink to this headline">¶</a></h4>
+<p>This hardware requirement comes from the high level Android Camera framework
+requirement saying that at least 2 (for LIMITED) and 3 (for FULL mode devices)
+simultaneous processed output streams must be supported <a class="footnote-reference" href="#id9" id="id5">[3]</a>.</p>
+<p>In ISP hardware each individual context supports a pair of RGB and YUV
+type outputs, each with different resolution.</p>
+<p>The table below summarizes the requirement of number of pipelines required per
+each running camera instance.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="31%" />
+<col width="31%" />
+<col width="38%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">&nbsp;</th>
+<th class="head">Output formats</th>
+<th class="head">Number of HW contexts</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>FPGA-PC</td>
+<td><p class="first">RGB preview</p>
+<p>YUV encode</p>
+<p class="last">YUV 0 shutter lag</p>
+</td>
+<td>2</td>
+</tr>
+<tr class="row-odd"><td>GPU enabled</td>
+<td><p class="first">YUV preview</p>
+<p>YUV encode</p>
+<p class="last">YUV 0 shutter lag</p>
+</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<p>Calculations for different types of platforms follow below.</p>
+<ol class="arabic">
+<li><p class="first">On FPGA-PC development platform.
+This platform does not support GPU+GLES,
+the <strong>software display composer</strong> has to be used in AOSP Android builds.</p>
+<p>Due to lack of support for YUV pixels for display surfaces on such builds,
+RGBX_8888 format is used for best performance of Camera preview. Therefore,
+in order of enabling live camera preview on Android builds for FPGA based PC,
+the patch <code class="docutils literal"><span class="pre">frameworks-av-api1-rgb-preview-stream-format.patch</span></code> has to be
+applied on AOSP sources. This replaces hardware-agnostic
+<code class="docutils literal"><span class="pre">CAMERA2_HAL_PIXEL_FORMAT_OPAQUE</span></code> format requested for preview streams
+(commonly used as YUV) with <code class="docutils literal"><span class="pre">HAL_PIXEL_FORMAT_RGBX_8888</span></code>.</p>
+<p>Because we are able to hardcode the preview output pixel type to RGB type on
+FPGA-PC this needs 1 HW context. Handling the additional 2 YUV outputs
+need another HW context. This in effect requires context 0 for RGB+YUV
+and context 1 for YUV only.</p>
+</li>
+<li><p class="first">GPU enabled platform.
+This platform would most probably need YUV data as the source for
+hardware preview surfaces, there&#8217;s no possibility to use RGB data for it,
+thus requiring 3 separate hardware contexts to output at least three
+simultaneous YUV streams for best possible performance.</p>
+</li>
+</ol>
+<hr class="docutils" />
+</div>
+</div>
+</div>
+<div class="section" id="implementation-of-camera-hal-v3-x">
+<span id="android-hal-implementation"></span><h2>Implementation of Camera HAL v3.x<a class="headerlink" href="#implementation-of-camera-hal-v3-x" title="Permalink to this headline">¶</a></h2>
+<p>The Camera HAL library for Felix ISP has been developed in C++ language with
+C++11 support enabled by compiler parameter in <code class="docutils literal"><span class="pre">FelixCamera/Android.mk</span></code> file.</p>
+<div class="section" id="interface-calls">
+<span id="android-hal-if-calls"></span><h3>Interface calls<a class="headerlink" href="#interface-calls" title="Permalink to this headline">¶</a></h3>
+<p>This chapter contains description of each camera interface call with additional
+explanation covering the implementation details.</p>
+<p>The order of execution is shown in the lifetime diagram in
+<a class="reference internal" href="#android-hal-lifetime"><span>Lifetime of Camera HAL</span></a>.</p>
+<div class="section" id="open">
+<h4>open()<a class="headerlink" href="#open" title="Permalink to this headline">¶</a></h4>
+<p>This call, declared in <code class="docutils literal"><span class="pre">hw_module_methods_t</span></code> structure and provided to the
+camera framework in <code class="docutils literal"><span class="pre">camera_module_t</span> <span class="pre">HAL_MODULE_INFO_SYM</span></code> symbol defined in
+<code class="docutils literal"><span class="pre">FelixCameraHAL.cpp</span></code> file, implements a delegate to target method</p>
+<div class="highlight-C++"><div class="highlight"><pre><span class="kt">status_t</span> <span class="n">FelixCamera</span><span class="o">::</span><span class="n">connectCamera</span><span class="p">(</span><span class="kt">hw_device_t</span><span class="o">**</span> <span class="n">device</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>of chosen instance of camera, through</p>
+<div class="highlight-C++"><div class="highlight"><pre><span class="kt">int</span> <span class="n">FelixCameraHAL</span><span class="o">::</span><span class="n">cameraDeviceOpen</span><span class="p">(</span><span class="kt">int</span> <span class="n">camera_id</span><span class="p">,</span> <span class="kt">hw_device_t</span><span class="o">**</span> <span class="n">device</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This call initializes the camera instance by:</p>
+<ul class="simple">
+<li>instantiation of <code class="docutils literal"><span class="pre">ProcessingThread</span></code> object</li>
+<li>initialization of all hardware contexts used in specific camera instance
+(currently hardcoded to 2 for each opened camera instance)</li>
+<li>instantiation of all control modules (including AAA modules)</li>
+<li>setting default pipeline configuration</li>
+</ul>
+<p>and returns the pointer to the initialized camera instance object
+(<code class="docutils literal"><span class="pre">FelixCamera</span></code>).</p>
+</div>
+<div class="section" id="get-camera-info">
+<h4>get_camera_info()<a class="headerlink" href="#get-camera-info" title="Permalink to this headline">¶</a></h4>
+<p>This is a delegate to camera instance&#8217;s</p>
+<div class="highlight-C++"><div class="highlight"><pre><span class="kt">status_t</span> <span class="n">FelixCamera</span><span class="o">::</span><span class="n">getCameraInfo</span><span class="p">(</span><span class="k">struct</span> <span class="n">camera_info</span> <span class="o">*</span><span class="n">info</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The purpose of this call is to return static camera info and capabilities to the
+media framework. The pointer to the static camera info must be valid throughout
+lifetime of specific camera instance, and is stored in
+<code class="docutils literal"><span class="pre">FelixCamera::mCameraStaticInfo</span></code> field.</p>
+</div>
+<div class="section" id="construct-default-request-settings">
+<span id="android-camera-hal-request-def-settings"></span><h4>construct_default_request_settings()<a class="headerlink" href="#construct-default-request-settings" title="Permalink to this headline">¶</a></h4>
+<p>This call is implemented in <code class="docutils literal"><span class="pre">FelixCamera</span></code> class and is a delegate for</p>
+<div class="highlight-C++"><div class="highlight"><pre><span class="kt">camera_metadata_t</span><span class="o">*</span> <span class="n">FelixCamera</span><span class="o">::</span><span class="n">constructDefaultRequestSettings</span><span class="p">(</span>
+    <span class="kt">int</span> <span class="n">type</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The purpose of this call is to prepare the Camera HAL specific metadata
+generated for each possible request type defined in
+<code class="docutils literal"><span class="pre">camera3_request_template_t</span></code> (such as defined in
+<a class="reference internal" href="#android-hal-use-cases"><span>Main use cases</span></a>).</p>
+<p>This call instantiates the <code class="docutils literal"><span class="pre">FelixMetadata</span></code> object and fills it with default
+metadata configuration, used later as capture request template.</p>
+</div>
+<div class="section" id="configure-streams">
+<span id="android-camera-hal-configure-streams"></span><h4>configure_streams()<a class="headerlink" href="#configure-streams" title="Permalink to this headline">¶</a></h4>
+<p>The delegate to</p>
+<div class="highlight-C++"><div class="highlight"><pre><span class="kt">status_t</span> <span class="n">FelixCamera</span><span class="o">::</span><span class="n">configureStreams</span><span class="p">(</span>
+    <span class="n">camera3_stream_configuration</span> <span class="o">*</span><span class="n">streamList</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This call&#8217;s purpose is to reset the camera processing pipeline and set up new
+input and output streams. This call replaces any existing stream configuration
+with the streams defined in the stream_list.</p>
+<p>The core responsibility of the call is to associate each requested output stream
+with the availabkle ISP context outputs and setup the required pipeline and
+sensor parameters.</p>
+<p>The sequence diagram of the execution flow of configure_streams() is shown
+below.</p>
+<div class="figure align-center" id="android-camera-hal-configure-streams-fig">
+<p class="plantuml">
+<a href="../_images/plantuml-08f5cb2d7d0631a94fcb1b1c96b0ad4e4848fc58.png"><img src="../_images/plantuml-08f5cb2d7d0631a94fcb1b1c96b0ad4e4848fc58.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+ &#64;startuml
+ entity mediaserver
+ mediaserver -&gt; FelixCamera : configureStreams()
+ activate FelixCamera
+ FelixCamera -&gt; FelixCamera : WaitUntilIdle()
+ note right : do not reconfigure streams until processing queue is empty
+ FelixCamera -&gt; FelixCamera : validate incoming streams
+
+ FelixCamera -&gt; HwManager : stopCapture()
+ loop for each configured stream
+     FelixCamera -&gt; PrivateStreamInfo : set alive=false
+     FelixCamera -&gt; HwManager : detachStream()
+     note right
+         Set each stored stream as not alive and detach it from hardware.
+         After parsing incoming streams, the intersection of both
+         stored and incoming streams is set to alive and connected to
+         HW. The rest of stored streams is dead and destroyed.
+     end note
+ end
+ loop for each incoming stream
+     FelixCamera -&gt; HwManager : attachStream()
+     activate HwManager
+     FelixCamera &lt;-- HwManager : cameraHw_t*
+     deactivate HwManager
+     note right : get first HW context available for stream
+     alt new stream
+         FelixCamera -&gt; PrivateStreamInfo : new()
+         activate PrivateStreamInfo
+         FelixCamera &lt;-- PrivateStreamInfo
+         deactivate PrivateStreamInfo
+     else stored stream still alive
+         FelixCamera -&gt; PrivateStreamInfo : set alive=true
+     end
+     FelixCamera -&gt; PrivateStreamInfo : setPipeline(cameraHw_t*)
+     note over HwManager, PrivateStreamInfo : store context in a stream, set default scaler
+     FelixCamera -&gt; HwManager : scaleAndNoCrop()
+ end
+ loop for each stream
+     alt stream alive==false
+         FelixCamera -&gt; PrivateStreamInfo : delete()
+         destroy PrivateStreamInfo
+         note right : Cleanup dead streams
+     else alive==true
+         FelixCamera -&gt; PrivateStreamInfo : deregisterBuffers()
+         note right : Deregister live stream's buffers from the HW
+     end
+ end
+ FelixCamera -&gt; HwManager : setupModules()
+ FelixCamera -&gt; HwManager : program()
+ FelixCamera -&gt; HwManager : addShots(kMaxShotsCount)
+
+ opt built as HALv3.0
+     loop for each registered stream
+         FelixCamera -&gt; PrivateStreamInfo : registerBuffers()
+         activate PrivateStreamInfo
+         FelixCamera &lt;-- PrivateStreamInfo : OK
+         deactivate PrivateStreamInfo
+         note right
+             In HAL3.0, register stored buffers in HW only if
+             stream remains alive between two configureStreams() calls
+             In HAL3.2 these buffers are registered in the fly
+             in processCaptureRequest() call
+         end note
+     end
+ end
+ mediaserver &lt;-- FelixCamera : OK
+ deactivate FelixCamera
+
+ &#64;enduml" width="988px" height="1177px"/></a>
+</p>
+</div>
+</div>
+<div class="section" id="register-stream-buffers">
+<span id="android-camera-hal-register-stream-buffers"></span><h4>register_stream_buffers()<a class="headerlink" href="#register-stream-buffers" title="Permalink to this headline">¶</a></h4>
+<p>A delegate of</p>
+<div class="highlight-C++"><div class="highlight"><pre><span class="kt">status_t</span> <span class="n">FelixCamera</span><span class="o">::</span><span class="n">registerStreamBuffers</span><span class="p">(</span>
+    <span class="k">const</span> <span class="n">camera3_stream_buffer_set</span> <span class="o">*</span><span class="n">bufferSet</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This call implements importing a whole group of stream buffers to ISP hardware
+in a bulk.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This call is required in HAL v3.0 for Kitkat, but has been set as deprecated
+in camera HAL v3.2 used since Lollipop, therefore <code class="docutils literal"><span class="pre">FelixCamera3v2</span></code>
+overloads this call with empty implementation.</p>
+</div>
+</div>
+<div class="section" id="process-capture-request">
+<span id="android-camera-hal-process-capture-request"></span><h4>process_capture_request()<a class="headerlink" href="#process-capture-request" title="Permalink to this headline">¶</a></h4>
+<p>A delegate of</p>
+<div class="highlight-C++"><div class="highlight"><pre><span class="kt">status_t</span> <span class="n">FelixCamera</span><span class="o">::</span><span class="n">processCaptureRequest</span><span class="p">(</span>
+    <span class="n">camera3_capture_request</span> <span class="o">*</span><span class="n">request</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This call implements the preprocessing, programming and queueing the capture
+requests coming from camera framework, into ISP hardware.</p>
+<p>During execution of <code class="docutils literal"><span class="pre">processCaptureRequest()</span></code>, the following steps are done:</p>
+<ul class="simple">
+<li>on-fly buffer import to ISP (in HAL v3.2 only)</li>
+<li>instantiation of <code class="docutils literal"><span class="pre">CaptureRequest</span></code> and <code class="docutils literal"><span class="pre">FelixMetadata</span></code> objects</li>
+<li>association of output buffers to correct context outputs</li>
+<li>crop region and scaling is calculated and set-up for each HW output involved</li>
+<li>request metadata is processed (3A, 3A regions, effects, scene modes etc)</li>
+<li>the pipeline is configured according to the requested metadata and started</li>
+<li>the shots are programmed in the ISP hardware</li>
+<li>the <code class="docutils literal"><span class="pre">CaptureRequest</span></code> object is enqueued into <code class="docutils literal"><span class="pre">ProcessingThread</span></code> request
+queue.</li>
+</ul>
+<p>Below the execution flow is shown on the diagram below.</p>
+<div class="figure align-center" id="android-camera-hal-process-capture-request-fig">
+<p class="plantuml">
+<a href="../_images/plantuml-aeb331a3fde8b1a3dfa5c0272480c82a873998ce.png"><img src="../_images/plantuml-aeb331a3fde8b1a3dfa5c0272480c82a873998ce.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+ &#64;startuml
+ entity mediaserver
+ participant FelixCamera
+ participant HwManager
+ participant FelixMetadata
+ participant CaptureRequest
+ participant ProcessingThread
+ participant ControlHalInterface
+ boundary &quot;ISPC::&quot; as ISPC
+
+ activate mediaserver
+ mediaserver -&gt; FelixCamera : processCaptureRequest()
+
+ activate FelixCamera
+ loop for each requested stream
+     FelixCamera -&gt; FelixCamera : Validate stream and buffer
+     activate FelixCamera
+     deactivate FelixCamera
+
+     opt HALv3.2 and buffer not registered
+         FelixCamera -&gt; ISPC : importBuffer()
+     end
+ end
+
+ group Request metadata handling
+     opt Request has metadata
+         FelixCamera -&gt; FelixCamera : store new metadata copy in mFrameSettings
+     end
+
+     create FelixMetadata
+     FelixCamera -&gt; FelixMetadata : new()
+     FelixCamera -&gt; FelixMetadata : store mFrameSettings in request
+ end group
+
+ create CaptureRequest
+ FelixCamera -&gt; CaptureRequest : new(metadata)
+ FelixCamera -&gt; CaptureRequest : preprocessRequest()
+ note right
+     Generate buffer sets for each context involved in current request
+     In HW 1.2 and 2.x, each pipeline context supports exactly one
+     YUV and one RGB output, thus the buffers are paired accordingly.
+ end note
+ group Calculate scaler settings for each requested stream
+     FelixCamera-&gt;FelixCamera : processNewCropRegion()
+     activate FelixCamera
+     loop for all requested streams
+         FelixCamera -&gt; FelixMetadata : calculateStreamCrop()
+         note right
+             Each request can involve different set of output streams
+             with varying resolutions. Additionally global cropping
+             rectangle comes with metadata. In effect, scalers must be
+             configured for each HW output individually.
+         end note
+         activate FelixMetadata
+         FelixCamera &lt;-- FelixMetadata : stream cropping rectangle
+         deactivate FelixMetadata
+         FelixCamera -&gt; HwManager : scaleAndCrop(rectangle)
+         activate HwManager
+         HwManager -&gt; ISPC : configure ESC/DSC scaler
+         deactivate HwManager
+     end
+     deactivate FelixCamera
+ end
+
+ opt request is not reprocessing
+     FelixCamera -&gt; CaptureRequest : preprocessMetadata()
+     activate CaptureRequest
+     CaptureRequest -&gt; FelixMetadata : preprocess3aRegions()
+     CaptureRequest -&gt; FelixMetadata : preprocessEffectMode()
+     loop for each in FelixAF, FelixAWB, FelixAE
+         CaptureRequest -&gt; ControlHalInterface : processUrgentHALMetadata()
+         note right
+             preprocess AAA metadata
+             before programing shot in HW
+         end note
+         activate ControlHalInterface
+         ControlHalInterface -&gt; ISPC : configure regions, flicker rejection, \nexposure settings etc.
+         deactivate ControlHalInterface
+     end
+     FelixCamera &lt;-- CaptureRequest
+     deactivate CaptureRequest
+
+     FelixCamera -&gt; CaptureRequest : program()
+     note right
+         Program configuration and requested shots
+         in the hardware pipeline
+     end note
+     activate CaptureRequest
+     loop for each HW context involved
+         CaptureRequest -&gt; ISPC : program()
+         CaptureRequest -&gt; ISPC : startCapture()
+         CaptureRequest -&gt; ISPC : enqueueSpecifiedShot()
+     end loop
+     deactivate CaptureRequest
+ end
+
+ FelixCamera -&gt; ProcessingThread : queueCaptureRequest()
+ activate ProcessingThread
+ ProcessingThread -&gt; ProcessingThread : wait for a place in the queue
+ FelixCamera &lt;-- ProcessingThread
+ deactivate ProcessingThread
+
+ mediaserver &lt;-- FelixCamera : NO_ERROR
+ deactivate FelixCamera
+ deactivate mediaserver
+ &#64;enduml" width="1513px" height="1439px"/></a>
+</p>
+</div>
+</div>
+<div class="section" id="close">
+<h4>close()<a class="headerlink" href="#close" title="Permalink to this headline">¶</a></h4>
+<p>A delegate of</p>
+<div class="highlight-C++"><div class="highlight"><pre><span class="kt">status_t</span> <span class="n">FelixCamera</span><span class="o">::</span><span class="n">closeCamera</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This call stops the capture on all ISP contexts and destroys all owned objects.</p>
+</div>
+</div>
+<div class="section" id="pipeline-of-capture-request-processing">
+<span id="android-hal-pipeline"></span><h3>Pipeline of capture request processing<a class="headerlink" href="#pipeline-of-capture-request-processing" title="Permalink to this headline">¶</a></h3>
+<p>The architecture of request processing pipeline implemented in <code class="docutils literal"><span class="pre">Felix</span></code> Camera
+HAL library is of the asynchronous producer-consumer type.</p>
+<p>The caller thread of <code class="docutils literal"><span class="pre">processCaptureRequest()</span></code> method takes the producer role.
+All programmed and queued requests are acquired from ISP and processed
+asynchronously in consumer thread which continuously executes
+<code class="docutils literal"><span class="pre">ProcessingThread::threadLoop()</span></code> method.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The thread is implemented in such way
+that returning boolean <code class="docutils literal"><span class="pre">false</span></code> in <code class="docutils literal"><span class="pre">threadLoop()</span></code> causes the thread to exit. Due to
+this condition, the boolean <code class="docutils literal"><span class="pre">true</span></code> is always returned value in case of repeated
+request processing, except the occurence of some fatal errors.</p>
+</div>
+<div class="section" id="ipc">
+<h4>IPC<a class="headerlink" href="#ipc" title="Permalink to this headline">¶</a></h4>
+<p>The IPC mechanisms used in Camera HAL are:</p>
+<ul>
+<li><p class="first">conditional variables of type <code class="docutils literal"><span class="pre">android::Condition</span></code></p>
+<ul>
+<li><p class="first"><code class="docutils literal"><span class="pre">FelixProcessing::mCaptureRequestQueuedSignal</span></code></p>
+<p>Signaling of new request enqueued to processing thread queue</p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">FelixProcessing::mCaptureResultSentSignal</span></code></p>
+<p>Signaling the event of sending request result to the framework, meaning
+the same as capture request slot has been freed in the processing queue.</p>
+</li>
+</ul>
+</li>
+<li><p class="first">&#8216;&#8217;FelixProcessing::mLock`` of <code class="docutils literal"><span class="pre">android::Mutex</span></code> type</p>
+<p>Protects the conditional variables and the <code class="docutils literal"><span class="pre">CaptureRequest</span></code> objects queue</p>
+</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">These IPC classes are declared and documented in
+<code class="docutils literal"><span class="pre">$ANDROID_BUILD_TOP/system/core.include/utils</span></code> in <code class="docutils literal"><span class="pre">Condition.h</span></code> and <code class="docutils literal"><span class="pre">Mutex.h</span></code>.</p>
+</div>
+</div>
+<div class="section" id="request-processing-flow">
+<h4>Request processing flow<a class="headerlink" href="#request-processing-flow" title="Permalink to this headline">¶</a></h4>
+<p>The execution flow of communication between producer and consumer threads in
+Camera HAL library has been pictured on the diagram below.</p>
+<p>The picture shows the event of enqueing capture request <strong>N</strong> when there&#8217;s an
+immediate free slot available in the request queue. In this case the
+<code class="docutils literal"><span class="pre">mCaptureResultSentSignal::waitRelative()</span></code> is not called and the producer
+immediately signals the consumer thread with
+<code class="docutils literal"><span class="pre">ProcessingThread::mCaptureRequestQueuedSignal</span></code> and finally the processing of
+the enqueued request can start.</p>
+<p>The optional execution branch (when <code class="docutils literal"><span class="pre">mCaptureResultSentSignal::waitRelative()</span></code>
+returns <code class="docutils literal"><span class="pre">TIMED_OUT</span></code> each <code class="docutils literal"><span class="pre">kWaitPerLoop</span></code> milliseconds) will be taken when
+the queue has no free slots for new requests. In this case if queue is still
+empty or <code class="docutils literal"><span class="pre">waitRelative()</span></code> returned <code class="docutils literal"><span class="pre">TIMED_OUT</span></code>, the <code class="docutils literal"><span class="pre">threadLoop()</span></code> exits
+with boolean <code class="docutils literal"><span class="pre">true</span></code> so the polling is run in the loop.</p>
+<p>After succesful push of the request into the queue slot,
+<code class="docutils literal"><span class="pre">processRegularRequest()</span></code> method is called. This method handles acquisition
+of all programmed shots from ISP hardware. After the shots got read succesfully
+from hardware, the framework is notified with <code class="docutils literal"><span class="pre">notifyShutter()</span></code> callback with
+the request frame number and high resolution timestamp of start of frame
+capture.</p>
+<p>In case of BLOB output buffer was requested, the consumer thread calls
+<code class="docutils literal"><span class="pre">processJpegEncodingRequest()</span></code>, which handles all steps needed for obtaining
+JPEG output image. More on this in <a class="reference internal" href="#android-hal-jpeg-request"><span>JPEG reprocessing request</span></a> subchapter.</p>
+<div class="figure align-center" id="android-camera-hal-capture-request-thread-synchro-fig">
+<p class="plantuml">
+<a href="../_images/plantuml-a53d43787a2608fd46a0f7af85fa7e31bb19b4f8.png"><img src="../_images/plantuml-a53d43787a2608fd46a0f7af85fa7e31bb19b4f8.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+ &#64;startuml
+ entity mediaserver
+ participant FelixCamera
+ participant ProcessingThread
+ control &quot;ProcessingThread::Thread&quot; as procthr
+ entity mCaptureResultSentSignal
+ entity mCaptureRequestQueuedSignal
+
+ note over procthr
+     Asynchronous request processing thread
+ end note
+
+ note over mCaptureResultSentSignal, mCaptureRequestQueuedSignal
+     Conditional variables of type
+     android::Condition
+ end note
+
+ procthr -&gt; procthr : threadLoop()
+ activate procthr
+ procthr -&gt; procthr : wait for new \nCaptureRequest in queue
+ activate procthr
+ procthr -&gt; mCaptureRequestQueuedSignal : waitRelative()
+ activate mCaptureRequestQueuedSignal
+ ... Waiting for new CaptureRequest ...
+
+ group New incoming capture request N
+     mediaserver -&gt; FelixCamera : processCaptureRequest()
+     note right
+         This call is async with ProcessingThread::Thread
+         and can be called any time while processing queued
+         requests
+     end note
+     activate FelixCamera
+     ref over FelixCamera
+         Capture request
+         preprocessing
+     end ref
+     FelixCamera -&gt; ProcessingThread : queueCaptureRequest()
+     activate ProcessingThread
+
+     opt no space in processing queue
+         ProcessingThread -&gt; mCaptureResultSentSignal : waitRelative()
+         activate mCaptureResultSentSignal
+         ... kWaitPerLoop [ms] ...
+         ProcessingThread &lt;-- mCaptureResultSentSignal : TIMED_OUT
+         deactivate mCaptureResultSentSignal
+     end
+     ProcessingThread -&gt; ProcessingThread : push request into queue
+     note right
+         New request is pushed into queue only if :
+         1. There's a space in the internal HAL processing queue
+         OR
+         2. mCaptureResultSentSignal has been signalled.
+            This also means 1. becomes true
+     end note
+     ProcessingThread --&gt; mCaptureRequestQueuedSignal : signal()
+     note left
+         Signal the processing thread
+         about new CaptureRequest in the queue
+     end note
+     FelixCamera &lt;-- ProcessingThread
+     deactivate ProcessingThread
+     mediaserver &lt;-- FelixCamera : NO_ERROR
+     deactivate FelixCamera
+ end group
+
+ procthr &lt;-- mCaptureRequestQueuedSignal : signal received
+ deactivate mCaptureRequestQueuedSignal
+ deactivate procthr
+ opt Not reprocessing request
+     procthr -&gt; procthr : processRegularRequest()
+     activate procthr
+     deactivate procthr
+ end
+ procthr -&gt; FelixCamera : process3A()
+ activate FelixCamera
+ procthr &lt;-- FelixCamera
+ deactivate FelixCamera
+ procthr --&gt; FelixCamera : notifyShutter()
+ note right
+     Notify the framework about new capture
+ end note
+ activate FelixCamera
+ mediaserver &lt;-- FelixCamera : notify()
+ deactivate FelixCamera
+
+ ...
+ group New incoming capture request N+1 : blocked by signal
+     mediaserver -&gt; FelixCamera : processCaptureRequest()
+     activate FelixCamera
+     FelixCamera -&gt; ProcessingThread : queueCaptureRequest()
+     activate ProcessingThread
+     ProcessingThread -&gt; mCaptureResultSentSignal : waitRelative()
+     note right
+         No space in processing queue
+         thus we must wait for signal
+     end note
+     activate mCaptureResultSentSignal
+     ... waiting for signal ...
+ end group
+
+ opt Is JPEG requested
+     procthr -&gt; procthr : processJpegEncodingRequest()
+     activate procthr
+     deactivate procthr
+ end
+ FelixCamera &lt;- procthr : sendCaptureResult()
+ activate FelixCamera
+ mediaserver &lt;-- FelixCamera : process_capture_result()
+ deactivate FelixCamera
+
+ procthr -&gt; procthr : signalCaptureResultSent()
+ activate procthr
+ procthr --&gt; mCaptureResultSentSignal : signal()
+ note right
+     Signal that the queue has slot
+     available for request
+ end note
+ deactivate procthr
+ deactivate procthr
+
+ group New incoming capture request N+1 : continuation after signal received
+     ProcessingThread &lt;-- mCaptureResultSentSignal : signal received
+     deactivate mCaptureResultSentSignal
+     ProcessingThread -&gt; ProcessingThread : push request into queue
+     ProcessingThread --&gt; mCaptureRequestQueuedSignal : signal()
+     FelixCamera &lt;-- ProcessingThread
+     deactivate ProcessingThread
+     mediaserver &lt;-- FelixCamera : NO_ERROR
+     deactivate FelixCamera
+ end group
+
+
+ &#64;enduml" width="1196px" height="1796px"/></a>
+</p>
+</div>
+</div>
+<div class="section" id="capture-request-use-cases">
+<h4>Capture request use cases<a class="headerlink" href="#capture-request-use-cases" title="Permalink to this headline">¶</a></h4>
+<p>The <code class="docutils literal"><span class="pre">ProcessingThread</span></code> must support all possible combinations of capture
+requests which may occur during camera capture session (see
+<a class="reference internal" href="#android-hal-use-cases"><span>Main use cases</span></a>). All these combinations are covered by calling
+<code class="docutils literal"><span class="pre">processRegularRequest()</span></code> and <code class="docutils literal"><span class="pre">processJpegEncodingRequest()</span></code> handlers.</p>
+<p>The possible options of capture requests (please note that RAW outputs are not
+supported by HAL right now) are listed below.</p>
+<ol class="arabic simple">
+<li>Non-stalling captures</li>
+</ol>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="48%" />
+<col width="8%" />
+<col width="8%" />
+<col width="9%" />
+<col width="8%" />
+<col width="8%" />
+<col width="12%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" rowspan="2">&nbsp;</th>
+<th class="head" colspan="4">Output streams</th>
+<th class="head" colspan="2">Input stream</th>
+</tr>
+<tr class="row-even"><th class="head">YUV</th>
+<th class="head">RGB</th>
+<th class="head">JPEG</th>
+<th class="head">RAW</th>
+<th class="head">YUV</th>
+<th class="head">RAW</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td><p class="first">preview</p>
+<p>video recording</p>
+<p class="last">application callback</p>
+</td>
+<td>0-3</td>
+<td>0-1</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+</tbody>
+</table>
+<p>In this case only <code class="docutils literal"><span class="pre">processRegularRequest()</span></code> is called to acquire output
+buffers from ISP hardware. Single capture result is sent with all
+non-stalling output buffers.</p>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li>Non-stalling captures + stalling non ZSL JPEG capture</li>
+</ol>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="48%" />
+<col width="8%" />
+<col width="8%" />
+<col width="9%" />
+<col width="8%" />
+<col width="8%" />
+<col width="12%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" rowspan="2">&nbsp;</th>
+<th class="head" colspan="4">Output streams</th>
+<th class="head" colspan="2">Input stream</th>
+</tr>
+<tr class="row-even"><th class="head">YUV</th>
+<th class="head">RGB</th>
+<th class="head">JPEG</th>
+<th class="head">RAW</th>
+<th class="head">YUV</th>
+<th class="head">RAW</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td><p class="first">preview</p>
+<p>video recording</p>
+<p>non ZSL still capture (JPEG)</p>
+<p class="last">application callback</p>
+</td>
+<td>0-3</td>
+<td>0-1</td>
+<td>1</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+</tbody>
+</table>
+<p><code class="docutils literal"><span class="pre">processRegularRequest()</span></code> is called to acquire data for non-stalling
+buffers from ISP hardware. Additionally, <code class="docutils literal"><span class="pre">FelixCamera::mNonZslOutputBuffer</span></code>
+is used as additional output for JPEG compressor data source, imported and
+programmed into ISP. After acquiring all programmed shots from ISP, all
+requested non-stalling buffers are returned in first partial capture result
+to the framework.</p>
+<p>Further processing goes to <code class="docutils literal"><span class="pre">processJpegEncodingRequest()</span></code>, which is set up
+to use <code class="docutils literal"><span class="pre">FelixCamera::mNonZslOutputBuffer</span></code> as the input buffer for
+compressor. Finally, the second partial capture result is being sent to the
+framework with an outstanding JPEG image.</p>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li>ZSL YUV to JPEG reprocessing</li>
+</ol>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="48%" />
+<col width="8%" />
+<col width="8%" />
+<col width="9%" />
+<col width="8%" />
+<col width="8%" />
+<col width="12%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" rowspan="2">&nbsp;</th>
+<th class="head" colspan="4">Output streams</th>
+<th class="head" colspan="2">Input stream</th>
+</tr>
+<tr class="row-even"><th class="head">YUV</th>
+<th class="head">RGB</th>
+<th class="head">JPEG</th>
+<th class="head">RAW</th>
+<th class="head">YUV</th>
+<th class="head">RAW</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td>ZSL YUV to JPGEG reprocessing</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>1</td>
+<td>N/A</td>
+<td>1</td>
+<td>N/A</td>
+</tr>
+</tbody>
+</table>
+<p>This request type does not involve <code class="docutils literal"><span class="pre">processRegularRequest()</span></code> call because
+an input buffer has been provided in the request. In this case, only
+<code class="docutils literal"><span class="pre">processJpegEncodingRequest()</span></code> is being called and single capture result
+with one output BLOB type buffer is sent to the framework.</p>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="jpeg-reprocessing-request">
+<span id="android-hal-jpeg-request"></span><h3>JPEG reprocessing request<a class="headerlink" href="#jpeg-reprocessing-request" title="Permalink to this headline">¶</a></h3>
+<p>Generation of JPEG compressed images within <code class="docutils literal"><span class="pre">Felix</span></code> Android Camera HAL needs
+more explanation because it involves several steps of cropping and scaling of
+the input image, especially when thumbnail image has been requested in Exif.</p>
+<div class="section" id="prescaling-and-cropping">
+<h4>Prescaling and cropping<a class="headerlink" href="#prescaling-and-cropping" title="Permalink to this headline">¶</a></h4>
+<p>The downscaling of source images is done in the following cases:</p>
+<ul class="simple">
+<li>The ZSL input buffer has different resolution than requested output image</li>
+<li>The Exif thumbnail is requested</li>
+</ul>
+<p>Additionally, the aspect ratios can differ between source and target images,
+thus <strong>zero-copy</strong> cropping of the source image is being done.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The zero-copy cropping is currently implemented in
+<code class="docutils literal"><span class="pre">StreamBuffer::cropAndLock()</span></code> instead of using gralloc
+<code class="docutils literal"><span class="pre">lock()/lock_ycbcr()</span></code> with provided cropping rectangle  (as it is not
+implemented in example <code class="docutils literal"><span class="pre">gralloc</span></code>). This <code class="docutils literal"><span class="pre">StreamBuffer::cropAndLock()</span></code>
+calls <code class="docutils literal"><span class="pre">gralloc_lock()</span></code> and calculates the top-left offset of the crop
+rectangle within the buffer and and new cropped buffer size.</p>
+</div>
+</div>
+<div class="section" id="jpeg-compression-flow">
+<h4>JPEG compression flow<a class="headerlink" href="#jpeg-compression-flow" title="Permalink to this headline">¶</a></h4>
+<p>Actual Jpeg compression is executed asynchronously in its own thread. Unlike
+<code class="docutils literal"><span class="pre">ProcessingThread</span></code> which is run in the loop, JPEG compression is run in
+single shot mode (<code class="docutils literal"><span class="pre">threadLoop()</span></code> returns boolean <code class="docutils literal"><span class="pre">false</span></code>).</p>
+<p>The means of signaling about compression finish is implemented by
+<code class="docutils literal"><span class="pre">Observer/Listener</span></code> design pattern. Here, <code class="docutils literal"><span class="pre">ProcessingThread</span></code> registers
+itself as the observer to <code class="docutils literal"><span class="pre">JpegEncoder</span></code> using
+<code class="docutils literal"><span class="pre">JpegEncoder::setJpegListener()</span></code> call. This requires <code class="docutils literal"><span class="pre">ProcessingThread</span></code> to
+derive from <code class="docutils literal"><span class="pre">JpegEncoder::JpegListener</span></code> class and provide implementation of
+<code class="docutils literal"><span class="pre">JpegEncoder::JpegListener::onJpegdone()</span></code>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Current implementation does not support multiple observers.</p>
+</div>
+<p>The diagram below shows the timeline of JPEG processing as done in
+<code class="docutils literal"><span class="pre">processJpegEncodingRequest()</span></code> in <code class="docutils literal"><span class="pre">Felix</span></code> Camera HAL.</p>
+<div class="figure align-center" id="android-camera-hal-processjpegencodingrequest-fig">
+<p class="plantuml">
+<a href="../_images/plantuml-4d0f14594da52253d491cd1514a550580bc023f9.png"><img src="../_images/plantuml-4d0f14594da52253d491cd1514a550580bc023f9.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+ &#64;startuml
+ control &quot;ProcessingThread::Thread&quot; as procthr
+ participant ImgScaler
+ participant ScalerSw
+ participant JpegEncoder
+ control &quot;JpegEncoder::Thread&quot; as jpegthr
+
+ activate thr
+
+ procthr -&gt; procthr :   processJpegEncodingRequest()
+ activate procthr
+ opt Input buffer size != JPEG output size
+     ref over procthr
+         Crop input buffer to aspect ratio
+         of output rectangle
+     end
+     procthr -&gt; ImgScaler : scale()
+     note right
+         Downscale cropped input buffer to
+         requested JPEG resolution
+     end note
+     activate ImgScaler
+     ImgScaler -&gt; ScalerSw : scale()
+     activate ScalerSw
+     ImgScaler &lt;-- ScalerSw
+     deactivate ScalerSw
+     procthr &lt;-- ImgScaler : scaled image
+     deactivate ImgScaler
+ end
+ procthr -&gt; JpegEncoder : configure buffers and metadata
+ procthr -&gt; JpegEncoder : setJpegListener(&amp;ProcessingThread::Thread)
+ note right
+     After finished compression, ProcessingThread::Thread
+     will be  notified by calling ProcessingThread::Thread::onJpegDone()
+ end note
+ procthr -&gt; JpegEncoder : start()
+ activate JpegEncoder
+
+ JpegEncoder -&gt; jpegthr : run()
+ procthr &lt;-- JpegEncoder : NO_ERROR
+ deactivate JpegEncoder
+ deactivate procthr
+
+ note over procthr
+     Continue processing of
+     request queue
+ end note
+
+ group Async JPEG compression thread
+     note over jpegthr
+         Single shot type of thread. Spawned for a duration
+         of time consuming software JPEG compression.
+     end note
+
+     jpegthr -&gt; jpegthr : threadLoop()
+     activate jpegthr
+     opt Thumbnail requested
+         jpegthr -&gt; ImgScaler : scale()
+         note right
+             Downscale input buffer to
+             requested thumbnail resolution
+         end note
+         activate ImgScaler
+         ImgScaler -&gt; ScalerSw : scale()
+         activate ScalerSw
+         ImgScaler &lt;-- ScalerSw
+         deactivate ScalerSw
+         jpegthr &lt;-- ImgScaler : scaled image
+         deactivate ImgScaler
+
+         JpegEncoder &lt;- jpegthr : initCompressorThumbnail()
+         JpegEncoder &lt;- jpegthr : compress()
+         activate JpegEncoder
+         ... compression in progress ...
+         JpegEncoder --&gt; jpegthr : compressed thumbnail
+         deactivate JpegEncoder
+         jpegthr -&gt; jpegthr : store thumbnail for Exif
+     end
+     JpegEncoder &lt;- jpegthr : initCompressorMain()
+     create ExifWriter
+     jpegthr -&gt; ExifWriter : new()
+     jpegthr -&gt; ExifWriter : writeApp1(metadata)
+     activate ExifWriter
+     note left :write Exif into JPEG buffer
+     jpegthr &lt;-- ExifWriter
+     deactivate ExifWriter
+     destroy ExifWriter
+
+     JpegEncoder &lt;- jpegthr : compress()
+     activate JpegEncoder
+     ... compression in progress ...
+     JpegEncoder --&gt; jpegthr : compressed main image
+     deactivate JpegEncoder
+
+     note over procthr
+         onJpegDone() is a non blocking call
+         with respect of ProcessingThread::Thread
+     end note
+
+     procthr &lt;- jpegthr : onJpegDone()
+     note right
+         Notify the listener about capture result
+         This is async with ProcessingThread::Thread main thread
+     end note
+     activate procthr
+     &lt;-- procthr : sendCaptureResult()
+     deactivate procthr
+     jpegthr -&gt; jpegthr : cleanup()
+     deactivate jpegthr
+ end group
+
+ &#64;enduml" width="1189px" height="1472px"/></a>
+</p>
+</div>
+</div>
+</div>
+<div class="section" id="metadata-handling">
+<span id="android-hal-metadata"></span><h3>Metadata handling<a class="headerlink" href="#metadata-handling" title="Permalink to this headline">¶</a></h3>
+<p>Due to the asynchronous pipelined nature of shot processing done by Imagination
+Technologies ISP software stack, AAA data must be processed in specific order
+in order to maintain full integrity between requested input and processed
+output metadata. AAA data in <code class="docutils literal"><span class="pre">Felix</span></code> Camera HAL is being handled by three
+classes <code class="docutils literal"><span class="pre">FelixAE</span></code>, <code class="docutils literal"><span class="pre">FelixAWB</span></code> and <code class="docutils literal"><span class="pre">FelixAF</span></code>.</p>
+<p>As programming and processing of Shots is performed in separate threads, the
+metadata requested for specific capture has to be paired with chosen output
+bufers  and enqueued as <code class="docutils literal"><span class="pre">CaptureRequest</span></code>  for further use in AAA state
+machines <a class="footnote-reference" href="#id10" id="id6">[4]</a> executed by consumer thread. A part of request metadata is used
+immediately to generate register configuration of hardware context and
+pipelined in CI library (implemented in
+<code class="docutils literal"><span class="pre">FelixXXX::processUrgentHALMetadata()</span></code>).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Pipelining of the configuration register values to be programmed has been
+realized using internal list of Shots in CI library.
+A single Shot is a container of pipeline configuration and buffers
+used in a single capture (see <a class="reference internal" href="../ci/ci_library.html#isp-ci-shot-and-buffer-lifecycle"><span>Shot and Buffer lifecycle</span></a> in
+<a class="reference internal" href="../ci/ci_library.html#isp-capture-interface"><span>Capture Interface</span></a>).</p>
+</div>
+<p>The consumer thread uses the metadata to set the inputs of state machines
+implemented in AAA control modules (<code class="docutils literal"><span class="pre">FelixXXX::processDeferredHALMetadata()</span></code>).</p>
+<p>Eventually the state machines are executed in <code class="docutils literal"><span class="pre">ISPC::ControlModule::update()</span></code>
+method, directly after the shot has been acquired from ISP (see
+<a class="reference internal" href="../ispc/ispc_library.html#isp-ispcl-ps-module-setup-and-update"><span>Module Setup and Update</span></a> in <a class="reference internal" href="../ispc/ispc_library.html#isp-isp-control-library"><span>ISP Control Library</span></a>).</p>
+<p>After calculating output (that is next states) of AAA state machines, the result
+metadata has to be filled with valid values. This is done in
+<code class="docutils literal"><span class="pre">FelixXXX::updateHALMetadata()</span></code>.</p>
+<p>The diagram below depicts high level view of AAA metadata handling sequence in
+IMG Android Camera HAL.</p>
+<div class="figure align-center">
+<p class="plantuml">
+<a href="../_images/plantuml-ebabe7d04942e2f59290ffcd379c339b667feb14.png"><img src="../_images/plantuml-ebabe7d04942e2f59290ffcd379c339b667feb14.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+participant FelixCamera
+participant FelixXXX
+participant &quot;ISPC::&quot; as ISPC
+control ProcessingThread
+
+-&gt; FelixCamera : process_capture_request()
+activate FelixCamera
+...
+FelixCamera -&gt; FelixXXX : processUrgentHALMetadata()
+activate FelixXXX
+note right
+    parse and program parameters
+    requested with current shot
+end note
+FelixXXX -&gt; ISPC : configure pipeline\nmodules
+activate ISPC
+deactivate ISPC
+FelixCamera &lt;-- FelixXXX
+deactivate FelixXXX
+
+FelixCamera -&gt; ISPC : enqueueSpecifiedShot()
+activate ISPC
+deactivate ISPC
+FelixCamera -&gt; ProcessingThread : queueCaptureRequest()
+deactivate FelixCamera
+
+ProcessingThread -&gt; ProcessingThread : threadLoop()
+activate ProcessingThread
+... start of request processing ...
+ProcessingThread -&gt; FelixXXX : processDeferredHALMetadata()
+note left
+    parse metadata and set
+    inputs for state machines
+end note
+activate FelixXXX
+ProcessingThread &lt;-- FelixXXX
+deactivate FelixXXX
+ProcessingThread -&gt; ISPC : acquireShot()
+activate ISPC
+ISPC -&gt; FelixXXX : update()
+note left : execute state machines
+activate FelixXXX
+ISPC &lt;-- FelixXXX
+deactivate FelixXXX
+ProcessingThread &lt;-- ISPC : shot data returned
+deactivate ISPC
+
+ProcessingThread -&gt; FelixXXX : updateHALMetadata()
+note left
+    update result metadata
+    with state machine outputs
+end note
+activate FelixXXX
+ProcessingThread &lt;-- FelixXXX
+deactivate FelixXXX
+
+&lt;- ProcessingThread : process_capture_result()
+note left : Capture result sent to framework
+deactivate ProcessingThread
+
+&#64;enduml" width="977px" height="783px"/></a>
+</p>
+</div>
+</div>
+<div class="section" id="vendor-metadata-tags">
+<span id="android-hal-vendor-metadata"></span><h3>Vendor metadata tags<a class="headerlink" href="#vendor-metadata-tags" title="Permalink to this headline">¶</a></h3>
+<p>Current version of Felix Camera HAL does not support custom vendor metadata tags.</p>
+</div>
+<div class="section" id="current-state-of-supported-functionality">
+<h3>Current state of supported functionality<a class="headerlink" href="#current-state-of-supported-functionality" title="Permalink to this headline">¶</a></h3>
+<p>Please contact your FAE to obtain the current implementation status of supported
+for <code class="docutils literal"><span class="pre">LIMITED</span></code> and <code class="docutils literal"><span class="pre">FULL</span></code> camera hardware support levels.</p>
+</div>
+</div>
+<div class="section" id="gralloc">
+<span id="android-hal-gralloc"></span><h2>Gralloc<a class="headerlink" href="#gralloc" title="Permalink to this headline">¶</a></h2>
+<p>The Android Camera HAL package provides an example implementation of <code class="docutils literal"><span class="pre">gralloc</span></code>
+module.</p>
+<p>This <code class="docutils literal"><span class="pre">gralloc</span></code> has been customized to make full use of Android <code class="docutils literal"><span class="pre">ion</span></code> memory
+allocator and implements an extended <code class="docutils literal"><span class="pre">private_handle_t</span></code> structure in purpose
+of storing and exposing extended buffer metadata to other processes.</p>
+<div class="section" id="dependencies-in-camera-hal">
+<span id="android-hal-gralloc-depends"></span><h3>Dependencies in Camera HAL<a class="headerlink" href="#dependencies-in-camera-hal" title="Permalink to this headline">¶</a></h3>
+<p>Internally, <code class="docutils literal"><span class="pre">private_handle_t</span></code> stores the buffer metadata in
+<code class="docutils literal"><span class="pre">struct</span> <span class="pre">buffer_attrs</span></code>. In order of hiding the internal structure
+implementation from callers, the getter methods have been implemented and
+exposed to Camera HAL.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>The Camera HAL depends on the getter API directly. The dependencies are
+defined in <code class="docutils literal"><span class="pre">Helpers.h</span></code>, and follow below:</p>
+<div class="last highlight-C++"><div class="highlight"><pre><span class="cp">#include &quot;gralloc_priv.h&quot;</span>
+
+<span class="n">ionFd_t</span> <span class="nf">getIonFd</span><span class="p">(</span><span class="k">const</span> <span class="kt">buffer_handle_t</span> <span class="n">handle</span><span class="p">){</span>
+    <span class="k">return</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="kt">private_handle_t</span> <span class="o">*&gt;</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">getIonFd</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">size_t</span> <span class="nf">getBufferSize</span><span class="p">(</span><span class="k">const</span> <span class="kt">buffer_handle_t</span> <span class="n">handle</span><span class="p">){</span>
+    <span class="k">return</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="kt">private_handle_t</span> <span class="o">*&gt;</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">getSize</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">size_t</span> <span class="nf">getTiled</span><span class="p">(</span><span class="k">const</span> <span class="kt">buffer_handle_t</span> <span class="n">handle</span><span class="p">){</span>
+    <span class="k">return</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="kt">private_handle_t</span> <span class="o">*&gt;</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">getTiled</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">size_t</span> <span class="nf">getBufferStride</span><span class="p">(</span><span class="k">const</span> <span class="kt">buffer_handle_t</span> <span class="n">handle</span><span class="p">){</span>
+    <span class="k">return</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="kt">private_handle_t</span> <span class="o">*&gt;</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">getStride</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="supported-buffer-formats">
+<span id="android-hal-gralloc-formats"></span><h3>Supported buffer formats<a class="headerlink" href="#supported-buffer-formats" title="Permalink to this headline">¶</a></h3>
+<p>The list of currently supported buffer formats, mostly used in Camera HAL (as
+defined in <code class="docutils literal"><span class="pre">HwCaps::kAvailableFormats[]</span></code> and
+<code class="docutils literal"><span class="pre">HwManager::bufferFormatConvArray[]</span></code>:</p>
+<ul>
+<li><p class="first"><code class="docutils literal"><span class="pre">HAL_PIXEL_FORMAT_IMPLEMENTATION_DEFINED</span></code></p>
+<p>Opaque buffer type, translates to internal platform types depending on
+buffer usage flags.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>For FPGA-PC platforms, opaque buffer is translated using following code:</p>
+<div class="highlight-C++"><div class="highlight"><pre><span class="k">if</span> <span class="p">((</span><span class="n">usage</span> <span class="o">&amp;</span> <span class="n">GRALLOC_USAGE_HW_VIDEO_ENCODER</span><span class="p">)</span> <span class="o">||</span>
+    <span class="p">((</span><span class="n">usage</span> <span class="o">&amp;</span> <span class="n">GRALLOC_USAGE_HW_CAMERA_ZSL</span><span class="p">)</span> <span class="o">==</span>
+              <span class="n">GRALLOC_USAGE_HW_CAMERA_ZSL</span><span class="p">))</span> <span class="p">{</span>
+    <span class="c1">// YUV buffers used by Camera output - Encoder input (NV21)</span>
+    <span class="n">format</span> <span class="o">=</span> <span class="n">HAL_PIXEL_FORMAT_YCbCr_420_888</span><span class="p">;</span>
+<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">usage</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">GRALLOC_USAGE_HW_TEXTURE</span> <span class="o">|</span>
+            <span class="n">GRALLOC_USAGE_HW_COMPOSER</span> <span class="o">|</span>
+            <span class="n">GRALLOC_USAGE_HW_FB</span><span class="p">))</span> <span class="p">{</span>
+    <span class="c1">// RGB buffers used by Camera / Display output.</span>
+    <span class="n">format</span> <span class="o">=</span> <span class="n">HAL_PIXEL_FORMAT_RGBA_8888</span><span class="p">;</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="n">ALOGE</span><span class="p">(</span><span class="s">&quot;%s: Not expected buffer usage (%#x)!&quot;</span><span class="p">,</span> <span class="n">__FUNCTION__</span><span class="p">,</span> <span class="n">usage</span><span class="p">);</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">EINVAL</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p class="last">If new platforms start using YUV buffers for preview, thie code would need
+customization.</p>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">HAL_PIXEL_FORMAT_YCrCb_420_SP</span></code></p>
+<p>ISP CI format used : <code class="docutils literal"><span class="pre">YVU_420_PL12_8</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">HAL_PIXEL_FORMAT_YCbCr_420_888</span></code></p>
+<p>ISP CI format used : <code class="docutils literal"><span class="pre">YUV_420_PL12_8</span></code></p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Please note the chroma order which is different comparing to YCrCb_420_SP</p>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">HAL_PIXEL_FORMAT_YCbCr_422_SP</span></code></p>
+<p>ISP CI format used : <code class="docutils literal"><span class="pre">YUV_422_PL12_8</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">HAL_PIXEL_FORMAT_RGBA_8888</span></code>, <code class="docutils literal"><span class="pre">HAL_PIXEL_FORMAT_RGBX_8888</span></code></p>
+<p>ISP CI format used : <code class="docutils literal"><span class="pre">BGR_888_32</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">HAL_PIXEL_FORMAT_RGB_888</span></code></p>
+<p>24 bits RGB, not used in camera HAL.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>Due to the issue in gralloc_aloc() api, which requires to return buffer
+stride in pixels, rather than in bytes, and the fact that ISP hardware
+requires the stride to be aligned to 64 Bytes, the use of 24 bit buffers in
+camera HAL has been disabled.</p>
+<p>The issue causes incorrect calculation of final aligned stride for some
+specific buffer resolutions, as in example for 720x576 below:</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="10%" />
+<col width="24%" />
+<col width="27%" />
+<col width="27%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">w</th>
+<th class="head">h</th>
+<th class="head">stride [B]</th>
+<th class="head">stride
+aligned [B]</th>
+<th class="head">stride [px]</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1280</td>
+<td>720</td>
+<td>3840</td>
+<td>3840</td>
+<td>1280</td>
+</tr>
+<tr class="row-odd"><td>720</td>
+<td>576</td>
+<td>2160</td>
+<td>2176</td>
+<td>725.3(3)</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p class="last">As shown, even legal resolutions can cause aligned stride to be non integer.</p>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">HAL_PIXEL_FORMAT_RAW_SENSOR</span></code></p>
+<p>ISP CI format used : <code class="docutils literal"><span class="pre">BAYER_RGGB_10</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">HAL_PIXEL_FORMAT_RGB_565</span></code></p>
+<p>Used only for framebuffer allocations, not used in ISP camera HAL.</p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">HAL_PIXEL_FORMAT_BLOB</span></code></p>
+<p>JPEG image buffer of width=size of buffer, height=1</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="library-configuration">
+<span id="android-hal-config"></span><h2>Library configuration<a class="headerlink" href="#library-configuration" title="Permalink to this headline">¶</a></h2>
+<p>Many aspects of the Camera HAL library can be customized to suit the
+capabilities of the target hardware platform.</p>
+<p>For example, every hardware platform may be equipped with:</p>
+<ol class="arabic simple">
+<li>Sensor hardware
+* Various supported sensor resolutions
+* Different framerates
+* Variable or fixed focus
+* Phase detection autofocus
+* Optional flash light
+* RGB + infrared (IR)</li>
+<li>Hardware JPEG encoder</li>
+<li>Hardware blitter module with image scaling capability or GPU.</li>
+</ol>
+<p>The following list describes quickly how to configure and extend the Camera HAL
+for specific target platform.</p>
+<div class="section" id="sensor">
+<h3>Sensor<a class="headerlink" href="#sensor" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="sensor-driver">
+<h4>Sensor driver<a class="headerlink" href="#sensor-driver" title="Permalink to this headline">¶</a></h4>
+<p>Sensors expose control interfaces which most probably need custom driver to be
+used within Imagination Technologies ISP camera stack. This driver must be
+written as described in chapter <a class="reference internal" href="../integration/sensor.html#isp-pi-sensor-driver"><span>Sensor driver</span></a> from
+<a class="reference internal" href="../integration/platform.html#isp-platform-integration-guide"><span>Platform Integration Guide</span></a>.</p>
+</div>
+<div class="section" id="calibration">
+<h4>Calibration<a class="headerlink" href="#calibration" title="Permalink to this headline">¶</a></h4>
+<p>As next step, to obtain best output quality from camera, the calibration data
+should be prepared. The standalone calibration procedure has been described in
+<a class="reference internal" href="../tuning/user_tuning_guide.html#isp-user-tuning-guide"><span>User Tuning Guide</span></a>. The method of calibration while running Android
+can be referred in <a class="reference internal" href="../tuning/tuning_in_android.html#isp-androidlivetuning"><span>Android Appendix: Live Tuning</span></a>.</p>
+</div>
+<div class="section" id="camera-instance">
+<h4>Camera instance<a class="headerlink" href="#camera-instance" title="Permalink to this headline">¶</a></h4>
+<p>After completing calibration the camera instance, which will use the new sensor,
+must be chosen.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Most commonly, mobile Android devices support no more than 2 separate
+camera instances, <strong>front camera</strong> and <strong>back camera</strong>.</p>
+</div>
+<p>The association between sensor and specific camera instance is currently done at
+build-time, and requires modification of <code class="docutils literal"><span class="pre">FelixDefines.mk</span></code> script.</p>
+<p>The configuration consists of following sensor related fields:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">CAM0_SENSOR</span></code>
+The name for sensor used by <strong>back</strong> camera</li>
+<li><code class="docutils literal"><span class="pre">CAM1_SENSOR</span></code>
+The name for sensor used by <strong>front</strong> camera</li>
+<li><code class="docutils literal"><span class="pre">CAMx_PARAMS</span></code>
+The absolute path to the calibration file</li>
+<li><code class="docutils literal"><span class="pre">CAMx_FLIP_SENSOR</span></code>
+The sensor flip. The possible values are:<ul>
+<li><code class="docutils literal"><span class="pre">SENSOR_FLIP_NONE</span></code></li>
+<li><code class="docutils literal"><span class="pre">SENSOR_FLIP_HORIZONTAL</span></code></li>
+<li><code class="docutils literal"><span class="pre">SENSOR_FLIP_VERTICAL</span></code></li>
+<li><code class="docutils literal"><span class="pre">SENSOR_FLIP_BOTH</span></code></li>
+</ul>
+</li>
+<li><code class="docutils literal"><span class="pre">CAMx_DG_FILENAME</span></code>
+The source file for internal data generator, used only if <code class="docutils literal"><span class="pre">CAMx_SENSOR</span> <span class="pre">:=</span> <span class="pre">&quot;DATA_GENERATOR&quot;</span></code></li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Change <cite>CAMx</cite> to <cite>CAM0</cite> for <strong>back</strong> and <cite>CAM1</cite> for <strong>front</strong> camera instance.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p><code class="docutils literal"><span class="pre">DATA_GENERATOR</span></code> and <code class="docutils literal"><span class="pre">CAMx_DG_FILENAME</span></code> support is legacy
+therefore provided in Camera HAL on &#8216;as is&#8217; basis.
+Initially, these parameters were used in simulator environments for the
+purpose of HAL internal develoment and supported only external data
+generator.</p>
+<p class="last">Enabling data generator requires setting both <code class="docutils literal"><span class="pre">FELIX_DATA_GENERATOR</span></code>
+and possibly <code class="docutils literal"><span class="pre">ANDROID_EMULATOR</span></code> in <code class="docutils literal"><span class="pre">FelixDefines.mk</span></code> to <code class="docutils literal"><span class="pre">true</span></code>.</p>
+</div>
+<p>Please find the examples of build-time sensor configuration below.</p>
+<p>1. Two sensors, OV4688 sensor is used by back camera and flipped horizontally
+and vertically, and AR330 sensor is connected to front camera instance with no
+flipping.</p>
+<div class="highlight-make"><div class="highlight"><pre><span class="nv">CAM0_SENSOR</span> <span class="o">:=</span> <span class="s2">&quot;OV4688&quot;</span>
+<span class="nv">CAM0_PARAMS</span> <span class="o">:=</span> <span class="s2">&quot;/data/felix/FelixDemoParams11.txt&quot;</span>
+<span class="nv">CAM0_SENSOR_FLIP</span> <span class="o">:=</span> SENSOR_FLIP_BOTH
+<span class="nv">CAM1_SENSOR</span> <span class="o">:=</span> <span class="s2">&quot;AR330&quot;</span>
+<span class="nv">CAM1_PARAMS</span> <span class="o">:=</span> <span class="s2">&quot;/data/felix/ISPC2_AR330_telescope.txt&quot;</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li>Front camera only, horizontal flip</li>
+</ol>
+<div class="highlight-make"><div class="highlight"><pre><span class="nv">CAM1_SENSOR</span> <span class="o">:=</span> <span class="s2">&quot;AR330&quot;</span>
+<span class="nv">CAM1_PARAMS</span> <span class="o">:=</span> <span class="s2">&quot;/data/felix/ISPC2_AR330_telescope.txt&quot;</span>
+<span class="nv">CAM1_SENSOR_FLIP</span> <span class="o">:=</span> SENSOR_FLIP_HORIZONTAL
+</pre></div>
+</div>
+</div>
+<div class="section" id="sensor-capabilities">
+<h4>Sensor capabilities<a class="headerlink" href="#sensor-capabilities" title="Permalink to this headline">¶</a></h4>
+<p>Finally, static camera info, reported by HAL to the Android camera framework,
+has to be aligned with specific sensor hardware capabilities.</p>
+<p>In order of customizing the hardware capabilities depending on the sensor, the
+following files and methods have to be reviewed and/or edited accordingly:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">HwCaps.cpp</span></code></li>
+<li><code class="docutils literal"><span class="pre">FelixCamera::initLensCapabilities()</span></code></li>
+<li><code class="docutils literal"><span class="pre">FelixCamera::initSensorCapabilities()</span></code></li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The implementation of <code class="docutils literal"><span class="pre">HwCaps.cpp</span></code> provides example configuration of
+two sensor types, <code class="docutils literal"><span class="pre">OV4688</span></code> and <code class="docutils literal"><span class="pre">AR330</span></code>.</p>
+</div>
+<p><code class="docutils literal"><span class="pre">HwCaps.cpp</span></code> contains hardcoded arrays of available output resolutions,
+framerates and sensor modes, used to set sensor in different, more specialized
+operating mode for some specific resolutions and framerates.</p>
+<p>The primary purpose of switching of sensor mode is the high speed capture
+capability which needs special sensor configuration and possibly clocking,
+incompatible with default capture mode.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">In current state, Camera HAL does not support dynamic switching sensor
+modes between camera sessions, therefore the <code class="docutils literal"><span class="pre">SensorResCaps_t::sensorMode</span></code>
+field is not used anywhere in HAL.
+The default sensor mode has been hardcoded to <code class="docutils literal"><span class="pre">0</span></code> in
+<code class="docutils literal"><span class="pre">FelixCameraHAL::FelixCameraHAL()</span></code>.</p>
+</div>
+<p><code class="docutils literal"><span class="pre">FelixCamera::initLensCapabilities()</span></code> and
+<code class="docutils literal"><span class="pre">FelixCamera::initSensorCapabilities()</span></code> contain hardcoded camera capabilities
+metadata.</p>
+</div>
+</div>
+<div class="section" id="image-scaler">
+<h3>Image scaler<a class="headerlink" href="#image-scaler" title="Permalink to this headline">¶</a></h3>
+<p>The current Camera HAL provides example, software based downscaler. This
+implementation is enabled by default at build-time because
+<code class="docutils literal"><span class="pre">USE_HARDWARE_SCALER</span></code> preprocessor define has not been defined in
+<code class="docutils literal"><span class="pre">ScalerSw.cpp</span></code>. The code below shows the current scaler factory method to be
+customized:</p>
+<div class="highlight-C++"><div class="highlight"><pre><span class="n">ImgScaler</span><span class="o">&amp;</span> <span class="n">ImgScaler</span><span class="o">::</span><span class="n">get</span><span class="p">()</span> <span class="p">{</span>
+<span class="cp">#ifdef USE_HARDWARE_SCALER</span>
+<span class="cp">#error Hardware scaler not configured!</span>
+        <span class="k">return</span> <span class="n">ScalerHw</span><span class="o">::</span><span class="n">getInstance</span><span class="p">();</span>
+<span class="cp">#else</span>
+        <span class="k">return</span> <span class="n">ScalerSw</span><span class="o">::</span><span class="n">getInstance</span><span class="p">();</span>
+<span class="cp">#endif</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+<p>The custom implementation of scaler must at least be able to handle non-stalling
+(that is not causing increase of min. frame duration) downscale operation of
+the following pixel formats:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">HAL_PIXEL_FORMAT_YCrCb_420_SP</span></code></li>
+<li><code class="docutils literal"><span class="pre">HAL_PIXEL_FORMAT_YCbCr_420_888</span></code></li>
+<li><code class="docutils literal"><span class="pre">HAL_PIXEL_FORMAT_YCbCr_422_SP</span></code></li>
+<li><code class="docutils literal"><span class="pre">HAL_PIXEL_FORMAT_RGBA_8888</span></code></li>
+<li><code class="docutils literal"><span class="pre">HAL_PIXEL_FORMAT_RGBX_8888</span></code></li>
+<li><code class="docutils literal"><span class="pre">HAL_PIXEL_FORMAT_RGB_888</span></code></li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If the hardware scaler had support for up-scaling, it could be possibly used
+to enable digital zoom feature in the Camera HAL. Though, using separate
+up-scaling step in the capture processing would require changes in the
+internal management of stream buffers in HAL and add additional processing
+latency.</p>
+</div>
+</div>
+<div class="section" id="jpeg-encoder">
+<h3>Jpeg encoder<a class="headerlink" href="#jpeg-encoder" title="Permalink to this headline">¶</a></h3>
+<p>The current Camera HAL provides example, software based Jpeg encoder class.
+Similar to image scaler, Jpeg encoder implementation is chosen at build-time in
+the following factory method:</p>
+<div class="highlight-C++"><div class="highlight"><pre><span class="n">JpegEncoder</span><span class="o">&amp;</span> <span class="n">JpegEncoder</span><span class="o">::</span><span class="n">get</span><span class="p">()</span> <span class="p">{</span>
+<span class="cp">#ifdef USE_HARDWARE_JPEG_COMPRESSOR</span>
+<span class="cp">#error Hardware JPEG not configured!</span>
+    <span class="n">mInstance</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">JpegEncoderHw</span><span class="o">::</span><span class="n">getInstance</span><span class="p">();</span>
+<span class="cp">#else</span>
+    <span class="n">mInstance</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">JpegEncoderSw</span><span class="o">::</span><span class="n">getInstance</span><span class="p">();</span>
+<span class="cp">#endif</span>
+    <span class="k">return</span> <span class="o">*</span><span class="n">mInstance</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="section" id="stream-capabilities">
+<h4>Stream capabilities<a class="headerlink" href="#stream-capabilities" title="Permalink to this headline">¶</a></h4>
+<p><code class="docutils literal"><span class="pre">HwCaps.cpp</span></code> contains the available resolutions and minimum frame durations of
+the JPEG output streams. In case of Jpeg output streams, Android camera
+framework treats them as possibly stalling, that is the capture result is
+allowed to be returned not in real-time (jpeg processing duration can be longer
+than preview frame duration).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">A stall duration is how much extra time would get added to the normal
+minimum frame duration for a repeating request that has streams with
+non-zero stall.</p>
+</div>
+<p>The supported duration of Jpeg stalling stream to be advertised with static
+camera info, is defined in <code class="docutils literal"><span class="pre">HwCaps.cpp</span></code>. In case of software encoder, this
+had been hardcoded to 500ms.</p>
+<p>Below is the example definition of stalling streams supported in OV4688 sensor
+configured to maximum native resolution of 1280x720.</p>
+<div class="highlight-C++"><div class="highlight"><pre><span class="k">static</span> <span class="k">const</span> <span class="n">SensorResCaps_t</span> <span class="n">kAvailableJpegImageParams_OV4688</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">{</span> <span class="mi">1280</span><span class="p">,</span>  <span class="mi">720</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">500</span><span class="o">*</span><span class="n">MSEC</span> <span class="p">},</span> <span class="c1">// 16:9, 0.5sec jpeg processing time in SW mode</span>
+    <span class="p">{</span> <span class="mi">640</span><span class="p">,</span>   <span class="mi">480</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">500</span><span class="o">*</span><span class="n">MSEC</span> <span class="p">},</span> <span class="c1">// 4:3</span>
+    <span class="p">{</span> <span class="mi">320</span><span class="p">,</span>   <span class="mi">240</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">500</span><span class="o">*</span><span class="n">MSEC</span> <span class="p">}</span>  <span class="c1">// 4:3</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>This value may need to be changed in case of hardware compressor implementation.</p>
+</div>
+</div>
+<div class="section" id="default-log-level">
+<h3>Default log level<a class="headerlink" href="#default-log-level" title="Permalink to this headline">¶</a></h3>
+<p>The very verbose logging from <code class="docutils literal"><span class="pre">Felix</span></code> Camera HAL can be completely suppressed
+by editing <code class="docutils literal"><span class="pre">FelixDefines.mk</span></code> and changing the variable <code class="docutils literal"><span class="pre">FELIX_LOCAL_CFLAGS</span></code>
+to the form shown below:</p>
+<div class="highlight-none"><div class="highlight"><pre>FELIX_LOCAL_CFLAGS := -DLOG_NDEBUG=1
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p><code class="docutils literal"><span class="pre">FELIX_LOCAL_CFLAGS</span></code> is propagated down to all <code class="docutils literal"><span class="pre">Android.mk</span></code> files executed
+by command</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>mmm hardware/img/v2500
+</pre></div>
+</div>
+<p class="last">It can be used to add other build-time customizations as well.</p>
+</div>
+</div>
+</div>
+<div class="section" id="testing-camera-hal">
+<span id="android-hal-testing"></span><h2>Testing Camera HAL<a class="headerlink" href="#testing-camera-hal" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="native-camera-hal-test-suite">
+<span id="android-hal-testing-native"></span><h3>Native Camera HAL test suite<a class="headerlink" href="#native-camera-hal-test-suite" title="Permalink to this headline">¶</a></h3>
+<p>Android AOSP provides a native test application which purpose is to execute a
+set of low-level API tests on Camera HAL library. Although, not considered as
+acceptance tests, these tests can be used as the entry gate for HAL to run more
+detailed exhaustive CTS test suite.</p>
+<p>The following steps are required to build and upload the suite to running target
+system.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>mmm hardware/libhardware/tests/camera2
+<span class="nv">$ </span>adb push <span class="nv">$ANDROID_PRODUCT_OUT</span>/data/nativetest/camera2_test/camera2_test /data/
+<span class="nv">$ </span>adb chmod <span class="m">770</span> /data/camera2_test
+</pre></div>
+</div>
+<p>Running the tests:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>adb shell /data/camera2_test
+</pre></div>
+</div>
+</div>
+<div class="section" id="android-cts">
+<span id="android-hal-testing-cts"></span><h3>Android CTS<a class="headerlink" href="#android-cts" title="Permalink to this headline">¶</a></h3>
+<p>Acceptance suite for Camera HAL consists of many test cases, defined in
+<em>android.hardware</em> test package. Though, by running this package directly, many
+other, not camera related tests will be run as well (for example hundreds of
+sensor tests). To be able to run camera tests and filter out the tests which
+are out of our interest, the custom test plans have been produced and provided
+within the release package. The plans can be found in <code class="docutils literal"><span class="pre">./Android/CTS/</span></code> folder
+and are:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">android.hardware.camera-4.4.xml</span></code> - to be used in Kitkat CTS</li>
+<li><code class="docutils literal"><span class="pre">android.hardware.camera-5.1.xml</span></code> - Lollipop CTS</li>
+</ul>
+<p>To make the plans available, one must copy the respective xml file to
+<code class="docutils literal"><span class="pre">android-cts/repository/plans/</span></code> folder.</p>
+<p>Listing and executing the plan within Lollipop <code class="docutils literal"><span class="pre">cts-tradefed</span></code> shell is done by
+the following commands:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">pwd</span>
+~/workspace/cts/5.1.1_r2/android-cts
+<span class="nv">$ </span>./tools/cts-tradefed
+Android CTS 5.1_r1
+cts-tf &gt; list plans
+CTS-DEQP
+CTS-staging
+android.hardware.camera-5.1
+CTS-kitkat-small
+AppSecurity
+CTS-l-tests
+CTS-stable
+CTS-kitkat-medium
+CTS-No-Media-Stream
+CTS-webview
+CTS-TF
+Harmony
+SDK
+Java
+CTS-media
+CTS-mediastress
+CTS
+CTS-hardware
+VM-TF
+PDK
+CTS-flaky
+Android
+cts-tf &gt; run cts --plan android.hardware.camera-5.1
+...
+</pre></div>
+</div>
+</div>
+<div class="section" id="android-camera-imaging-test-suite-cts-verifier">
+<h3>Android Camera Imaging Test Suite / CTS Verifier<a class="headerlink" href="#android-camera-imaging-test-suite-cts-verifier" title="Permalink to this headline">¶</a></h3>
+<p>The below is the excerpt from ITS test suite documentation:</p>
+<blockquote>
+<div>The ITS is a framework for running tests on the images produced by an
+Android camera. The general goal of each test is to configure the camera in
+a desired manner and capture one or more shots, and then examine the shots
+to see if they contain the expected image data. Many of the tests will
+require that the camera is pointed at a specific target chart or be
+illuminated at a specific intensity.</div></blockquote>
+<p>ITS tests are written in <code class="docutils literal"><span class="pre">python</span></code> using <code class="docutils literal"><span class="pre">scipy</span></code>, <code class="docutils literal"><span class="pre">numpy</span></code>, and <code class="docutils literal"><span class="pre">opencv</span></code>
+frameworks, and require special physical setup using a tripod, light box, LED
+lamp and a grey card with 18% reflectance.</p>
+<p>The test harness and documentation can be found in AOSP source tree under
+<code class="docutils literal"><span class="pre">$ANDROID_BUILD_TOP/cts/apps/CameraITS</span></code>.</p>
+<p class="rubric">Footnotes</p>
+<table class="docutils footnote" frame="void" id="id7" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id2">1</a>, <a class="fn-backref" href="#id3">2</a>)</em> <a class="reference external" href="https://source.android.com/devices/camera/index.html">https://source.android.com/devices/camera/index.html</a></td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id8" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[2]</a></td><td>Dynamically generated in AOSP environment under $ANDROID_BUILD_TOP/system/media/camera/docs/docs.html</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id9" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id5">[3]</a></td><td>$ANDROID_BUILD_TOP/system/media/camera/docs/docs.html#static_android.request.maxNumOutputProc</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id10" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id6">[4]</a></td><td><a class="reference external" href="https://source.android.com/devices/camera/camera3_3Amodes.html">https://source.android.com/devices/camera/camera3_3Amodes.html</a></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Android Camera HAL</a><ul>
+<li><a class="reference internal" href="#context-of-camera-hal-in-media-framework">Context of Camera HAL in media framework</a><ul>
+<li><a class="reference internal" href="#main-use-cases">Main use cases</a></li>
+<li><a class="reference internal" href="#lifetime-of-camera-hal">Lifetime of Camera HAL</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#library-architecture">Library architecture</a><ul>
+<li><a class="reference internal" href="#class-hierarchy">Class hierarchy</a></li>
+<li><a class="reference internal" href="#class-responsibilities">Class responsibilities</a><ul>
+<li><a class="reference internal" href="#camera-hal-v3-0-interface">Camera HAL v3.0 interface</a></li>
+<li><a class="reference internal" href="#hardware-handling">Hardware handling</a></li>
+<li><a class="reference internal" href="#capture-request-processing">Capture request processing</a></li>
+<li><a class="reference internal" href="#aaa">AAA</a></li>
+<li><a class="reference internal" href="#jpeg-compression">JPEG compression</a></li>
+<li><a class="reference internal" href="#image-processing">Image processing</a></li>
+<li><a class="reference internal" href="#helper-classes">Helper classes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#structure-of-source-code">Structure of source code</a></li>
+<li><a class="reference internal" href="#external-dependencies">External dependencies</a><ul>
+<li><a class="reference internal" href="#libjpeg-so">libjpeg.so</a></li>
+<li><a class="reference internal" href="#libexif-so">libexif.so</a></li>
+<li><a class="reference internal" href="#libfelix-ispc-libfelix-sensor-libfelix-ci-libfelix-common">libfelix_ispc, libfelix_sensor, libfelix_ci, libfelix_common</a></li>
+<li><a class="reference internal" href="#libcameragpu-so">libcameragpu.so</a></li>
+<li><a class="reference internal" href="#android-native-framework">Android native framework</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#build-system">Build system</a></li>
+<li><a class="reference internal" href="#hardware-requirements">Hardware requirements</a><ul>
+<li><a class="reference internal" href="#number-of-pipeline-contexts-for-each-opened-camera-instance">Number of pipeline contexts for each opened camera instance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#implementation-of-camera-hal-v3-x">Implementation of Camera HAL v3.x</a><ul>
+<li><a class="reference internal" href="#interface-calls">Interface calls</a><ul>
+<li><a class="reference internal" href="#open">open()</a></li>
+<li><a class="reference internal" href="#get-camera-info">get_camera_info()</a></li>
+<li><a class="reference internal" href="#construct-default-request-settings">construct_default_request_settings()</a></li>
+<li><a class="reference internal" href="#configure-streams">configure_streams()</a></li>
+<li><a class="reference internal" href="#register-stream-buffers">register_stream_buffers()</a></li>
+<li><a class="reference internal" href="#process-capture-request">process_capture_request()</a></li>
+<li><a class="reference internal" href="#close">close()</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pipeline-of-capture-request-processing">Pipeline of capture request processing</a><ul>
+<li><a class="reference internal" href="#ipc">IPC</a></li>
+<li><a class="reference internal" href="#request-processing-flow">Request processing flow</a></li>
+<li><a class="reference internal" href="#capture-request-use-cases">Capture request use cases</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#jpeg-reprocessing-request">JPEG reprocessing request</a><ul>
+<li><a class="reference internal" href="#prescaling-and-cropping">Prescaling and cropping</a></li>
+<li><a class="reference internal" href="#jpeg-compression-flow">JPEG compression flow</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#metadata-handling">Metadata handling</a></li>
+<li><a class="reference internal" href="#vendor-metadata-tags">Vendor metadata tags</a></li>
+<li><a class="reference internal" href="#current-state-of-supported-functionality">Current state of supported functionality</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#gralloc">Gralloc</a><ul>
+<li><a class="reference internal" href="#dependencies-in-camera-hal">Dependencies in Camera HAL</a></li>
+<li><a class="reference internal" href="#supported-buffer-formats">Supported buffer formats</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#library-configuration">Library configuration</a><ul>
+<li><a class="reference internal" href="#sensor">Sensor</a><ul>
+<li><a class="reference internal" href="#sensor-driver">Sensor driver</a></li>
+<li><a class="reference internal" href="#calibration">Calibration</a></li>
+<li><a class="reference internal" href="#camera-instance">Camera instance</a></li>
+<li><a class="reference internal" href="#sensor-capabilities">Sensor capabilities</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#image-scaler">Image scaler</a></li>
+<li><a class="reference internal" href="#jpeg-encoder">Jpeg encoder</a><ul>
+<li><a class="reference internal" href="#stream-capabilities">Stream capabilities</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#default-log-level">Default log level</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#testing-camera-hal">Testing Camera HAL</a><ul>
+<li><a class="reference internal" href="#native-camera-hal-test-suite">Native Camera HAL test suite</a></li>
+<li><a class="reference internal" href="#android-cts">Android CTS</a></li>
+<li><a class="reference internal" href="#android-camera-imaging-test-suite-cts-verifier">Android Camera Imaging Test Suite / CTS Verifier</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../ispc/ispc_controls_other.html"
+                        title="previous chapter">Light Based Control (LBC)</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="hal_build_instructions.html"
+                        title="next chapter">Android Build Instructions</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

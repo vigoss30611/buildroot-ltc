@@ -1,0 +1,4 @@
+#!/bin/sh
+mkdir -p /nfs
+mount -t nfs -o nolock 172.3.0.1:/nfs /nfs
+

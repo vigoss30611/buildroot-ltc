@@ -1,0 +1,295 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>IPC Web</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!-- <link href="layout.css" rel="stylesheet" type="text/css" /> -->
+    <!-- <link href="slider.css" rel="stylesheet" type="text/css" /> -->
+    <script type="text/javascript">
+        if (document.documentElement.clientHeight >= 640) {
+            document.write('<link href="layout.css" rel="stylesheet" type="text/css" />');
+            document.write('<link href="slider.css" rel="stylesheet" type="text/css" />');
+        } else {
+            document.write('<link href="layout_small.css" rel="stylesheet" type="text/css" />');
+            document.write('<link href="slider_small.css" rel="stylesheet" type="text/css" />');
+        }
+    </script>
+    <script type="text/javascript" src="jquery-1.9.0.min.js">
+    </script>
+    <script type="text/javascript" src="common.js">
+    </script>
+    <script type="text/javascript">
+        document.write("<script src='a.js?rnd=" + Math.random() + "'></s" + "cript>")
+    </script>
+    <script type="text/javascript" src="lang.js"></script>
+    <script type="text/javascript" src="DeviceManager.js"></script>
+    <script type="text/javascript" src="slider_extras.js"></script>
+    <!--
+    <script type="text/javascript" >
+		if (document.charset) {
+            alert(document.charset.toLowerCase());
+            document.charset = 'utf-8';
+        }
+        else if (document.characterSet) {
+            document.characterSet = 'utf-8';
+        }
+    </script>
+	//-->
+</head>
+
+<body>
+    <!-- 登陆界面 -->
+    <div id="LoginPage">
+        <div id="loginContainer">
+            <div id="loginBox">
+                <!-- <div id="lbLeft"></div> -->
+                <div id="lbMain">
+                    <div id="lmainBox">
+                        <div class="lt" id="svrName">IPCamera</div>
+
+                        <div class="l"><span id="userNamelbl">User Name:&nbsp;&nbsp;</span><input id="userName" type="text" value="admin" /></div>
+                        <div class="l"><span id="userPwdlbl">&nbsp;&nbsp;Password:&nbsp;&nbsp;</span><input id="userPwd" type="password" /></div>
+                        <div class="l">
+                            <span id="nTypelbl">Stream&nbsp;Type:</span>
+                            <select id="idNType">
+							<option value="lan">Main Stream</option>
+							<option value="wan">Sub Stream</option>
+						</select>
+                        </div>
+
+                        <div class="l">
+                            <span id="langlbl">&nbsp;&nbsp;Language:&nbsp;</span>
+                            <select id="language">
+							<option value="en-us" selected="selected">English</option>
+							<option value="zh-cn">中文</option>
+						</select>
+                        </div>
+
+                        <div class="l">
+                            <button id="loginBtn"><span style="color:#FFFFFF">Login</span></button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <button id="cancelloginBtn"><span style="color:#FFFFFF">Cancel</span></button>
+                        </div>
+
+                        <div id="downloadBox">
+                            <p><a href="TLNVOCX_setup.exe">DownLoad And Install ActiveX</a></p>
+                        </div>
+
+                        <div id="noticeBox">
+                            <p>If this is your first time to login, please download and install the ActiveX control.</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 主界面 -->
+    <div id="mainBox">
+        <div id="topBanner">
+            <!-- <div id="logo"></div> -->
+            <!-- 播放控制 -->
+            <div id="playBox">
+                <div id="playC">
+                    <div id="mainFunction">
+                        <table border="0">
+                            <tr>
+                                <td>
+                                    <div class="snapBtn">
+                                        <a id="snapBtn" class="on" title="Snap" href="javascript:;"></a>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="recordBtn">
+                                        <a id="recordBtn" class="off" title="Start/Stop Record" href="javascript:;"></a>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="talkBtn">
+                                        <a id="talkBtn" class="off" title="Talk" href="javascript:;"></a>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="VoiceBtn">
+                                        <a id="VoiceBtn" class="on" title="Mute Switch" href="javascript:;"></a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div id="menu">
+                <div id="menuInner">
+                    <a id="liveBtn" href="javascript:;" title="LIVE SHOW">Preview</a>
+                    <a id="playbackBtn" href="javascript:;" title="PLAY BACK">Playback</a>
+                    <a id="setupBtn" title="SETUP" href="javascript:;">Set up</a>
+                </div>
+                <div id="menuOutter">
+                    <a id="downloadPlayerBtn" title="Download Player" style="display:none" href="javascript:;">DownloadPlayer</a>
+                    <a id="logoutBtn" title="LOGOUT" href="javascript:;">Logout</a>
+                </div>
+            </div>
+        </div>
+        <div id="ContainerBox">
+            <!-- 操作面板 -->
+            <div id="panelBox">
+                <!-- 云台控制 -->
+                <div id="ptzBox">
+                    <!-- <div id="ptzT">PTZ CONTROL</div> -->
+                    <!-- 云台面板 -->
+                    <div id="ptzC">
+                        <div id="ptz">
+                            <div id="tb">
+                                <a id="ptzupleft" title="UpLeftward" href="javascript:;"></a>
+                                <a id="ptzup" title="Upward" href="javascript:;"></a>
+                                <a id="ptzupright" title="UpRightward" href="javascript:;"></a>
+                            </div>
+                            <div id="mb">
+                                <a id="ptzleft" title="Leftward" href="javascript:;"></a>
+                                <a id="ptzscan" title="Auto Scan" href="javascript:;"></a>
+                                <a id="ptzright" title="Rightward" href="javascript:;"></a>
+                            </div>
+                            <div id="bb">
+                                <a id="ptzdownleft" title="DownLeftward" href="javascript:;"></a>
+                                <a id="ptzdown" title="Downward" href="javascript:;"></a>
+                                <a id="ptzdownRight" title="DownwardRight" href="javascript:;"></a>
+                            </div>
+                        </div>
+                        <div class="paramBox">
+                            <a id="zoomFar" title="Zoom Far" href="javascript:;"></a>
+                            <span id="zoomlbl">ZOOM</span>
+                            <a id="zoomNear" title="Zoom Near" href="javascript:;"></a>
+                        </div>
+                        <div class="paramBox">
+                            <a id="focusFar" title="Focus Far" href="javascript:;"></a>
+                            <span id="focuslbl">FOCUS</span>
+                            <a id="focusNear" title="Focus Near" href="javascript:;"></a>
+                        </div>
+                        <!-- 
+					<div class="paramBox">
+						<a id="irisLarge" title="IRIS Large" href="javascript:;"></a>
+						<span id="irislbl">IRIS</span>
+						<a id="irisSmall" title="IRIS Small" href="javascript:;"></a>
+					</div> -->
+
+                    </div>
+                    <!-- 雨刷灯光 -->
+                    <!-- 
+				<div id="w_l">
+				    <div class="wipper"><a id="wipper" class="off" title="Wipper" href="javascript:;"></a></div>					
+					<div class="light"><a id="light"  class="off" title="Light" href="javascript:;"></a></div>
+				</div> -->
+
+                    <!-- 预置点 -->
+                    <div id="presetPoint">
+                        <span id="prepointlbl">PreSet Point:</span>
+                        <input id="prePoint" value="0" size="2" type="text" maxlength="3" />
+                        <button id="callPrepointBtn" title="callPrepoint" href="javascript:;"></button>
+                        <button id="setPrepointBtn" title="setPrepoint" href="javascript:;"></button>
+                        <button id="delPrePointBtn" title="delPrePointBtn" href="javascript:;"></button>
+                    </div>
+                    <!-- 巡航路径 -->
+                    <div id="cruisePath">
+                        <span id="cruisePathlbl">Cruise Path:</span>
+                        <select id="cruisePathVal"></select>
+                        <a id="playCruisePath" title="Play CruisePath" href="javascript:;"></a>
+                        <a id="stopCruisePath" title="Stop CruisePath" href="javascript:;"></a>
+                    </div>
+                    <div id="bottomDiv"></div>
+                </div>
+
+                <!-- 图像调节 -->
+                <div id="ImageBox">
+                    <!-- 颜色调节  -->
+                    <div id="ImageColorBox">
+                        <div class="ColorSetBox">
+                            <a id="BrightImg" title="Brightness"></a>
+                            <div id="sliderBright" style="height:40px;"></div>
+                            <span id="BrightVal"></span>
+                        </div>
+                        <div class="ColorSetBox">
+                            <a id="ContrastImg" title="Contrast"></a>
+                            <div id="sliderContrast" style="height:40px;"></div>
+                            <span id="ContrastVal"></span>
+                        </div>
+                        <div class="ColorSetBox">
+                            <a id="HueImg" title="Hue"></a>
+                            <div id="sliderHue" style="height:40px;"></div>
+                            <span id="HueVal"></span>
+                        </div>
+                        <div class="ColorSetBox">
+                            <a id="DefinitionImg" title="Definition"></a>
+                            <div id="sliderDefinition" style="height:40px;"></div>
+                            <span id="DefinitionVal"></span>
+                        </div>
+                    </div>
+
+                    <!-- 图像高级属性设置 -->
+                    <div id="ImageAdvancedBox">
+                        <div class="AdvacedSetBox">
+                            <span id="VerticalMirrorlbl">Vertical Mirror:</span>
+                            <input type="radio" id="MirrorVID1" name="MirrorV" value="1" /><a id="MirrorVOpen">Open</a>
+                            <input type="radio" id="MirrorVID0" name="MirrorV" value="0" checked="checked" /><a id="MirrorVClose">Close</a>
+                        </div>
+                        <div class="AdvacedSetBox">
+                            <span id="HorizontalMirrorlbl">Horizontal Mirror:</span>
+                            <input type="radio" id="MirrorHID2" name="MirrorH" value="2"><a id="MirrorHOpen">Open</a>
+                            <input type="radio" id="MirrorHID0" name="MirrorH" value="0" checked="checked" /><a id="MirrorHClose">Close</a>
+                        </div>
+                        <div class="AdvacedSetBox">
+                            <span id="Frequencylbl">Frequency:</span>
+                            <input type="radio" id="FrequencyID1" name="Frequency" value="1" /><a>50Hz</a>
+                            <input type="radio" id="FrequencyID0" name="Frequency" value="0" checked="checked" /><a>60Hz</a>
+                        </div>
+                        <div class="AdvacedSetBox">
+                            <span id="Scenelbl">Scene:</span>
+                            <select id="SceneSelect">
+							<option value=0>Outdoor</option>
+							<option value=1>Indoor</option>
+							<option value=2>Manual</option>
+							<option value=3>Auto</option>
+						</select>
+                        </div>
+                        <div class="AdvacedSetBox">
+                            <span id="Infraredlbl">Infrared:</span>
+                            <select id="InfraredSelect">
+							<option value=1>Hight Level</option>
+							<option value=0>Low Level</option>
+						</select>
+                        </div>
+                    </div>
+                    <!-- 设置按钮 -->
+                    <div id="ImageSetBtn">
+                        <div id="refreshBtn"><button id="imageParamRefresh"">Refresh</button></div>
+                        <div id="defaultBtn"><button id="imageParamDefault"">Default</button></div>
+                        <div id="saveBtn"><button id="imageParamSave"">Save</button></div>
+                    </div>
+                </div>
+                <!-- 码流和图像大小 -->
+                <div id="StreamAndScaleBox">
+                    <div id="Stream">
+                        <span id="Streamlbl">Stream:</span>
+                        <select id="StreamSelect">
+						<option value=0>MainStream</option>
+						<option value=1>SubStream</option>
+					</select>
+                    </div>
+                    <div id="Scale">
+                        <span id="Scalelbl">Image:</span>
+                        <select id="ScaleSelect">
+						<option value=0>Default Scale</option>
+						<option value=1>Original Scale</option>
+						<option value=2>Fit Window</option>
+					</select>
+                    </div>
+                </div>
+            </div>
+            <!-- ocx控件容器 -->
+            <div id="ocxBox">
+                <div id="ocxDiv"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,69 @@
+config BR2_PACKAGE_LIBDRM
+	bool "libdrm"
+	select BR2_PACKAGE_XLIB_LIBPTHREAD_STUBS
+	depends on BR2_PACKAGE_XORG7
+	depends on BR2_LARGEFILE
+	help
+	  Direct Rendering Manager
+
+	  http://dri.freedesktop.org/libdrm/
+
+if BR2_PACKAGE_LIBDRM
+
+menu "DRM Drivers"
+
+config BR2_PACKAGE_LIBDRM_INTEL
+	bool "intel"
+	select BR2_PACKAGE_LIBATOMIC_OPS
+	select BR2_PACKAGE_XLIB_LIBPCIACCESS
+	depends on BR2_i386 || BR2_x86_64
+	help
+	  installs intel graphics driver
+
+config BR2_PACKAGE_LIBDRM_RADEON
+	bool "radeon"
+	select BR2_PACKAGE_LIBATOMIC_OPS
+	select BR2_PACKAGE_XLIB_LIBPCIACCESS
+	depends on BR2_i386 || BR2_x86_64
+	help
+	  install AMD/ATI graphics driver
+
+config BR2_PACKAGE_LIBDRM_NOUVEAU
+	bool "nouveau"
+	select BR2_PACKAGE_XLIB_LIBPCIACCESS
+	depends on BR2_i386 || BR2_x86_64
+	help
+	  install Nvidia graphics driver
+
+config BR2_PACKAGE_LIBDRM_VMWGFX
+	bool "vmwgfx"
+	select BR2_PACKAGE_XLIB_LIBPCIACCESS
+	depends on BR2_i386 || BR2_x86_64
+	help
+	  installs Vmware graphics driver
+
+config BR2_PACKAGE_LIBDRM_OMAP
+	bool "omap (experimental)"
+	depends on BR2_arm
+	help
+	  install the TI OMAP driver using an experimental API.
+
+config BR2_PACKAGE_LIBDRM_EXYNOS
+	bool "exynos (experimental)"
+	depends on BR2_arm
+	help
+	  installs Samsung Exynos driver using an experimental API.
+
+config BR2_PACKAGE_LIBDRM_FREEDRENO
+	bool "freedreno (experimental)"
+	depends on BR2_arm
+	help
+	  install Qualcomm Snapdragon driver using an experimental API.
+
+endmenu
+
+endif
+
+comment "libdrm needs a toolchain w/ largefile"
+	depends on BR2_PACKAGE_XORG7
+	depends on !BR2_LARGEFILE

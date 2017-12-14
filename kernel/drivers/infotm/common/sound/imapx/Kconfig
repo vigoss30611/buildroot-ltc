@@ -1,0 +1,37 @@
+#menu "SoC Audio for the INFOTM SOC"
+if SND_IMAPX_SOC
+
+config SND_IMAPX_SOC_IIS
+    tristate "SoC Audio transfer for IMAPX - IIS"
+	help
+		Say Y if you want to add support for SoC audio on imapx
+		or imapx with the iis.
+
+config SND_IMAPX_SOC_PCM
+	tristate "SoC Audio transfer for IMAPX - PCM"
+	help
+		Say Y if you want to add support for SoC audio on imapx
+		or imapx with the pcm.
+
+config SND_IMAPX_SOC_DMA
+    tristate "SoC Audio memcpy for IMAPX - DMA pl330"
+    depends on PL330_DMA
+    help
+        Say Y if you want to add support for SoC audio on imapx
+        or imapx with the dma.
+
+config INFOTM_AUTO_ENABLE_SPK
+	tristate "auto enable spk"
+	default n
+	help
+		Say Y if you want to auto enable spk.
+
+config TQLP9624_ADC
+	tristate "support adc for tqlp9624"
+	depends on SND_IMAPX_SOC_DMA
+	depends on SND_SOC_TQLP9624
+	help
+		Say Y if you want to support adc for temp.
+ 
+endif
+

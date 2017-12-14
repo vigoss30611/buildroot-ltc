@@ -1,0 +1,545 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>CI Appendix: Debugging a Page Fault &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="next" title="ISPC Appendix: From ISPC to kernel module" href="../ispc/ispc_appendix.html" />
+    <link rel="prev" title="CI Appendix: System calls mapping" href="ci_appendix_ioctl.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../ispc/ispc_appendix.html" title="ISPC Appendix: From ISPC to kernel module"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="ci_appendix_ioctl.html" title="CI Appendix: System calls mapping"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li><li>CI Appendix: Debugging a Page Fault</li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="ci-appendix-debugging-a-page-fault">
+<span id="isp-ci-debugging-a-page-fault"></span><h1>CI Appendix: Debugging a Page Fault<a class="headerlink" href="#ci-appendix-debugging-a-page-fault" title="Permalink to this headline">¶</a></h1>
+<p>This section will try to describe how to debug a page fault occurring while
+using the driver. Page faults should <strong>not</strong> occur if the driver was
+correctly integrated.</p>
+<p>The section includes a scenario that assumes that the device was wrongly
+integrated and that the memory offset is wrong (i.e. all mapping is done but
+the HW is not looking at the correct location). This will try to prove it by
+ensuring the mapping is correct. Information about memory offset in regard
+to CPU view and Device view are available in the
+<a class="reference internal" href="../integration/platform.html#isp-pi-device-memory-vs-cpu"><span>Platform Integration Guide</span></a>.</p>
+<p>This section uses the <em>Video Bus 4 MMU Function Specification</em> document
+delivered with the HW as a reference on how the MMU works. Please refer to
+the <em>Directory Table lookup and Page Table lookup</em> figures to understand the
+way virtual addresses are converted into physical address.</p>
+<div class="section" id="initial-information">
+<span id="isp-ci-page-fault-initial-information"></span><h2>Initial Information<a class="headerlink" href="#initial-information" title="Permalink to this headline">¶</a></h2>
+<p>From the run of the driver we assume that this information has been gathered
+(through logging present in the delivered driver or known information):</p>
+<ul class="simple">
+<li>Which contexts are used for the test</li>
+<li>MMU option used (mmucontrol at insmod)</li>
+<li>Physical addresses used for MMU directories (<a class="reference external" href="../doxygen/group___k_r_n___c_i___a_p_i.html#ga1b58c3cb513f9e4a9884ea92086deb08">KRN_CI_MMUConfigure()</a>
+should write <code class="docutils literal"><span class="pre">MMU_DIR_BASE_ADDR</span></code> register with or without shifting
+depending on mmucontrol).</li>
+<li>Relation of physical addresses and virtual address (including size) for
+all allocation (<a class="reference external" href="../doxygen/group___c_i___k_e_r_n_e_l___t_o_o_l_s.html#ga6c455cdc8b2191c375c5cfb9b1bd05bb">SYS_MemAlloc()</a> and <code class="docutils literal"><span class="pre">IMG_CI_ShotMallocBuffers()</span></code> are
+good locations to look at).</li>
+<li>Page fault information from the MMU: <code class="docutils literal"><span class="pre">MMU_STATUS0</span></code> and <code class="docutils literal"><span class="pre">MMU_STATUS1</span></code>
+registers (<a class="reference external" href="../doxygen/group___h_w___c_i.html#gaa6823cae29a52189db3748d32b252087">HW_CI_DriverThreadHandleInterrupt()</a> should be printing
+them on pagefault).</li>
+</ul>
+<p>It is also assumed that the system is in a valid state after the failure so
+that memory can be accessed to verify the pages look-up (otherwise code may
+have to be added to interrupt handler to do the crawling).</p>
+<p>Section <a class="reference internal" href="ci_library.html#isp-ci-mmu-requestors"><span>MMU Requestors</span></a> explains the relation between context,
+data generator and MMU directory used.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>MMU virtual address size is always 32b and is used to compute the
+extended address range shift in the MMU documentation as:
+<code class="docutils literal"><span class="pre">EXT_ADDR_RANGE=phys_size-virt_size</span></code>.</p>
+<ul class="last simple">
+<li>When using <code class="docutils literal"><span class="pre">mmucontrol=2</span></code>, <code class="docutils literal"><span class="pre">phys_size=40</span> <span class="pre">virt_size=32</span>
+<span class="pre">EXT_ADDR_RANGE=8</span></code></li>
+<li>When using <code class="docutils literal"><span class="pre">mmucontrol=1</span></code> (NOT TESTED as invalid in HW), <code class="docutils literal"><span class="pre">phys_size=32</span>
+<span class="pre">virt_size=32</span> <span class="pre">EXT_ADDR_RANGE=0</span></code></li>
+<li>When using <code class="docutils literal"><span class="pre">mmucontrol=0</span></code> MMU is not used so not page faults should be
+possible.</li>
+</ul>
+</div>
+<div class="section" id="information-for-our-example">
+<span id="isp-ci-page-fault-information-example"></span><h3>Information for our example<a class="headerlink" href="#information-for-our-example" title="Permalink to this headline">¶</a></h3>
+<p>Our example is running context 1 only with internal data generator for a
+very small frame (40x44) with YUV output only (1 buffer allocated only). Our
+system is 4KB CPU pages (4KB MMU device pages) with <code class="docutils literal"><span class="pre">mmucontrol=2</span></code> (40b MMU).</p>
+<p>We assume that the device memory is located from <code class="docutils literal"><span class="pre">0x6000</span> <span class="pre">0000</span></code> to
+<code class="docutils literal"><span class="pre">0xF000</span> <span class="pre">0000</span></code> of the physical memory but that the device interprets its
+first address as being <code class="docutils literal"><span class="pre">0x0</span></code> (i.e. where CPU sees <code class="docutils literal"><span class="pre">0x6000</span> <span class="pre">0000</span></code>, ISP
+sees <code class="docutils literal"><span class="pre">0x0000</span> <span class="pre">0000</span></code>).</p>
+<p>The logging of allocations reported:</p>
+<ul class="simple">
+<li>Allocation of directories (2 contexts means 2 directories): <code class="docutils literal"><span class="pre">p0x6000</span>
+<span class="pre">0000</span></code>, <code class="docutils literal"><span class="pre">p0x6000</span> <span class="pre">1000</span></code></li>
+<li>IIF DG frame <code class="docutils literal"><span class="pre">v0xF000</span> <span class="pre">0000</span> <span class="pre">for</span> <span class="pre">0x2000B,</span> <span class="pre">``p0x6000</span> <span class="pre">2000</span></code></li>
+<li>Save structure (ctx 1): <code class="docutils literal"><span class="pre">v0x1000</span> <span class="pre">for</span> <span class="pre">0x2000B,</span> <span class="pre">p0x6000</span> <span class="pre">4000</span></code></li>
+<li>Load structure (ctx 1): <code class="docutils literal"><span class="pre">v0x3000</span> <span class="pre">for</span> <span class="pre">0x1000B,</span> <span class="pre">p0x6000</span> <span class="pre">6000</span></code></li>
+<li>Linked list (ctx 1): <code class="docutils literal"><span class="pre">v0x4000</span> <span class="pre">for</span> <span class="pre">0x1000B,</span> <span class="pre">p0x6000</span> <span class="pre">7000</span></code></li>
+<li>Output YUV (ctx 1): <code class="docutils literal"><span class="pre">v0x1000</span> <span class="pre">0000</span> <span class="pre">for</span> <span class="pre">0x2000B,</span> <span class="pre">p0x6000</span> <span class="pre">8000</span></code></li>
+</ul>
+<p>Page fault reports (<code class="docutils literal"><span class="pre">MMU_STATUS0</span></code> and <code class="docutils literal"><span class="pre">MMU_STATUS1</span></code> registers are also
+partially analysed as we are doing in next section).</p>
+<div class="highlight-python"><div class="highlight"><pre>MMU fault status0=0x4001 status1=0x11000001 addr_ctrl=0x10 (page fault 1, read fault 1, write fault 0, ext addressing 1)
+MMU fault @ v0x4000 on directory 1 – direct entry = 0xd1 – page entry = 0x85
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Without even going further we can deduce that the error is due to
+misalignment of the device memory:</p>
+<ul class="last">
+<li><p class="first"><code class="docutils literal"><span class="pre">v0x4000</span></code> is the linked list which is the 1st element of memory accessed
+by the HW (see HW <em>TRM</em> on how linked list operates).</p>
+<p>This printing also confirms that we are using context 1 (directory 1)
+and that MMU is in extended address mode (ext addressing 1) i.e. in
+40b mode.</p>
+</li>
+<li><p class="first">Fault is reported as &#8220;page fault&#8221; (meaning fault occurred in directory
+look up as MMU HW documentation explains). This occurs because the
+physical memory given as initial page will contains the correct data but
+the HW is not looking at the correct location</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="mmu-fault-analysis">
+<span id="isp-ci-page-fault-analysis"></span><h2>MMU fault analysis<a class="headerlink" href="#mmu-fault-analysis" title="Permalink to this headline">¶</a></h2>
+<p>Using the MMU HW documentation we can deduce several things from the
+<code class="docutils literal"><span class="pre">MMU_STATUS0</span></code> and <code class="docutils literal"><span class="pre">MMU_STATUS1</span></code>:</p>
+<ul class="simple">
+<li>If the fault was in directory look up and in page look up</li>
+<li>If the fault was during reading or writing access</li>
+<li>Directory associated with the memory access</li>
+<li>The virtual address causing the fault</li>
+<li>From the virtual address we can find the directory entry and page entry.</li>
+</ul>
+<p>Using this information and the physical address we know the directories are
+in we should be able to validate the MMU page tree:</p>
+<ul>
+<li><p class="first">Ensure the physical address registered as directory entry looks like a
+directory entry look up (should be 4KB long and mostly be composed of 0s
+unless we mapped most of the virtual memory)</p>
+</li>
+<li><p class="first">Ensure that the directory entry reported is valid (bottom bits are <code class="docutils literal"><span class="pre">0x1</span></code>).</p>
+<p><strong>If</strong> they are not valid the driver did not map this virtual address
+correctly and the problem is most likely located in mapping section (done
+at context start). This is unlikely to occur but check
+<a class="reference internal" href="#isp-ci-page-fault-wrong"><span>We proved that the mapping structure was wrong...</span></a> to have ideas where to look.</p>
+</li>
+<li><p class="first">Use the directory entry to find the physical address of the page table if
+bottom bits are valid.</p>
+</li>
+<li><p class="first">Ensure the page table looks like a page table look up (similar than
+directory table)</p>
+</li>
+<li><p class="first">Ensure the page table value at the page entry is valid (bottom bits are
+<code class="docutils literal"><span class="pre">0x1</span></code>) and have the correct RO or WO flag (<code class="docutils literal"><span class="pre">RO=0x4</span> <span class="pre">WO=0x2</span> <span class="pre">WR=0x6</span></code>)</p>
+</li>
+<li><p class="first">Find the physical address associated with the virtual address</p>
+</li>
+</ul>
+<div class="section" id="analyse-our-example">
+<span id="isp-ci-page-fault-example-analysis"></span><h3>Analyse our example<a class="headerlink" href="#analyse-our-example" title="Permalink to this headline">¶</a></h3>
+<p>Using the information we know:</p>
+<ul>
+<li><p class="first"><code class="docutils literal"><span class="pre">MMU_DIR_BASE[1]</span></code> should be <code class="docutils literal"><span class="pre">0x6000</span> <span class="pre">1000&gt;&gt;8=0x0060</span> <span class="pre">0010</span></code> because we
+use 40bits MMU: (<code class="docutils literal"><span class="pre">LOG2_PAGESIZE-EXT_ADDR_RANGE=12-(40-32)=8</span></code>)</p>
+</li>
+<li><p class="first">At physical address <code class="docutils literal"><span class="pre">p0x6000</span> <span class="pre">1000</span></code> most of the entries are 0 (only few
+buffers mapped)</p>
+</li>
+<li><p class="first">We want to look at entry <code class="docutils literal"><span class="pre">0xD1</span></code> of the directory. Each entry being 4
+Bytes we know the location in physical memory of the directory entry is
+<code class="docutils literal"><span class="pre">p0x6000</span> <span class="pre">1344</span></code>.</p>
+<p>The value in <code class="docutils literal"><span class="pre">p0x6000</span> <span class="pre">1344</span></code> should contain the physical address to the
+page table shift and masked as explained in MMU documentation. In our case
+the value is <code class="docutils literal"><span class="pre">0x0600</span> <span class="pre">0A01</span></code>
+Bottom bit <code class="docutils literal"><span class="pre">0x1</span></code> therefore it is a valid mapping.</p>
+</li>
+<li><p class="first">We are using extended address range (40b MMU) therefore physical address
+is <code class="docutils literal"><span class="pre">p0x6000</span> <span class="pre">A000</span></code></p>
+</li>
+<li><p class="first">We want to look at entry <code class="docutils literal"><span class="pre">0x85</span></code> of the page table. Each entry being 4
+Bytes we know the location in physical memory of the page entry is <code class="docutils literal"><span class="pre">p0x6000</span>
+<span class="pre">A214</span></code>.</p>
+<p>The value in <code class="docutils literal"><span class="pre">p0x6000</span> <span class="pre">A214</span></code> should contain the physical address of the
+linked list and its mask. In our case <code class="docutils literal"><span class="pre">0x0600</span> <span class="pre">0705</span></code>. Bottom bit are
+<code class="docutils literal"><span class="pre">0x5</span></code> meaning <code class="docutils literal"><span class="pre">RO</span> <span class="pre">and</span> <span class="pre">valid</span></code> (expected for linked list – HW only loads
+it).</p>
+</li>
+<li><p class="first">Physical address is extracted the same way than for the page table giving
+<code class="docutils literal"><span class="pre">p0x6000</span> <span class="pre">7000</span></code> which matches our logged linked list physical address.</p>
+</li>
+</ul>
+<p>We therefore proved that our MMU mapping structure is correct (we manage to
+discover the correct physical address starting from the MMU directory
+address for the linked list).</p>
+</div>
+</div>
+<div class="section" id="we-proved-that-the-mapping-structure-is-correct">
+<span id="isp-page-fault-correct"></span><h2>We proved that the mapping structure is correct...<a class="headerlink" href="#we-proved-that-the-mapping-structure-is-correct" title="Permalink to this headline">¶</a></h2>
+<p>If we proved that the mapping structure is correct it means that the device
+does not follow that structure the way it is expected to by the drivers.</p>
+<p>If the accessed virtual address is at the end of an allocation it may mean
+the driver does not allocate enough memory for a buffer (unlikely). In that
+case verification of allocation sizes in <a class="reference external" href="../doxygen/ci__alloc__info_8h.html">ci_alloc_info.h</a> is required.
+If using imported buffers they have to comply with equivalent sizes than
+<code class="docutils literal"><span class="pre">ci_alloc_info.c</span></code> implementation would return. Internal buffers (such as
+linked list, save structure, load structure, ENS output, DPF output, LSH
+matrix) should not suffer from that problem.</p>
+<p>If the accessed virtual address is the first part of an allocation it is
+very likely that the HW sees the memory with a different offset than what
+the driver expects. In that case the <a class="reference external" href="../doxygen/struct_s_y_s___d_e_v_i_c_e.html">SYS_DEVICE</a> implementation is not
+giving the correct address in the <a class="reference external" href="../doxygen/struct_s_y_s___d_e_v_i_c_e.html#a21ccb365b5e1dc97c4bf6ce2b3b1ce33">SYS_DEVICE::uiMemoryPhysical</a> or
+<a class="reference external" href="../doxygen/struct_s_y_s___d_e_v_i_c_e.html#aa93c41f3cdfd816835ddcc2676f38e78">SYS_DEVICE::uiDevMemoryPhysical</a> entries. The <a class="reference internal" href="../integration/platform.html#isp-pi-device-memory-vs-cpu"><span>Platform
+Integration Guide</span></a> should have more information
+about CPU/DEVICE offset issues.</p>
+</div>
+<div class="section" id="we-proved-that-the-mapping-structure-was-wrong">
+<span id="isp-ci-page-fault-wrong"></span><h2>We proved that the mapping structure was wrong...<a class="headerlink" href="#we-proved-that-the-mapping-structure-was-wrong" title="Permalink to this headline">¶</a></h2>
+<p>If we proved that the mapping structure was wrong several actions can be taken:</p>
+<ul class="simple">
+<li>Ensure the particular buffer was mapped (additional log in
+<a class="reference external" href="../doxygen/group___c_i___k_e_r_n_e_l___t_o_o_l_s.html#ga930f937d14eba280a3a69f48e5f6f45a">SYS_MemMap()</a>)</li>
+<li>Ensure that particular buffer is big enough when imported – including its
+virtual address (physical allocation could be big enough but size reported
+when imported could be too small – check <a class="reference external" href="../doxygen/group___c_i___k_e_r_n_e_l___t_o_o_l_s.html#gacf336107aefac0449721f39b3439c833">SYS_MemImport()</a>).</li>
+</ul>
+<p>If using tiling ensure that the tiling stride is correctly computed and that
+the base address has the correct offset. More information about tiling is
+available in the HW MMU documentation and section.</p>
+</div>
+</div>
+<div class="section" id="ci-appendix-debugging-a-failed-to-acquire-frame">
+<span id="isp-ci-debugging-a-fail-frame"></span><h1>CI Appendix: Debugging a Failed to acquire frame<a class="headerlink" href="#ci-appendix-debugging-a-failed-to-acquire-frame" title="Permalink to this headline">¶</a></h1>
+<p>The first step is to validate that the current issue is a frame acquisition
+problem. The driver works by providing buffers to fill to the HW. Therefore
+we expect that frames that enqueued on a correctly configured HW will produce
+a processed frame if a sensor is running on the context&#8217;s gasket (more
+details in <a class="reference internal" href="ci_library.html#isp-ci-shot-and-buffer-lifecycle"><span>Shot and Buffer lifecycle</span></a>).</p>
+<p>The &#8220;acquisition&#8221; of a processed frame is done by waiting on a semaphore that
+counts the number of &#8220;frame end&#8221; interrupts generated by the HW. If no
+interrupts were yet generated then the kernel-side will wait. The waiting is
+<em>never</em> infinite and the amount of time is configurable in the CI kernel module
+(see <a class="reference internal" href="ci_library.html#isp-ci-shot-buffer-blocking"><span>Blocking and non-blocking calls</span></a>). The amount of time is an insmod
+parameter (see <a class="reference internal" href="../getting_started.html#isp-gsg-insmod-options"><span>V2500 Insertion options</span></a>) and the value should be
+compatible with the sensor&#8217;s frame-rate.</p>
+<p>The system can fail to receive processed frames for several reasons:</p>
+<ol class="arabic simple">
+<li>Frames are not being received correctly by the hardware (gasket connection
+issues).</li>
+<li>The frame is partially processed by hardware but frame end is not generated
+(configuration invalid, or insufficient bandwidth).</li>
+<li>The software interrupt could be delayed.</li>
+</ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The register information is crucial to debug a missing frame. The context
+status, the RTM information and the gasket status registers values
+should be checked using the HW TRM.</p>
+</div>
+<p>For all the cases above the use of Debug FS (see <a class="reference internal" href="ci_library.html#isp-ci-debugfs"><span>DebugFS (real driver)</span></a>) and the
+other sources of interrupt of the system can be of significant help. We
+recommend to use a script similar to the one bellow to gather system
+information:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="c">#</span>
+<span class="c"># need to be root</span>
+<span class="c">#</span>
+<span class="c"># mount debug file system</span>
+mount -t debugfs none /sys/kernel/debug
+
+<span class="c"># make copy of debug information before run</span>
+cp /proc/interrupts pre_interrupts.txt
+cp -r /sys/module/Felix/parameters pre_parameters
+cp -r /sys/kernel/debug/imgfelix pre_imgfelix
+</pre></div>
+</div>
+<p>Then run the test, for example:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="c"># runtest</span>
+./ISPC_loop -setupFile config.txt -sensor AR330 -sensorMode <span class="m">0</span> -nBuffers 3
+</pre></div>
+</div>
+<p>Then gather the information again:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="c">#</span>
+<span class="c"># need to be root</span>
+<span class="c">#</span>
+<span class="c"># copy debug filesystem after test</span>
+cp -r /sys/module/Felix/parameters post_parameters
+cp -r /sys/kernel/debug/imgfelix post_imgfelix
+cp /proc/interrupts post_interrupts.txt
+</pre></div>
+</div>
+<div class="section" id="frames-not-received-by-hardware">
+<span id="isp-ci-dbg-frame-hw"></span><h2>Frames not received by hardware<a class="headerlink" href="#frames-not-received-by-hardware" title="Permalink to this headline">¶</a></h2>
+<p>To see if the is the case we should check the status of the hardware gasket
+registers. The gasket contains a frame counter which can be compared with
+the expected frame count. The debug FS counter can help compare the number
+of pushed frames and the number the gasket received.</p>
+<p>It is also possible that the gasket could contain errors (only the MIPI gasket
+have error counters). If errors are not 0 then it is possible that the frame
+was considered as erroneous and not transmitted to the ISP.</p>
+<p>It is possible to access the status of the gasket using
+<a class="reference external" href="../doxygen/group___c_i___a_p_i___g_a_s_k_e_t.html#gab0798b36249913ad0a4d57d208d68c6f">CI_GasketGetInfo()</a>.</p>
+</div>
+<div class="section" id="partial-frame">
+<span id="isp-ci-dbg-frame-config"></span><h2>Partial frame<a class="headerlink" href="#partial-frame" title="Permalink to this headline">¶</a></h2>
+<p>In the case that the gasket information seems to produce the correct number of
+frames but the ISP does not generate a frame end interrupt we have to verify
+the status of the hardware. The <a class="reference external" href="../doxygen/group___c_i___a_p_i___d_r_i_v_e_r.html#ga12b51f6318b32ab94ea84fb847aef270">CI_DriverGetRTMInfo()</a> function - also
+printed by most applications - which gives access to several useful
+information:</p>
+<ol class="arabic">
+<li><p class="first">Is there any shot in the HW queue? The Linked list emptiness should be the
+maximum - usually 0x10 - if all shots have been loaded.</p>
+<p>If shots are present it means the HW is ready to receive a frame but for
+some reason is not accepting new frames. Verify that the gasket frame
+counter is correct.</p>
+</li>
+<li><p class="first">The status reported by the HW context (context status).</p>
+<p>The register description will help understand the values printed here. A
+status of 0 means the HW is idle and ready to process frames.</p>
+<p>Any other state may show the HW is blocked during an operation and may be
+limited by bandwidth.</p>
+</li>
+<li><p class="first">How far through processing the hardware is through a frame ( the Context
+position 0-7 will contain the line that various stages of the pipeline
+are at).</p>
+<p>A value smaller than the expected resolution at a position whill show where
+the frame is blocked.</p>
+</li>
+</ol>
+<p>Example:</p>
+<blockquote>
+<div><p>Output of 720p YUV image.</p>
+<div class="code highlight-python"><div class="highlight"><pre>RTM Context 0 status 0x0   &lt;--- idle
+RTM Context 0 linked list emptiness 0x10    &lt;---- empty
+RTM Context 0 position 0 0x2d0  &lt;---- group 0 processed 720 lines
+RTM Context 0 position 1 0x2d0  &lt;---- group 1 processed 720 lines
+RTM Context 0 position 2 0x2d0  &lt;---- group 2 processed 720 lines
+RTM Context 0 position 3 0x2d0  &lt;---- group 3 processed 720 lines
+RTM Context 0 position 4 0x2d0  &lt;---- group 4 processed 720 lines
+RTM Context 0 position 5 0x2d0  &lt;---- group 5 processed 720 lines
+RTM Context 0 position 6 0x168  &lt;---- group 6 processed 360 lines
+RTM Context 0 position 7 0x0    &lt;---- group 7 processed 0 lines
+</pre></div>
+</div>
+<p>This shows that the hardware has completed writing a 720p frame, is not
+processing currently and has no outstanding frames to process.
+The position 6 is displaying half the number of lines, which is expected
+as it is the encoder output (YUV format is half the number of lines).
+The position 7 shows that no lines were processed, which is expected as
+the display output is disabled for that test.</p>
+</div></blockquote>
+</div>
+<div class="section" id="software-interrupt-delay">
+<span id="isp-ci-dbg-frame-interrupt"></span><h2>Software Interrupt delay<a class="headerlink" href="#software-interrupt-delay" title="Permalink to this headline">¶</a></h2>
+<p>If all the previous steps show that the hardware has finished processing we can
+assume that the software may not have propagated a frame end.</p>
+<p>In this case we should examine the time taken to receive an interrupt. Clearly
+if we have failed to receive a frame we cannot establish the timing for the
+current frame however we can potentially examine other frames to see if some
+problem might exist.</p>
+<p>When a frame is acquired several timestamps data are stored in the statistics.
+It is possible to compute the latency between the generation of the frame end
+interrupt by the HW and the time the SW handled the event by doing a simple
+subtraction:</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="c1">// assuming CI_SHOT *pShot has been acquired</span>
+<span class="c1">// and that CI_CONNECTION *pConnection is valid</span>
+<span class="n">MC_STATS_TIMESTAMP</span> <span class="n">timestamp</span><span class="p">;</span>
+<span class="k">const</span> <span class="kt">float</span> <span class="n">clock</span> <span class="o">=</span> <span class="n">pConnection</span><span class="o">-&gt;</span><span class="n">sHWInfo</span><span class="p">.</span><span class="n">ui32RefClockMhz</span> <span class="o">/</span> <span class="mf">1000000.0</span><span class="p">;</span>  <span class="c1">// Mhz to Hz</span>
+<span class="kt">int</span> <span class="n">latency</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="n">MC_TimestampExtract</span><span class="p">(</span><span class="n">pShot</span><span class="o">-&gt;</span><span class="n">pStatistics</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">timestamp</span><span class="p">);</span>
+
+<span class="n">latency</span> <span class="o">=</span> <span class="n">timestamp</span><span class="p">.</span><span class="n">ui32InterruptServiced</span> <span class="o">-</span> <span class="n">timestamp</span><span class="p">.</span><span class="n">ui32EndFrameEncOut</span><span class="p">;</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;latency of enc output %f sec</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">latency</span> <span class="o">*</span> <span class="n">clock</span><span class="p">);</span>
+
+<span class="n">latency</span> <span class="o">=</span> <span class="n">timestamp</span><span class="p">.</span><span class="n">ui32InterruptServiced</span> <span class="o">-</span> <span class="n">timestamp</span><span class="p">.</span><span class="n">ui32EndFrameDispOut</span><span class="p">;</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;latency of disp output %f sec</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">latency</span> <span class="o">*</span> <span class="n">clock</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The timestamps are reported in clock cycles of the HW. We expect the customers
+to know the clocking of the ISP (and to have <a class="reference external" href="../doxygen/struct_c_i___h_w_i_n_f_o.html#add156fadad73642a7a0068701a8cb059">CI_HWINFO::ui32RefClockMhz</a>
+at the correct value). Multiplying by the clock period should provide the time
+in seconds. A number of pre-issued buffers can in some cases smooth out
+occasional frames with long latency but we cannot guarantee this.</p>
+<p>A unusually big latency may be the cause of the timeout when waiting on the
+acquisition of the semaphore when waiting for a frame to be processed.
+Regular latency peaks may be the result of other drivers delaying the interrupt
+handler threaded interrupt execution.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">CI Appendix: Debugging a Page Fault</a><ul>
+<li><a class="reference internal" href="#initial-information">Initial Information</a><ul>
+<li><a class="reference internal" href="#information-for-our-example">Information for our example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mmu-fault-analysis">MMU fault analysis</a><ul>
+<li><a class="reference internal" href="#analyse-our-example">Analyse our example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#we-proved-that-the-mapping-structure-is-correct">We proved that the mapping structure is correct...</a></li>
+<li><a class="reference internal" href="#we-proved-that-the-mapping-structure-was-wrong">We proved that the mapping structure was wrong...</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ci-appendix-debugging-a-failed-to-acquire-frame">CI Appendix: Debugging a Failed to acquire frame</a><ul>
+<li><a class="reference internal" href="#frames-not-received-by-hardware">Frames not received by hardware</a></li>
+<li><a class="reference internal" href="#partial-frame">Partial frame</a></li>
+<li><a class="reference internal" href="#software-interrupt-delay">Software Interrupt delay</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="ci_appendix_ioctl.html"
+                        title="previous chapter">CI Appendix: System calls mapping</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../ispc/ispc_appendix.html"
+                        title="next chapter">ISPC Appendix: From ISPC to kernel module</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

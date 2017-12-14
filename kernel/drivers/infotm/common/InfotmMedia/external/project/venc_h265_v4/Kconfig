@@ -1,0 +1,9 @@
+ #
+ #  Clock device configuration
+ #
+ #
+config INFOTM_MEDIA_VENC_H265_V4_SUPPORT
+        tristate "APOLLO venc hevc h2v4 support"
+        default n
+        help
+               Infotm hevc video encoder support

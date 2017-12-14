@@ -1,0 +1,143 @@
+{
+	"embzframe": {
+		"ipu":"dg-frame",
+		"args": {
+			"frames":3,
+			"mode": "vacant"
+		},
+		"port": {
+			"out":{
+				"w":1280,
+				"h":720,
+				"pixel":"nv12"
+			}
+		}
+	},
+	
+	"dgframe0": {
+		"ipu":"dg-frame",
+		"args":{
+			"frames": 4,
+			"mode": "pictrue",
+			"data":"/nfs/FEIN_1088x1088_mode7_NV12.yuv"
+		},
+		"port": {
+			"out":{
+				"w":1088,
+				"h":1088,
+				"pixel":"nv12",
+				"bind":{ "ispost0":"in",  "ispost1":"in", "ispost2":"in",  "ispost3":"in" }
+			}
+		}
+	},
+	
+	"ispost0": {
+		"ipu": "ispostv2",
+		"args": {
+			"lc_grid_file_name1": "/nfs/lc_down_view_0-0_hermite32_1088x1088-960x544_fisheyes_downview_0.bin",
+			"lc_geometry_file_name1": "/root/.ispost/lc_v1_0-0-0-0_hermite32_1080x1080-1920x1088_geo_fisheye_360.bin",
+			"dn_enable": 1,
+			"rotate": 0
+		},
+		"port": {
+			"dn": {
+				"w": 960,
+				"h": 544,
+				"pixel": "nv12"
+			},
+			"ss0": {
+				"w": 1280,
+				"h": 720,
+				"pip_x":0,
+				"pip_y":0,
+				"pip_w":320,
+				"pip_h":240,
+				"pixel": "nv12",
+				"embezzle":{ "embzframe":"out" }
+			}
+		}
+	},
+	"ispost1": {
+		"ipu": "ispostv2",
+		"args": {
+			"lc_grid_file_name1": "/nfs/lc_down_view_0-0_hermite32_1088x1088-960x544_fisheyes_downview_1.bin",
+			"lc_geometry_file_name1": "/root/.ispost/lc_v1_0-0-0-0_hermite32_1080x1080-1920x1088_geo_fisheye_360.bin",
+			"dn_enable": 1,
+			"rotate": 0
+		},
+		"port": {
+			"dn": {
+				"w": 960,
+				"h": 544,
+				"pixel": "nv12"
+			},
+			"ss0": {
+				"w": 1280,
+				"h": 720,
+				"pip_x":320,
+				"pip_y":0,
+				"pip_w":320,
+				"pip_h":240,
+				"pixel": "nv12",
+				"embezzle":{ "ispost0":"ss0" }
+			}
+		}
+	},
+
+	"ispost2": {
+		"ipu": "ispostv2",
+		"args": {
+			"lc_grid_file_name1": "/nfs/lc_down_view_0-0_hermite32_1088x1088-960x544_fisheyes_downview_2.bin",
+			"lc_geometry_file_name1": "/root/.ispost/lc_v1_0-0-0-0_hermite32_1080x1080-1920x1088_geo_fisheye_360.bin",
+			"dn_enable": 1,
+			"rotate": 0
+		},
+		"port": {
+			"dn": {
+				"w": 960,
+				"h": 544,
+				"pixel": "nv12"
+			},
+			"ss0": {
+				"w": 1280,
+				"h": 720,
+				"pip_x":0,
+				"pip_y":240,
+				"pip_w":320,
+				"pip_h":240,
+				"pixel": "nv12",
+				"embezzle":{ "ispost1":"ss0" }
+			}
+		}
+	},
+
+	"ispost3": {
+		"ipu": "ispostv2",
+		"args": {
+			"lc_grid_file_name1": "/nfs/lc_down_view_0-0_hermite32_1088x1088-960x544_fisheyes_downview_3.bin",
+			"lc_geometry_file_name1": "/root/.ispost/lc_v1_0-0-0-0_hermite32_1080x1080-1920x1088_geo_fisheye_360.bin",
+			"dn_enable": 1,
+			"rotate": 0
+		},
+		"port": {
+			"dn": {
+				"w": 960,
+				"h": 544,
+				"pixel": "nv12"
+			},
+			"ss0": {
+				"w": 1280,
+				"h": 720,
+				"pip_x":320,
+				"pip_y":240,
+				"pip_w":320,
+				"pip_h":240,
+				"pixel": "nv12",
+				"embezzle":{ "ispost2":"ss0" },
+				"bind": { "display": "osd0" }
+			}
+		}
+	},
+
+	"display": { "ipu": "ids"}
+}

@@ -1,0 +1,13 @@
+{
+    "dec0":{
+        "ipu":"g1264",
+        "port":{
+            "frame":{
+                "w": 1920,
+                "h": 1080,
+                "bind":{"display":"osd0"}
+            }
+        }
+     },
+    "display": { "ipu": "ids", "args": { "no_osd1": 1 }}
+}

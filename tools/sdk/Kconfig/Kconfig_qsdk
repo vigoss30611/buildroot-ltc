@@ -1,0 +1,52 @@
+mainmenu "QSDK Configuration"
+menu "Kernel"
+config LINUX_KERNEL
+	bool "Linux Kernel"
+	help
+	  Linux kernel Code
+
+if LINUX_KERNEL
+config LINUX_KERNEL_LOCAL_PATH
+	string "Local path of linux ousrce"
+	default "${TOPDIR}/kernel"
+	help
+		use local source for linux
+
+config LINUX_KERNEL_CUSTOM_CONFIG_FILE
+	string "Configuration file path"
+	help
+	  Path to the kernel configuration file
+endif
+endmenu
+
+menu "Toolchain"
+source "toolchain/Kconfig"
+endmenu
+
+menu "Bootloader"
+source "uboot/Kconfig"
+endmenu
+
+menu "Busybox"
+source "busybox/Kconfig"
+endmenu
+
+menu "Libraries"
+source "libs/Kconfig"
+endmenu
+
+menu "Packages"
+source "packages/Kconfig"
+endmenu
+
+menu "Products"
+#source "products/Kconfig"
+endmenu
+
+menu "Private"
+#source "private/Kconfig"
+endmenu
+
+menu "File_system"
+#source "file_system/Kconfig"
+endmenu

@@ -1,0 +1,10 @@
+prefix=/usr
+exec_prefix=/usr
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: qlibsensors
+Description: qlibsensors API lib
+Version: 1.0.0
+Requires:
+Libs: -L${libdir} -lsensors

@@ -1,0 +1,67 @@
+#
+#		
+#     Copyright (c) 2009~2014 ShangHai Infotm Ltd all rights reserved.
+#	  Use of Infotm's code is governed by terms and conditions
+#	  stated in the accompanying licensing statement. 
+#	  Author:
+#          ALex Zhang   <tao_zhang@infotm.com>
+#	  Revision History: 
+#		   ----------------
+#		   1.1  16/09/2009  Alex Zhang   
+
+ menu "CORONAMPW Machines"
+
+ config MACH_CORONAMPW
+    bool "Coronampw"
+    select CPU_CORONAMPW
+	select ARM_GIC
+    help
+      Say Y here if you are using the CORONAMPW
+
+endmenu
+
+config CPU_CORONAMPW
+    bool
+    depends on ARCH_CORONAMPW
+    help
+      Support for CORONAMPW Infotm Mobile CPU based systems.
+
+
+config CORONAMPW_FPGA_PLATFORM
+    bool "CORONAMPW FPGA TEST"
+    depends on ARCH_CORONAMPW
+    default n
+    help
+       If you are operating on the FPGA platform, set Y here!
+
+config FPGA_CPU_CLK
+    int "FPGA cpu clock configure"
+    depends on CORONAMPW_FPGA_PLATFORM
+    default "40000000"
+
+config FPGA_EXTEND_CLK
+    int "FPGA externel clock configure"
+    depends on CORONAMPW_FPGA_PLATFORM
+    default "40000000"
+
+config FPGA_UART_CLK
+	int "FPGA uart clock configure"
+	depends on CORONAMPW_FPGA_PLATFORM
+	default "40000000"
+
+config CORONAMPW_DMA
+    bool
+    depends on ARCH_CORONAMPW
+    select PL330
+    default y
+    help
+    apollo dma enable
+
+config  FAKE_PM
+        bool "Support for fake power manage"
+        depends on ARCH_CORONAMPW
+        default n
+
+
+
+

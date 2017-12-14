@@ -1,0 +1,568 @@
+diff --git a/arch/arm/mach-q3f/include/mach/ip6205.h b/arch/arm/mach-q3f/include/mach/ip6205.h
+index 146fc6b..343d6de 100755
+--- a/arch/arm/mach-q3f/include/mach/ip6205.h
++++ b/arch/arm/mach-q3f/include/mach/ip6205.h
+@@ -9,7 +9,7 @@
+ #define IP620x_DEBUG_IF
+ 
+ #define IP6205_PMIC_IRQ              (213)
+-#define IP6205_DEFAULT_INT_MASK (IP6205_ONOFF_SUPER_SHORT_INT | IP6205_ONOFF_SHORT_INT | IP6205_ONOFF_LONG_INT)
++#define IP6205_DEFAULT_INT_MASK (IP6205_ONOFF_SUPER_SHORT_INT | IP6205_ONOFF_SHORT_INT | IP6205_ONOFF_LONG_INT|IP6205_DCINPLUG_INT|IP6205_DCOUTPLUG_INT)
+ 
+ /* Registers */
+ #define IP6205_PSTATE_CTL		0x00
+@@ -103,6 +103,8 @@
+ #define IP6205_ONOFF_SHORT_INT               (0x1)
+ #define IP6205_ONOFF_LONG_INT                (0x2)
+ #define IP6205_ONOFF_SUPER_SHORT_INT               (0x4)
++#define IP6205_DCINPLUG_INT               (0x20)
++#define IP6205_DCOUTPLUG_INT               (0x40)
+ 
+ enum ip6205_regulator_id {
+ 	IP6205_ID_dc1 = 0,
+diff --git a/drivers/infotm/common/power/battery.c b/drivers/infotm/common/power/battery.c
+index 291893b..d1b24fb 100644
+--- a/drivers/infotm/common/power/battery.c
++++ b/drivers/infotm/common/power/battery.c
+@@ -60,11 +60,12 @@
+ 	#define BATT_DBG(x...) do{} while(0)
+ #endif
+ 
+-#define AVE_NUM 8
++#define AVE_NUM 5
+ #define IMAP_MON_INTVAL 5000;
+ 
+ static struct imap_battery_info batt_info;
+ 
++
+ //extern int read_rtc_gpx(int io_num);
+ extern int rtc_pwrwarning_mask(int en);
+ //extern int tps65910_bkreg_wr(int reg, int val);
+@@ -159,6 +160,12 @@ unsigned int batt_get_adc_val(void) {
+ 
+ }
+ 
++void batt_set_charging_status(int batt_status)
++{
++	batt_info.batt_state = batt_status;
++}
++EXPORT_SYMBOL(batt_set_charging_status);
++
+ #ifdef IMAP_BATT_DEBUG
+ static void battery_debug_disp(void)
+ {
+@@ -249,6 +256,15 @@ static long imap_batt_resume_batt(void)
+ }
+ #endif
+ 
++static int isacon_1(void)
++{
++	if (batt_info.batt_state == POWER_SUPPLY_STATUS_CHONNGDIANBAO_CHARGING || batt_info.batt_state == POWER_SUPPLY_STATUS_CHARGING)
++		return 1;
++	else 
++		return 0;
++}
++
++
+ #if 0
+ /* return 
+ 	1: charger is on
+@@ -277,7 +293,7 @@ static int imap_batt_chg_batt_isfull(void)
+ #ifdef CONFIG_CHARGER_BQ
+ 	return atomic_read(&chargingfull);
+ #else
+-	if(isacon())
++	if(isacon_1())
+ 	{
+ 		//msleep(300);
+ 		if(item_exist("power.full"))
+@@ -768,14 +784,13 @@ static void imap_charger_mon(void)
+ 	battery_debug_disp();
+ 	if(batt_info.charger_state == BATT_CHARGER_ON)
+ 	{
+-		tmp = isacon();
++		tmp = isacon_1();
+ 		BATT_DBG("tmp = %d\n",tmp);
+ 		if(tmp == 0)
+ 		{
+ 			batt_info.charger_state = BATT_CHARGER_OFF;
+ 			batt_info.batt_state = POWER_SUPPLY_STATUS_DISCHARGING;
+ 			power_supply_changed(&imap_psy_ac);
+-			power_supply_changed(&imap_psy_batt);
+ 		}
+ 		else
+ 		{
+@@ -788,7 +803,7 @@ static void imap_charger_mon(void)
+ 				{
+ 					BATT_DBG("batt is charging\n");
+ 					batt_info.batt_state = POWER_SUPPLY_STATUS_CHARGING;
+-					power_supply_changed(&imap_psy_batt);
++					power_supply_changed(&imap_psy_ac);
+ 				}
+ 			}
+ 			else
+@@ -799,20 +814,20 @@ static void imap_charger_mon(void)
+                     			batt_info.batt_capacity = 100;
+                     			batt_info.batt_old_capacity = 100;
+ 					batt_info.batt_state = POWER_SUPPLY_STATUS_FULL;
+-					power_supply_changed(&imap_psy_batt);
+ 				}
+ 			}
++			power_supply_changed(&imap_psy_batt);
++			power_supply_changed(&imap_psy_ac);
+ 		}
+ 	}
+ 	else
+ 	{
+-		if(isacon() == 1)
++		if(isacon_1() == 1)
+ 		{
+ 			BATT_DBG("AC Charger is on\n");
+ 			batt_info.charger_state = BATT_CHARGER_ON;
+ 			batt_info.batt_state = POWER_SUPPLY_STATUS_CHARGING;
+ 			power_supply_changed(&imap_psy_ac); 
+-			power_supply_changed(&imap_psy_batt);
+ 		}
+ 	}
+ 	
+@@ -866,9 +881,11 @@ static void imap_battery_mon_update(void)
+ 	if(item_exist("power.debug"))
+ 		if(item_equal("power.debug", "nohalt", 0))
+ 			BATT_DBG(" ****** adc = [%d],    battery = [%d] ****** for test only\n", adc_temp, batt_val_temp);
++
++    //printk(" ****** adc = [%d],    battery = [%d] ****** for test only\n", adc_temp, batt_val_temp);
+ 	count ++;
+ 
+-	if(batt_info.batt_init_flag == 1 || count == AVE_NUM)
++	if(count == AVE_NUM)
+ 	{
+ 		if(batt_info.batt_init_flag == 0)
+ 		{
+@@ -888,13 +905,13 @@ static int imap_battery_mon(void *p)
+ 	BATT_DBG("%s", __func__);
+ 	
+ 	/*time = msecs_to_jiffies(1000);*/
+-	time = msecs_to_jiffies(100);
++	time = msecs_to_jiffies(1000);
+ 
+ 	num = 0;
+ 	cnt = 0;
+ 	batt_v = imap_get_batt_v(batt_get_adc_val());
+ 
+-	if(isacon()) {//charging
++	if(isacon_1()) {//charging
+ 	    if(batt_v >= 4150)
+ 		num = 7;
+ 	    else if(batt_v >= 4050)
+@@ -929,7 +946,7 @@ static int imap_battery_mon(void *p)
+ 				batt_info.cap_cnt = 0;
+ 			}
+ 			imap_battery_mon_update();
+-			if(abs(batt_old_v - batt_info.batt_voltage) > 16)
++			if(batt_old_v != batt_info.batt_voltage)
+ 			{
+ 				batt_old_v = batt_info.batt_voltage;
+ 				power_supply_changed(&imap_psy_batt);
+@@ -937,7 +954,7 @@ static int imap_battery_mon(void *p)
+ 
+ 			batt_v = imap_get_batt_v(batt_get_adc_val());
+ 
+-			if(isacon()) 
++			if(isacon_1()) 
+ 			{//charging
+ 		    		if(batt_v >= 4150)
+ 					num = 7;
+@@ -963,6 +980,9 @@ static int imap_battery_mon(void *p)
+ 			cnt ++;
+ 		}
+ 
++		batt_info.batt_voltage = imap_get_batt_v(batt_get_adc_val());
++		power_supply_changed(&imap_psy_batt);
++
+ 		up(&batt_info.mon_sem);
+ 	}
+ 
+@@ -1027,7 +1047,7 @@ static void imap_battery_get_first_voltage(void)
+ 
+ 	batt_ave = average(batt_v, 4);
+ 
+-	if (batt_ave <= 3500 && !isacon()) {
++	if (batt_ave <= 3500 && !isacon_1()) {
+ 		pr_err("battery voltage is %d, too low! power off!\n", batt_ave);
+ #if defined(CONFIG_ARCH_Q3F)
+ 		if(!strcmp(imapx_pmu_cfg.name ,"ec610")) {
+@@ -1135,7 +1155,7 @@ static void imap_battery_get_initialization(void)
+ 	imap_battery_item_curve();
+ 
+ 	/* get charger state */
+-	if(isacon())
++	if(isacon_1())
+ 	{
+ 	    BATT_DBG("Charger is on\n");
+ 		batt_info.charger_state = BATT_CHARGER_ON;
+@@ -1168,7 +1188,7 @@ static void imap_battery_get_initialization(void)
+ 	resume_time = 0;
+ 
+ 	/* check charger is full */
+-	if(isacon())
++	if(isacon_1())
+ 	{
+ 		BATT_DBG("AC Charger is on\n");
+ 		if(imap_batt_chg_batt_isfull())
+@@ -1215,7 +1235,7 @@ int imap_battery_pcbtest_get_cap(void)
+ {
+      int bat_cap;
+ 
+-     if(isacon())
++     if(isacon_1())
+      {
+          bat_cap = imap_get_batt_v2cap(bat_pcbtest_voltage, charge_curve, sizeof(charge_curve)/sizeof(struct battery_curve));
+      }
+@@ -1331,7 +1351,7 @@ static int imap_battery_resume(struct platform_device *pdev)
+ 	re_delt_time = re_delt_time / 60;
+ 	
+ 	/* get charger state */
+-	re_charger_state = isacon();
++	re_charger_state = isacon_1();
+ 	BATT_DBG("re_charger_state = %d\n", re_charger_state);
+ 
+ 	/* get new voltage */
+diff --git a/drivers/infotm/common/pwm/imapx_beep.c b/drivers/infotm/common/pwm/imapx_beep.c
+index bbb70bd..6a8ad8e 100644
+--- a/drivers/infotm/common/pwm/imapx_beep.c
++++ b/drivers/infotm/common/pwm/imapx_beep.c
+@@ -14,6 +14,7 @@
+ //#include <plat/gpio-cfg.h>
+ #include <linux/semaphore.h>
+ #include <mach/items.h>
++#include <mach/pad.h>
+ 
+ #define DEVICE_NAME                                "beep"
+ #define PWM_IOCTL_SET_FREQ                1
+@@ -30,8 +31,13 @@ static int curret_status = 1; //stop
+ 
+ static int pwm_id = 1;
+ 
++#define PWM_GPIO  108
+ static void pwm_set_freq(unsigned long freq) {
+         int period_ns = NS_IN_1HZ / freq;
++
++        imapx_pad_set_mode(PWM_GPIO, "function"); 
++        msleep(5);
++
+         pwm_config(pwm4buzzer, period_ns/2, period_ns);
+         pwm_enable(pwm4buzzer);
+ }
+@@ -39,6 +45,17 @@ static void pwm_set_freq(unsigned long freq) {
+ static void pwm_stop(void) {
+         pwm_config(pwm4buzzer, 0, NS_IN_1HZ / 100);
+         pwm_disable(pwm4buzzer);
++
++        msleep(50);
++        imapx_pad_set_mode(PWM_GPIO, "output");
++        int ret = gpio_request(PWM_GPIO, "cvbs_reset");
++        if (ret) {
++                printk("failed request gpio for cvbs_reset\n");
++        }
++        gpio_direction_output(PWM_GPIO, 0);
++        gpio_set_value(PWM_GPIO, 0);
++        msleep(50);
++        gpio_free(PWM_GPIO);
+ }
+ 
+ static int my_pwm_open(struct inode *inode, struct file *file) {
+diff --git a/drivers/infotm/common/pwm/pwm-imapx.c b/drivers/infotm/common/pwm/pwm-imapx.c
+index f9292fb..427d050 100644
+--- a/drivers/infotm/common/pwm/pwm-imapx.c
++++ b/drivers/infotm/common/pwm/pwm-imapx.c
+@@ -231,8 +231,7 @@ static int imapx_pwm_probe(struct platform_device *pdev)
+ {
+ 	struct imapx_pwm_chip *pwm;
+ 	struct resource *res;
+-	int ret, channel_num;
+-	char channel_id[12];
++	int ret;
+ 
+ 	pwm = devm_kzalloc(&pdev->dev, sizeof(*pwm), GFP_KERNEL);
+ 	if (!pwm) {
+@@ -250,17 +249,14 @@ static int imapx_pwm_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, pwm);
+ 
+-	for(channel_num = 0; channel_num < NUM_PWM_CHNS; channel_num ++){
+-		sprintf(channel_id,"imap-pwm.%d",channel_num);	
+-		pwm->clk = clk_get_sys(channel_id,"imap-pwm");
+-		if (IS_ERR(pwm->clk))
+-			return PTR_ERR(pwm->clk);
+-		pwm->clk_rate = clk_get_rate(pwm->clk);
+-		ret = clk_prepare_enable(pwm->clk);
+-		if(ret < 0) {
+-			dev_err(&pdev->dev, "failed to enable pwm clock\n");
+-			return ret;
+-		}
++	pwm->clk = devm_clk_get(&pdev->dev, "apb_pclk");
++	if (IS_ERR(pwm->clk))
++		return PTR_ERR(pwm->clk);
++	pwm->clk_rate = clk_get_rate(pwm->clk);
++	ret = clk_prepare_enable(pwm->clk);
++	if(ret < 0) {
++		dev_err(&pdev->dev, "failed to enable pwm clock\n");
++		return ret;
+ 	}
+ 	/* set default prescaler & mux */
+ 	module_power_on(SYSMGR_PWM_BASE);
+diff --git a/drivers/infotm/q3f/clk/clk.c b/drivers/infotm/q3f/clk/clk.c
+index 6a14400..5f40d3d 100755
+--- a/drivers/infotm/q3f/clk/clk.c
++++ b/drivers/infotm/q3f/clk/clk.c
+@@ -54,7 +54,7 @@ static struct bus_and_dev_clk_info dev_clk_info[] = {
+ 	/* default bus3 setting by shaft */
+ 	DEV_CLK_INFO(BUS3, 0, EPLL, 0, 3, DISABLE),
+ 	/* bus4 bus5 do not use in imapx9*/
+-	DEV_CLK_INFO(BUS4, 0, EPLL, 0, 1, DISABLE),
++	DEV_CLK_INFO(BUS4, 0, VPLL, 0, 1, DISABLE),
+ 	DEV_CLK_INFO(BUS6, 0, EPLL, 0, 3, ENABLE),
+ 
+ 	DEV_CLK_INFO(DSP_CLK_SRC, 0, EPLL, 0, 2, ENABLE),
+diff --git a/drivers/infotm/q3f/input/keyboard/ip6205-pwrkey.c b/drivers/infotm/q3f/input/keyboard/ip6205-pwrkey.c
+index 7e2be3e..faba8ad 100644
+--- a/drivers/infotm/q3f/input/keyboard/ip6205-pwrkey.c
++++ b/drivers/infotm/q3f/input/keyboard/ip6205-pwrkey.c
+@@ -15,6 +15,10 @@
+ #include <asm/io.h>
+ #include <mach/imap-rtc.h>
+ #include <mach/ip6205.h>
++#include <mach/items.h>
++#include <mach/pad.h>
++#include <linux/power_supply.h>
++
+ 
+ struct ip6205_pwrkey {
+ 	struct device *dev;
+@@ -95,7 +99,7 @@ static int ip6205_pwrkey_set_polarity(int polar)
+ 
+ 	return 0;
+ }
+-
++extern void batt_set_charging_status(int batt_status);
+ static void ip6205_pwrkey_work(struct work_struct *work)
+ {
+ 	int ret;
+@@ -107,6 +111,13 @@ static void ip6205_pwrkey_work(struct work_struct *work)
+ 	uint8_t key_longpress;
+ 	uint8_t key_us_press;;
+ 
++	u8 dcin_inserted = -1;
++	u8 pullout_inserted = -1;
++	u8 gpio_val=0;
++	int index;
++	int abs_index;
++	
++
+ 	ret = ip620x_read(pwrkey->dev->parent, IP6205_INT_FLAG, &status);
+ 	if (ret < 0) {
+ 		dev_err(pwrkey->dev,
+@@ -115,20 +126,54 @@ static void ip6205_pwrkey_work(struct work_struct *work)
+ 		return;
+ 	}
+ 	ip620x_write(pwrkey->dev->parent, IP6205_INT_FLAG, status);
+-
+-	key_us_press = status & 0x04;
+-	key_press = (status >> 15) & 0x1;
+-	key_shortpress = status & 0x01;
+-	key_longpress = status & 0x02;
+-
+-	if (key_press) {
+-		IP620x_INFO("power key down\n");
+-		input_event(pwrkey->input, EV_KEY, KEY_POWER, 1);
+-		input_sync(pwrkey->input);
+-	} else if (!key_press) {
+-		IP620x_INFO("power key up\n");
+-		input_event(pwrkey->input, EV_KEY, KEY_POWER, 0);
+-		input_sync(pwrkey->input);
++	//pr_err("====%s=====status=%d\n", __func__,status);	
++	dcin_inserted = status & 0x20;
++	pullout_inserted = status & 0x40;
++	if (dcin_inserted) {
++
++		if(item_exist("power.dcdetect"))
++		{
++			index = item_integer("power.dcdetect", 1);
++			abs_index = (index>0)? index : (-1*index);
++			if (gpio_is_valid(abs_index))
++			{
++				gpio_val =gpio_get_value(abs_index);
++				if(1 == gpio_val)
++				{
++					batt_set_charging_status(POWER_SUPPLY_STATUS_CHONNGDIANBAO_CHARGING);
++					pr_err("chongdianbao has inserted\n");
++				}
++				else
++				{
++
++					batt_set_charging_status(POWER_SUPPLY_STATUS_CHARGING);
++					pr_err("chongdianqi has inserted\n");
++				}
++			}
++
++		}
++	}
++	else if(pullout_inserted)
++	{
++		batt_set_charging_status(POWER_SUPPLY_STATUS_DISCHARGING);
++		pr_err("dcin has pull out\n");
++	}
++	else
++	{
++		key_us_press = status & 0x04;
++		key_press = (status >> 15) & 0x1;
++		key_shortpress = status & 0x01;
++		key_longpress = status & 0x02;
++		//pr_err("====key_us_press=%d,key_shortpress=%d key_longpress=%d\n",key_us_press,key_shortpress,key_longpress);
++		if (key_press&&(key_us_press||key_shortpress||key_longpress)) {
++			IP620x_INFO("power key down\n");
++			input_event(pwrkey->input, EV_KEY, KEY_POWER, 1);
++			input_sync(pwrkey->input);
++		} else if ((!key_press)&&(key_us_press||key_shortpress||key_longpress)) {
++			IP620x_INFO("power key up\n");
++			input_event(pwrkey->input, EV_KEY, KEY_POWER, 0);
++			input_sync(pwrkey->input);
++		}
+ 	}
+ 
+ 	ip6205_pwrkey_irq_enable(1);
+@@ -173,6 +218,9 @@ static int ip6205_pwrkey_probe(struct platform_device *pdev)
+ 	/*struct ip6205_pwrkey_platform_data *pdata = pdev->dev.platform_data;*/
+ 	int err;
+ 	uint16_t val;
++	u8 gpio_val=0;
++	int index;
++	int abs_index;
+ 
+ 	/*if (!pdata) {
+ 		dev_err(&pdev->dev, "power key platform data not supplied\n");
+@@ -243,6 +291,38 @@ static int ip6205_pwrkey_probe(struct platform_device *pdev)
+ 
+ 	ip6205_pwrkey_hw_init();
+ 
++	ip620x_read(pwrkey->dev->parent, IP6205_PPATH_STATUS, &val);
++	printk("@@@@@@@@@@@@ val %x\n", val);
++
++	if (val & 0x2) {
++		if(item_exist("power.dcdetect"))
++		{
++			index = item_integer("power.dcdetect", 1);
++			abs_index = (index>0)? index : (-1*index);
++			if (gpio_is_valid(abs_index))
++			{
++				gpio_val =gpio_get_value(abs_index);
++				if(1 == gpio_val)
++				{
++					batt_set_charging_status(POWER_SUPPLY_STATUS_CHONNGDIANBAO_CHARGING);
++					pr_err("chongdianbao has inserted\n");
++				}
++				else
++				{
++
++					batt_set_charging_status(POWER_SUPPLY_STATUS_CHARGING);
++					pr_err("chongdianqi has inserted\n");
++				}
++			}
++
++		}
++	}
++	else 
++	{
++		batt_set_charging_status(POWER_SUPPLY_STATUS_DISCHARGING);
++		pr_err("dcin has pull out\n");
++	}
++
+ 	return 0;
+ 
+ unregister_input_dev:
+diff --git a/drivers/infotm/q3f/mfd/ip620x.c b/drivers/infotm/q3f/mfd/ip620x.c
+index e85e488..ccebf13 100644
+--- a/drivers/infotm/q3f/mfd/ip620x.c
++++ b/drivers/infotm/q3f/mfd/ip620x.c
+@@ -190,7 +190,7 @@ static void ip620x_chip_init(void)
+ 	ip620x_i2c_read(ip620x_i2c_client, IP620x_DC_CTL, &value);
+ 	value |= 0x2;
+ 	ip620x_i2c_write(ip620x_i2c_client, IP620x_DC_CTL, value);
+-	/*set DC1(core voltage) to 1.1v*/
++	/*set DC1(core voltage) to 1.05v*/
+ 	value = 0x28;
+ 	ip620x_i2c_write(ip620x_i2c_client, IP620x_DC1_VSET, value);
+ 	
+diff --git a/drivers/infotm/q3f/power_domain/power_domain.c b/drivers/infotm/q3f/power_domain/power_domain.c
+index d9f5eaa..c82f6c8 100755
+--- a/drivers/infotm/q3f/power_domain/power_domain.c
++++ b/drivers/infotm/q3f/power_domain/power_domain.c
+@@ -725,13 +725,27 @@ static int apollo_power_domain_probe(struct platform_device *pdev)
+ 		goto sysfs_err;
+ 	}
+ 
+-	return 0;
++#if 0
++    module_power_down(SYSMGR_CRYPTO_BASE);
++    module_power_down(SYSMGR_FODET_BASE);
++    module_power_down(SYSMGR_ISPOST_BASE);
++    module_power_down(SYSMGR_IROM_BASE);
++    module_power_down(SYSMGR_IRAM_BASE);
++    module_power_down(SYSMGR_IDS0_BASE);
++    module_power_down(SYSMGR_CAMIF_BASE);
++    //module_power_down(SYSMGR_USBH_BASE);
++    //module_power_down(SYSMGR_MMC0_BASE);
++    module_power_down(SYSMGR_MAC_BASE);
++    //module_power_down(SYSMGR_CAMIF_BASE); // i2c will fail open this
++#endif
++
++    return 0;
+ 
+ sysfs_err:
+-	kobject_del(dev->kobj);
++    kobject_del(dev->kobj);
+ 
+ kobj_err:
+-	return ret;
++    return ret;
+ }
+ 
+ static struct platform_driver apollo_power_domain_driver = {
+diff --git a/drivers/mmc/core/sdio_cis.c b/drivers/mmc/core/sdio_cis.c
+index 1b28090..ae0c5a4 100755
+--- a/drivers/mmc/core/sdio_cis.c
++++ b/drivers/mmc/core/sdio_cis.c
+@@ -157,7 +157,7 @@ static int cistpl_funce_common(struct mmc_card *card, struct sdio_func *func,
+ 	card->cis.max_dtr = speed_val[(buf[3] >> 3) & 15] *
+ 			    speed_unit[buf[3] & 7];
+ 
+-    card->cis.max_dtr = 50000000;
++    card->cis.max_dtr = 25000000;
+ 
+ 	return 0;
+ }
+diff --git a/drivers/power/power_supply_sysfs.c b/drivers/power/power_supply_sysfs.c
+index 5a5fef4..6bb8056 100644
+--- a/drivers/power/power_supply_sysfs.c
++++ b/drivers/power/power_supply_sysfs.c
+@@ -48,7 +48,7 @@ static ssize_t power_supply_show_property(struct device *dev,
+ 		"USB_DCP", "USB_CDP", "USB_ACA"
+ 	};
+ 	static char *status_text[] = {
+-		"Unknown", "Charging", "Discharging", "Not charging", "Full"
++		"Unknown","Charging","Charging ChongDianBao ", "Discharging", "Not charging", "Full"
+ 	};
+ 	static char *charge_type[] = {
+ 		"Unknown", "N/A", "Trickle", "Fast"
+diff --git a/include/linux/power_supply.h b/include/linux/power_supply.h
+index 19778d7..3bf2663 100644
+--- a/include/linux/power_supply.h
++++ b/include/linux/power_supply.h
+@@ -34,6 +34,7 @@ struct device;
+ enum {
+ 	POWER_SUPPLY_STATUS_UNKNOWN = 0,
+ 	POWER_SUPPLY_STATUS_CHARGING,
++	POWER_SUPPLY_STATUS_CHONNGDIANBAO_CHARGING,
+ 	POWER_SUPPLY_STATUS_DISCHARGING,
+ 	POWER_SUPPLY_STATUS_NOT_CHARGING,
+ 	POWER_SUPPLY_STATUS_FULL,

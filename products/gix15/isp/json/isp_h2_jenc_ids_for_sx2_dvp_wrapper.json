@@ -1,0 +1,73 @@
+{
+	"isp": {
+		"ipu": "v2500",
+		"args": {
+			"skipframe": 1,
+			"nbuffers": 3
+		},
+
+		"port": {
+			"out": {
+				"w": 1472,
+				"h": 720,
+				"pixel": "nv12",
+				"bind": { "bufsync":"in" }
+			},
+			"cap": {
+				"w": 1472,
+				"h": 720,
+				"bind": {"jpeg":"in"}
+			}
+		}
+	},
+	"bufsync": { 
+		"ipu": "bufsync",
+		"args": {
+			 "nbuffers": 3
+		},
+		"port":{
+			"out0": { 
+				"w": 1472,
+				"h": 720,
+				"pixel":"nv12",
+				"bind":{
+					"display":"osd0"
+				} 
+			},
+			"out1": { 
+                                "w": 1472,
+                                "h": 720,
+                                "pixel":"nv12",
+                                "bind":{
+                                        "h265":"frame"
+                                }
+                        }
+
+		}
+	},
+	"h265":{
+		"ipu":"h2",
+		"port":{
+			"stream":{
+				"bind":{ "filesink":"in" }
+			}
+		}
+	},
+
+	"filesink":{
+		"ipu":"filesink",
+		"args":{
+			"path":"/mnt/sd0/h264Test.h264"
+		}
+	},
+
+	"jpeg": {
+		"ipu": "jenc", 
+		"args": { 
+			"mode": "trigger" 
+		}
+	},
+
+	"display": { "ipu": "ids"}
+}
+

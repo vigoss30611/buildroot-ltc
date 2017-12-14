@@ -1,0 +1,12 @@
+config BR2_PACKAGE_QLIBUPGRADE
+	bool "qlibupgrade"
+	help
+		upgrade tool for QSDK
+
+if BR2_PACKAGE_QLIBUPGRADE
+	config  BR2_PACKAGE_BINUPGRADE
+		bool "Install common upgrade app"
+		default n
+		help
+	  		Install common upgrade app
+endif

@@ -1,0 +1,11 @@
+obj-$(CONFIG_KP_AXP) += axp-board.o
+obj-$(CONFIG_KP_AXP) += axp-common.o
+obj-$(CONFIG_KP_AXP) += axp-mfd.o
+obj-$(CONFIG_KP_AXP) += axp-regu.o
+#obj-$(CONFIG_KP_AXP) += axp-sply.o
+obj-$(CONFIG_KP_AXP) += axp-sply_v3.o
+#obj-$(CONFIG_KP_AXP) += axp-sply_2.o
+obj-$(CONFIG_KP_AXP) += axp-sply_m75d.o
+obj-$(CONFIG_KP_AXP) += axp-sply_m85d.o
+#obj-$(CONFIG_KP_AXP) += axp-sply_y81.o
+obj-$(CONFIG_KP_AXP) += axp-sply_y88.o

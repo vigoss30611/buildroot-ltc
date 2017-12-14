@@ -1,0 +1,715 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ISP Control test: ISPC_test &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="up" title="Test Tools" href="test_tools.html" />
+    <link rel="next" title="ISPC loop application: ISPC_loop" href="ispc_loop.html" />
+    <link rel="prev" title="Driver_test sequence diagrams (Internal only)" href="driver_test_sequence.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="ispc_loop.html" title="ISPC loop application: ISPC_loop"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="driver_test_sequence.html" title="Driver_test sequence diagrams (Internal only)"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="test_tools.html" accesskey="U">Test Tools</a> &raquo;</li><li>ISP Control test: <code class="docutils literal"><span class="pre">ISPC_test</span></code></li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="isp-control-test-ispc-test">
+<span id="isp-ispc-test"></span><h1>ISP Control test: <code class="docutils literal"><span class="pre">ISPC_test</span></code><a class="headerlink" href="#isp-control-test-ispc-test" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal"><span class="pre">ISPC_test</span></code> is designed to provide the same flexibility as the
+<code class="docutils literal"><span class="pre">driver_test</span></code> application but using high level parameters that are used to
+configure the pipeline. It uses the ISPC library layer to configure the
+pipeline and can only run with data generators (external or internal).</p>
+<p>This tool is useful to test slow frame-rate systems but provides limited
+support over the AAA algorithms.</p>
+<p>The source is available in <code class="docutils literal"><span class="pre">ISPControl/test_apps/</span></code> and the binary should be
+installed in <code class="docutils literal"><span class="pre">ISPC/</span></code> after make install.</p>
+<div class="section" id="parameters">
+<span id="isp-ispc-test-parameters"></span><h2>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h2>
+<p>The ISP Control test application uses similar parameters as the driver test
+and an additional Felix High level configuration file (usually named
+FelixSetupArgs.txt). The file contains information about the setup of every
+module in V2500 ISP. More information about this file can be found in the
+<a class="reference internal" href="../ispc/ispc_library.html#isp-ispcl-high-level-parameters"><span>High level parameters</span></a> documentation.</p>
+<p>The parameters can be given by command line or in a configuration file.</p>
+<p>The parameter types are:</p>
+<ul class="simple">
+<li><cite>Bool</cite>: a Boolean value of either 0 or 1</li>
+<li><cite>Int</cite>/<cite>UInt</cite>: an integer (signed or unsigned is parameter specific)</li>
+<li><cite>Cmd</cite>: command that act as a Boolean of value 1 if present, of value 0 if
+not found</li>
+<li><cite>Str</cite>: string or path</li>
+<li><cite>Float</cite>: floating point number</li>
+</ul>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-source</span></code>:</dt>
+<dd>Provide a file to parse for command line parameters. The latest given
+parameter is used as the value for the option.</dd>
+<dt><code class="docutils literal"><span class="pre">-h</span></code>:</dt>
+<dd>Display the help and exit.</dd>
+</dl>
+<div class="section" id="generic-parameters">
+<span id="isp-ispc-test-generic-parameters"></span><h3>Generic Parameters<a class="headerlink" href="#generic-parameters" title="Permalink to this headline">¶</a></h3>
+<p>These parameters affect the application as a whole.</p>
+<div class="section" id="similar-to-insmod-fake-driver-only">
+<span id="isp-ispc-test-similar-insmod"></span><h4>Similar to insmod (fake driver only)<a class="headerlink" href="#similar-to-insmod-fake-driver-only" title="Permalink to this headline">¶</a></h4>
+<p>These parameters all have <code class="docutils literal"><span class="pre">insmod</span></code> equivalent with the same name.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-mmucontrol</span></code>: Int &lt;0, 1, 2&gt;</dt>
+<dd><p class="first">Use the device MMU. If enabled Device Virtual Addresses are used.</p>
+<ul class="simple">
+<li>0 – bypass MMU (virtual=physical)</li>
+<li>1 enables MMU but does not enable extended address range (32b MMU).</li>
+<li>2 – using extended address range (40b MMU)</li>
+</ul>
+<p>Only affects runs with Fake interface.</p>
+<div class="last admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The value 1 is supported by the IMG BUS4 MMU. However the V2500 HW
+was not tested with this option as CSIM does not support it, use at
+own risks.</p>
+</div>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-tilingScheme</span></code>: Int &lt;256, 512&gt;</dt>
+<dd><p class="first">Choose the Device MMU tiling scheme. Either 256 for 256x16 or 512 for
+512x8.</p>
+<p class="last">Only affects runs with Fake interface with MMU enabled
+and may not be available on all HW versions.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-tilingStride</span></code>: Int</dt>
+<dd><p class="first">If non-0 used as common stride when tiled buffers are used. This has to be
+a power of 2 and has to be big enough for all enabled output (even
+non-tiled ones that could be tiled).</p>
+<p class="last">Only affects runs with Fake interface with MMU enabled
+and may not be available on all HW versions.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-gammaCurve</span></code>: Int</dt>
+<dd>Change the default gamma curve used. More details about Gamma Curve
+selection available in the <a class="reference internal" href="../getting_started.html#isp-gsg-insmod-options"><span>Getting Started
+Guide</span></a>.</dd>
+<dt><code class="docutils literal"><span class="pre">-extDGPLL</span></code>: UInt [x2]</dt>
+<dd><p class="first">When using the external data-generator can be used to change the speed of
+processing. Provide the multiplier and divider to the test IO bank (<strong>not
+part of the ISP IP</strong>) - both values need to be specified.</p>
+<p>If 0 is given (default) then the data-generator driver computes the
+default PLL
+<span class="math">\(\frac{\text{parallesim } \times 10}{\text{parallesim } \times 10}\)</span></p>
+<div class="last admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>If incorrect values are provided the PLL may not lock up and the FPGA
+will need to be reprogrammed.</p>
+<p class="last">If given values are too high the test may not generate frames because
+the input rate will be too high for the ISP to handle.</p>
+</div>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-cpuPageSize</span></code>: UInt</dt>
+<dd><p class="first">CPU page size in kB. Interesting values are 4kB and 16kB.</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This is <strong>not</strong> an insmod parameter as it is defined by the OS.</p>
+</div>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-no_pdump</span></code>: Cmd</dt>
+<dd><p class="first">Does not generate pdumps when running.</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This is <strong>not</strong> an insmod parameter as real driver does not generate
+pdumps.</p>
+</div>
+</dd>
+</dl>
+</div>
+<div class="section" id="global-parameters">
+<span id="isp-ispc-test-global-parameters"></span><h4>Global Parameters<a class="headerlink" href="#global-parameters" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-parallel</span></code>: Cmd</dt>
+<dd>Use the parallel capture mode (see <a class="reference internal" href="driver_test.html#isp-driver-test-behaviour"><span>Behaviour</span></a>)</dd>
+<dt><code class="docutils literal"><span class="pre">-no_write</span></code>: Cmd</dt>
+<dd><p class="first">Do not write output to file (including statistics).</p>
+<p class="last">Is interesting when running on system with high memory latency.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-wait</span></code>: Cmd</dt>
+<dd>Wait for a key-press at the end of execution. Useful when running with
+batch systems on windows.</dd>
+<dt><code class="docutils literal"><span class="pre">-DumpConfigFiles</span></code>: Cmd</dt>
+<dd><p class="first">Output configuration files for default, minimum and maximum values for
+all High Level Parameters into:</p>
+<ul class="last simple">
+<li><code class="docutils literal"><span class="pre">FelixSetupArgs2_def.txt</span></code></li>
+<li><code class="docutils literal"><span class="pre">FelixSetupArgs2_min.txt</span></code></li>
+<li><code class="docutils literal"><span class="pre">FelixSetupArgs2_max.txt</span></code></li>
+<li><code class="docutils literal"><span class="pre">FelixSetupArgs_reST.txt</span></code></li>
+</ul>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-encOutCtx</span></code>: UInt [x2]</dt>
+<dd><p class="first">Which context to use for the Encoder pipeline statistics output: 1st value
+is context, second value is the pulse width in clock (see
+FELIX_CORE:ENC_OUT_CTRL).</p>
+<p class="last">In HW the direct output sends PARALLELISM signals every PARALLELISM lines.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-hw_info</span></code>: Cmd</dt>
+<dd><p class="first">Prints the HW information from the Connection object.</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">When using CSIM a connection to the CSIM is needed to read the
+CORE registers.</p>
+</div>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-ignoreDPF</span></code>: Bool</dt>
+<dd><p class="first">Override DPF results in statistics and skip saving of the DPF output file.</p>
+<p class="last">Use this flag for verification of output between CSIM and HW as both may
+not produce the same DPF output.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="fake-interface-only">
+<span id="isp-ispc-test-fake-inteface-parameters"></span><h4>Fake interface only<a class="headerlink" href="#fake-interface-only" title="Permalink to this headline">¶</a></h4>
+<p>These parameters are related to the CSIM or functionalities available to the
+fake driver only.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-simIP</span></code>: Str</dt>
+<dd><p class="first">Simulator IP address when using the Fake interface with TCP/IP.</p>
+<p class="last">Default is localhost.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-simPort</span></code>: UInt</dt>
+<dd><p class="first">Simulator port when using Fake interface with TCP/IP.</p>
+<p class="last">Default is 2345.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-simTransif</span></code>: Str</dt>
+<dd><p class="first">Path the simulator transif library when using the Fake interface with
+transif. Also needs <code class="docutils literal"><span class="pre">–simconfig</span></code>.</p>
+<p class="last">If not specified TCP/IP fake interface is used.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-simConfig</span></code>: Str</dt>
+<dd>Configuration file to give to the simulator when using the transif Fake
+interface.</dd>
+<dt><code class="docutils literal"><span class="pre">-pdumpEnableRDW</span></code>: Bool</dt>
+<dd>Enable generation of RDW commands in pdump output (not useful for
+verification). Only affect Fake driver. Default is 0.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="context-parameters">
+<span id="isp-ispc-test-context-parameters"></span><h3>Context Parameters<a class="headerlink" href="#context-parameters" title="Permalink to this headline">¶</a></h3>
+<p>The context parameters are defined per HW context. The <code class="docutils literal"><span class="pre">X</span></code> should be replaced
+by the context number starting from 0 (e.g. <code class="docutils literal"><span class="pre">–CT0_setupFile</span></code>).</p>
+<div class="section" id="run-options">
+<span id="isp-ispc-test-run-parameters"></span><h4>Run options<a class="headerlink" href="#run-options" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-CTX_setupFile</span></code>: Str</dt>
+<dd>Path to the FelixSetupArgs.txt to load</dd>
+<dt><code class="docutils literal"><span class="pre">-CTX_imager</span></code>: UInt</dt>
+<dd>Imager that the context should use.</dd>
+<dt><code class="docutils literal"><span class="pre">-CTX_nBuffers</span></code>: UInt</dt>
+<dd>Number of buffers to allocate for the run</dd>
+<dt><code class="docutils literal"><span class="pre">-CTX_nEncTiled</span></code>: UInt</dt>
+<dd>Number of buffers to allocate as tiled encoder output (maxed to the number
+of allocated buffers).</dd>
+<dt><code class="docutils literal"><span class="pre">-CTX_nDispTiled</span></code>: UInt</dt>
+<dd>Number of buffers to allocate as tiled encoder output (maxed to the number
+of allocated buffers).</dd>
+<dt><code class="docutils literal"><span class="pre">-CTX_nHDRExtTiled</span></code>: UInt</dt>
+<dd>Number of buffers to allocate as tiled encoder output (maxed to the number
+of allocated buffers).</dd>
+<dt><code class="docutils literal"><span class="pre">-CTX_nFrames</span></code>: UInt</dt>
+<dd>Number of frames to run for on this context</dd>
+<dt><code class="docutils literal"><span class="pre">-CTX_re-use</span></code>: Bool</dt>
+<dd>Enable the re-use of the previously used <code class="docutils literal"><span class="pre">Camera</span></code> object when running
+in serial mode (the previously used context needs to be configured to
+use the same DG as the new one!)</dd>
+<dt><code class="docutils literal"><span class="pre">-CTX_updateMaxSize</span></code>: Bool</dt>
+<dd>Update output sizes using <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html#a7920144f63d82693ee3adc80a3cbcce6">ISPC::Camera::setEncoderDimensions()</a> and
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html#aff6e126726d15d15739429ada66e011f">ISPC::Camera::setDisplayDimensions()</a> using output size after the
+scalers. In other words will allocate the minimum size buffers. Default is
+off and the allocation will be big enough to cover the whole input image
+resolution.</dd>
+</dl>
+</div>
+<div class="section" id="additional-input-v2500-v2-only">
+<span id="isp-ispc-test-additional-input-parameters"></span><h4>Additional input (V2500 v2 only)<a class="headerlink" href="#additional-input-v2500-v2-only" title="Permalink to this headline">¶</a></h4>
+<p>These inputs may not be available for all HW configurations. If the HW does
+not support them these options will be ignored.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-CTX_HDRInsertion</span></code>: Str</dt>
+<dd><p class="first">The filename to use as the input of the HDR Insertion if enabled in given
+setup file - if none do not use HDR Insertion. The image has to be an FLX
+in RGB of the same size than the one provided to DG but does not have to be
+of the correct bitdepth (max supported bitdepth is 16b per channel).</p>
+<p>This will replace the image in the pipeline and Encoder and Display output
+will use that image as source.</p>
+<div class="last admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The setup parameter <cite>OUT_DI_HDF</cite> has to be set to enable HDR insertion!</p>
+</div>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-CTX_HDRInsRescale</span></code>: Bool</dt>
+<dd>Rescale provided HDR Insertion file to 16b per pixels. Does not downscale.</dd>
+</dl>
+</div>
+<div class="section" id="configuration-options">
+<span id="isp-ispc-test-configuration-parameters"></span><h4>Configuration options<a class="headerlink" href="#configuration-options" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-CTX_saveStats</span></code>: Bool</dt>
+<dd><p class="first">Save statistics generated by HW in the same way than <code class="docutils literal"><span class="pre">driver_test</span></code>
+does (default is 1 – disabled if <code class="docutils literal"><span class="pre">-no_write</span></code> enabled).</p>
+<p class="last">See <a class="reference internal" href="test_tools.html#isp-tt-statistics-format"><span>Statistics Format</span></a>.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-CTX_saveTxtStats</span></code>: Bool</dt>
+<dd><p class="first">Save statistics generated by HW in text format. This will exclude CRCs
+but contain the module configuration when available (default is 1
+- disabled if <code class="docutils literal"><span class="pre">-no_write</span></code> enabled).</p>
+<p class="last">See <a class="reference internal" href="test_tools.html#isp-tt-statistics-format"><span>Statistics Format</span></a>.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-CTX_LSHGrid</span></code>: Str</dt>
+<dd>Path to the LSH grid file to load. Overrides the one provided in setup
+file.</dd>
+<dt><code class="docutils literal"><span class="pre">-CTX_changeLSHPerFrame</span></code>: Bool</dt>
+<dd><p class="first">If more than 1 LSH grid is loaded will try to change the grid based on the
+frame number. This may be disabled if using some control algorithms that
+provide this functionality as well.</p>
+<p>This allow the testing of several matrices but because the capture is not
+restarted they have to share the same configuration (tile size, bits per
+diff, etc). To use matrices with different configuration several run of
+ISPC_test should be made.</p>
+<p class="last">This should be used with only 1 buffer or not all matrices will be used.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-CTX_saveRaw</span></code>: Bool</dt>
+<dd>Enable saving of the raw image data for images output (except YUV which
+is always RAW image from HW). Stride is removed.</dd>
+<dt><code class="docutils literal"><span class="pre">-CTX_saveLSH</span></code>: Bool</dt>
+<dd>Save the LSH matrices loaded in the test folder.
+If disabled still save the current matrixId used (default is enabled).
+The matrixId associated to the loaded file can be found in the log output.</dd>
+<dt><code class="docutils literal"><span class="pre">-CTX_regOverride</span></code>: Bool</dt>
+<dd><p class="first">Allow register override if a file is present (see
+<a class="reference internal" href="test_tools.html#isp-tt-register-override"><span>Register override</span></a>).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Available only with Fake Interface.</p>
+</div>
+<div class="last admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This option should be avoided as it requires a complete knowledge
+about the registers to choose the correct value and does not work
+with real drivers.</p>
+</div>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-CTX_enableTS</span></code>: Bool:</dt>
+<dd><p class="first">Enable timestamps generation. By default with real driver timestamps are
+enabled but they can be disabled when doing HW output verification
+against results generated with CSIM (e.g. statistics may not be binary
+equivalent as they contain timestamp).</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">No effect when running Fake driver: CSIM does not generate timestamps
+therefore the driver does not enable them.</p>
+</div>
+</dd>
+</dl>
+</div>
+<div class="section" id="algorithms-controls">
+<span id="isp-ispc-test-algorithms-parameters"></span><h4>Algorithms controls<a class="headerlink" href="#algorithms-controls" title="Permalink to this headline">¶</a></h4>
+<p>These parameters give some input over the ISPC Control algorithms.</p>
+<p>Information about algorithms is available in the
+<a class="reference internal" href="../ispc/ispc_library.html#isp-ispc-control-modules"><span>Implemented Control Modules</span></a> document.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-CTX_TNM</span></code>: Bool</dt>
+<dd>Enable usage Global Tone Mapper control algorithm.</dd>
+<dt><code class="docutils literal"><span class="pre">-CTX_TNM-local</span></code>: Bool</dt>
+<dd>Enable usage Local Tone Mapper control algorithm.</dd>
+<dt><code class="docutils literal"><span class="pre">-CTX_TNM-adapt</span></code>: Bool</dt>
+<dd>Enable usage Adaptive Tone Mapper control algorithm.</dd>
+<dt><code class="docutils literal"><span class="pre">-CTX_LBC</span></code>: Bool</dt>
+<dd>Enable usage Light Based Controls algorithm (and loading of the LBC
+parameters).</dd>
+<dt><code class="docutils literal"><span class="pre">-CTX_WBC</span></code>: Int</dt>
+<dd><p class="first">Enable usage of White Balance Control algorithm; values are:</p>
+<ul class="simple">
+<li>0 disabled</li>
+<li>1 AC</li>
+<li>2 WP</li>
+<li>3 HLW</li>
+<li>4 COMBINED</li>
+<li>5 Planckian Locus</li>
+</ul>
+<p class="last">Please note that Planckian Locus method is available for HW versions
+starting from 2.6, where it&#8217;s the default value, otherwise Combined
+statistics is chosen.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-CTX_AE</span></code>: Bool</dt>
+<dd><strong>Not available! Data Generator does not support different
+exposures/gains.</strong></dd>
+<dt><code class="docutils literal"><span class="pre">-CTX_AF</span></code>: Bool</dt>
+<dd><strong>Not available! Data Generator does not support different focus.</strong></dd>
+</dl>
+</div>
+</div>
+<div class="section" id="internal-data-generator-parameters">
+<span id="isp-ispc-test-internal-dg-parameters"></span><h3>Internal Data Generator parameters<a class="headerlink" href="#internal-data-generator-parameters" title="Permalink to this headline">¶</a></h3>
+<p>The same parameters than
+<a class="reference internal" href="driver_test.html#isp-driver-test-internal-dg-parameters"><span>driver_test</span></a> are used for
+the internal data-generator.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-IntDGX_inputFLX</span></code>: Str</dt>
+<dd>Path to the input FLX file in RGGB.</dd>
+<dt><code class="docutils literal"><span class="pre">-IntDGX_inputFrames</span></code>: UInt (&gt;0)</dt>
+<dd><p class="first">Number of frames to use from the input file.</p>
+<p class="last">E.g. To load from a file with 10 frames but limit the used input to 4
+first.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-IntDGX_gasket</span></code>: UInt</dt>
+<dd><p class="first">Gasket to replace data from with internal data generator.</p>
+<p class="last">Related to the <code class="docutils literal"><span class="pre">-CTX_imager</span></code> option used.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-IntDGX_blanking</span></code>: UInt [x2]</dt>
+<dd>Horizontal and vertical blanking to use. If 2nd value (vertical
+blanking) is not specified default is used.</dd>
+<dt><code class="docutils literal"><span class="pre">-IntDGX_preload</span></code>: Bool</dt>
+<dd>Enable the frame preloading of the internal data-generator (HW feature).</dd>
+</dl>
+</div>
+<div class="section" id="external-data-generator-parameters">
+<span id="isp-ispc-test-external-dg-parameters"></span><h3>External Data Generator parameters<a class="headerlink" href="#external-data-generator-parameters" title="Permalink to this headline">¶</a></h3>
+<p>The same parameters than
+<a class="reference internal" href="driver_test.html#isp-driver-test-external-dg-parameters"><span>driver_test</span></a> are used for
+the external data-generator.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The external data-generator is not available on silicon but only when
+using CSIM.</p>
+</div>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-DGX_inputFLX</span></code>: Str</dt>
+<dd>Path to the input FLX file in RGGB.</dd>
+<dt><code class="docutils literal"><span class="pre">-DGX_inputFrames</span></code>: UInt (&gt;0)</dt>
+<dd><p class="first">Number of frames to use from the input file.</p>
+<p class="last">E.g. To load from a file with 10 frames but limit the used input to 4
+first.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-DGX_blanking</span></code>: UInt [x2]</dt>
+<dd>Horizontal and vertical blanking to use. If 2nd value (vertical
+blanking) is not specified default is used.</dd>
+<dt><code class="docutils literal"><span class="pre">-DGX_preload</span></code>: Bool</dt>
+<dd>Enable the frame preloading of the data-generator (HW feature).</dd>
+<dt><code class="docutils literal"><span class="pre">-DGX_MIPILF</span></code>: Bool</dt>
+<dd>If the associated gasket is MIPI will use the long format (additional
+line header).</dd>
+<dt><code class="docutils literal"><span class="pre">-DGX_mipiLanes</span></code>: UInt &lt;1, 2, 4&gt;</dt>
+<dd>If the associated gasket is MIPI will set the number of MIPI lanes to use.
+Valid number of lanes are 1, 2 and 4.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="behaviour">
+<span id="isp-ispc-test-behaviour"></span><h2>Behaviour<a class="headerlink" href="#behaviour" title="Permalink to this headline">¶</a></h2>
+<p>The behaviour of this test application is similar to the one explained for
+the <a class="reference internal" href="driver_test.html#isp-driver-test-behaviour"><span>driver_test</span></a> application. The only
+difference is that the configuration of the pipeline is done by loading the
+<code class="docutils literal"><span class="pre">FelixSetupArgs.txt</span></code> and configuring the HW through the ISP Control layer.
+It has the same option for parallel or sequential running of multi-context
+tests.</p>
+</div>
+<div class="section" id="parameter-example">
+<span id="isp-ispc-test-parameter-example"></span><h2>Parameter Example<a class="headerlink" href="#parameter-example" title="Permalink to this headline">¶</a></h2>
+<p>This section provides a basic test which duplicates the behaviour of the one
+given in <a class="reference internal" href="driver_test.html#isp-driver-test-parameter-example"><span>driver_test</span></a>.</p>
+<p>It is possible to run it using</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>./ISPC_test -source ispc_params.txt
+</pre></div>
+</div>
+<p>And in the same way that it is possible to modify parameters in <code class="docutils literal"><span class="pre">driver_test</span></code>
+additional values on the command line will modify the file that was used as
+a reference, for example using another image for DG0:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>./ISPC_test -source ispc_params.txt -DG0_inputFLX ~felix/FLX/DE_A_rggb.flx
+</pre></div>
+</div>
+<p><strong>ispc_params.txt</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre>#------------------------------------
+# global setup
+#------------------------------------
+-mmucontrol 2 # 0 for no MMU, 2 for MMU 40b
+-parallel 0   # run in serial mode to be able to do re-use
+
+#------------------------------------
+# pipeline setup
+#------------------------------------
+-CT0_setupFile FelixSetupArgs_CT0.txt # configuration to load for this context
+-CT0_nBuffers 5  # nb of buffers to allocate
+-CT0_nFrames 10  # nb of frames to run for
+-CT0_imager 0    # using DG 0
+-CT0_WBC 4       # use combined White Balance controls - use 5 for Plankian
+-CT0_LBC 0       # do not enable Light Based controls
+-CT0_TNM-adapt 1 # enable adaptive tone mapper curve
+
+-CT1_setupFile FelixSetupArgs_CT1.txt
+-CT1_nBuffers 1
+-CT1_nFrames 10
+-CT1_imager 0
+-CT1_re-use 1    # run with the same object from CT0 – possible because same DG is used
+
+#------------------------------------
+# data generators
+#------------------------------------
+-DG0_inputFLX fight_960x540-12b-91.flx # this file has 91 frames
+-DG0_inputFrames 10 # but load only 10 frames out of the 91
+
+-DG1_inputFLX DE_A_rggb.flx # not used for that test
+-DG1_inputFrames 1 # number of frames to load from input file
+</pre></div>
+</div>
+<p><strong>FelixSetupArgs_CT0.txt</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre>// Global output parameters
+OUT_DE BAYER12
+OUT_DE_POINT 1 
+OUT_DISP NONE
+OUT_ENC NV21
+
+// WB white balance multiple CCM
+WB_CCM_0  1.1981 -0.0346 -0.2413 -0.3086  1.1716  0.0749 -0.0681 -0.999   1.98  
+WB_CCM_1  1.0463  0.0366 -0.1541 -0.3571  1.2661  0.0371 -0.1288 -0.6301  1.6843  
+WB_CCM_2  1.0017  0.0818 -0.1479 -0.2517  1.1521  0.0406 -0.0583 -0.9271  1.9070  
+WB_CCM_3  1.2889 -0.2184 -0.1441 -0.2686  1.2324 -0.0183 -0.0131 -0.6337  1.5793  
+WB_CCM_4  1.2939 -0.2349 -0.1441 -0.2410  1.2197 -0.0399  0.0183 -0.5901  1.5035  
+WB_CORRECTIONS 5 
+WB_GAINS_0 1 1.21216 1.19692 3.22325  
+WB_GAINS_1 1 1.10695 1.09254 2.7292  
+WB_GAINS_2 1.2724 1.01386 1 3.05519  
+WB_GAINS_3 1.21401 1.01559 1 1.88554  
+WB_GAINS_4 1.37693 1.01983 1 1.57071  
+WB_OFFSETS_0 -115.957 -118.808 -117.855  
+WB_OFFSETS_1 -116.65 -119.668 -120.553  
+WB_OFFSETS_2 -118.114 -118.879 -119.727  
+WB_OFFSETS_3 -117.457 -119.671 -119.148  
+WB_OFFSETS_4 -114.749 -118.905 -119.947  
+WB_TEMPERATURE_0 2800 
+WB_TEMPERATURE_1 3300 
+WB_TEMPERATURE_2 4000 
+WB_TEMPERATURE_3 5000 
+WB_TEMPERATURE_4 6500
+</pre></div>
+</div>
+<p><strong>FelixSetupArgs_CT1.txt</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre>// Global output parameters
+OUT_DE NONE
+OUT_DE_POINT 1 
+OUT_DISP RGB888_32
+OUT_ENC NONE
+</pre></div>
+</div>
+</div>
+<div class="section" id="expected-output">
+<span id="isp-ispc-test-expected-output"></span><h2>Expected Output<a class="headerlink" href="#expected-output" title="Permalink to this headline">¶</a></h2>
+<p>All outputs are written in the directory where to application running.</p>
+<p>According to the parameters provided some image files are generated from the
+test application (where X is the context number):</p>
+<ul class="simple">
+<li>One encoder output file per context <code class="docutils literal"><span class="pre">encoderX_WxH_FMT_alignA.yuv</span></code> where
+<code class="docutils literal"><span class="pre">W</span></code> is the width in pixels, <code class="docutils literal"><span class="pre">H</span></code> the height in pixels, <code class="docutils literal"><span class="pre">FMT</span></code> the format
+string and <code class="docutils literal"><span class="pre">A</span></code> the alignment of the allocation in Bytes (e.g.
+<code class="docutils literal"><span class="pre">encoder0-1020x720-NV21-align1.yuv</span></code>).</li>
+<li>One display or one data-extraction file per context <code class="docutils literal"><span class="pre">displayX.flx</span></code> or
+<code class="docutils literal"><span class="pre">dataExtractionX.flx</span></code>.</li>
+<li>One HDR extraction file <code class="docutils literal"><span class="pre">hdrExtractionX.flx</span></code> (V2500 v2 only).</li>
+<li>One Raw2D extraction file <code class="docutils literal"><span class="pre">raw2DExtractionX.flx</span></code> (V2500 v2 only).</li>
+</ul>
+<p>Statistics files can be generated too:</p>
+<ul class="simple">
+<li>If enabled one binary statistics file per context <code class="docutils literal"><span class="pre">ctx_X_stats.dat</span></code>
+(see <a class="reference internal" href="test_tools.html#isp-tt-statistics-format"><span>Statistics Format</span></a>).</li>
+<li>If enabled one DPF output file <code class="docutils literal"><span class="pre">ctxX-F-dpf_write_S.dat</span></code> where <code class="docutils literal"><span class="pre">F</span></code> is the
+frame and <code class="docutils literal"><span class="pre">S</span></code> the number of defects (see <a class="reference internal" href="test_tools.html#isp-tt-dpf-output"><span>Defective Pixel output map</span></a>).</li>
+<li>If enabled one statistics file per context and frame
+<code class="docutils literal"><span class="pre">ctxX-F-statistics.txt</span></code> (see <a class="reference internal" href="test_tools.html#isp-tt-statistics-format"><span>Statistics Format</span></a>).</li>
+<li>If enabled the loaded lsh are saved as <code class="docutils literal"><span class="pre">ctxX-lshgridY.lsh</span></code> where Y is the
+matrixId (see <a class="reference internal" href="test_tools.html#isp-tt-deshading-grid"><span>Deshading Grid file format (LSH)</span></a>).</li>
+</ul>
+<p>If the save RAW option is enabled some additional image files can be saved:</p>
+<ul class="simple">
+<li>If the encoder output buffer is tiled an additional file is saved
+<code class="docutils literal"><span class="pre">encoderX_WxH_tiled_strS_FMT-alignA.yuv</span></code> (with <code class="docutils literal"><span class="pre">S</span></code> the tiled buffer
+stride).</li>
+<li><code class="docutils literal"><span class="pre">dataExtractionX_F_WxH_strS_FMT.flx</span></code> or</li>
+<li><code class="docutils literal"><span class="pre">displayX_F_WxH_strS_FMT.flx</span></code> or
+<code class="docutils literal"><span class="pre">displayX_F_WxH_tiled_strS_FMT.flx</span></code> if the buffer is tiled</li>
+<li><code class="docutils literal"><span class="pre">hdrExtractionX_F_WxH_strS_FMT.flx</span></code> or
+<code class="docutils literal"><span class="pre">hdrExtractionX_F_WxH_tiled_strS_FMT.flx</span></code> if the buffer is tiled</li>
+<li><code class="docutils literal"><span class="pre">raw2dExtractionX_F_WxH_strS_FMT.flx</span></code> or
+<code class="docutils literal"><span class="pre">raw2dExtractionX_F_WxH_tiled_strS_FMT.flx</span></code> if the buffer is tiled</li>
+</ul>
+<p>See the <a class="reference internal" href="test_tools.html#isp-tt-format-strings"><span>driver_test format string</span></a>
+for naming convention.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">ISP Control test: <code class="docutils literal"><span class="pre">ISPC_test</span></code></a><ul>
+<li><a class="reference internal" href="#parameters">Parameters</a><ul>
+<li><a class="reference internal" href="#generic-parameters">Generic Parameters</a><ul>
+<li><a class="reference internal" href="#similar-to-insmod-fake-driver-only">Similar to insmod (fake driver only)</a></li>
+<li><a class="reference internal" href="#global-parameters">Global Parameters</a></li>
+<li><a class="reference internal" href="#fake-interface-only">Fake interface only</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#context-parameters">Context Parameters</a><ul>
+<li><a class="reference internal" href="#run-options">Run options</a></li>
+<li><a class="reference internal" href="#additional-input-v2500-v2-only">Additional input (V2500 v2 only)</a></li>
+<li><a class="reference internal" href="#configuration-options">Configuration options</a></li>
+<li><a class="reference internal" href="#algorithms-controls">Algorithms controls</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#internal-data-generator-parameters">Internal Data Generator parameters</a></li>
+<li><a class="reference internal" href="#external-data-generator-parameters">External Data Generator parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#behaviour">Behaviour</a></li>
+<li><a class="reference internal" href="#parameter-example">Parameter Example</a></li>
+<li><a class="reference internal" href="#expected-output">Expected Output</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="driver_test_sequence.html"
+                        title="previous chapter">Driver_test sequence diagrams (Internal only)</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="ispc_loop.html"
+                        title="next chapter">ISPC loop application: <code class="docutils literal"><span class="pre">ISPC_loop</span></code></a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

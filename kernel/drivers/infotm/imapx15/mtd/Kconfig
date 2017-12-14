@@ -1,0 +1,40 @@
+#
+# Infotm NAND device configuration
+#
+
+menu "Infotm NAND Flash support"
+
+config INFOTM_NAND
+	bool "Infotm NAND FLASH imapx800 SUPPORT"
+	default y
+        select MTD_NAND 
+        select MTD_BLOCK
+        help
+		This is new nand suport
+
+config MTD_INFOTM_NAND
+	bool "InfoTMIC separate NAND system support"
+	depends on MTD
+	help
+	  This enables support for accessing all type of NAND flash
+	  devices. For further information see
+	  <http://www.linux-mtd.infradead.org/doc/nand.html>.
+
+choice
+	prompt "NAND transfer method"
+	depends on MTD_INFOTM_NAND
+
+config MTD_NAND_IMAPX800_POLL
+    comment "CPU polling"
+	depends on MTD_INFOTM_NAND
+
+config MTD_NAND_IMAPX800_SDMA
+    comment "Simple DMA transfer"
+	depends on MTD_INFOTM_NAND
+endchoice	
+
+config MTD_NAND_IMAPX800_SECC
+    bool "use secc mode"
+    depends on MTD
+
+endmenu

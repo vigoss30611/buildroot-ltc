@@ -1,0 +1,49 @@
+config BR2_PACKAGE_QLIBSENSORS
+	bool "qlibsensors"
+	help
+		Provide API for many sensors
+
+if BR2_PACKAGE_QLIBSENSORS
+	config  BR2_PACKAGE_LIGHT_SENSOR
+		bool "Light Sensor"
+		default n
+	if BR2_PACKAGE_LIGHT_SENSOR
+		config BR2_PACKAGE_LIGHT_SENSOR_DEV
+		string "Specify device path"
+		default "/sys/devices/platform/pt550/voltage"
+	endif
+
+	config  BR2_PACKAGE_GPS
+		bool "GPS"
+		default n
+	if BR2_PACKAGE_GPS
+		config BR2_PACKAGE_GPS_TTY
+		string "Specify TTY"
+		default "/dev/ttyUSB0"
+
+		config BR2_PACKAGE_GPS_TTY_SPEED
+		string "Baudrate"
+		default "115200"
+
+		config BR2_PACKAGE_GPS_TTY_DATA
+		string "Data"
+		default "8"
+
+		choice
+			prompt "Parity"
+			default BR2_PACKAGE_GPS_TTY_PAR_NONE
+			
+			config BR2_PACKAGE_GPS_TTY_PAR_NONE
+			bool "None"
+			config BR2_PACKAGE_GPS_TTY_PAR_EVEN
+			bool "Even"
+			config BR2_PACKAGE_GPS_TTY_PAR_ODD
+			bool "Odd"
+		endchoice
+
+		config BR2_PACKAGE_GPS_TTY_STOP
+		string "Stop bit"
+		default "1"
+	endif
+endif
+

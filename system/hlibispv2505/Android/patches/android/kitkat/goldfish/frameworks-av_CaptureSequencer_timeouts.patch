@@ -1,0 +1,75 @@
+diff --git a/services/camera/libcameraservice/api1/client2/CaptureSequencer.cpp b/services/camera/libcameraservice/api1/client2/CaptureSequencer.cpp
+index 8a4ce4e..b838086 100644
+--- a/services/camera/libcameraservice/api1/client2/CaptureSequencer.cpp
++++ b/services/camera/libcameraservice/api1/client2/CaptureSequencer.cpp
+@@ -28,6 +28,8 @@
+ #include "api1/client2/Parameters.h"
+ #include "api1/client2/ZslProcessorInterface.h"
+ 
++#define FELIX_USES_EMULATOR
++
+ namespace android {
+ namespace camera2 {
+ 
+@@ -226,8 +228,13 @@ CaptureSequencer::CaptureState CaptureSequencer::manageIdle(
+     status_t res;
+     Mutex::Autolock l(mInputMutex);
+     while (!mStartCapture) {
++
+         res = mStartCaptureSignal.waitRelative(mInputMutex,
++#ifdef FELIX_USES_EMULATOR
++                kWaitDuration * 1000);
++#else
+                 kWaitDuration);
++#endif
+         if (res == TIMED_OUT) break;
+     }
+     if (mStartCapture) {
+@@ -422,7 +429,11 @@ CaptureSequencer::CaptureState CaptureSequencer::manageStandardPrecaptureWait(
+     ATRACE_CALL();
+     Mutex::Autolock l(mInputMutex);
+     while (!mNewAEState) {
++#ifdef FELIX_USES_EMULATOR
++        res = mNewNotifySignal.waitRelative(mInputMutex, kWaitDuration * 1000);
++#else
+         res = mNewNotifySignal.waitRelative(mInputMutex, kWaitDuration);
++#endif
+         if (res == TIMED_OUT) {
+             mTimeoutCount--;
+             break;
+@@ -546,7 +557,11 @@ CaptureSequencer::CaptureState CaptureSequencer::manageStandardCaptureWait(
+ 
+     // Wait for new metadata result (mNewFrame)
+     while (!mNewFrameReceived) {
++#ifdef FELIX_USES_EMULATOR
++        res = mNewFrameSignal.waitRelative(mInputMutex, kWaitDuration * 1000);
++#else
+         res = mNewFrameSignal.waitRelative(mInputMutex, kWaitDuration);
++#endif
+         if (res == TIMED_OUT) {
+             mTimeoutCount--;
+             break;
+@@ -564,7 +579,11 @@ CaptureSequencer::CaptureState CaptureSequencer::manageStandardCaptureWait(
+ 
+     // Wait until jpeg was captured by JpegProcessor
+     while (mNewFrameReceived && !mNewCaptureReceived) {
++#ifdef FELIX_USES_EMULATOR
++        res = mNewCaptureSignal.waitRelative(mInputMutex, kWaitDuration * 1000);
++#else
+         res = mNewCaptureSignal.waitRelative(mInputMutex, kWaitDuration);
++#endif
+         if (res == TIMED_OUT) {
+             mTimeoutCount--;
+             break;
+@@ -650,7 +669,11 @@ CaptureSequencer::CaptureState CaptureSequencer::manageBurstCaptureWait(
+     ATRACE_CALL();
+ 
+     while (!mNewCaptureReceived) {
++#ifdef FELIX_USES_EMULATOR
++        res = mNewCaptureSignal.waitRelative(mInputMutex, kWaitDuration * 1000);
++#else
+         res = mNewCaptureSignal.waitRelative(mInputMutex, kWaitDuration);
++#endif
+         if (res == TIMED_OUT) {
+             mTimeoutCount--;
+             break;

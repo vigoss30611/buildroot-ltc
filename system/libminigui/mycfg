@@ -1,0 +1,48 @@
+#!/bin/sh
+
+rm -rf `find . -name "*.o"`
+rm -rf `find . -name "*.lo"`
+rm -rf `find . -name "*.plo"`
+rm -rf `find . -name "*.la"`
+rm -rf `find . -name "*.a"`
+
+export LD_LIBRARY_PATH=$PWD/../../../prebuilts/uclibc/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PWD/../../../prebuilts/uclibc/arm-buildroot-linux-uclibcgnueabihf/sysroot/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PWD/../../../prebuilts/uclibc/arm-buildroot-linux-uclibcgnueabihf/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PWD/../../prebuilts/uclibc/arm-buildroot-linux-uclibcgnueabihf/sysroot/usr/lib
+
+export PATH=$PATH:${PWD}/../../../prebuilts/uclibc/bin
+export arm_prefix=arm-buildroot-linux-uclibcgnueabihf-
+#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PWD/../../../prebuilts/uclibc/lib
+GNU_DIR=${PWD}/../../../prebuilts/uclibc/bin
+CC=${GNU_DIR}/${arm_prefix}gcc
+CXX=${GNU_DIR}/${arm_prefix}g++
+LD=${GNU_DIR}/${arm_prefix}ld
+AS=${GNU_DIR}/${arm_prefix}as
+AR=${GNU_DIR}/${arm_prefix}ar
+STRIP=${GNU_DIR}/${arm_prefix}strip
+NM=${GNU_DIR}/${arm_prefix}nm
+RANLIB=${GNU_DIR}/${arm_prefix}ranlib
+BLD_ROOT_DIR="${PWD}/../../.."
+CFLAGS="\
+    -I${BLD_ROOT_DIR}/prebuilts/uclibc/arm-buildroot-linux-uclibcgnueabihf/sysroot/usr/include \
+    -I${PWD}/include \
+    -I${BLD_ROOT_DIR}/prebuilts/linaro-arm-linux-gnueabihf-4.7/arm-linux-gnueabihf/libc/usr/include/arm-linux-gnueabi
+    "
+CPPFLAGS=$CFLAGS
+CXXFLAGS=$CFLAGS
+
+
+./configure  --prefix=$PWD/_install CC=${GNU_DIR}/${arm_prefix}gcc --build=i386-linux  --host=arm-linux --target=arm-linux \
+RANLIB=${GNU_DIR}/${arm_prefix}ranlib    --oldincludedir=${BLD_ROOT_DIR}/prebuilts/uclibc/arm-buildroot-linux-uclibcgnueabihf/sysroot/usr/include \
+ --with-ttfsupport=ft2 --with-ft2-includes=$PWD/../libfreetype/include/ --libdir=$PWD/../libfreetype/lib/\
+ --enable-flatlf=no --enable-skinlf=no --enable-fonttimes=no  --enable-cursor=no  --enable-savebitmap=no --enable-jpgsupport=no --enable-pngsupport=no --enable-menu=no --enable-mousecalibrate=no --enable-savescreen=no --enable-ctrltreeview=no --enable-ctrltreeview-rdr=no --enable-ctrlspinbox=no --enable-ctrlcoolbar=no --enable-ctrlanimation=no --enable-pcxvfb=no --enable-screensaver=no --enable-vbfsupport=no --enable-fontsserif=no --enable-fontcourier=no --enable-fontsystem=no
+
+export PATH=$PATH:${PWD}/../../../prebuilts/uclibc/bin
+
+make
+
+cp ./src/.libs/libminigui_ths.so  ../libra/libminigui_ths-3.0.so.12
+
+$PWD/../../../prebuilts/uclibc/./arm-buildroot-linux-uclibcgnueabihf/bin/strip ../libra/libminigui_ths-3.0.so.12
+

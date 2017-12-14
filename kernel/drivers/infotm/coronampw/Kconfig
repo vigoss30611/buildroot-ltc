@@ -1,0 +1,18 @@
+ menuconfig INFOTM_DRV_CORONAMPW
+     bool "Infotm CORONAMPW Series Support"
+     depends on ARCH_CORONAMPW && INFOTM_SPECIAL
+     help
+         Infotm CORONAMPW Series support
+
+if INFOTM_DRV_CORONAMPW
+source "drivers/infotm/coronampw/clk/Kconfig"
+source "drivers/infotm/coronampw/gpio/Kconfig"
+source "drivers/infotm/coronampw/input/Kconfig"
+source "drivers/infotm/coronampw/display/Kconfig"
+source "drivers/infotm/coronampw/dpmu/Kconfig"
+source "drivers/infotm/coronampw/emif/Kconfig"
+source "drivers/infotm/coronampw/mfd/Kconfig"
+source "drivers/infotm/coronampw/regulator/Kconfig"
+source "drivers/infotm/coronampw/ispost/Kconfig"
+endif
+

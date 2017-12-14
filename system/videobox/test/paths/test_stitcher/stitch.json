@@ -1,0 +1,46 @@
+{
+	"dg0": {
+		"ipu": "dg-frame",
+		"args": {
+			"data": "/nfs/fisheye_1080x1080.yuv",
+			"frames": 1
+		},
+		"port": {
+			"out": {
+				"w": 1080,
+				"h": 1080,
+				"pixel": "nv12",
+				"bind": { "stitcher": "in0" }
+			}
+		}
+	},
+
+	"dg1": {
+		"ipu": "dg-frame",
+		"args": {
+			"data": "/nfs/fisheye_1080x1080.yuv",
+			"frames": 1
+		},
+		"port": {
+			"out": {
+				"w": 1080,
+				"h": 1080,
+				"pixel": "nv12",
+				"bind": { "stitcher": "in1" }
+			}
+		}
+	},
+
+	"stitcher": {
+		"ipu": "tfestitcher",
+		"port": {
+			"out": {
+				"w": 2160,
+				"h": 1080,
+				"pixel": "nv12",
+				"bind": { "display": "osd0" }
+			}
+		}
+	},
+	"display": { "ipu": "ids"}
+}

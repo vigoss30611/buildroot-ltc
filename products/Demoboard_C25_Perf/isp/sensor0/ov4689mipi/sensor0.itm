@@ -1,0 +1,14 @@
+sensor0.interface mipi
+sensor0.name ov4689
+sensor0.mclk 24000000
+sensor0.imager 0
+sensor0.mode 1
+sensor0.i2c chn.3.addr.32
+sensor0.csi lanes.2.freq.370
+sensor0.mclk.src imap-camo
+sensor0.bootup.seq.0 pmu.ldo5.1800000.0
+sensor0.bootup.seq.1 extra.gpio.108.0
+sensor0.bootup.seq.2 mclk.gpio.40.0
+sensor0.bootup.seq.3 reset.gpio.44.100
+
+

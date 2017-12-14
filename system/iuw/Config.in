@@ -1,0 +1,6 @@
+config BR2_PACKAGE_HOST_IUW
+	bool "InfoTM Update Wrapper (IUW)"
+	help
+	  Generate InfoTM Secure Image format(.isi) images
+	  and InfoTM Update expreSS package.
+

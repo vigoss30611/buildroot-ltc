@@ -1,0 +1,17 @@
+#!/bin/sh
+
+BINS=/nfs/_binstosync.tar
+
+cd /
+while true; do
+	ls $BINS > /dev/null 2>&1
+	if [ -f $BINS ]; then
+		tar xfv $BINS
+		rm $BINS
+		sync
+		echo -e "\nbins updated\n"
+	fi
+
+	sleep 1
+done
+

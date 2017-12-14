@@ -1,0 +1,13 @@
+menuconfig INFOTM_REGULATOR
+  bool "Infotm regulator driver support"
+  help
+    Infotm regulator driver support
+
+if INFOTM_REGULATOR
+
+config APOLLO_REGULATOR
+ bool "apollo regulator driver support"
+ help
+   apollo regulator driver support
+
+endif

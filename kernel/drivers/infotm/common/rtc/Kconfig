@@ -1,0 +1,36 @@
+menuconfig INFOTM_RTC
+        bool "Infotm RTC support"
+        default y
+        help
+        This is the Infotm internal RTC driver
+
+if INFOTM_RTC
+
+
+config RTC_DRV_IMAPX
+       tristate "iMAPx RTC driver"
+        default y
+       help
+        RTC driver for iMAPx, besides normal clock, it also provides
+        1 to 64Hz periodical interrupt, alarm interrupt & wake-up
+        features.
+
+comment "I2C RTC drivers"
+	depends on I2C
+
+if I2C
+
+config RTC_DRV_PCF8563_IMAPX
+	tristate "Philips PCF8563 for iMAPx"
+	default y
+	help
+	  If you say yes here you get support for the
+	  Philips PCF8563 RTC chip.
+
+	  This driver can also be built as a module. If so, the module
+	  will be called rtc-pcf8563.
+
+endif # I2C
+endif
+
+

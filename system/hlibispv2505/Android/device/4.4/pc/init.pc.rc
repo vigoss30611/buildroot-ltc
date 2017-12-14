@@ -1,0 +1,86 @@
+import /init.pc_extras.rc
+
+on init
+	# SELinux support
+	#setenforce 1
+	#setsebool debugfs 1
+
+	# See storage config details at http://source.android.com/tech/storage/
+	mkdir /mnt/shell/emulated 0700 shell shell
+	mkdir /mnt/shell/sdcard0 0700 shell shell
+	mkdir /storage/emulated 0000 root root
+	mkdir /storage/emulated_legacy 0000 root root
+
+	export EXTERNAL_STORAGE /storage/emulated_legacy
+	export ADB_EXTERNAL_STORAGE /mnt/shell/emulated/0
+
+	export EMULATED_STORAGE_SOURCE /mnt/shell/emulated
+	export EMULATED_STORAGE_TARGET /storage/emulated
+
+	# Support legacy paths
+	symlink /storage/emulated_legacy /sdcard
+	symlink /storage/emulated_legacy /mnt/sdcard
+	symlink /storage/emulated_legacy /storage/sdcard0
+
+on post-fs-data
+	# we will remap this as /storage/sdcard0 with the sdcard fuse tool
+	mkdir /data/media 0770 media_rw media_rw
+	setprop vold.post_fs_data_done 1
+
+	# Create the directories used by the Wireless subsystem
+	mkdir /data/misc/wifi 0770 wifi wifi
+	mkdir /data/misc/wifi/sockets 0770 wifi wifi
+	mkdir /data/misc/dhcp 0770 dhcp dhcp
+
+	# to observe dnsmasq.leases file for dhcp information of soft ap.
+	chown dhcp system /data/misc/dhcp
+
+# Override init.rc's mounting of root read-only.
+# If the system is booted over NFS, this will cause /data to be
+# non-writable, which is problematic.
+on post-fs
+	mount rootfs rootfs / rw remount
+	chown dhcp dhcp /system/etc/dhcpcd/dhcpcd-run-hooks
+
+on fs
+	setprop ro.crypto.fuse_sdcard true
+    # manually start class late_start since we don't use mount_all
+    class_start late_start
+    insmod /system/lib/modules/3.10.0+/extra/imgion.ko enable_system_heap=1 enable_contig_heap=1 carveout_pci_vendor=0x1010 carveout_pci_product=0x1cf2 carveout_pci_bar=2
+    chmod 666 /dev/imgion
+    chmod 600 /system/lib/modules/Felix.ko
+    insmod /system/lib/modules/Felix.ko
+    chown media media /dev/imgfelix0
+    chown media media /dev/imgfelixDG0
+    # change owner and group of Felix's I2C PCI device
+    chown media media /sys/bus/pci/devices/0000:01:00.0/resource1
+    chown media media /dev/i2c-0
+
+on boot
+	mount debugfs /sys/kernel/debug /sys/kernel/debug
+
+	# Prevent suspend
+	write /sys/power/wake_lock pvr.keep_alive
+
+service pvrsrvctl /vendor/bin/pvrsrvctl --start
+	class core
+	user root
+	group root
+	oneshot
+	seclabel u:r:pvrsrvctl:s0
+
+# virtual sdcard daemon running as media_rw (1023)
+service sdcard /system/bin/sdcard /data/media /mnt/shell/emulated 1023 1023
+	class main
+	seclabel u:r:sdcardd:s0
+
+# Ethernet support
+service dhcpcd_eth0 /system/bin/dhcpcd -aABDKL
+	class main
+	disabled
+	oneshot
+
+service iprenew_eth0 /system/bin/dhcpcd -n
+	class main
+	disabled
+	oneshot

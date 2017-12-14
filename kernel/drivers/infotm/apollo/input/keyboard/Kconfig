@@ -1,0 +1,15 @@
+menuconfig APOLLO_KEYBOARD
+	bool "apollo Keyboards and keypads"
+if APOLLO_KEYBOARD
+	config APOLLO_GPIO_KEYS
+	tristate "apollo GPIO Keys"
+	default n
+	help
+	  Say Y here if you want to use the GPIO keys of apollo.
+
+	config APOLLO_POWER_KEY
+	tristate "apollo power Key"
+	default n
+	help
+	  Say Y here if you want to use the power key of apollo.
+endif

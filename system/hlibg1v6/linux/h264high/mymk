@@ -1,0 +1,11 @@
+
+#    -lg1dec_dwl
+
+../../../../../../output/host/usr/bin/arm-buildroot-linux-uclibcgnueabihf-gcc\
+    -O0 -Wall -pedantic  -DDEBUG -D_ASSERT_USED -D_RANGE_CHECK -D_ERROR_PRINT -DDEC_X170_OUTPUT_FORMAT=0  -DDEC_X170_TIMEOUT_LENGTH=-1\
+    -I. -I../../source/h264high -I../../source/dwl -I../../source/inc -I../../source/h264high/legacy -I../../source/config -I../../source/common \
+    -c \
+    ../../source/h264high/h264decapi.c ../../source/h264high/h264hwd_asic.c ../../source/h264high/h264hwd_intra_prediction.c ../../source/h264high/h264hwd_inter_prediction.c ../../source/h264high/legacy/h264hwd_util.c ../../source/h264high/legacy/h264hwd_byte_stream.c ../../source/h264high/legacy/h264hwd_seq_param_set.c ../../source/h264high/legacy/h264hwd_pic_param_set.c ../../source/h264high/legacy/h264hwd_slice_header.c ../../source/h264high/h264hwd_slice_data.c ../../source/h264high/h264hwd_macroblock_layer.c ../../source/h264high/legacy/h264hwd_stream.c ../../source/h264high/legacy/h264hwd_vlc.c ../../source/h264high/h264hwd_cavlc.c ../../source/h264high/legacy/h264hwd_nal_unit.c ../../source/h264high/legacy/h264hwd_neighbour.c ../../source/h264high/h264hwd_storage.c ../../source/h264high/legacy/h264hwd_slice_group_map.c ../../source/h264high/h264hwd_dpb.c ../../source/h264high/legacy/h264hwd_vui.c ../../source/h264high/legacy/h264hwd_pic_order_cnt.c ../../source/h264high/h264hwd_decoder.c ../../source/h264high/h264hwd_conceal.c ../../source/h264high/h264_pp_pipeline.c ../../source/h264high/h264hwd_cabac.c ../../source/common/regdrv.c ../../source/common/refbuffer.c ../../source/common/tiledref.c ../../source/h264high/h264decapi_e.c \
+
+
+../../../../../../output/host/usr/bin/arm-buildroot-linux-uclibcgnueabihf-ar -rcs -o ./libg1dec_h264.a *.o

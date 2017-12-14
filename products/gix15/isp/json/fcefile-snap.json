@@ -1,0 +1,95 @@
+{
+	"mode_number": 3,
+
+	"mode_list0": {
+		"file_number":2,
+		"in_res":"2560x720",
+		"out_res":"4096x1152",
+		"file_list0": {
+			"file_grid":"/root/.ispost/lc_left_hermite32_1280x720-2048x1152_perspective.bin",
+			"file_geo":"/root/.ispost/lc_v1_0-0-0-0_hermite32_640x480-640x480_geo.bin",
+			"outport_number":1,
+			"outport_list0": {
+				"port":"uo",
+				"x":0,
+				"y":0,
+				"w":2048,
+				"h":1152
+			}
+		},
+		"file_list1": {
+			"file_grid":"/root/.ispost/lc_right_hermite32_1280x720-2048x1152_perspective.bin",
+			"file_geo":"/root/.ispost/lc_v1_0-0-0-0_hermite32_640x480-640x480_geo.bin",
+			"outport_number":1,
+			"outport_list0": {
+				"port":"uo",
+				"x":2048,
+				"y":0,
+				"w":2048,
+				"h":1152
+			
+			}
+		}
+	},
+
+	"mode_list1": {
+		"file_number":2,
+		"in_res":"2560x720",
+		"out_res":"3840x1920",
+		"file_list0": {
+			"file_grid":"/root/.ispost/lc_left_hermite32_1280x720-1920x1920_perspective.bin",
+			"file_geo":"/root/.ispost/lc_v1_0-0-0-0_hermite32_640x480-640x480_geo.bin",
+			"outport_number":1,
+			"outport_list0": {
+				"port":"uo",
+				"x":0,
+				"y":0,
+				"w":1920,
+				"h":1920
+			}
+		},
+		"file_list1": {
+			"file_grid":"/root/.ispost/lc_right_hermite32_1280x720-1920x1920_perspective.bin",
+			"file_geo":"/root/.ispost/lc_v1_0-0-0-0_hermite32_640x480-640x480_geo.bin",
+			"outport_number":1,
+			"outport_list0": {
+				"port":"uo",
+				"x":1920,
+				"y":0,
+				"w":1920,
+				"h":1920
+			}
+		}
+	},
+
+	"mode_list2": {
+		"file_number":2,
+		"in_res":"2560x720",             
+		"out_res":"2560x720",                                                                   
+		"file_list0": {                                                                          
+			"file_grid":"/root/.ispost/lc_left_hermite32_1280x720-1280x720_perspective.bin",
+			"file_geo":"/root/.ispost/lc_v1_0-0-0-0_hermite32_640x480-640x480_geo.bin",
+			"outport_number":1, 
+			"outport_list0": {  
+					"port":"uo",
+					"x":0,   
+					"y":0,   
+					"w":1280,
+					"h":720
+			}      
+		},                                                                                        
+		"file_list1": {                                                                           
+			"file_grid":"/root/.ispost/lc_right_hermite32_1280x720-1280x720_perspective.bin",
+			"file_geo":"/root/.ispost/lc_v1_0-0-0-0_hermite32_640x480-640x480_geo.bin",
+			"outport_number":1, 
+			"outport_list0": {  
+					"port":"uo",
+					"x":1280,
+					"y":0,   
+					"w":1280,
+					"h":720
+			 
+			}
+		}
+	}
+}

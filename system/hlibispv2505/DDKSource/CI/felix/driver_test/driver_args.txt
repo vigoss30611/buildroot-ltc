@@ -1,0 +1,44 @@
+#------------------------------------
+# Example of parameters
+# runs CT0 and CT1 against the same input (DG1)
+#------------------------------------
+
+#------------------------------------
+# generic
+#------------------------------------
+-data_extraction 1 # DE point
+-parallel # run the shoots in "parallel" - i.e. submit them at the same time
+-mmucontrol 2 # 0 for no MMU, 2 for MMU 40b (not available when running against HW)
+
+#------------------------------------
+# pipeline
+# disabled if no encoder, display, data_extraction and stats
+# cannot enabled both display and data_extraction
+#------------------------------------
+-CT0_encoder encoder0 # enables YUV output if present - will be extended with format and size
+#-CT0_YUV422 1 # is 422 output instead of 420
+#-CT0_10b 0 # is 10b output instead of 8b
+-CT0_display display0.flx # enables RGB output if present
+#-CT0_RGB24 1 # is RGB 24b instead of RGB 32b
+#-CT0_dataExtraction dataExtraction0.flx # enables DE for this context
+-CT0_nBuffers 2 # nb of allocated buffers
+-CT0_nFrames 4 # nb of frames to run for
+-CT0_imager 1 # DG to use
+-CT0_useLSH 0 # LSH options, see help
+-CT0_regOverride 0 # no register override file used even if one is available
+#-CT0_DPF 0 # defective pixel option, see help
+
+#-CT1_encoder encoder1 # will be extended with format and size
+#-CT1_display display1.flx
+-CT1_dataExtraction dataExtraction1.flx
+-CT1_nBuffers 2
+-CT1_nFrames 4 # note: while CT0 and CT1 does not have to allocate the same number of buffers the simulator does not cope with the possibility that they run for different number of frames when sharing an imager
+-CT1_imager 1
+
+#------------------------------------
+# data generator
+# disabled if no input
+# if DG is enabled but not CTX uses it then it is not started
+#------------------------------------ 
+-DG1_inputFLX //klsamba02/tsr/regression/input_flx/market_1920x22_rggb.flx
+-DG1_inputFrames 1 # number of frames to load from the file (will roll over if nb of required frames is bigger than that)

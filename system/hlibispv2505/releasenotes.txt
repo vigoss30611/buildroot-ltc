@@ -1,0 +1,41 @@
+External Release 2.8.4
+
+Changes.
+Fix for issue where ISPCTCP was left out of package.
+Additional YUV formats supported via display pipeline.
+
+Contents
+========
+
+Android
+Android.mk
+ddkcompatible.txt
+DDKSource
+docs
+FelixDefines.mk
+releasenotes.txt
+sensorConfig
+releasenotes.txt
+
+Documentation
+=============
+
+android
+building_errors.html
+ci
+dictionary.html
+doxygen
+faq.html
+getting_started.html
+_images
+index.html
+integration
+ispc
+objects.inv
+_pdf
+search.html
+searchindex.js
+_static
+test_tools
+tuning
+vision_libraries.html

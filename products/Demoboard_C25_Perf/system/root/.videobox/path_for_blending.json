@@ -1,0 +1,51 @@
+{
+
+    "dgframe0": {
+        "ipu":"dg-frame",
+        "args":{
+            "frames": 3,
+            "mode":"yuvfile",
+            "data":"/root/.ispost/1920x960.yuv"
+        },
+        "port": {
+            "out":{
+                "w":1920,
+                "h":960,
+                "minfps": 30,
+                "maxfps": 30,
+                "pixel_format":"nv12",
+                "bind":{ "ispost":"in"}
+            }
+        }
+    },
+
+    "ispost": {
+        "ipu": "ispostv2",
+        "args": {
+            "buffers": 3,
+            "fcefile":"/root/.videobox/fcefile_for_blending.json",
+            "dn_enable": 1
+        },
+        "port": {
+            "dn": {
+                "w": 1920,
+                "h": 960,
+                "pixel_format": "nv12"
+            },
+            "uo": {
+                "w": 1920,
+                "h": 960,
+                "pixel_format": "nv12",
+                "bind":{ "filesink":"in" }
+            }
+        }
+    },
+
+    "filesink":{
+        "ipu":"filesink",
+        "args":{
+            "data_path":"/mnt/sd0/h264Test.h264"
+        }
+    }
+}
+

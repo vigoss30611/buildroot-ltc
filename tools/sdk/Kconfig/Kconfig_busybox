@@ -1,0 +1,11 @@
+config BUSYBOX
+	bool "Busybox Config"
+	help
+	  Add busybox to system and ramdisk
+
+if BUSYBOX
+config BUSYBOX_CUSTOM_CONFIG_FILE
+	string "Configuration file path"
+	help
+	  Path to the busybox configuration file
+endif

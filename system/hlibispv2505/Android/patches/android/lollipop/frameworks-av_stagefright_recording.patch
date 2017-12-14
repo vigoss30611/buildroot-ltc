@@ -1,0 +1,15 @@
+
+project frameworks/av/
+diff --git a/media/libmediaplayerservice/StagefrightRecorder.cpp b/media/libmediaplayerservice/StagefrightRecorder.cpp
+index 3d093fa..501f4b6 100644
+--- a/media/libmediaplayerservice/StagefrightRecorder.cpp
++++ b/media/libmediaplayerservice/StagefrightRecorder.cpp
+@@ -1174,7 +1174,7 @@ status_t StagefrightRecorder::checkVideoEncoderCapabilities(
+              mVideoEncoder == VIDEO_ENCODER_MPEG_4_SP ? MEDIA_MIMETYPE_VIDEO_MPEG4 :
+              mVideoEncoder == VIDEO_ENCODER_VP8 ? MEDIA_MIMETYPE_VIDEO_VP8 :
+              mVideoEncoder == VIDEO_ENCODER_H264 ? MEDIA_MIMETYPE_VIDEO_AVC : ""),
+-            false /* decoder */, true /* hwCodec */, &codecs);
++            false /* decoder */, false /* hwCodec */, &codecs);
+     *supportsCameraSourceMetaDataMode = codecs.size() > 0;
+     ALOGV("encoder %s camera source meta-data mode",
+             *supportsCameraSourceMetaDataMode ? "supports" : "DOES NOT SUPPORT");

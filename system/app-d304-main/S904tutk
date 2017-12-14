@@ -1,0 +1,17 @@
+#! /bin/sh
+
+case "$1" in
+	start|"")
+		wifi &
+		d304main &
+		;;
+	stop)
+		killall d304main
+		killall wifi
+		;;
+	*)
+		echo "Usage: d304main {start|stop}" >&2
+		exit 1
+		;;
+esac
+

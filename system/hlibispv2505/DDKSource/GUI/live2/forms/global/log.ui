@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Log</class>
+ <widget class="QTabWidget" name="Log">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>TabWidget</string>
+  </property>
+  <property name="currentIndex">
+   <number>4</number>
+  </property>
+  <widget class="QWidget" name="error_t">
+   <attribute name="title">
+    <string>Error</string>
+   </attribute>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QTextEdit" name="errorLog_te"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="warning_t">
+   <attribute name="title">
+    <string>Warning</string>
+   </attribute>
+   <layout class="QGridLayout" name="gridLayout_2">
+    <item row="0" column="0">
+     <widget class="QTextEdit" name="warningLog_te"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="info_t">
+   <attribute name="title">
+    <string>Info</string>
+   </attribute>
+   <layout class="QGridLayout" name="gridLayout_3">
+    <item row="0" column="0">
+     <widget class="QTextEdit" name="infoLog_te"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="action_t">
+   <attribute name="title">
+    <string>Action</string>
+   </attribute>
+   <layout class="QGridLayout" name="gridLayout_4">
+    <item row="0" column="0">
+     <widget class="QTextEdit" name="actionLog_te"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="log_t">
+   <attribute name="title">
+    <string>Log</string>
+   </attribute>
+   <layout class="QGridLayout" name="gridLayout_5">
+    <item row="1" column="0">
+     <widget class="QCheckBox" name="errors_cb">
+      <property name="text">
+       <string>Errors</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QCheckBox" name="warnings_cb">
+      <property name="text">
+       <string>Warnings</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QCheckBox" name="messages_cb">
+      <property name="text">
+       <string>Messages</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0" colspan="3">
+     <widget class="QTableWidget" name="log_tw">
+      <column>
+       <property name="text">
+        <string>Type</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Description</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Source</string>
+       </property>
+      </column>
+     </widget>
+    </item>
+    <item row="0" column="0" colspan="3">
+     <widget class="QProgressBar" name="Log_progress_pb">
+      <property name="value">
+       <number>24</number>
+      </property>
+      <property name="textVisible">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

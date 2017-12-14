@@ -1,0 +1,3 @@
+all:
+	gcc -Iinclude -Iqrcode -I. *.c qrcode/*.c decoder/*.c -DHAVE_SYS_TIME_H -DENABLE_QRCODE -lpng
+

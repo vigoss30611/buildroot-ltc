@@ -1,0 +1,15 @@
+config BR2_PACKAGE_QM
+	bool "qm"
+	help
+	  Build QM
+
+
+
+if BR2_PACKAGE_QM 
+	config  BR2_QM_ENCODE_CONTROL_ENABLE
+		bool "encode control enable"
+		default y
+		help
+	  		enable qm encode control
+
+endif

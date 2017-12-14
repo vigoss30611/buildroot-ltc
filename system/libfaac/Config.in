@@ -1,0 +1,16 @@
+config BR2_PACKAGE_LIBFAAC
+	bool "libfaac"
+	help
+	  Osa communication lib
+
+	  http://www.infotm.com/
+if BR2_PACKAGE_LIBFAAC 
+menu "options"
+	config  BR2_PACKAGE_LIBFAAC_INSTALL_SHARED
+		bool "Install Shared"
+		default y
+		help
+	  		install shared library into target dir	
+endmenu
+
+endif

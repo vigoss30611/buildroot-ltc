@@ -1,0 +1,538 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Platform Integration Guide &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="next" title="Sensor driver" href="sensor.html" />
+    <link rel="prev" title="Getting Started Guide" href="../getting_started.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="sensor.html" title="Sensor driver"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="../getting_started.html" title="Getting Started Guide"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li><li>Platform Integration Guide</li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="platform-integration-guide">
+<span id="isp-platform-integration-guide"></span><h1>Platform Integration Guide<a class="headerlink" href="#platform-integration-guide" title="Permalink to this headline">¶</a></h1>
+<p>This document assumes that the driver has already been successfully built on an
+x86 system following the <a class="reference internal" href="../getting_started.html#isp-getting-started-guide"><span>Getting Started Guide</span></a>. The reference
+drivers run on a PCI based FPGA platform, as such the steps required to
+register a device may differ to a system which has the device mapped to a
+system virtual address.</p>
+<p>This guide is intended to describe how and where to make the necessary changes
+to allow the driver to run on another platform. The porting falls into two main
+categories, device access and device memory management.</p>
+<p>This guide does NOT covers the sensor porting which is an expected state for
+every customers described in <a class="reference internal" href="sensor.html#isp-pi-sensor-driver"><span>Sensor driver</span></a>.</p>
+<p>Understanding the low level driver (see the <a class="reference internal" href="../ci/ci_library.html#isp-capture-interface"><span>Capture Interface</span></a>
+section) will help for the integration. All source code mentioned here is
+present in the kernel-side driver:</p>
+<div class="highlight-python"><div class="highlight"><pre>DDKSource/CI/felix/felix_lib/kernel/
+</pre></div>
+</div>
+<div class="section" id="kernel-module-changes">
+<span id="isp-pi-kernel-module-changes"></span><h2>Kernel Module changes<a class="headerlink" href="#kernel-module-changes" title="Permalink to this headline">¶</a></h2>
+<p>The following sections contain possible changes that customers should consider
+to the provided DDK.</p>
+<div class="section" id="kernel-module-initialisation">
+<span id="isp-pi-kernel-initialisation"></span><h3>Kernel Module initialisation<a class="headerlink" href="#kernel-module-initialisation" title="Permalink to this headline">¶</a></h3>
+<p>The kernel module initialisation is implemented in:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">DDKSource</span><span class="o">/</span><span class="n">CI</span><span class="o">/</span><span class="n">felix</span><span class="o">/</span><span class="n">felix_lib</span><span class="o">/</span><span class="n">kernel</span><span class="o">/</span><span class="n">kernel_src</span><span class="o">/</span><span class="n">ci_init_km</span><span class="o">.</span><span class="n">c</span>
+</pre></div>
+</div>
+<p>This file contains the insmod options (see <a class="reference internal" href="../getting_started.html#isp-gsg-insmod-options"><span>V2500 Insertion options</span></a>) and
+the DebugFS initialisation (if compiled).</p>
+<p>The kernel module registers a <cite>misc device</cite> to the OS but the code contains
+<cite>char device</cite> entries as example (legacy implementation).</p>
+<p>The device name can be changed there (see macro <cite>DEV_NAME</cite>).
+The device is registered using the Device access abstraction
+<a class="reference external" href="../doxygen/group___c_i___k_e_r_n_e_l___t_o_o_l_s.html#gadcc8f0ef3328a61819150907e0f4b8cb">SYS_DevRegister()</a> and on a successful discover <cite>probeSuccess()</cite> will
+be called to create the CI driver. It is recommended to modify the device class
+to handle clocks speed and other device specific operations rather than the
+initialise function.</p>
+</div>
+<div class="section" id="change-to-ioctl">
+<span id="isp-pi-kernel-ioctl"></span><h3>Change to ioctl<a class="headerlink" href="#change-to-ioctl" title="Permalink to this headline">¶</a></h3>
+<p>When using IOCTL on a Linux environment each driver has to define a &#8220;magic&#8221;
+character that will be used for the base of the IOCTL number to avoid
+confusion. This character is defined as <a class="reference external" href="../doxygen/group___c_i___i_o_c_t_l.html#ga9a74e772341b1d4d3553f873c52f1ec3">CI_MAGIC</a> in
+:src`ci_ioctrl.h` and can be changed by the customer if need be.</p>
+<p>A list of implemented ioctl is available in the section:
+<a class="reference internal" href="../ci/ci_appendix_ioctl.html#isp-ci-ioctl-tables"><span>CI Appendix: IOCTL tables</span></a>.</p>
+</div>
+</div>
+<div class="section" id="device-access">
+<span id="isp-pi-device-access"></span><h2>Device Access<a class="headerlink" href="#device-access" title="Permalink to this headline">¶</a></h2>
+<p>The device access is abstracted in:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">DDKSource</span><span class="o">/</span><span class="n">CI</span><span class="o">/</span><span class="n">felix</span><span class="o">/</span><span class="n">felix_lib</span><span class="o">/</span><span class="n">kernel</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="n">ci_internal</span><span class="o">/</span><span class="n">sys_device</span><span class="o">.</span><span class="n">h</span>
+</pre></div>
+</div>
+<p>It contains the definition of the <a class="reference external" href="../doxygen/struct_s_y_s___d_e_v_i_c_e.html">SYS_DEVICE</a> structure which contains:</p>
+<ul class="simple">
+<li>The associated interrupt handler for the device</li>
+<li>The file operation structure for the IO (i.e. the <code class="docutils literal"><span class="pre">ioctl</span></code>, <code class="docutils literal"><span class="pre">mmap</span></code> and
+other system call hooks)</li>
+<li>The suspend and resume call-backs for when the system becomes idle</li>
+<li>The board registers the CPU address when using a PCI card (which may not be
+useful for other platforms)</li>
+<li>The V2500 chip register base CPU addresses to be able to access them</li>
+<li>The V2500 chip memory base CPU address to be able to access them</li>
+</ul>
+<p>It should also define a few operations which are generic for all devices:</p>
+<ul class="simple">
+<li>Register and de-register a device (e.g. for PCI registers the driver)</li>
+<li>Remove a device (operations to do when the kernel module is removed)</li>
+<li>Clear interrupts: if additional actions need to be performed after the
+interrupts are handled for V2500 (e.g. clear a common line on PCI)</li>
+<li>Request and free interrupt: register an interrupt handle for that device</li>
+<li>Power control management which allows implementation of turning system clocks
+on/off</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The choice of which device is used by the driver is done at
+compilation time therefore some options may have to be added to your cmake
+build to include the correct files. Currently the choice is made in:</p>
+<div class="last highlight-python"><div class="highlight"><pre><span class="n">DDKSource</span><span class="o">/</span><span class="n">CI</span><span class="o">/</span><span class="n">felix</span><span class="o">/</span><span class="n">felix_lib</span><span class="o">/</span><span class="n">kernel</span><span class="o">/</span><span class="n">build_kernel</span><span class="o">.</span><span class="n">cmake</span>
+</pre></div>
+</div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The device access and memory management are closely coupled because the
+device access dictates the way memory is available to the system.  For
+device type selection <code class="docutils literal"><span class="pre">CI_DEVICE</span></code> cmake variable is used
+(<a class="reference internal" href="../getting_started.html#isp-gsg-kernel-module-platform-choice"><span>Choosing what platform to use</span></a>). Following devices are
+available:</p>
+<ul class="last simple">
+<li><code class="docutils literal"><span class="pre">PCI</span></code>: PCI based device</li>
+<li><code class="docutils literal"><span class="pre">MEMMAPPED</span></code>: device which registers are available in CPUs address
+space.</li>
+<li><code class="docutils literal"><span class="pre">ANDROID_EMULATOR</span></code>: build for Android emulator which connects with
+V2500 C simulator via transif interface (library loaded at run-time).</li>
+</ul>
+</div>
+<div class="section" id="device-clock-speed">
+<span id="isp-pi-clock-speed"></span><h3>Device clock speed<a class="headerlink" href="#device-clock-speed" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference external" href="../doxygen/struct_c_i___h_w_i_n_f_o.html">CI_HWINFO</a> structure contains a field with the clock speed of the
+device that should be modified: <a class="reference external" href="../doxygen/struct_c_i___h_w_i_n_f_o.html#add156fadad73642a7a0068701a8cb059">CI_HWINFO::ui32RefClockMhz</a>. The default
+value is written in <a class="reference external" href="../doxygen/group___h_w___c_i.html#ga96af16c5d15bfb3cb7c97fb9bca546e4">HW_CI_DriverLoadInfo()</a> using the macro
+<cite>CI_HW_REF_CLK</cite> defined from the CMake variable of the same name. The customer
+can also add a field into <a class="reference external" href="../doxygen/struct_s_y_s___d_e_v_i_c_e.html">SYS_DEVICE</a> to contain the clock and the value
+could also be retrieved from the attached device (<cite>pDriver-&gt;pDevice</cite>).</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This mechanism assumes that the ISP does not have a variable clock speed
+once initialised. If it is the case the customer may want to remove that
+entry from the <a class="reference external" href="../doxygen/struct_c_i___h_w_i_n_f_o.html">CI_HWINFO</a> and add an additional IOCTL to querry the
+clock speed.</p>
+</div>
+</div>
+<div class="section" id="pci-based-driver">
+<span id="isp-pi-pci-based-driver"></span><h3>PCI Based Driver<a class="headerlink" href="#pci-based-driver" title="Permalink to this headline">¶</a></h3>
+<p>The current FPGA system Imagination uses for testing is PCI based. If the
+target system is also PCI based it should be easy to modify the existing file
+to point to correct PCI device. The implementation is available in:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">DDKSource</span><span class="o">/</span><span class="n">CI</span><span class="o">/</span><span class="n">felix</span><span class="o">/</span><span class="n">felix_lib</span><span class="o">/</span><span class="n">kernel</span><span class="o">/</span><span class="n">platform_src</span><span class="o">/</span><span class="n">sys_device_pci_kernel</span><span class="o">.</span><span class="n">c</span>
+</pre></div>
+</div>
+<p>The top of the file defines the vendor and device ID that will be searched by
+the probe function; these will need adjustment for each specific system
+(including register definitions).</p>
+<p>When the device is registered the PCI driver is added to the Linux kernel with
+a probe function. The current implementation will not cope with several PCI
+driver (e.g. one per device). When the device is detected the <a class="reference external" href="../doxygen/struct_s_y_s___d_e_v_i_c_e.html">SYS_DEVICE</a>
+information is filled in using the information from the <code class="docutils literal"><span class="pre">pci_dev</span></code> structure
+from the kernel. Registers and memory are memory mapped to the system, which
+may prove to be expensive for memory on real systems (using carved out memory
+of 256 MB out of the <code class="docutils literal"><span class="pre">vmalloc</span></code> pool of the Linux kernel).</p>
+<p>The parts about PDP and additional interrupts cleaning may be ignored when
+porting to another PCI device as they are specific to Imagination’s FPGA board.</p>
+</div>
+<div class="section" id="memory-mapped-driver">
+<span id="isp-pi-memory-mapped-driver"></span><h3>Memory-mapped Driver<a class="headerlink" href="#memory-mapped-driver" title="Permalink to this headline">¶</a></h3>
+<p>A memory mapped example is provided in:</p>
+<div class="highlight-python"><div class="highlight"><pre>/DDKSource/CI/felix/felix_lib/kernel/internal_src/sys_device_memmapped.c
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Imagination does not possess any platform that can be used as memory
+mapped therefore this device implementation is provided <em>as is</em>.</p>
+</div>
+<p>To reflect platform specific parameters, <code class="docutils literal"><span class="pre">ci_device_resources[]</span></code> array should
+be modified with following values:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">reg_base_addr</span></code>: register base address</li>
+<li><code class="docutils literal"><span class="pre">mem_base_addr</span></code>: memory base address in case device is using built-in
+carved-out memory</li>
+<li><code class="docutils literal"><span class="pre">irq</span></code>: interrupt number</li>
+</ul>
+</div>
+<div class="section" id="device-tree-based-driver">
+<span id="isp-pi-device-tree-based-driver"></span><h3>Device Tree based driver<a class="headerlink" href="#device-tree-based-driver" title="Permalink to this headline">¶</a></h3>
+<p>The device tree is a popular Linux driver model. In this instance the OS has
+information about the location of a device which the device can query for based
+upon its name. In this instance the device tree implementation only needs to
+know what name the device has in the <cite>.dts</cite> device tree map, and from this it
+can locate itself and then map in the device as required. An example
+implementation may be provided in the future and will most likely be an
+extension of the memory mapped driver.</p>
+</div>
+<div class="section" id="i2c-interface-driver">
+<span id="isp-pi-i2c-interface-driver"></span><h3>I2C interface driver<a class="headerlink" href="#i2c-interface-driver" title="Permalink to this headline">¶</a></h3>
+<p>In cases where the customer is using the IMG SCB block for I2C communication
+with camera sensor, I2C driver is provided by Imagination. There are two
+versions of SCB drivers:</p>
+<ul class="simple">
+<li>PCI based</li>
+<li>Memory mapped based</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">There are no separate device ids for devices programmed into the
+Imagination FPGA, which means that the ISP and SCB block are visible on the
+PCI bus as one device. In such a case there is one kernel module which is
+using PCI registering functions to control both ISP and SCB block at once.</p>
+</div>
+<p>Memory mapped driver is a regular Linux kernel driver which is loaded
+separately from the ISP. Parameters for the SCB driver can be passed either by
+device tree or platform specific board file. More details about I2C device
+interaction in user space can be found in <a class="reference internal" href="sensor.html#isp-pi-phy-control"><span>PHY control (sensor_phy.c)</span></a>.</p>
+</div>
+</div>
+<div class="section" id="memory-management">
+<span id="isp-pi-memory-management"></span><h2>Memory management<a class="headerlink" href="#memory-management" title="Permalink to this headline">¶</a></h2>
+<p>As for the device access memory management is described in a unique header:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">DDKSource</span><span class="o">/</span><span class="n">CI</span><span class="o">/</span><span class="n">felix</span><span class="o">/</span><span class="n">felix_lib</span><span class="o">/</span><span class="n">kernel</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="n">ci_internal</span><span class="o">/</span><span class="n">sys_mem</span><span class="o">.</span><span class="n">h</span>
+</pre></div>
+</div>
+<p>The generic functions (implemented in <cite>sys_mem.c</cite> regardless of the platform)
+are designed to cope with the V2500 device MMU and are:</p>
+<ul class="simple">
+<li>Allocating and freeing device memory (high level function), which will use
+the platform functions and reserve device virtual addresses if the MMU is
+used</li>
+<li>Get first device address (device virtual address when using MMU, physical
+address when not using MMU)</li>
+<li>Mapping/Unmapping to the device MMU</li>
+<li>Importing and releasing memory, which will use platform functions to do so</li>
+</ul>
+<p>The platform specific functions start with prefix <code class="docutils literal"><span class="pre">Platform_</span></code> and are:</p>
+<ul class="simple">
+<li>Allocating non-contiguous, allocating contiguous and freeing device memory</li>
+<li>Importing and releasing memory for platform that support such mechanisms</li>
+<li>Access CPU mapped memory</li>
+<li>Update host and device memory for NUMA systems (e.g. to flush the caches)</li>
+<li>Read and write words or addresses to a location in memory</li>
+<li>Get a list of physical pages to map into the device MMU</li>
+<li>Allocating/freeing a page in the device physical memory for the MMU and also
+read and write access to such pages</li>
+<li>Map the memory to user-space</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Allocating contiguous memory is optional and only used when the
+device MMU is disabled. It is not recommended to disable the device MMU.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The current implementation does not expose the physical address used to the
+user-space as it would only be possible when allocating contiguous memory.
+This could be the case on carved-out memory systems.</p>
+</div>
+<p>In an SOC the device needs to have a common memory allocator which the device
+needs to be able to communicate with in order to allocate/import memory (e.g.
+<cite>gralloc</cite> in Android).</p>
+<p>For memory allocation types <code class="docutils literal"><span class="pre">CI_ALLOC</span></code> CMake option is used (see
+<a class="reference internal" href="../getting_started.html#isp-gsg-kernel-module-platform-choice"><span>Choosing what platform to use</span></a>). Following memory allocation
+types are available:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">CARVEOUT</span></code>: memory is allocated from special carved-out memory pool. This
+memory pool can be either reserved during Linux kernel start using <cite>mem=</cite>
+kernel parameter (Linux system won’t use this memory and will treat it as
+reserved area) or it can be physical memory which is solely available for
+given device.</li>
+<li><code class="docutils literal"><span class="pre">PAGEALLOC</span></code>: memory is allocated from system memory. Virtual addresses
+are continuous but physical addresses are not.</li>
+</ul>
+<p>When Android build is enabled (CMake <code class="docutils literal"><span class="pre">ANDROID_BUILD=ON</span></code>), ION allocator is
+used. <code class="docutils literal"><span class="pre">CI_ALLOC</span></code> define still needs to be defined as it instructs ION how
+memory should be allocated.</p>
+<div class="section" id="carved-out-memory">
+<span id="isp-pi-carved-out-memory"></span><h3>Carved out memory<a class="headerlink" href="#carved-out-memory" title="Permalink to this headline">¶</a></h3>
+<p>As explained in <a class="reference internal" href="#isp-pi-pci-based-driver"><span>PCI Based Driver</span></a> our PCI implementation maps the
+memory of the PCI board as carved out memory (256 MB of it) which may prove
+expensive on real systems (it is reserving some CPU virtual memory on the
+vmalloc pool). The implementation is done using that knowledge and may need
+modification if another approach for memory allocation is used (for example
+allocating pages manually). The source code is available in:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">DDKSource</span><span class="o">/</span><span class="n">CI</span><span class="o">/</span><span class="n">felix</span><span class="o">/</span><span class="n">felix_lib</span><span class="o">/</span><span class="n">kernel</span><span class="o">/</span><span class="n">platform_src</span><span class="o">/</span><span class="n">sys_mem_carveout</span><span class="o">.</span><span class="n">c</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="page-allocated-memory">
+<span id="isp-pi-page-allocated-memory"></span><h3>Page allocated memory<a class="headerlink" href="#page-allocated-memory" title="Permalink to this headline">¶</a></h3>
+<p>The page allocator assumes that the ISP can access all memory available to the
+CPU and will allocate memory block 1 CPU page at a time. The implementation is
+available in:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">DDKSource</span><span class="o">/</span><span class="n">CI</span><span class="o">/</span><span class="n">felix</span><span class="o">/</span><span class="n">felix_lib</span><span class="o">/</span><span class="n">kernel</span><span class="o">/</span><span class="n">platform_src</span><span class="o">/</span><span class="n">sys_mem_pagealloc</span><span class="o">.</span><span class="n">c</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="ion-implementation">
+<span id="isp-pi-ion-implementation"></span><h3>ION implementation<a class="headerlink" href="#ion-implementation" title="Permalink to this headline">¶</a></h3>
+<p>The ION implementation for the memory is available in:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">DDKSource</span><span class="o">/</span><span class="n">CI</span><span class="o">/</span><span class="n">felix</span><span class="o">/</span><span class="n">felix_lib</span><span class="o">/</span><span class="n">kernel</span><span class="o">/</span><span class="n">platform_src</span><span class="o">/</span><span class="n">sys_mem_ion</span><span class="o">.</span><span class="n">c</span>
+</pre></div>
+</div>
+<p>It is designed to handle memory management when using Android. Currently
+it supports two types of allocations: carved-out (reserved memory) and
+page-allocated (system-wide memory).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The current ION implementation assumes that the ION allocator module
+creates the heaps.</p>
+</div>
+</div>
+<div class="section" id="device-view-of-the-memory-vs-cpu-view-of-the-memory">
+<span id="isp-pi-device-memory-vs-cpu"></span><h3>Device view of the memory VS CPU view of the memory<a class="headerlink" href="#device-view-of-the-memory-vs-cpu-view-of-the-memory" title="Permalink to this headline">¶</a></h3>
+<p>In a SoC, or a bus based system such as PCI, it is possible that the ISP device
+can only access a small band of the system memory. For a SoC it is down to the
+customer to know what this actual band by setting the correct values while
+porting <a class="reference external" href="../doxygen/struct_s_y_s___d_e_v_i_c_e.html">SYS_DEVICE</a> as explained in <a class="reference internal" href="#isp-pi-memory-mapped-driver"><span>Memory-mapped Driver</span></a>
+(<code class="docutils literal"><span class="pre">mem_base_addr</span></code> and <a class="reference external" href="../doxygen/struct_s_y_s___d_e_v_i_c_e.html#aa93c41f3cdfd816835ddcc2676f38e78">SYS_DEVICE::uiDevMemoryPhysical</a>).
+For a bus based access the kernel should give us a physical address that works
+for the CPU to access it while the device will most likely assumes its own
+physical address starts at 0x0 (forcing <a class="reference external" href="../doxygen/struct_s_y_s___d_e_v_i_c_e.html#aa93c41f3cdfd816835ddcc2676f38e78">SYS_DEVICE::uiDevMemoryPhysical</a>
+to 0).</p>
+<p>For such a scenario it is impossible for the device to use the provided
+<cite>sys_mem_pagealloc.c</cite> and it is recommended that the customer studies and
+modifies <cite>sys_mem_carveout.c</cite> if needed (if using an external allocator such as
+ION the allocator <cite>gralloc</cite> most likely needs to know that information as
+well).</p>
+<div class="figure" id="id1">
+<span id="isp-pi-memory-vs-cpu-fig"></span><a class="reference internal image-reference" href="../_images/cpu_mem_view.png"><img alt="../_images/cpu_mem_view.png" src="../_images/cpu_mem_view.png" style="width: 432px; height: 345px;" /></a>
+<p class="caption"><span class="caption-text">Memory view from CPU and Device example</span></p>
+</div>
+<p>For example the CPU may see the device memory from <code class="docutils literal"><span class="pre">0x0000</span> <span class="pre">0000</span></code> to <code class="docutils literal"><span class="pre">0x1000</span>
+<span class="pre">0000</span></code>.  But the device has an offset in its memory view, address <code class="docutils literal"><span class="pre">0x0000</span>
+<span class="pre">0000</span></code> from the device perspective is <code class="docutils literal"><span class="pre">0x0010</span> <span class="pre">0000</span></code> for the CPU.</p>
+<ol class="arabic simple">
+<li>Memory mapped device: CPU related addresses are put into the <code class="docutils literal"><span class="pre">struct</span>
+<span class="pre">resource</span></code> given to the kernel, and device accessible are put in the
+<a class="reference external" href="../doxygen/struct_s_y_s___d_e_v_i_c_e.html">SYS_DEVICE</a> object given to the CI driver.</li>
+</ol>
+<div class="highlight-c"><div class="highlight"><pre><span class="k">static</span> <span class="k">struct</span> <span class="n">resource</span> <span class="n">ci_device_resources</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+<span class="p">...</span>
+    <span class="p">{</span>
+        <span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;mem_base_addr&quot;</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">start</span> <span class="o">=</span> <span class="mh">0x00100000</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">end</span> <span class="o">=</span> <span class="mh">0x10000000</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">flags</span> <span class="o">=</span> <span class="n">IORESOURCE_MEM</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">...</span>
+<span class="p">};</span>
+<span class="p">...</span>
+<span class="n">IMG_RESULT</span> <span class="n">SYS_DevRegister</span><span class="p">(</span><span class="n">SYS_DEVICE</span> <span class="o">*</span><span class="n">sysDevice</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="p">...</span>
+    <span class="cm">/* Memory space setup */</span>
+    <span class="n">sysDevice</span><span class="o">-&gt;</span><span class="n">uiDevMemoryPhysical</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// instead of res-&gt;start</span>
+    <span class="n">sysDevice</span><span class="o">-&gt;</span><span class="n">uiMemorySize</span> <span class="o">=</span> <span class="n">res</span><span class="o">-&gt;</span><span class="n">end</span> <span class="o">-</span> <span class="n">res</span><span class="o">-&gt;</span><span class="n">start</span><span class="p">;</span>
+    <span class="n">sysDevice</span><span class="o">-&gt;</span><span class="n">uiMemoryPhysical</span> <span class="o">=</span> <span class="n">res</span><span class="o">-&gt;</span><span class="n">start</span><span class="p">;</span>
+    <span class="n">sysDevice</span><span class="o">-&gt;</span><span class="n">uiMemoryCPUVirtual</span> <span class="o">=</span> <span class="p">(</span><span class="n">IMG_UINTPTR</span><span class="p">)</span><span class="n">ci</span><span class="o">-&gt;</span><span class="n">mem_base</span><span class="p">;</span>
+    <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li>Bus based device: CPU related addresses are not hard coded. Calls to kernel
+such like <code class="docutils literal"><span class="pre">pci_resource_start()</span></code> give the original physical address.
+<a class="reference external" href="../doxygen/struct_s_y_s___d_e_v_i_c_e.html">SYS_DEVICE</a> contains the device accessible addresses.</li>
+</ol>
+<div class="highlight-c"><div class="highlight"><pre><span class="n">sysDevice</span><span class="o">-&gt;</span><span class="n">uiMemorySize</span> <span class="o">=</span> <span class="n">pci_resource_len</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">PCI_ATLAS_MEMORY_BAR</span><span class="p">);</span>
+
+<span class="n">sysDevice</span><span class="o">-&gt;</span><span class="n">uiMemoryPhysical</span> <span class="o">=</span> <span class="n">pci_resource_start</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">PCI_ATLAS_MEMORY_BAR</span><span class="p">);</span>
+<span class="n">sysDevice</span><span class="o">-&gt;</span><span class="n">uiMemoryCPUVirtual</span> <span class="o">=</span>
+<span class="p">(</span><span class="n">IMG_UINTPTR</span><span class="p">)</span><span class="n">ioremap</span><span class="p">(</span>
+        <span class="n">pci_resource_start</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">PCI_ATLAS_MEMORY_BAR</span><span class="p">),</span>
+        <span class="n">g_PCIDriver</span><span class="p">.</span><span class="n">pSysDevice</span><span class="o">-&gt;</span><span class="n">uiMemorySize</span><span class="p">);</span>
+<span class="n">sysDevice</span><span class="o">-&gt;</span><span class="n">uiDevMemoryPhysical</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// isntead of g_PCIDriver.pSysDevice-&gt;uiMemoryPhysical</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Platform Integration Guide</a><ul>
+<li><a class="reference internal" href="#kernel-module-changes">Kernel Module changes</a><ul>
+<li><a class="reference internal" href="#kernel-module-initialisation">Kernel Module initialisation</a></li>
+<li><a class="reference internal" href="#change-to-ioctl">Change to ioctl</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#device-access">Device Access</a><ul>
+<li><a class="reference internal" href="#device-clock-speed">Device clock speed</a></li>
+<li><a class="reference internal" href="#pci-based-driver">PCI Based Driver</a></li>
+<li><a class="reference internal" href="#memory-mapped-driver">Memory-mapped Driver</a></li>
+<li><a class="reference internal" href="#device-tree-based-driver">Device Tree based driver</a></li>
+<li><a class="reference internal" href="#i2c-interface-driver">I2C interface driver</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#memory-management">Memory management</a><ul>
+<li><a class="reference internal" href="#carved-out-memory">Carved out memory</a></li>
+<li><a class="reference internal" href="#page-allocated-memory">Page allocated memory</a></li>
+<li><a class="reference internal" href="#ion-implementation">ION implementation</a></li>
+<li><a class="reference internal" href="#device-view-of-the-memory-vs-cpu-view-of-the-memory">Device view of the memory VS CPU view of the memory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../getting_started.html"
+                        title="previous chapter">Getting Started Guide</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="sensor.html"
+                        title="next chapter">Sensor driver</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

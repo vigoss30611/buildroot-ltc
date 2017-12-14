@@ -1,0 +1,12 @@
+menuconfig INFOTM_MFD
+  bool "Infotm mfd driver support"
+  help
+    Infotm multi func device driver support
+
+if INFOTM_MFD
+
+config CORONAMPW_MFD_IP6313
+ bool "IP6313 driver support"
+ help
+   IP6313 used
+endif

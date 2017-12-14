@@ -1,0 +1,621 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ISPC loop application: ISPC_loop &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="up" title="Test Tools" href="test_tools.html" />
+    <link rel="next" title="ISP Control video capture: ISPC_capture" href="ispc_capture.html" />
+    <link rel="prev" title="ISP Control test: ISPC_test" href="ispc_test.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="ispc_capture.html" title="ISP Control video capture: ISPC_capture"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="ispc_test.html" title="ISP Control test: ISPC_test"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="test_tools.html" accesskey="U">Test Tools</a> &raquo;</li><li>ISPC loop application: <code class="docutils literal"><span class="pre">ISPC_loop</span></code></li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="ispc-loop-application-ispc-loop">
+<span id="isp-ispc-loop"></span><h1>ISPC loop application: <code class="docutils literal"><span class="pre">ISPC_loop</span></code><a class="headerlink" href="#ispc-loop-application-ispc-loop" title="Permalink to this headline">¶</a></h1>
+<p>The loop application is designed to run basic ISPC setup, like ISP Control
+test, continuously against a real sensor or a data-generator. It was tested
+on our FPGA platform and incorporates some AAA support.</p>
+<p>This tool can use a data generator but does not have to. However it cannot
+run against the simulator.</p>
+<p>Sources are available in <code class="docutils literal"><span class="pre">ISPControl/test_apps</span></code> and it is installed under
+<code class="docutils literal"><span class="pre">ISPC/</span></code>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If pressing the key does not work on your platform try to use the
+<a class="reference internal" href="other_tools.html#isp-rawmode-test"><span>Console Raw Mode testing</span></a> application and modify it to make it work there.</p>
+</div>
+<div class="section" id="parameters">
+<span id="isp-ispc-loop-parameters"></span><h2>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h2>
+<p>The parameters can be given by command line or in a configuration file.</p>
+<p>The parameter types are:</p>
+<ul class="simple">
+<li><cite>Bool</cite>: a Boolean value of either 0 or 1</li>
+<li><cite>Int</cite>/<cite>UInt</cite>: an integer (signed or unsigned is parameter specific)</li>
+<li><cite>Cmd</cite>: command that act as a Boolean of value 1 if present, of value 0 if
+not found</li>
+<li><cite>Str</cite>: string or path</li>
+<li><cite>Float</cite>: floating point number</li>
+</ul>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-source</span></code>:</dt>
+<dd>Provide a file to parse for command line parameters. The latest given
+parameter is used as the value for the option.</dd>
+<dt><code class="docutils literal"><span class="pre">-h</span></code>:</dt>
+<dd>Display the help and exit.</dd>
+</dl>
+<div class="section" id="sensor-control">
+<span id="isp-ispc-loop-sensor"></span><h3>Sensor control<a class="headerlink" href="#sensor-control" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-sensor</span></code>: Str</dt>
+<dd><p class="first">Sensor to use. Available sensors are:</p>
+<ul class="simple">
+<li>&#8220;External Datagen&#8221;</li>
+<li>&#8220;IIF Datagen&#8221;</li>
+<li>AR330</li>
+<li>P401</li>
+<li>OV4688</li>
+</ul>
+<p>Obviously this needs the actual sensor to be present. The
+<a class="reference internal" href="../integration/platform.html#isp-platform-integration-guide"><span>Platform Integration Guide</span></a> has more details about adding
+support for more sensors.</p>
+<p class="last">If using either data-generator the <code class="docutils literal"><span class="pre">-DG_inputFLX</span></code> should specified the
+source file.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-sensorMode</span></code>: UInt</dt>
+<dd><p class="first">The mode to run for the selected sensor. Each sensor can have several
+modes (e.g. to have different resolution or speed). Refer to the Sensor
+API documentation for more details.</p>
+<p class="last">Default 0.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-sensorExposure</span></code>: UInt</dt>
+<dd><p class="first">Initial exposure (µs) to configure the sensor with (optional).</p>
+<p class="last">If auto expose is not disabled the exposure value will change while
+running.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-sensorGain</span></code>: Float</dt>
+<dd><p class="first">Initial gain to configure the sensor with (optional).</p>
+<p class="last">If auto exposure is not disabled the gain value will change while running.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-sensorFlip</span></code>: Bool [x2]</dt>
+<dd><p class="first">Flip the sensor horizontally and vertically. Not all sensor and modes
+support flipping.</p>
+<p class="last">If only 1 value is given it is assumed to be the horizontal flipping.</p>
+</dd>
+</dl>
+<div class="section" id="data-generator-parameters">
+<h4>Data Generator Parameters<a class="headerlink" href="#data-generator-parameters" title="Permalink to this headline">¶</a></h4>
+<p>If using either data generator these parameters can be used.</p>
+<p>The internal or external data-generator choice is made with the <code class="docutils literal"><span class="pre">-sensor</span></code>
+value.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-DG_inputFLX</span></code>: Str</dt>
+<dd>If using either Datagen sensors it is the path to the FLX input file to
+use. Similar to <code class="docutils literal"><span class="pre">-DGX_inputFLX</span></code> and <code class="docutils literal"><span class="pre">-IntDGX_inputFLX</span></code> in
+<a class="reference internal" href="ispc_test.html#isp-ispc-test-parameters"><span>ISPC_test</span></a>.</dd>
+<dt><code class="docutils literal"><span class="pre">-DG_gasket</span></code>: Str</dt>
+<dd>Gasket to use with the data-generator. Similar to <code class="docutils literal"><span class="pre">-IntDGX_gasket</span></code> or DG
+number in <a class="reference internal" href="ispc_test.html#isp-ispc-test-parameters"><span>ISPC_test</span></a>.</dd>
+<dt><code class="docutils literal"><span class="pre">-DG_blanking</span></code>: UInt [x2]</dt>
+<dd><p class="first">Horizontal and vertical blanking in pixels for the data-generator.
+Similar to <code class="docutils literal"><span class="pre">-DGX_blanking</span></code> or <code class="docutils literal"><span class="pre">-IntDGX_blanking</span></code> in
+<a class="reference internal" href="ispc_test.html#isp-ispc-test-parameters"><span>ISPC_test</span></a>.</p>
+<p class="last">If only 1 value is specified it is assumed to be the horizontal blanking.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="v2500-control">
+<span id="isp-ispc-loop-v2500-control"></span><h3>V2500 Control<a class="headerlink" href="#v2500-control" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-setupFile</span></code>: Str</dt>
+<dd>Path to the Felix Setup Args file to load. Similar to <code class="docutils literal"><span class="pre">-CTX_setupFile</span></code>
+in <a class="reference internal" href="ispc_test.html#isp-ispc-test-parameters"><span>ISPC_test</span></a>.</dd>
+<dt><code class="docutils literal"><span class="pre">-delay</span></code>: UInt</dt>
+<dd>Fixed length delay to be inserted between calls to enqueue buffers, measured in microseconds.</dd>
+<dt><code class="docutils literal"><span class="pre">-randomDelayLow</span></code>: UInt</dt>
+<dd>Lower bound of random delay to be inserted between calls to enqueue buffers, measured in microseconds.</dd>
+<dt><code class="docutils literal"><span class="pre">-randomDelayHigh</span></code>: UInt</dt>
+<dd>Upper bound of random delay to be inserted between calls to enqueue buffers, measured in microseconds.</dd>
+<dt><code class="docutils literal"><span class="pre">-updateASAP</span></code>: Cmd</dt>
+<dd>Enable the update ASAP in the ISPC::Camera. Can reduce latency when
+using a lot of buffers but will also not provide a reliable way of knowing
+when parameters were applied.</dd>
+</dl>
+</div>
+<div class="section" id="control-modules">
+<span id="isp-ispc-loop-control-modules"></span><h3>Control Modules<a class="headerlink" href="#control-modules" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-disableAE</span></code>: Cmd</dt>
+<dd>Does not create the Auto Exposure control object when creating the
+Camera. This functionality will not be available at all for this run.</dd>
+<dt><code class="docutils literal"><span class="pre">-disableAWB</span></code>: Cmd</dt>
+<dd>Does not create the Auto White Balance control object when creating the
+Camera. This functionality will not be available at all for this run.</dd>
+<dt><code class="docutils literal"><span class="pre">-chooseAWB</span></code>: UInt</dt>
+<dd><p class="first">Choose the White Balance Control algorithm; values have to be a
+legitimate <code class="docutils literal"><span class="pre">ISPC::Correction_Types</span></code> enum:</p>
+<ul class="simple">
+<li>0 disabled</li>
+<li>1 AC</li>
+<li>2 WP</li>
+<li>3 HLW</li>
+<li>4 COMBINED</li>
+<li>5 Planckian Locus</li>
+</ul>
+<p>Please note that Planckian Locus method is available for HW versions
+starting from 2.6, where it&#8217;s the default value, otherwise Combined
+statistics is chosen.</p>
+<p class="last">Similar to <code class="docutils literal"><span class="pre">-CTX_WBC</span></code> in <a class="reference internal" href="ispc_test.html#isp-ispc-test-parameters"><span>ISPC_test</span></a>.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-useWBTS</span></code>: Bool</dt>
+<dd><p class="first">Enable  White Balance Temporal Smoothing algorithm;</p>
+<ul class="simple">
+<li>0 disabled</li>
+<li>1 enabled</li>
+</ul>
+<p class="last">Default is disabled.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-wbtsTemporalStretch</span></code>:Int</dt>
+<dd><p class="first">Time to settle awb after change (milliseconds).
+Value outside range will be clipped.</p>
+<p>min = 200
+max = 5000</p>
+<p class="last">Default 300</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-wbtsWeightBase</span></code>:Float</dt>
+<dd><p class="first">Set the base for temporal moothing weights generation.
+Lower base - output values closer to average of n previous samples.
+Higher base - output values closer to non smoothed (calculated for current)
+Value outside range will be clipped.</p>
+<p>min = 1.00
+max = 10.00</p>
+<p class="last">Default 2.00</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-featuresWBTS</span></code>: UInt</dt>
+<dd><p class="first">Choose the White Balance Temporal Smoothing features; values have to be a
+legitimate <code class="docutils literal"><span class="pre">ISPC::Smoothing_Features</span></code> enum:</p>
+<ul class="simple">
+<li>0 disabled</li>
+<li>1 FF (Flash Filtering)</li>
+</ul>
+<p class="last">Default is disabled.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-disableAF</span></code>: Cmd</dt>
+<dd>Does not create the Auto Focus control object when creating the Camera.
+This functionality will not be available at all for this run.</dd>
+<dt><code class="docutils literal"><span class="pre">-disableTNMC</span></code>: Cmd</dt>
+<dd>Does not create the Tone Mapper control object when creating the Camera.
+This functionality will not be available at all for this run.</dd>
+<dt><code class="docutils literal"><span class="pre">-disableLBC</span></code>: Cmd</dt>
+<dd>Does not create the Light Based Control object when creating the Camera.
+This functionality will not be available at all for this run.</dd>
+<dt><code class="docutils literal"><span class="pre">-disableDNS</span></code>: Cmd</dt>
+<dd>Does not create the Denoise Control object when creating the Camera.
+This functionality will not be available at all for this run.</dd>
+<dt><code class="docutils literal"><span class="pre">-disableAutoDisplay</span></code>: Cmd</dt>
+<dd>Disable the always enabling of display output (unless taking DE).</dd>
+</dl>
+</div>
+<div class="section" id="performance-measurment">
+<span id="isp-ispc-loop-performance"></span><h3>Performance measurment<a class="headerlink" href="#performance-measurment" title="Permalink to this headline">¶</a></h3>
+<p>If the ISPC library was compiled with the performance measurement logs (see
+<a class="reference internal" href="../ispc/ispc_library.html#isp-ispcl-perflog"><span>Performance measurment</span></a>) the
+following command line parameters are available:</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-monitorXXX</span></code>: Cmd</dt>
+<dd>Monitor and log efficiency of XXX control algorithm.
+Number of frames to converge is provided in logs marked with PERF.
+Replace XXX with AWB, AF, or AE. E.g. -monitorAWB.</dd>
+<dt><code class="docutils literal"><span class="pre">-monitorAAA</span></code>: Cmd</dt>
+<dd>Monitor and log efficiency of all AAA algorithms (AWB, AF, and AE).</dd>
+<dt><code class="docutils literal"><span class="pre">-measureXXX</span></code>: Cmd</dt>
+<dd><p class="first">Measure performance of control module.
+Replace XXX with 2/3 letter accoronym of the module/control.</p>
+<p>E.g. -measureAF, -measureDNS.</p>
+<p class="last">Average time is also calculated and logged.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-measureAAA</span></code>: Cmd</dt>
+<dd>Measure performance of all controls i.e. algorithms AWB, AF, and AE.</dd>
+<dt><code class="docutils literal"><span class="pre">-measureMODULES</span></code>: Cmd</dt>
+<dd>Measure performance of all modules.
+Only those equipped with perfromance measurement markers will be measured.</dd>
+<dt><code class="docutils literal"><span class="pre">-measureVERBOSE</span></code>: Cmd</dt>
+<dd>Verbose all measurment info.
+With measureVERBOSE defined each performance log will
+verbose the about current call.</dd>
+</dl>
+</div>
+<div class="section" id="image-buffer-management">
+<h3>Image buffer management<a class="headerlink" href="#image-buffer-management" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-nBuffers</span></code>: UInt</dt>
+<dd><p class="first">Number of pre-allocated buffers to run with. Also used as the number of
+data-generator buffers. Similar to <code class="docutils literal"><span class="pre">-CTX_nBuffers</span></code> in
+<a class="reference internal" href="ispc_test.html#isp-ispc-test-parameters"><span>ISPC_test</span></a>.</p>
+<p class="last">Default is 2.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-importBuffers</span></code>: Cmd</dt>
+<dd><p class="first">Allocate and import image buffers from user space instead of doing internal
+allocation in kernel space.
+This option is enabled only if <code class="docutils literal"><span class="pre">ISPC_loop</span></code> has been configured with cmake
+variable (see <a class="reference internal" href="../getting_started.html#isp-gsg-imgvideo-support"><span>IMGVideo Support</span></a>):</p>
+<div class="highlight-bash"><div class="highlight"><pre>-DISPC_LOOP_USES_DMABUF<span class="o">=</span>TRUE
+</pre></div>
+</div>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Current implementation supports buffer allocations using <code class="docutils literal"><span class="pre">dmabuf</span></code>
+userspace library dependent on <code class="docutils literal"><span class="pre">dmabuf_exporter.ko</span></code> kernel module,
+and only if Felix device driver has been configured properly
+with <a class="reference internal" href="../getting_started.html#isp-gsg-imgvideo-support"><span>IMGVideo Support</span></a> enabled.</p>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="behaviour">
+<span id="isp-ispc-loop-behaviour"></span><h2>Behaviour<a class="headerlink" href="#behaviour" title="Permalink to this headline">¶</a></h2>
+<p>The tool was designed to demonstrate V2500 possibilities on IMG FPGA
+platform. It will force the output to be RGB32 8b (to use IMG FPGA PDP
+output) but run-time key press can enabled saving of other formats. This
+default can be alterated by running with <code class="docutils literal"><span class="pre">-disableAutoDisplay</span></code>.</p>
+<div class="section" id="de-shading-grid-limitation">
+<span id="isp-ispc-loop-deshading-grid"></span><h3>De-shading grid limitation<a class="headerlink" href="#de-shading-grid-limitation" title="Permalink to this headline">¶</a></h3>
+<p>If a LSH grid is provided into the given setup file it has to have a global
+path or be a relative to where the tool is running.</p>
+</div>
+<div class="section" id="runtime-key-press">
+<span id="isp-ispc-loop-key"></span><h3>Runtime key press<a class="headerlink" href="#runtime-key-press" title="Permalink to this headline">¶</a></h3>
+<p>The following keys can be pressed while the tool is running.</p>
+<div class="section" id="isp-ispc-loop-control-key">
+<span id="id1"></span><h4>Control Modules<a class="headerlink" href="#isp-ispc-loop-control-key" title="Permalink to this headline">¶</a></h4>
+<p>Keybinding that enable/disbale control algorithms.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="8%" />
+<col width="92%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Key</th>
+<th class="head">Behaviour</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>W</td>
+<td>Toggle AWB on/off</td>
+</tr>
+<tr class="row-odd"><td>E</td>
+<td>Toggle Defective Pixel correction</td>
+</tr>
+<tr class="row-even"><td>R</td>
+<td>Toggle usage of LSH matrix if available</td>
+</tr>
+<tr class="row-odd"><td>T</td>
+<td>Toggle adaptive TNMC on/off (needs TNMC on)</td>
+</tr>
+<tr class="row-even"><td>Y</td>
+<td>Toggle local TNMC on/off (needs TNMC on)</td>
+</tr>
+<tr class="row-odd"><td>U</td>
+<td>Toggle TNMC on/off</td>
+</tr>
+<tr class="row-even"><td>I</td>
+<td>Toggle DNS gain update from Sensor&#8217;s gain</td>
+</tr>
+<tr class="row-odd"><td>O</td>
+<td>Toggle LBC on/off</td>
+</tr>
+<tr class="row-even"><td>+/-</td>
+<td><div class="first last line-block">
+<div class="line">Change target brightness for AE.</div>
+<div class="line"><br /></div>
+<div class="line">Change current exposure if AE is disabled.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td>P</td>
+<td><p class="first">Loop through flicker rejection modes used in AE</p>
+<p class="last">Available modes are : OFF, AUTO, 50Hz, 60Hz</p>
+</td>
+</tr>
+<tr class="row-even"><td>,/.</td>
+<td>Focus close/further if available</td>
+</tr>
+<tr class="row-odd"><td>M</td>
+<td>Trigger focus sweep</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>Force CCM to identity matrix if AWB is disabled</td>
+</tr>
+<tr class="row-odd"><td>1-9</td>
+<td>Force one of the loaded multi-CCM if AWB is disabled</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="other-controls">
+<span id="isp-ispc-loop-other-key"></span><h4>Other controls<a class="headerlink" href="#other-controls" title="Permalink to this headline">¶</a></h4>
+<p>Keybiding that allow other opperations such as saving</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="93%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Key</th>
+<th class="head">Behaviour</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>X</td>
+<td>Exit the application</td>
+</tr>
+<tr class="row-odd"><td>A</td>
+<td><div class="first last line-block">
+<div class="line">Save all file formats as enabled in given setup file.</div>
+<div class="line"><br /></div>
+<div class="line">The same limitations apply to the selected output than for a normal</div>
+<div class="line">run (i.e. RGB and Bayer are mutually exclusive).</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td>S</td>
+<td>Save RGB output as RGB FLX file</td>
+</tr>
+<tr class="row-odd"><td>D</td>
+<td>Save YUV output as YUV file</td>
+</tr>
+<tr class="row-even"><td>F</td>
+<td>Save DE output as RGGB FLX file</td>
+</tr>
+<tr class="row-odd"><td>G</td>
+<td>Save Raw 2D Extraction output if available in HW in FLX file</td>
+</tr>
+<tr class="row-even"><td>H</td>
+<td>Save HDR Extraction output if available in HW in FLX file</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="section" id="parameter-example">
+<span id="isp-ispc-loop-parameter-example"></span><h2>Parameter Example<a class="headerlink" href="#parameter-example" title="Permalink to this headline">¶</a></h2>
+<p>Running the loop is similar to running any other test application:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>./ISPC_loop -sensor OV4688 -setupFile ISPC2_OV4688.txt -sensorFlip <span class="m">1</span> 1
+</pre></div>
+</div>
+<p>Equivalent to</p>
+<div class="highlight-bash"><div class="highlight"><pre>$ echo &quot;-sensor OV4688&quot; &gt; loop_params.txt
+$ echo &quot;-setupFile ISPC2_OV4688.txt&quot; &gt;&gt; loop_params.txt
+$ echo &quot;-sensorFlip 1 1&quot; &gt;&gt; loop_params.txt
+$
+$ ./ISPC_loop -source loop_params.txt
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">When using the <code class="docutils literal"><span class="pre">-sensor</span></code> with a name containing space (such as <code class="docutils literal"><span class="pre">&quot;IIF</span>
+<span class="pre">Datagen&quot;</span></code> or <code class="docutils literal"><span class="pre">&quot;External</span> <span class="pre">Datagen&quot;</span></code>) the parameter cannot be part of
+the sourced file (parsing of the file cuts the space and only <code class="docutils literal"><span class="pre">&quot;IIF</span></code> is
+considered).</p>
+</div>
+<div class="section" id="using-internal-data-generator">
+<span id="isp-ispc-loop-using-internal-dg"></span><h3>Using internal Data-generator<a class="headerlink" href="#using-internal-data-generator" title="Permalink to this headline">¶</a></h3>
+<p>This example is to run the loop using a previously captured image using
+our internal data-generator.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>./ISPC_loop -source loop_dgparams.txt -sensor <span class="s2">&quot;IIF Datagen&quot;</span>
+</pre></div>
+</div>
+<p><strong>loop_dgparams.txt</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre>-DG_inputFLX /home/felix/FLX/DE_A_rggb.flx # input FLX needs to be RGGB
+-DG_blanking 1080 720 # optional, blanking to limit input throughput to ISP
+
+# ISP settings
+-setupFile /home/felix/config/ISPC2_AR330.txt
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="expected-output">
+<span id="isp-ispc-loop-expected-output"></span><h2>Expected Output<a class="headerlink" href="#expected-output" title="Permalink to this headline">¶</a></h2>
+<p>When saving a frame, regardless of the format, the following files will be
+available (<code class="docutils literal"><span class="pre">X</span></code> being the frame number):</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">FelixSetupArgs_X.txt</span></code> containing the setup used to capture this output</li>
+<li><code class="docutils literal"><span class="pre">statisticsX.dat</span></code> containing the statistcs (save_structure) following
+the <a class="reference internal" href="test_tools.html#isp-tt-statistics-format"><span>Statistics Format</span></a></li>
+<li><code class="docutils literal"><span class="pre">encoder_statsX.dat</span></code> containing the ENS output if enabled</li>
+<li><code class="docutils literal"><span class="pre">defective_pixelsX.dat</span></code> containing the DPF output if enabled</li>
+</ul>
+<p>Depending on which key is pressed some other files may be saved:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">encoderX-widthxheight-format-alignA.yuv</span></code> for the YUV output</li>
+<li><code class="docutils literal"><span class="pre">displayX.flx</span></code> for the RGB output</li>
+<li><code class="docutils literal"><span class="pre">dataExtractionX.flx</span></code> for the Bayer output</li>
+<li><code class="docutils literal"><span class="pre">hdrExtractionX.flx</span></code> for the HDR output</li>
+<li><code class="docutils literal"><span class="pre">raw2DExtractionX.flx</span></code> for the Raw 2D output</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">ISPC loop application: <code class="docutils literal"><span class="pre">ISPC_loop</span></code></a><ul>
+<li><a class="reference internal" href="#parameters">Parameters</a><ul>
+<li><a class="reference internal" href="#sensor-control">Sensor control</a><ul>
+<li><a class="reference internal" href="#data-generator-parameters">Data Generator Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#v2500-control">V2500 Control</a></li>
+<li><a class="reference internal" href="#control-modules">Control Modules</a></li>
+<li><a class="reference internal" href="#performance-measurment">Performance measurment</a></li>
+<li><a class="reference internal" href="#image-buffer-management">Image buffer management</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#behaviour">Behaviour</a><ul>
+<li><a class="reference internal" href="#de-shading-grid-limitation">De-shading grid limitation</a></li>
+<li><a class="reference internal" href="#runtime-key-press">Runtime key press</a><ul>
+<li><a class="reference internal" href="#isp-ispc-loop-control-key">Control Modules</a></li>
+<li><a class="reference internal" href="#other-controls">Other controls</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#parameter-example">Parameter Example</a><ul>
+<li><a class="reference internal" href="#using-internal-data-generator">Using internal Data-generator</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#expected-output">Expected Output</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="ispc_test.html"
+                        title="previous chapter">ISP Control test: <code class="docutils literal"><span class="pre">ISPC_test</span></code></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="ispc_capture.html"
+                        title="next chapter">ISP Control video capture: <code class="docutils literal"><span class="pre">ISPC_capture</span></code></a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

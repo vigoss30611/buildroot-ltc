@@ -1,0 +1,11 @@
+#
+# Modules base on InfoTM DSP
+#
+
+config INFOTM_ITEM
+	tristate "Infotm board configuration items"
+	default y
+	help
+	  Say Y to enabled board configuration device. User layer
+	  programs can access board items through this interface.
+

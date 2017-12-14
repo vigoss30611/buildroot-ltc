@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+	android:background="@color/white">
+    <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="文件操作："
+        android:textSize="20sp"
+        android:padding="10dp"
+        android:textColor="@color/gray"
+        android:background="@color/blue_dark"/>
+          <!--第一行  -->
+    <RelativeLayout
+        android:id="@+id/open_media"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:background="@drawable/funciont_botton_selector" >
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="打  开"
+        android:gravity="bottom"
+        android:textSize="21sp"
+        android:layout_alignParentLeft="true"
+        android:textColor="@color/setting_text"
+        android:padding="@dimen/padding_default"
+        android:layout_marginLeft="10dip"/>
+</RelativeLayout>
+    <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
+        android:background="@color/gray"/>
+      <!--第二行  -->
+    <RelativeLayout
+        android:id="@+id/send_media"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:background="@drawable/funciont_botton_selector" >
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="分  享 "
+        android:gravity="bottom"
+        android:textSize="21sp"
+        android:layout_alignParentLeft="true"
+        android:textColor="@color/setting_text"
+        android:padding="@dimen/padding_default"
+        android:layout_marginLeft="10dip"/>
+</RelativeLayout>
+    <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
+        android:background="@color/gray"/>
+    <!--第三行  -->
+    <RelativeLayout
+        android:id="@+id/delete_media"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:background="@drawable/funciont_botton_selector" >
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="删  除"
+        android:gravity="bottom"
+        android:textSize="21sp"
+        android:layout_alignParentLeft="true"
+        android:textColor="@color/setting_text"
+        android:padding="@dimen/padding_default"
+        android:layout_marginLeft="10dip"/>
+</RelativeLayout>
+    <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
+        android:background="@color/gray"/>
+    <!--第三行  -->
+<!--     <RelativeLayout
+        android:id="@+id/delete_media"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:background="@drawable/funciont_botton_selector" >
+    
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="删  除"
+        android:gravity="bottom"
+        android:textSize="21sp"
+        android:layout_alignParentLeft="true"
+        android:textColor="@color/setting_text"
+        android:padding="@dimen/padding_default"
+        android:layout_marginLeft="10dip"/>
+</RelativeLayout>
+    <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
+        android:background="@color/gray"/> -->
+    <!--第四行  -->
+    <RelativeLayout
+        android:id="@+id/operate_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:gravity="center"
+        android:background="@drawable/funciont_botton_selector" >
+    
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="关  闭"
+        android:gravity="bottom"
+        android:textSize="21sp"
+        android:textColor="@color/setting_text"
+        android:padding="@dimen/padding_default"/>
+</RelativeLayout>
+
+</LinearLayout>

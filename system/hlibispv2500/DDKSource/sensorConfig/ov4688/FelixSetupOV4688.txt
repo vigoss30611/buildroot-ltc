@@ -1,0 +1,53 @@
+BLC_SENSOR_BLACK              12 12 12 12 
+BLC_SYS_BLACK                 64 
+
+CCM_MATRIX                    1.308 -0.286 -0.022 -0.059 1.177 -0.118 0.063 -0.596 1.533 
+CCM_OFFSETS                   -131.6 -139.1 -134.4 
+
+DNS_COMBINE_ENABLE            1 
+DNS_STRENGTH                  3 
+
+LSH_WBCLIP                    1 1 1 1 
+LSH_WBGAIN                    2.4986 1.0024 1 1.5724 
+
+R2Y_BRIGHTNESS                0 
+R2Y_CONTRAST                  1 
+R2Y_HUE                       0 
+R2Y_MATRIX                    BT709 
+R2Y_RANGE_MUL                 1 1 1 
+R2Y_SATURATION                1 
+
+SHA_DENOISE_BYPASS            0 
+SHA_DETAIL                    0.4 
+SHA_DN_SIGMA_MULTIPLIER       1 
+SHA_DN_TAU_MULTIPLIER         1 
+SHA_RADIUS                    2 
+SHA_STRENGTH                  0.2 
+SHA_THRESH                    0.21 
+
+TNM_BYPASS                    0 
+TNM_COLOUR_CONFIDENCE         1 
+TNM_COLOUR_SATURATION         1 
+TNM_FLAT_FACTOR              0.05 
+TNM_FLAT_MIN                 0.1 
+TNM_IN_Y                     -64 64 
+TNM_WEIGHT_LINE              0.05 
+TNM_WEIGHT_LOCAL             0 
+
+WB_CCM_0                      1.04084 0.0702491 -0.111092 -0.276883 1.32653 -0.0496432 0.0854275 -1.06041 1.97498 
+WB_CCM_1                      1.12028 -0.0558982 -0.0643784 -0.223413 1.26388 -0.0404627 0.0911236 -0.96308 1.87196 
+WB_CCM_2                      1.27261 -0.242188 -0.0304183 -0.0854361 1.19141 -0.105979 0.069027 -0.667628 1.5986 
+WB_CCM_3                      1.30816 -0.286216 -0.0219451 -0.059026 1.17672 -0.117693 0.0625192 -0.595781 1.53326 
+WB_CORRECTIONS                4 
+WB_GAINS_0                    1.40854 1 1.0017 2.50884 
+WB_GAINS_1                    1.52438 1.00002 1 2.30553 
+WB_GAINS_2                    2.29588 1.00441 1 1.72037 
+WB_GAINS_3                    2.49856 1.00239 1 1.5724 
+WB_OFFSETS_0                  -137.262 -139.318 -127.27 
+WB_OFFSETS_1                  -136.639 -140.129 -128.926 
+WB_OFFSETS_2                  -132.397 -139.219 -133.295 
+WB_OFFSETS_3                  -131.642 -139.112 -134.406 
+WB_TEMPERATURE_0              2800 
+WB_TEMPERATURE_1              3200 
+WB_TEMPERATURE_2              5000 
+WB_TEMPERATURE_3              6500 

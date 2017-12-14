@@ -1,0 +1,20 @@
+
+header:
+software/source/inc/* usr/include/hlibg2v1
+software/source/hevc/*.h usr/include/hlibg2v1
+software/source/common/*.h usr/include/hlibg2v1
+software/source/config/*.h usr/include/hlibg2v1
+software/source/inc/* usr/include/hlibg2v1/software/source/inc
+software/source/config/* usr/include/hlibg2v1/software/source/config/
+software/source/common/*.h usr/include/hlibg2v1/software/source/common/
+software/source/hevc/*.h usr/include/hlibg2v1/software/source/hevc/
+software/linux/dwl/*.h usr/include/hlibg2v1/software/linux/dwl
+software/test/common/*.h usr/include/hlibg2v1/software/test/common/
+software/test/common/swhw/*.h usr/include/hlibg2v1/software/test/common/swhw
+
+static:
+.libs/*.a usr/lib
+
+shared:
+.libs/*.so usr/lib
+

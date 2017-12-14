@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">InfotmDV</string>
+         <string name="app_title">行车记录仪</string>
+    <string name="home_activity">运动相机</string>
+    <string name="action_settings">设置</string>
+    <string name="camerasetting">相机设置</string>
+
+    <string name="default_on_text">ON</string>
+    <string name="default_off_text">OFF</string>
+    <string name="connect_setting_activity">连接设置向导</string>
+    
+<!--     <string name="help_text">Please set the SportsDV to APP mode.\nSetting-WIFI-app mode.\nPlease select the SportsDV. </string> -->
+    <string name="help_text">第一步:\n1、请将SportsDV调到app模式:SportsDV按如下流程设置：设置-WIFI-app模式。\n2、然后从以下列表中选择SportsDV的节点。\n </string>
+    <string name="help_text_wifi">第二步：\n1、输入密码连接你的SportsDV的AP。\n</string>
+    <string name="help_text_pin">第三步：\n1、将SportsDV上显示的PIN码输入，并点击进行验证。\n</string>
+    <string name="refresh">重新搜索</string>
+    <string name="send_password">连接</string>
+    <string name="send_pin">进行验证</string>
+    <string name="wifi_fail_to_scan">扫描失败</string>
+    
+    <string name="experience_cam_found">连接并控制</string>
+    <string name="experience_cam_missing">连接一个相机</string>
+    <string name="experience_cam_searching">正在寻找相机</string>
+    <string name="recording">摄像机忙…</string>
+    
+    <string name="setting_section_video">Configurations Vidéo</string>
+    <string name="setting_section_capture">Configurations photo</string>
+    <string name="setting_section_car">Configurations voiture</string>
+    <string name="setting_section_setup">Configuration</string>
+    <string name="setting_video_mode">Mode: </string>
+    <string name="setting_video_interval">Intervalle: </string>
+    <string name="setting_video_res">Résolution: </string>
+    <string name="setting_video_fps">Images par seconde: </string>
+    <string name="setting_video_lowlight">Détection faible luminosité: </string>
+    <string name="setting_video_adv">Mode avancé: </string>
+    <string name="setting_video_wb">automatique</string>
+    <string name="setting_video_color">Couleur: </string>
+    <string name="setting_video_iso">Limite ISO: </string>
+    <string name="setting_video_sharpness">Netteté: </string>
+    <string name="setting_video_ev">Compensation de la valeur d\'exposition: </string>
+    
+    <string name="setting_car_mode">voiture</string>
+    <string name="setting_car_res">Résolution: </string>
+    <string name="setting_car_fps">Images par seconde: </string>
+    <string name="setting_car_lowlight">Détection faible luminosité: </string>
+    <string name="setting_car_adv">Mode avancé: </string>
+    <string name="setting_car_wb">automatique</string>
+    <string name="setting_car_color">Couleur: </string>
+    <string name="setting_car_iso">Limite ISO: </string>
+    <string name="setting_car_sharpness">Netteté: </string>
+    <string name="setting_car_ev">Compensation de la valeur d\'exposition: </string>
+    
+    <string name="setting_photo_mode">Mode: </string>
+    <string name="setting_photo_interval">Intervalle: </string>
+    <string name="setting_photo_shutter">Obturateur: </string>
+    <string name="setting_photo_timer">Minuteur: </string>
+    <string name="setting_photo_mega">Méga-pixels: </string>
+    <string name="setting_photo_lowlight">Détection faible luminosité: </string>
+    <string name="setting_photo_adv">Mode avancé: </string>
+    <string name="setting_photo_wb">automatique</string>
+    <string name="setting_photo_color">Couleur: </string>
+    <string name="setting_photo_iso">Limite ISO: </string>
+    <string name="setting_photo_sharpness">Netteté: </string>
+    <string name="setting_photo_ev">Compensation de la valeur d\'exposition: </string>
+    
+    <string name="setting_setup_wireless">关闭WIFI</string>
+    <string name="setting_setup_dis_sleep">Veille</string>
+    <string name="setting_setup_dis_bright">Luminosité</string>
+    <string name="setting_setup_ori">Orientation</string>
+    <string name="setting_setup_watermark">timbre dateur: </string>
+<!--     <string name="setting_setup_language">语言</string> -->
+    <string name="setting_setup_defaultmode">Mode par défaut: </string>
+    <string name="setting_setup_beeps">Bips</string>
+    <string name="setting_setup_autooff">Arrêt automatique</string>
+    
+    <string name="setting_setup_date">réglage de l\'heure</string>
+    <string name="setting_setup_battery">电池状态</string>
+    <string name="setting_setup_sdcard">SD卡存储状态</string>
+    <string name="setting_setup_changewifi">改变WIFI的名称</string>
+    <string name="setting_setup_locate">寻找运动相机</string>
+    
+    <string name="delete_last_file">effacer dernier fichier</string>
+    <string name="delete_all_files_from_sd_card">Effacer tous les fichier</string>
+    <string name="setting_adv_reset">réinitialiser le mode avancé</string>
+    
+    <string name="dialog_wifi_off">关闭WIFI</string>
+    
+    <string name="videos_on_card">已有视频文件个数</string>
+    <string name="video_time_remain">还可录制视频时间</string>
+    <string name="photo_on_card">已有图片文件个数</string>
+    <string name="photo_remain">还可拍摄图片张数</string>
+    
+    <string name="reconnecting">正在重新连接</string>
+    <string name="reconnecting_msg">正在尝试重新连接 %s</string>
+</resources>

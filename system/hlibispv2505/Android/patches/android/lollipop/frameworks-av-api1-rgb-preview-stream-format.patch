@@ -1,0 +1,13 @@
+diff --git a/services/camera/libcameraservice/api1/client2/StreamingProcessor.cpp b/services/camera/libcameraservice/api1/client2/StreamingProcessor.cpp
+index 470624b..252e920 100644
+--- a/services/camera/libcameraservice/api1/client2/StreamingProcessor.cpp
++++ b/services/camera/libcameraservice/api1/client2/StreamingProcessor.cpp
+@@ -181,7 +181,7 @@ status_t StreamingProcessor::updatePreviewStream(const Parameters &params) {
+     if (mPreviewStreamId == NO_STREAM) {
+         res = device->createStream(mPreviewWindow,
+                 params.previewWidth, params.previewHeight,
+-                CAMERA2_HAL_PIXEL_FORMAT_OPAQUE, &mPreviewStreamId);
++                HAL_PIXEL_FORMAT_RGBX_8888, &mPreviewStreamId);
+         if (res != OK) {
+             ALOGE("%s: Camera %d: Unable to create preview stream: %s (%d)",
+                     __FUNCTION__, mId, strerror(-res), res);

@@ -1,0 +1,1 @@
+obj-$(CONFIG_CORONAMPW_INFOTM_DPMU)	+= dpmu.o 

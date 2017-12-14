@@ -1,0 +1,7 @@
+--- .repo_orig/local_manifests/kernel_3.4.67.xml	1970-01-01 01:00:00.000000000 +0100
++++ .repo/local_manifests/kernel_3.4.67.xml	2015-05-18 11:10:13.972166296 +0200
+@@ -0,0 +1,4 @@
++<manifest>
++	<project path="kernel/goldfish-3.4.67" name="kernel/goldfish"
++           remote="aosp" revision="d3ffcc7b914fb6f91e6e4fb9d6453e778f8cd508" />
++</manifest>

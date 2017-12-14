@@ -1,0 +1,18 @@
+menu "Host utilities"
+
+source "buildroot/package/dfu-util/Config.in.host"
+source "buildroot/package/dosfstools/Config.in.host"
+source "buildroot/package/e2fsprogs/Config.in.host"
+source "buildroot/package/genext2fs/Config.in.host"
+source "buildroot/package/genimage/Config.in.host"
+source "buildroot/package/genpart/Config.in.host"
+source "buildroot/package/lpc3250loader/Config.in.host"
+source "buildroot/package/mtools/Config.in.host"
+source "buildroot/package/omap-u-boot-utils/Config.in.host"
+source "buildroot/package/openocd/Config.in.host"
+source "buildroot/package/parted/Config.in.host"
+source "buildroot/package/sam-ba/Config.in.host"
+source "buildroot/package/sunxi-tools/Config.in.host"
+source "buildroot/package/uboot-tools/Config.in.host"
+
+endmenu

@@ -1,0 +1,49 @@
+#
+#
+#
+
+menuconfig INFOTM_MMC
+       bool "MMC/SD/SDIO Host Controller Drivers"
+       default y
+       select MMC
+        select MMC_BLOCK
+        select MMC_BLOCK_BOUNCE
+        select NLS
+        select NLS_CODEPAGE_437
+        select NLS_ISO8859_1
+        select NLS_UTF8
+        select MMC_DW_IDMAC
+        help 
+                Infotm MMC/SDIO/SD support, we use Synopsys DesignWare Memory Card Interface
+if INFOTM_MMC
+choice
+	prompt "MMC Host controller select"
+config INFOTM_DWC_MMC_V240
+	bool "DW_MMC Version2.40"
+config INFOTM_DWC_MMC_V280
+	bool "DW_MMC Version2.80"
+endchoice
+
+config INFOTM_MMC_HAVE_MMC0
+tristate "InfoTM MMC0(eMMC) Driver enable"
+default n
+config INFOTM_MMC_HAVE_MMC1
+tristate "InfoTM MMC1(SD/TF) Driver enable"
+default y
+config INFOTM_MMC_HAVE_MMC2
+tristate "InfoTM MMC2(SDIO) Driver enable"
+default y
+
+
+if INFOTM_DWC_MMC_V240
+source "drivers/infotm/common/mmc/dw_mmc_240/Kconfig"
+endif
+
+if INFOTM_DWC_MMC_V280
+source "drivers/infotm/common/mmc/dw_mmc_280/Kconfig"
+endif
+
+endif
+
+
+

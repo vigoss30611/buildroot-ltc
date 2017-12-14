@@ -1,0 +1,19 @@
+# This are example rules. Please make sure you are using rules for your
+# security requirements!
+
+# additional root files/dirs
+/init.pc.rc                   u:object_r:rootfs:s0
+/powervr_ddk_install.log      u:object_r:rootfs:s0
+/etc                          u:object_r:rootfs:s0
+# emulated storage
+/sdcard                       u:object_r:rootfs:s0
+/mnt                          u:object_r:rootfs:s0
+/mnt(/.*)?                    u:object_r:system_file:s0
+/mnt/shell/emulated           u:object_r:sdcard_internal:s0
+/mnt/shell/sdcard0            u:object_r:sdcard_internal:s0
+/storage(/.*)?                u:object_r:sdcard_internal:s0
+# pvrsrvctrl
+/system/vendor/bin/pvrsrvctl  u:object_r:pvrsrvctl_exec:s0
+# sync drivers
+/dev/pvr_sync                 u:object_r:powervr_sync_device:s0
+/dev/sw_sync                  u:object_r:sw_sync_device:s0

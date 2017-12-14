@@ -1,0 +1,10 @@
+
+header:
+inc/*.h usr/include/hlibh1v6
+
+static:
+.libs/*.a usr/lib
+
+shared:
+.libs/*.so usr/lib
+

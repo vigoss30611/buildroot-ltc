@@ -1,0 +1,14 @@
+menuconfig INFOTM_POWER
+        bool "Infotm Power support"
+        default y
+        help
+        Say Y here if you want to use the Infotm power management.
+
+if INFOTM_POWER
+
+source "drivers/infotm/imapx15/power/axp_power/Kconfig"
+source "drivers/infotm/imapx15/power/mfd/Kconfig"
+source "drivers/infotm/imapx15/power/regulator/Kconfig"
+source "drivers/infotm/imapx15/power/battery/Kconfig"
+
+endif

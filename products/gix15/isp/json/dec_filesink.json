@@ -1,0 +1,18 @@
+{
+        "dec0":{
+                "ipu":"g1264",
+                "port":{
+                        "frame":{
+                                "w": 1920,
+                                "h": 1080,
+                                "bind":{ "filesink":"in" }
+                        }
+                }
+         },
+        "filesink":{
+                "ipu":"filesink",
+                "args":{
+                        "data_path":"/mnt/out.yuv"
+                }
+        }
+}

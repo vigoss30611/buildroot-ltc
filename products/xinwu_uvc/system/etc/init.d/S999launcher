@@ -1,0 +1,15 @@
+#! /bin/sh
+
+case "$1" in
+	start|"")
+		test_libguvc -c h1264-stream -b 1 &
+		;;
+	stop)
+		killall -9 launcher
+		;;
+	*)
+		echo "Usage: libramain {start|stop}" >&2
+		exit 1
+		;;
+esac
+

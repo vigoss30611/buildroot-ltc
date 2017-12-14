@@ -1,0 +1,16 @@
+# audiobox
+
+ABCTRL2_VERSION = 1.0.0
+ABCTRL2_SOURCE = 
+ABCTRL2_SITE  = 
+
+ABCTRL2_LICENSE = 
+ABCTRL2_LICENSE_FILES = README
+
+ABCTRL2_MAINTAINED = YES
+ABCTRL2_AUTORECONF = YES
+ABCTRL2_INSTALL_STAGING = YES
+ABCTRL2_DEPENDENCIES = host-pkgconf hlibfr eventhub alsa-lib hlibvcp7g libcodecs
+
+$(eval $(autotools-package))
+

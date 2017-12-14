@@ -1,0 +1,27 @@
+config BR2_PACKAGE_LIBISPV2505
+	bool "hlibispv2505"
+	default y
+	help
+		This is for ISP
+
+if BR2_PACKAGE_LIBISPV2505
+
+config BR2_PACKAGE_LIBISPV2505_LANCHOU
+        bool "lanchou project"
+        default n
+        help
+                Whether is lanchou project
+
+config BR2_PACKAGE_LIBISPV2505_MNEON
+	bool "math neon use"
+	default n
+	help
+		Whether use math neon libaray
+
+config BR2_PACKAGE_LIBISPV2505_HW_AWB
+        bool "Hardware AWB Method"
+        default n
+        help
+                Whether use hardware awb
+
+endif

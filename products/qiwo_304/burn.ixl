@@ -1,0 +1,10 @@
+#name qiwo_304 burn.ixl, for make ius
+
+#images:
+i run 0x3c000200 0x3c000000 ../../output/images/uboot0.isi
+r flash 0x0	 ../../output/images/uboot0.isi
+r flash 0x1	 ../../output/images/items.itm
+r flash 0x2	 ../../output/images/ramdisk.img
+r flash 0x3  	 ../../output/images/uImage
+#r flash 0x4  	uImage
+r flash 0x5  ../../output/images/rootfs.squashfs

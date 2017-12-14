@@ -1,0 +1,112 @@
+{
+	"isp": {
+		"ipu": "v2500",
+		"args": {
+			"mode": 6,
+			"name": "AR330MIPI",
+			"config": "/root/.ispddk/config-normal.txt"
+		},
+		"port": {
+			"out": {
+				"w": 1920,
+				"h": 1088,
+				"pixel": "nv12"
+			},
+			"his": {
+				"bind": { "vam": "in" }
+			}
+		}
+	},
+
+	"marker0": {
+		"ipu": "marker",
+		"args": {
+			"mode": 1
+		},
+		"port": {
+			"out": {
+				"w": 480,
+				"h": 40,
+				"pixel": "nv12",
+				"bind": { "softlayer0": "ol1" }
+			}
+		}
+	},
+	
+	"marker1": {
+		"ipu": "marker",
+		"args": {
+			"mode": 1
+		},
+		"port": {
+			"out": {
+				"w": 480,
+				"h": 40,
+				"pixel": "nv12",
+				"bind": { "softlayer0": "ol2" }
+			}
+		}
+	},
+	
+	"marker2": {
+		"ipu": "marker",
+		"args": {
+			"mode": 1
+		},
+		"port": {
+			"out": {
+				"w": 480,
+				"h": 40,
+				"pixel": "nv12",
+				"bind": { "softlayer0": "ol3" }
+			}
+		}
+	},
+	
+	"marker3": {
+		"ipu": "marker",
+		"args": {
+			"mode": 1
+		},
+		"port": {
+			"out": {
+				"w": 480,
+				"h": 40,
+				"pixel": "nv12",
+				"bind": { "softlayer0": "ol0" }
+			}
+		}
+	},
+	
+	"softlayer0":{
+		"ipu": "softlayer",
+		"port": {
+			"ol0": {
+				"pip_x":32,
+				"pip_y":32
+			},
+			"ol1": {
+				"pip_x":32,
+				"pip_y":320
+			},
+			"ol2": {
+				"pip_x":960,
+				"pip_y":32
+			},
+			"ol3": {
+				"pip_x":960,
+				"pip_y":320
+			},
+			"out": {
+				"w": 1920,
+				"h": 1088,
+				"pixel": "nv12",
+				"bind": { "display": "osd0"},
+				"embezzle": {"isp": "out"}
+			}
+		}
+	},
+
+	"display": { "ipu": "ids"},
+	"vam": { "ipu": "vamovement"}
+}

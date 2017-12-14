@@ -1,0 +1,7 @@
+config BR2_PACKAGE_APP_D304_FT
+	bool "app-d304-ft"
+	default n
+	help
+	  d304 factory test app
+
+	  http://www.infotm.com/

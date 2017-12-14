@@ -1,0 +1,82 @@
+#!/bin/bash
+
+if [[ ! -d tools ]]; then
+    echo -e "please run me in qsdk root dir"
+    exit 1
+fi
+
+source tools/qsdk.env
+
+qsdk_make(){
+	linux_defconfig=`cat .config | grep "CONFIG_LINUX_KERNEL_CUSTOM_CONFIG_FILE" | awk -F '"' '{print $2}'`
+	echo "linux_defconfig=${linux_defconfig}"
+	if [[ -n ${linux_defconfig} ]]; then
+		source tools/qsdk.kernel config ${linux_defconfig}
+	else
+		echo "Linux Kernel has not config!"
+		exit 0
+	fi
+	source tools/qsdk.kernel make
+	source tools/qsdk.kernel install
+
+	uboot_boot_mode=`cat .config | grep "CONFIG_UBOOT_BOOT_DEVICE_EMMC=y"`
+	echo "uboot_boot_mode=${uboot_boot_mode}"
+	if [[ -n ${uboot_boot_mode} ]]; then
+		source tools/qsdk.uboot make uboot0 emmc
+	else
+		source tools/qsdk.uboot make uboot0 spi
+	fi
+
+	uboot1=`cat .config | grep "CONFIG_UBOOT1=y"`
+	echo "uboot1=${uboot1}"
+	if [[ -n ${uboot1} ]]; then
+		source tools/qsdk.uboot make uboot1
+	fi
+		source tools/qsdk.uboot install
+
+	busybox_defconfig=`cat .config | grep "CONFIG_BUSYBOX_CUSTOM_CONFIG_FILE" | awk -F '"' '{print $2}'`
+	echo "busybox_defconfig=${busybox_defconfig}"
+	if [[ -z ${busybox_defconfig} ]]; then
+		echo "busybox has not config!"
+		exit 0
+	fi
+		source tools/qsdk.busybox output/system  config  ${busybox_defconfig}
+		source tools/qsdk.busybox output/system  make
+		source tools/qsdk.busybox output/system  install
+
+		source tools/qsdk.busybox output/ramdisk  config  ${busybox_defconfig}
+		source tools/qsdk.busybox output/ramdisk  make
+		source tools/qsdk.busybox output/ramdisk  install
+
+		source tools/qsdk.sync file_system/system  output/system
+		source tools/qsdk.sync file_system/ramdisk  output/ramdisk
+
+		source tools/qsdk.clean  output/system
+		source tools/qsdk.clean  output/ramdisk
+
+		source tools/qsdk.strip  output/system
+		source tools/qsdk.strip  output/ramdisk
+
+		source tools/qsdk.mkimg   system
+		source tools/qsdk.mkimg   ramdisk
+
+		python tools/process_selection.py
+		source tools/post-items.sh
+
+		source tools/qsdk.ius output/product/burn.ixl  output/images/burn.ius
+
+		echo "-----> build over"
+}
+
+qsdk_compile(){
+    echo -e "-->qsdk compile!"
+	cd ${WORKSPACE}
+	if [[ -e .config ]]; then
+		qsdk_make
+	else
+		echo "You have not config!"
+		echo "Please execute make menuconfig!"
+	fi
+}
+
+qsdk_compile

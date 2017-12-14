@@ -1,0 +1,116 @@
+items.start
+board.hwid  GIX15EVB
+board.cpu  x15
+board.arch  a5pv20
+board.case  0
+board.disk  flash
+board.string.product   GIX15EVB
+board.string.device    GIX15EVB
+board.string.model    GIX15EVB
+board.string.label    GIX15EVB
+soc.cpu.freq    -200
+soc.gpu.freq    444
+soc.usb.otg    1
+soc.usb.host    1
+config.ui    tablet
+config.wdt    0
+config.phase    final
+config.preload    preboot
+config.root    0
+config.trace    0
+config.media.hdmi.1080p    1
+config.media.rsvmem 64
+config.media.out   yuv420sp
+config.otg.nluns    2
+config.otg.drvbus  61
+cpu.power		pmu.sw1
+cpu.io33.power		pmu.sw2
+
+part0					uboot.48.boot
+part1					item.16.boot
+part2					ramdisk.4096.boot
+part3					kernel.4096.boot
+part5					system.6144.fs
+part6					id.512.fs
+part7					config.512.fs
+#part16					uboot1.512.boot
+
+sd1.delayline R.37.W.22
+sd2.delayline R.37.W.22
+
+dram.count              2       # 2 or 4 0r 8
+dram.power              pmu.swio
+dram.freq               400     #
+dram.type               DDR3    # DDR3 or LPDDR2S2 or LPDDR2S4
+dram.width              16      # 8 16 or 32
+dram.capacity           256     #
+dram.size               512  # count * capacity
+memory.cl               6       # 2 ~ 8
+memory.rtt              4       # DIV_4 DIV_2 DIV_6 only for DDR3
+memory.driver           6       # DIV_6 DIV_7 only for DDR3
+memory.tras             15      # default memory tras: 15
+memory.trfc             64      # default memory trfc: 64
+
+nand.erase		1
+#nand.cs  		0.8.0.0
+
+# PMU
+pmu.model		axp202
+pmu.ctrl		i2c.0
+pmu.int			pads.28
+pmu.mode        mode2
+
+dss.implementation.product.type                 mid
+dss.implementation.board.type                   lcd1
+dss.implementation.framebuffer.vic              2000
+dss.implementation.lcdpanel.name               KR070LB0S_1024_600
+dss.implementation.lcdpanel.rgbseq              0
+dss.implementation.lcdpanel.rgbbpp              1
+dss.implementation.lcdpanel.master.gpio         119
+dss.implementation.lcdpanel.master.polarity     1
+dss.implementation.lcdpanel.bl.gpio             109
+dss.implementation.lcdpanel.bl.polarity         1
+
+# Backlight
+bl.ctrl            pwm.2
+bl.start           6136
+bl.msleep          250
+bl.low_intensity   255
+bl.high_intensity  20
+bl.def_intensity   102
+
+led0.gpio       led0.131
+led0.polarity   0
+led1.gpio		led1.132
+led1.polarity	0
+
+#led0.ctrl	pads.131
+#led0.polarity	0
+#led1.ctrl	pads.132
+#led1.polarity	0
+
+codec.model  fr1023
+codec.clk imap-audio-clk
+codec.ctrl	i2c.1
+codec.data  i2s.0
+codec.power	pmu.axp_ldoio0
+
+#rtc
+rtc.model       pcf8563
+
+keys.volup		adc.9.16
+keys.voldown	adc.9.8
+keys.back		pads.28
+keys.home		pads.27
+keys.reset      pads.25
+
+wifi.model sdio.8189es
+wifi.power pads.120
+wifi.feature	direct
+
+debug.printk_console 1
+config.uboot.logo 1
+
+#vdec
+vdec.x15clk 1
+items.end

@@ -1,0 +1,1231 @@
+@charset "utf-8";
+body{
+	margin:0px;
+	padding:0px;
+	font-family:"Arial";
+	font-size:13px;
+	text-align:center;
+	line-height:100%;
+	/*background:url("res/main_bg.png") repeat-x;*/
+	background-color:#141414;
+}
+#LoginPage{
+	/*display:none;*/
+	margin-top:150px;
+	margin-left:auto;
+	margin-right:auto;
+	width:636px;
+}
+#LoginPage #loginContainer{
+	width:100%;
+	height:480px;
+}
+#LoginPage #loginContainer #loginBox{
+	width:636px;
+	height:100%;
+	float:left;
+}
+
+/*#LoginPage #loginContainer #loginBox #lbLeft{
+	width:0px;
+	height:100%;
+	float:left;
+	background:url("res/loginl.png") no-repeat;
+}*/
+#LoginPage #loginContainer #loginBox #lbMain{
+	width:636px;
+	height:100%;
+	float:left;
+	text-align:center;
+	/*background:url("res/loginm.png") repeat-x;*/
+	background:url("res/loginbox.png") repeat-x;
+}
+
+#LoginPage #loginContainer #loginBox #lbMain #lmainBox{
+	margin-top:0px;
+	margin-left:auto;
+	margin-right:auto;
+	width:636px;
+	height:auto;
+}
+#LoginPage #loginContainer #loginBox #lbMain #lmainBox div.lt{
+	line-height:100%;
+	font-size:20px;
+	margin-bottom:35px;
+	width:636px;
+	height:68px;
+}
+#LoginPage #loginContainer #loginBox #lbMain #lmainBox #svrName{
+	margin-top:0px;
+	line-height:100%;
+	font-size:30px;
+	padding-top:20px;
+	color:#FFFFFF;
+	width:636px;
+	height:68px;
+	background:url("res/loginTitle.png") no-repeat;
+}
+
+#LoginPage #loginContainer #loginBox #lbMain #lmainBox div.l{
+	margin-top:10px;
+}
+#LoginPage #loginContainer #loginBox #lbMain #lmainBox input{
+	width: 150px;
+}
+#LoginPage #loginContainer #loginBox #lbMain #lmainBox select{
+	width: 156px;
+}
+#LoginPage #loginContainer #loginBox #lbMain #lmainBox button{
+	width: 92px;
+	height: 34px;
+	border:none;
+	background:url("res/LoginBtn.png") no-repeat;
+}
+
+/*#LoginPage #loginContainer #loginBox #lbRight{
+	width:0px;
+	height:100%;
+	float:left;
+	background:url("res/loginr.png") no-repeat;
+}*/
+#LoginPage #loginContainer #loginBox #lbMain #lmainBox #downloadBox{
+	/*padding:30px 10px 10px 10px;
+	width:80px;
+	height:200px;*/
+	padding-top:10px;
+	width:636px;
+	height:20px;
+	float:left;
+}
+#LoginPage #loginContainer #loginBox #lbMain #lmainBox #downloadBox p a{
+	font-size:18px;
+	/*color:#349C2C;*/
+	color:#2879C1;
+}
+
+#LoginPage #loginContainer #loginBox #lbMain #lmainBox #noticeBox{
+	padding-top:40px;
+	width:636px;
+	height:20px;
+	float:left;
+}
+
+#mainBox{
+	/*display:none;*/
+	display:none;
+	margin-left:auto;
+	margin-right:auto;
+	width:100%;
+}
+#mainBox #topBanner{
+	margin-left:0;
+	width:100%;
+	height:40px;
+	/*background-color:#313441;*/
+	background:url("res/topBanner.png");
+	background-size:100% 100%;
+    /*margin-bottom:5px;*/
+}
+#mainBox #topBanner #playBox{
+	width:250px;
+	margin-left:20px;
+	margin-top:0;
+	height:100%;
+	float:left;
+	/*background:url("res/logo.png") no-repeat;*/
+}
+/*============================ snapBtn ==============================*/
+.snapBtn{
+	margin-left:0px;
+	width:62px;
+	height:30px;
+}
+.snapBtn a{
+	width:40px;
+	height:30px;
+	float:left;
+	background:url("res/snapBtnNormal.bmp") no-repeat;
+	background-size:100% 100%;
+}
+.snapBtn a.on{
+	background:url("res/snapBtnNormal.bmp") no-repeat;
+	background-size:100% 100%;
+}
+.snapBtn a.on:hover{
+	background:url("res/snapBtnHover.bmp") no-repeat;
+	background-size:100% 100%;
+}
+.snapBtn a.off{
+	background:url("res/snapBtnNormal.bmp") no-repeat;
+	background-size:100% 100%;
+}
+.snapBtn a.off:hover{
+	background:url("res/snapBtnHover.bmp") no-repeat;
+	background-size:100% 100%;
+}
+/*============================ recordBtn ==============================*/
+.recordBtn{
+	margin-left:0px;
+	width:62px;
+	height:30px;
+}
+.recordBtn a{
+	width:40px;
+	height:30px;
+	float:left;
+	background:url("res/recordBtnNormal_off.bmp") no-repeat;
+	background-size:100% 100%;
+}
+.recordBtn a.off{
+	background:url("res/recordBtnNormal_off.bmp") no-repeat;
+	background-size:100% 100%;
+}
+.recordBtn a.off:hover{
+	background:url("res/recordBtnHover_off.bmp") no-repeat;
+	background-size:100% 100%;
+}
+.recordBtn a.on{
+	background:url("res/recordBtnNormal_on.bmp") no-repeat;
+	background-size:100% 100%;
+}
+.recordBtn a.on:hover{
+	background:url("res/recordBtnHover _on.bmp") no-repeat;
+	background-size:100% 100%;
+}
+
+/*============================ talkBtn ==============================*/
+.talkBtn{
+	margin-left:0px;
+	width:62px;
+	height:30px;
+}
+.talkBtn a{
+	width:40px;
+	height:30px;
+	float:left;
+	background:url("res/talBtnNormal_off.bmp") no-repeat;
+	background-size:100% 100%;
+}
+.talkBtn a.on{
+    float:left;
+	background:url("res/talBtnNormal_on.png") no-repeat;
+	background-size:100% 100%;
+}
+.talkBtn a.on:hover{
+    float:left;
+	background:url("res/talkBtnHover_on.png") no-repeat;
+	background-size:100% 100%;
+}
+.talkBtn a.off{
+    float:left;
+	background:url("res/talBtnNormal_off.bmp") no-repeat;
+	background-size:100% 100%;
+}
+.talkBtn a.off:hover{
+    float:left;
+	background:url("res/talkBtnHover_off.bmp") no-repeat;
+	background-size:100% 100%;
+}
+/*============================ zoomBtn ==============================*/
+/*#mainBox #ContainerBox #panelBox #playBox #playC #mainFunction #zoomBtn{
+	background:url("res/el_zoom_normal.png") no-repeat;
+	background-size:100% 100%;
+}
+#mainBox #ContainerBox #panelBox #playBox #playC #mainFunction #zoomBtn:hover{
+	background:url("res/el_zoom_focus.png") no-repeat;
+	background-size:100% 100%;
+}
+*/
+/*============================ VoiceBtn ==============================*/
+.VoiceBtn{
+	margin-left:0;
+	width:62px;
+	height:30px;
+}
+.VoiceBtn a{
+	width:40px;
+	height:30px;
+	float:left;
+	background:url("res/MuteSwitchNormal_on.bmp") no-repeat;
+	background-size:100% 100%;
+}
+.VoiceBtn a.on{
+	background:url("res/MuteSwitchNormal_on.bmp") no-repeat;
+	background-size:100% 100%;
+}
+.VoiceBtn a.on:hover{
+	background:url("res/MuteSwitchHover_on.bmp") no-repeat;
+	background-size:100% 100%;
+}
+.VoiceBtn a.off{
+	background:url("res/MuteSwitchNormal_off.bmp") no-repeat;
+	background-size:100% 100%;
+}
+.VoiceBtn a.off:hover{
+	background:url("res/MuteSwitchHover_off.bmp") no-repeat;
+	background-size:100% 100%;
+}
+/*==========================menu================================*/
+#mainBox #topBanner #menu
+{
+	display:block;
+	width:auto;
+	height:30px;
+	margin-left:0px;
+	float:left;
+}
+#mainBox #topBanner #menu #menuInner
+{
+	display:block;
+	width:auto;
+	height:30px;
+	margin-left:0px;
+	float:left;
+}
+#mainBox #topBanner #menu #menuInner #liveBtn,
+#mainBox #topBanner #menu #menuInner #playbackBtn,
+#mainBox #topBanner #menu #menuInner #setupBtn
+{
+	display:block;
+	padding:12px 10px 8px 0px;
+	width:110px;
+	height:18px;
+	/*background:url("res/topBanner.png");*/
+	border-left:1px solid #000000;
+	border-right:1px solid #000000;
+	background-size: 100% 100%;
+	color:#FFFFFF;
+	/*line-height:100%;*/
+	text-align:center;
+	text-decoration:none;
+	float:left;
+}
+
+#mainBox #topBanner #menu #menuOutter
+{
+	display:block;
+	width:auto;
+	height:30px;
+	margin-left:0px;
+	float:left;
+}
+#mainBox #topBanner #menu #menuOutter #downloadPlayerBtn
+{
+	display:block;
+	margin-left:0px;
+	padding:12px 10px 8px 0px;
+	width:110px;
+	height:12px;
+	/*background:url("res/topBanner.png");*/
+	background-size: 100% 100%;
+	color:#FFFFFF;
+	/*line-height:100%;*/
+	border-right:1px solid #FFFFFF;
+	text-align:center;
+	text-decoration:none;
+	float:left;
+}
+#mainBox #topBanner #menu #menuOutter #logoutBtn
+{
+	display:block;
+	margin-left:0px;
+	padding:12px 10px 8px 0px;
+	width:110px;
+	height:12px;
+	/*background:url("res/topBanner.png");*/
+	background-size: 100% 100%;
+	color:#FFFFFF;
+	border-left:1px solid #FFFFFF;
+	/*line-height:100%;*/
+	text-align:center;
+	text-decoration:none;
+	float:left;
+}
+/*============================ #ContainerBox ==============================*/
+#mainBox #ContainerBox{
+	margin-top:3px;
+	margin-left:20px;
+	width:96%;
+	height:620px;
+}
+/*============================ #panelBox ==============================*/
+#mainBox #ContainerBox #panelBox{
+	/*display:none;*/
+	width:250px;
+	float:left;
+	margin-left:0px;
+	/*background-color:#1A2129;*/
+	text-align:center;
+        
+}
+/*============================ ptzBox ==============================*/
+#mainBox #ContainerBox #panelBox #ptzBox{
+	background-color:#313441;
+	border:1px solid #000000;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC{
+	padding-top:10px;
+	width:100%;
+	height:150px;
+	text-align:center;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC #ptz{
+	margin-left:auto;
+	margin-right:auto;
+	width:110px;
+	height:110px;
+	text-align:center;
+	/*background:url("res/ptzBg.png") no-repeat;*/
+	background-color:#313441;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC #ptz #tb,
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC #ptz #mb,
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC #ptz #bb{
+	margin-left:auto;
+	margin-right:auto;
+	width:110px;
+	height:35px;
+	float:left;
+	/*text-align:center;*/
+	clear:both;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC #ptz #mb{
+	/*background-color:#909090;*/
+	text-align:left;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC #ptz a{
+	/*display:block;*/
+	/*background-color:#F0F0F0;*/
+}
+
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC #ptz #tb #ptzupleft{
+	margin-left:5px;
+	width:30px;
+	height:30px;
+	background:url("res/PTZUPLEFT.png") no-repeat;
+	background-size:100% 100%;
+	float:left;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC #ptz #tb #ptzupleft:hover{
+	background:url("res/PTZUPLEFT_hover.bmp") no-repeat;
+	background-size:100% 100%;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC #ptz #tb #ptzup{
+	margin-left:5px;
+	width:30px;
+	height:30px;
+	background:url("res/PTZUP.png") no-repeat;
+	background-size:100% 100%;
+	float:left;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC #ptz #tb #ptzup:hover{
+	background:url("res/PTZUP_hover.bmp") no-repeat;
+	background-size:100% 100%;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC #ptz #tb #ptzupright{
+	margin-left:5px;
+	width:30px;
+	height:30px;
+	background:url("res/PTZUPRIGHT.png") no-repeat;
+	background-size:100% 100%;
+	float:left;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC #ptz #tb #ptzupright:hover{
+	background:url("res/PTZUPRIGHT_hover.bmp") no-repeat;
+	background-size:100% 100%;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC #ptz #mb #ptzleft{
+	margin-left:5px;
+	width:30px;
+	height:30px;
+	background:url("res/PTZLEFT.png") no-repeat;
+	background-size:100% 100%;
+	float:left;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC #ptz #mb #ptzleft:hover{
+	background:url("res/PTZLEFT_hover.bmp") no-repeat;
+	background-size:100% 100%;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC #ptz #mb #ptzscan{
+	margin-left:5px;
+	width:30px;
+	height:30px;
+	background:url("res/PTZAuto.png") no-repeat;
+	background-size:100% 100%;
+	float:left;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC #ptz #mb #ptzscan:hover{
+	background:url("res/PTZAuto_hover.bmp") no-repeat;
+	background-size:100% 100%;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC #ptz #mb #ptzright{
+	margin-left:5px;
+	width:30px;
+	height:30px;
+	background:url("res/PTZRIGHT.png") no-repeat;
+	background-size:100% 100%;
+	float:left;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC #ptz #mb #ptzright:hover{
+	background:url("res/PTZRIGHT_hover.bmp") no-repeat;
+	background-size:100% 100%;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC #ptz #bb #ptzdownleft{
+	margin-left:5px;
+	width:30px;
+	height:30px;
+	background:url("res/PTZDOWNLEFT.png") no-repeat;
+	background-size:100% 100%;
+	float:left;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC #ptz #bb #ptzdownleft:hover{
+	background:url("res/PTZDOWNLEFT_hover.bmp") no-repeat;
+	background-size:100% 100%;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC #ptz #bb #ptzdown{
+	margin-left:5px;
+	width:30px;
+	height:30px;
+	background:url("res/PTZDOWN.png") no-repeat;
+	background-size:100% 100%;
+	float:left;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC #ptz #bb #ptzdown:hover{
+	background:url("res/PTZDOWN_hover.bmp") no-repeat;
+	background-size:100% 100%;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC #ptz #bb #ptzdownRight{
+	margin-left:5px;
+	width:30px;
+	height:30px;
+	background:url("res/PTZDOWNRIGHT.png") no-repeat;
+	background-size:100% 100%;
+	float:left;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC #ptz #bb #ptzdownRight:hover{
+	background:url("res/PTZDOWNRIGHT_hover.bmp") no-repeat;
+	background-size:100% 100%;
+}
+
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC div.paramBox{
+	margin-top:4px;
+	margin-left:0;
+	margin-right:0;
+	padding-left:0;
+	width:100%;
+	height:20px;
+	clear:both;
+	float:left;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC div.paramBox a{
+	display:block;
+	width:50px;
+	height:24px;
+	border:1px solid #000000;
+	border-left:none;
+	border-right:none;
+	color:#FFFFFF;
+	float:left;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC div.paramBox span{
+	display:block;
+	width:145px;
+	height:20px;
+	padding-top:5px;
+	border:1px solid #000000;
+	/*background:url("res/ptzParamBg.png");*/
+	color:#FFFFFF;
+	background-color:#313441;
+	float:left;
+}
+/*#mainBox #ContainerBox #panelBox #ptzBox #ptzC div.paramBox #irisLarge*/
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC div.paramBox #zoomFar,
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC div.paramBox #focusFar{
+	background:url("res/PTZADD.png") no-repeat;
+	background-position: center;
+}
+/*#mainBox #ContainerBox #panelBox #ptzBox #ptzC div.paramBox #irisLarge:hover*/
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC div.paramBox #zoomFar:hover,
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC div.paramBox #focusFar:hover{
+	background:url("res/PTZADD_hover.bmp") no-repeat;
+	background-position: center;
+}
+/*#mainBox #ContainerBox #panelBox #ptzBox #ptzC div.paramBox #irisSmall*/
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC div.paramBox #zoomNear,
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC div.paramBox #focusNear{
+	background:url("res/PTZREDUCE.png") no-repeat;
+	background-position: center;
+}
+/*#mainBox #ContainerBox #panelBox #ptzBox #ptzC div.paramBox #irisSmall:hover*/
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC div.paramBox #zoomNear:hover,
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC div.paramBox #focusNear:hover{
+	background:url("res/PTZREDUCE_hover.bmp") no-repeat;
+	background-position: center;
+}
+/*
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC div.paramBox #zoomlbl,
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC div.paramBox #focuslbl,
+#mainBox #ContainerBox #panelBox #ptzBox #ptzC div.paramBox #irislbl{
+	background:url("res/PTZREDUCE.png") no-repeat;
+}
+*/
+/*============================ wipper  light==============================*/
+/*#mainBox #ContainerBox #panelBox #ptzBox #w_l{
+	margin-top:10px;
+	margin-left:auto;
+	margin-right:auto;
+	padding-left:50px;
+	padding-right:50px;
+	width:133px;
+	height:33px;
+}*/
+/*
+#mainBox #ContainerBox #panelBox #ptzBox #w_l a{
+	display:block;
+	width:43px;
+	height:33px;
+	float:left;
+}
+*/
+/*
+.wipper{
+	display:block;
+	width:43px;
+	height:33px;
+	float:left;
+}
+.wipper a{
+	display:block;
+	width:43px;
+	height:33px;
+	float:left;
+	background:url("res/wipperNormal_off.png") no-repeat;
+}
+.wipper a.on{
+	float:left;
+	background:url("res/wipperNormal_on.png") no-repeat;
+}
+.wipper a.on:hover{
+	background:url("res/wipperHover_on.png") no-repeat;
+}
+.wipper a.off{
+	float:left;
+	background:url("res/wipperNormal_off.png") no-repeat;
+}
+.wipper a.off:hover{
+	background:url("res/wipperHover_off.png") no-repeat;
+}
+
+.light{
+	display:block;
+	width:43px;
+	height:33px;
+	float:right;
+}
+.light a{
+	display:block;
+	width:43px;
+	height:33px;
+	float:left;
+	background:url("res/lightNormal_off.png") no-repeat;
+}
+.light a.on{
+	float:right;
+	background:url("res/lightNormal_on.png") no-repeat;
+}
+.light a.on:hover{
+	background:url("res/lightHover_on.png") no-repeat;
+}
+.light a.off{
+	float:right;
+	background:url("res/lightNormal_off.png") no-repeat;
+}
+.light a.off:hover{
+	background:url("res/lightHover_off.png") no-repeat;
+}
+*/
+/*========================presetPoint==========================*/
+#mainBox #ContainerBox #panelBox #ptzBox #presetPoint{
+	margin-top:25px;
+	/*padding-bottom:15px;*/
+	width:100%;
+	height:20px;
+    text-align:left;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #presetPoint #prepointlbl{
+	color:#FFFFFF;
+    margin-left:5px;
+    width:100px;
+    padding-top:3px;
+    float:left;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #presetPoint #prePoint{
+	color:#000000;
+	margin-left:5px;
+	width:50px;
+    float:left;
+}
+/*#mainBox #ContainerBox #panelBox #ptzBox #presetPoint button{
+    height:23px;
+    line-height:20px;
+}
+#mainBox #ContainerBox #panelBox  #ptzBox #bottomDiv{
+    height:24px;
+}*/
+#mainBox #ContainerBox #panelBox #ptzBox #presetPoint #callPrepointBtn{
+    width:19px;
+    height:19px;
+    border:none;
+    margin-left:5px;
+    background:url("res/GotoPrePos.bmp") no-repeat;
+    float:left;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #presetPoint #callPrepointBtn:hover
+{
+	background:url("res/GotoPrePos_hover.bmp") no-repeat;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #presetPoint #setPrepointBtn{
+    width:19px;
+    height:19px;
+    border:none;
+    margin-left:2px;
+    background:url("res/SetPrePos.bmp") no-repeat;
+    float:left;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #presetPoint #setPrepointBtn:hover{
+	background:url("res/SetPrePos_hover.bmp") no-repeat;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #presetPoint #delPrePointBtn{
+    width:19px;
+    height:19px;
+    border:none;
+    margin-left:2px;
+    background:url("res/DelPreSet.bmp") no-repeat;
+    float:left;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #presetPoint #delPrePointBtn:hover
+{
+	background:url("res/DelPreSet_hover.bmp") no-repeat;
+}
+/*========================cruisePath==========================*/
+#mainBox #ContainerBox #panelBox #ptzBox #cruisePath{
+	margin-top:5px;
+	
+	/*padding-bottom:15px;*/
+	width:100%;
+    text-align:left;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #cruisePath #cruisePathlbl{
+	color:#FFFFFF;
+    margin-left:5px;
+    padding-top:3px;
+    width:80px;
+    float:left;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #cruisePath #cruisePathVal{
+	width:30%;
+	height:22px;
+	margin-left:5px;
+	color:#000000;
+    float:left;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #cruisePath #playCruisePath{
+    width:20px;
+    height:20px;
+    margin-left:5px;
+    background:url("res/PlayCruisePath.bmp") no-repeat;
+    background-size:100% 100%;
+    float:left;
+}
+#mainBox #ContainerBox #panelBox #ptzBox #cruisePath #playCruisePath:hover{
+	background:url("res/PlayCruisePath_hover.bmp") no-repeat;
+}
+#mainBox #ContainerBox #panelBox #cruisePath #stopCruisePath{
+    width:20px;
+    height:20px;
+    margin-left:5px;
+    background:url("res/StopCruisePath.bmp") no-repeat;
+    background-size:100% 100%;
+    float:left;
+}
+#mainBox #ContainerBox #panelBox #cruisePath #stopCruisePath:hover{
+	background:url("res/StopCruisePath_hover.bmp") no-repeat;
+}
+#mainBox #ContainerBox #panelBox  #ptzBox #bottomDiv{
+    height:24px;
+}
+
+/*=============================ImageBox==============================*/
+#mainBox #ContainerBox #panelBox #ImageBox{
+	margin-top:25px;
+	background-color:#313441;
+}
+/*=============================ImageColorBox==============================*/
+#mainBox #ContainerBox #panelBox #ImageBox #ImageColorBox{
+	padding-top:0;
+	width:100%;
+	height:110px;
+	border:1px solid #000000;
+	border-bottom:none;
+	/*text-align:center;*/
+}
+#mainBox #ContainerBox #panelBox #ImageBox #ImageColorBox div.ColorSetBox{
+	margin-top:5px;
+	margin-left:0;
+	margin-right:0;
+	padding-left:0;
+	width:100%;
+	height:20px;
+	clear:both;
+	float:left;
+}
+#mainBox #ContainerBox #panelBox #ImageBox #ImageColorBox div.ColorSetBox a{
+	margin-top:2px;
+	margin-left:5%;
+	width:21px;
+	height:21px;
+	line-height:2px;
+	float:left;
+}
+#mainBox #ContainerBox #panelBox #ImageBox #ImageColorBox div.ColorSetBox div{
+	margin-top:2px;
+	margin-left:5%;
+	float:left;
+}
+#mainBox #ContainerBox #panelBox #ImageBox #ImageColorBox div.ColorSetBox span{
+	margin-top:5px;
+	padding-top:2px;
+	margin-left:155px;
+	color:#FFFFFF;
+	width:30px;
+	heigth:20px;
+	float:left;
+}
+#mainBox #ContainerBox #panelBox #ImageBox #ImageColorBox div.ColorSetBox #BrightImg{
+	background:url("res/Bright.png") no-repeat;
+	background-position: center;
+}
+#mainBox #ContainerBox #panelBox #ImageBox #ImageColorBox div.ColorSetBox #ContrastImg{
+	background:url("res/Contrast.png") no-repeat;
+	background-position: center;
+}
+#mainBox #ContainerBox #panelBox #ImageBox #ImageColorBox div.ColorSetBox #HueImg{
+	background:url("res/Hue.png") no-repeat;
+	background-position: center;
+}
+#mainBox #ContainerBox #panelBox #ImageBox #ImageColorBox div.ColorSetBox #DefinitionImg{
+	background:url("res/Definition.png") no-repeat;
+	background-position: center;
+}
+/*=============================ImageAdvancedBox==============================*/
+#mainBox #ContainerBox #panelBox #ImageBox #ImageAdvancedBox{
+	padding-top:0px;
+	margin-left:0px;
+	margin-right:0px;
+	width:100%;
+	height:130px;
+	border:1px solid #000000;
+	border-bottom:none;
+	
+	/*text-align:left;*/
+}
+#mainBox #ContainerBox #panelBox #ImageBox #ImageAdvancedBox div.AdvacedSetBox{
+	margin-top:5px;
+	margin-left:5px;
+	padding-left:0;
+	width:100%;
+	height:20px;
+	float:left;
+}
+#mainBox #ContainerBox #panelBox #ImageBox #ImageAdvancedBox div.AdvacedSetBox span{
+	margin-left:5px;
+	margin-top:2px;
+	mapdding-left:5px;
+	width:100px;
+	height:20px;
+	color:#FFFFFF;
+	float:left;
+	text-align:left;
+}
+#mainBox #ContainerBox #panelBox #ImageBox #ImageAdvancedBox div.OprationAdvacedBox input{
+	magin-left:0px;
+	width:50px;
+	height:20px;
+	color:#FFFFFF;
+	float:left;
+}
+#mainBox #ContainerBox #panelBox #ImageBox #ImageAdvancedBox div.AdvacedSetBox a{
+	color:#FFFFFF;
+}
+#mainBox #ContainerBox #panelBox #ImageBox #ImageAdvancedBox #Scenelbl,
+#mainBox #ContainerBox #panelBox #ImageBox #ImageAdvancedBox #Infraredlbl{
+	width:120px;	
+}
+#mainBox #ContainerBox #panelBox #ImageBox #ImageAdvancedBox #SceneSelect{
+	magin-right:0px;
+	width:100px;
+	height:20px;
+	float:left;
+}
+#mainBox #ContainerBox #panelBox #ImageBox #ImageAdvancedBox #InfraredSelect{
+	magin-right:0px;
+	width:100px;
+	height:20px;
+	float:left;
+}
+#mainBox #ContainerBox #panelBox #ImageBox #ImageSetBtn{
+	padding-top:5px;
+	width:100%;
+	height:30px;
+	border:1px solid #000000;
+}
+#mainBox #ContainerBox #panelBox #ImageBox #ImageSetBtn #refreshBtn{
+	margin-top:0px;
+	margin-left:2%;
+	width:30%;
+	height:26px;
+	border:none;
+	float:left;
+}
+#mainBox #ContainerBox #panelBox #ImageBox #ImageSetBtn #refreshBtn #imageParamRefresh{
+	margin-top:0px;
+	margin-left:0px;
+	width:66px;
+	height:26px;
+	border:none;
+	float:left;
+	text-align:center;
+	background:url("res/ColorSetBtn.png") no-repeat;
+	background-size:100% 100%;
+}
+#mainBox #ContainerBox #panelBox #ImageBox #ImageSetBtn #defaultBtn{
+	margin-top:0px;
+	margin-left:3%;
+	width:30%;
+	height:26px;
+	float:left;
+}
+#mainBox #ContainerBox #panelBox #ImageBox #ImageSetBtn #imageParamDefault{
+	margin-top:0px;
+	margin-left:0px;
+	width:66px;
+	height:26px;
+	border:none;
+	float:left;
+	text-align:center;
+	background:url("res/ColorSetBtn.png") no-repeat;
+	background-size:100% 100%;
+}
+#mainBox #ContainerBox #panelBox #ImageBox #ImageSetBtn #saveBtn{
+	margin-top:0px;
+	margin-left:3%;
+	width:30%;
+	height:26px;
+	float:left;
+}
+#mainBox #ContainerBox #panelBox #ImageBox #ImageSetBtn #imageParamSave{
+	margin-top:0px;
+	margin-left:0px;
+	width:66px;
+	height:26px;
+	border:none;
+	float:left;
+	text-align:center;
+	background:url("res/ColorSetBtn.png") no-repeat;
+	background-size:100% 100%;
+}
+/*=============================StreamAndScaleBox==============================*/
+#mainBox #ContainerBox #panelBox #StreamAndScaleBox{
+	margin-top:25px;
+	margin-left:0;
+	width:100%;
+	height:60px;
+	background-color:#313441;
+	border:1px solid #000000;
+}
+#mainBox #ContainerBox #panelBox #StreamAndScaleBox #Stream,
+#mainBox #ContainerBox #panelBox #StreamAndScaleBox #Scale{
+	margin-top:0;
+	width:100%;
+	height:30px;
+}
+#mainBox #ContainerBox #panelBox #StreamAndScaleBox #Stream #Streamlbl,
+#mainBox #ContainerBox #panelBox #StreamAndScaleBox #Scale #Scalelbl{
+	padding-top:10px;
+	margin-left:5%;
+	width:40%;
+	height:20;
+	color:#FFFFFF;
+	float:left;
+	text-align:left;
+}
+#mainBox #ContainerBox #panelBox #StreamAndScaleBox #Stream #StreamSelect,
+#mainBox #ContainerBox #panelBox #StreamAndScaleBox #Scale #ScaleSelect{
+	margin-top:5px;
+	margin-left:0;
+	width:50%;
+	height:20px;
+	float:left;
+}
+/*=============================ocxBox==============================*/
+#mainBox #ContainerBox #ocxBox{
+	/*width:750px;
+	height:562px;*/
+	width:700px;
+	height:569px;
+	margin-left:5px;
+	float:left;
+    text-align:left;
+    vertical-align:top;    
+	/*background-color:#999900;*/
+}
+#mainBox #ContainerBox #ocxBox #ocxDiv{
+	/*width:750px;
+	height:562px;*/
+	width: 100%;
+    height: 100%;
+    float: left;
+	/*float:left;
+	background-color:#999900;*/
+}
+/*============================ #menu1 ==============================*/
+/*#mainBox #ContainerBox #ocxBox #menu1
+{
+	width:704px;
+	height:25px;
+    line-height:25px;
+    vertical-align:middle;
+    text-align:left;
+	background:url("res/menu1_bg1.png") repeat-x;
+	background-size:100% 100%;
+    margin-bottom:3px;	
+    margin-left:auto;
+    margin-right:auto;  
+    float:left;
+}*/
+/*============================ #defaultScaleBtn ==============================*/
+/*.defaultScaleBtn{
+	width:18px;
+	height:18px;
+	float:left;
+    padding:4px 0px 0px 2px;	
+}
+.defaultScaleBtn a{
+	display:block;
+	width:18px;
+	height:18px;
+	color:#C6C5C8;
+	text-decoration:none;
+	float:left;
+	background:url("res/DefaulScaleBtnNormal_on.png") no-repeat;
+}
+.defaultScaleBtn a.on{
+	background:url("res/DefaulScaleBtnNormal_on.png") no-repeat;
+}
+.defaultScaleBtn a.on:hover{
+	background:url("res/DefaulScaleBtnHover.png") no-repeat;
+}
+.defaultScaleBtn a.off{
+	background:url("res/DefaulScaleBtnNormal_off.png") no-repeat;
+}
+.defaultScaleBtn a.off:hover{
+	background:url("res/DefaulScaleBtnHover.png") no-repeat;
+} */
+/*============================ #originalBtn ==============================*/
+/*.originalBtn{
+	width:18px;
+	height:18px;
+	float:left;
+	padding:4px 0px 0px 2px;
+}
+.originalBtn a{
+	display:block;
+	width:18px;
+	height:18px;
+	color:#C6C5C8;
+	text-decoration:none;
+	float:left;
+	background:url("res/OriginalBtnNormal_off.png") no-repeat;
+}
+.originalBtn a.on{
+	background:url("res/OriginalBtnNormal_on.png") no-repeat;
+}
+.originalBtn a.on:hover{
+	background:url("res/OriginalBtnHover.png") no-repeat;
+}
+.originalBtn a.off{
+	background:url("res/OriginalBtnNormal_off.png") no-repeat;
+}
+.originalBtn a.off:hover{
+	background:url("res/OriginalBtnHover.png") no-repeat;
+} */
+/*============================ #fitWindowBtn ==============================*/
+/*.fitWindowBtn{
+	width:18px;
+	height:18px;
+	float:left;
+	padding:4px 0px 0px 2px;
+}
+.fitWindowBtn a{
+	display:block;
+	width:18px;
+	height:18px;
+	color:#C6C5C8;
+	text-decoration:none;
+	float:left;
+	background:url("res/FitWindowBtnNormal_off.png") no-repeat;
+}
+.fitWindowBtn a.on{
+	background:url("res/FitWindowBtnNormal_on.png") no-repeat;
+}
+.fitWindowBtn a.on:hover{
+	background:url("res/FitWindowBtnHover.png") no-repeat;
+}
+.fitWindowBtn a.off{
+	background:url("res/FitWindowBtnNormal_off.png") no-repeat;
+}
+.fitWindowBtn a.off:hover{
+	background:url("res/FitWindowBtnHover.png") no-repeat;
+}
+*/
+/*============================ #mainStreamBtn ==============================*/
+/*.mainStreamBtn{
+	width:65px;
+	height:18px;
+	text-align:center;
+    float:left;	
+    padding:4px 0px 0px 2px;
+}
+.mainStreamBtn a{
+	display:block;
+	width:65px;
+	height:18px;
+    line-height:18px;
+    font-size:8pt;
+    color:Black; 
+	text-decoration:none;
+	float:left;
+	background:url("res/StreamTypeBtnNormal_on.png") no-repeat;
+}
+.mainStreamBtn a.on{
+	background:url("res/StreamTypeBtnNormal_on.png") no-repeat;
+}
+.mainStreamBtn a.on:hover{
+	background:url("res/StreamTypeBtnHover.png") no-repeat;
+}
+.mainStreamBtn a.off{
+	background:url("res/StreamTypeBtnNormal_off.png") no-repeat;
+}
+.mainStreamBtn a.off:hover{
+	background:url("res/StreamTypeBtnHover.png") no-repeat;
+}
+*/
+/*============================ #subStreamBtn ==============================*/
+/*.subStreamBtn{
+	width:65px;
+	height:18px;
+	text-align:center;
+	float:left;
+	padding:4px 0px 0px 2px;
+}
+.subStreamBtn a{
+	display:block;
+	width:65px;
+	height:18px;
+    line-height:18px;
+    font-size:8pt;
+    color:Black; 
+	text-decoration:none;
+	float:left;
+	background:url("res/StreamTypeBtnNormal_on.png") no-repeat;
+}
+.subStreamBtn a.on{
+	background:url("res/StreamTypeBtnNormal_on.png") no-repeat;
+}
+.subStreamBtn a.on:hover{
+	background:url("res/StreamTypeBtnHover.png") no-repeat;
+}
+.subStreamBtn a.off{
+	background:url("res/StreamTypeBtnNormal_off.png") no-repeat;
+}
+.subStreamBtn a.off:hover{
+	background:url("res/StreamTypeBtnHover.png") no-repeat;
+}*/
+/*============================ #tlocx ==============================*/
+
+
+
+/*#mainBox #ContainerBox #panelBox #playBox #playT,*/
+/*#mainBox #ContainerBox #panelBox #ptzBox #ptzT{
+	padding-top:7px;
+	width:270px;
+	height:21px;
+	font-size:16px;
+	color:#B8B8B8;
+	background:url("res/boxTitle.png") repeat-x;
+}*/
+/*============================ #playBox ==============================*/
+/*#mainBox #ContainerBox #panelBox #playBox #playC{
+	margin-bottom:5px;
+	width:270px;
+	height:130px;
+	background-color:#354253;
+	text-align:center;
+}
+#mainBox #ContainerBox #panelBox #playBox #playC #mainFunction,
+#mainBox #ContainerBox #panelBox #playBox #playC #gridSwitch{
+	margin-left:auto;
+	margin-right:auto;
+	width:233px;
+}
+#mainBox #ContainerBox #panelBox #playBox #playC #mainFunction table{
+	margin-top:5px;
+	margin-left:auto;
+	margin-right:auto;
+	width:80%;
+	height:100%;
+}
+#mainBox #ContainerBox #panelBox #playBox #playC #mainFunction a,
+#mainBox #ContainerBox #panelBox #playBox #playC #gridSwitch a{
+	margin:6px 3px 3px 3px;
+	width:43px;
+	height:33px;
+}
+#mainBox #ContainerBox #panelBox #playBox #playC a{
+	display:block;
+	text-decoration:none;
+	float:left;
+}
+*/
+/*============================ ChannelBtn ==============================*/
+/*.ChannelBtn{
+	width:43px;
+	height:33px;
+}
+.ChannelBtn a{
+	width:43px;
+	height:33px;
+	float:left;
+	background:url("res/ChannelBtnNormal_on.png") no-repeat;
+}
+.ChannelBtn a.on{
+	background:url("res/ChannelBtnNormal_off.png") no-repeat;
+}
+.ChannelBtn a.on:hover{
+	background:url("res/ChannelBtnHover_off.png") no-repeat;
+}
+.ChannelBtn a.off{
+	background:url("res/ChannelBtnNormal_on.png") no-repeat;
+}
+.ChannelBtn a.off:hover{
+	background:url("res/ChannelBtnHover_on.png") no-repeat;
+}
+*/
+
+/*============================ FullScreenBtn ==============================*/
+#mainBox #ContainerBox #panelBox #playBox #playC #mainFunction #FullScreenBtn{
+	background:url("res/_fullNormal.png") no-repeat;
+}
+#mainBox #ContainerBox #panelBox #playBox #playC #mainFunction #FullScreenBtn:hover{
+	background:url("res/_fullHover.png") no-repeat;
+}

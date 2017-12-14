@@ -1,0 +1,1 @@
+obj-$(CONFIG_CORONAMPW_MFD_IP6313)      += ip6313.o

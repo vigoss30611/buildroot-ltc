@@ -1,0 +1,16 @@
+sensor0.interface mipi
+sensor0.name ar330mipi
+sensor0.mclk 24000000
+sensor0.imager 0
+sensor0.i2c chn.4.addr.48
+sensor0.csi lanes.1.freq.384
+sensor0.mclk.src imap-clk0
+sensor0.wraper.use 0
+sensor0.wraper.width 1920
+sensor0.wraper.height 1080
+sensor0.wraper.hdelay 114
+sensor0.wraper.vdelay 12
+sensor0.bootup.seq.0 pmu.ldo1.2800000.10
+sensor0.bootup.seq.1 pmu.gpio.166.0
+sensor0.bootup.seq.2 mclk.gpio.112.0
+sensor0.bootup.seq.3 reset.gpio.148.30

@@ -1,0 +1,15 @@
+menuconfig INFOTM_POWER
+  bool "iMAPx910 battery drivers support"
+  help
+    iMAPx910 battery drivers support
+
+if INFOTM_POWER
+
+config BATTERY_RICOH618
+  tristate "Ricoh R5T618 PMIC battery driver"
+  depends on MFD_RICOH618 && I2C && GENERIC_HARDIRQS
+    help
+    Say Y to enable support for the battery control of the Ricoh R5T618
+    Power Management device.
+
+endif

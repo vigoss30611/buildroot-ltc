@@ -1,0 +1,35 @@
+{
+    "dec0": {
+        "ipu": "g1264",
+        "port": {
+            "frame": {
+                "w": 1920,
+                "h": 1080,
+                "bind": { "swc00":"in0" }
+            }
+        }
+    },
+    "dec1": {
+        "ipu": "g1264",
+        "port": {
+            "frame": {
+                "w": 1920,
+                "h": 1080,
+                "bind": { "swc00":"in1" }
+            }
+        }
+    },
+    "swc00": {
+        "ipu": "swc",
+        "port": {
+            "out": {
+                "w": 1920,
+                "h": 1080,
+                "pixel_format": "nv12",
+                "bind": { "display": "osd0" }
+            }
+        }
+    },
+
+    "display": { "ipu": "ids", "args": { "no_osd1": 1 }}
+}

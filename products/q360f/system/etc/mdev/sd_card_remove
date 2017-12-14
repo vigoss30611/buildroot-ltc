@@ -1,0 +1,8 @@
+#!/bin/sh
+event_umount="umount"
+event_remove="remove"
+eventsend $event_remove /dev/mmcblk0
+sync
+umount -l /mnt/sd*
+eventsend $event_umount
+rm -rf /mnt/sd*

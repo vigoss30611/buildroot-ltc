@@ -1,0 +1,19 @@
+#! /bin/sh
+
+case "$1" in
+	start|"")
+        wifi &
+		qm_daemon &
+        qm_app &
+		;;
+	stop)
+		killall qm_app
+        killall qm_daemon
+        killall wifi
+		;;
+	*)
+		echo "Usage: qm_app {start|stop}" >&2
+		exit 1
+		;;
+esac
+

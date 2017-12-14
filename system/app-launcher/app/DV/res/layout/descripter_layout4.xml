@@ -1,0 +1,22 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+    <TextView 
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:text="@string/device_operate_script4"
+    	android:textSize="@dimen/function_script_text_size"
+    	android:layout_margin="5dip"
+    	android:textColor="@color/black_control_dialog"/>
+    <ImageView 
+        android:id="@+id/image"
+        android:layout_width="300dip"
+    	android:layout_height="wrap_content"
+    	android:layout_gravity="center"
+    	android:layout_marginTop="30dip"
+    	android:src="@drawable/device_list_script"/>
+</LinearLayout>

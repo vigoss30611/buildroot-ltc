@@ -1,0 +1,5 @@
+config BR2_PACKAGE_QLIBFASTBOOT
+	bool "qlibfastboot"
+	help 
+	  fastboot(gadget fastboot) device-side fastbootd 
+

@@ -1,0 +1,11 @@
+prefix=/home/fengwu/b/work/sportDv_x15_6/output/host/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: quota
+Description: Quota management library
+Version: 1.42.8
+Requires:
+Cflags: -I${includedir}/quota -I${includedir}
+Libs: -L${libdir} -lquota

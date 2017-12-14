@@ -1,0 +1,45 @@
+menuconfig INFOTM_TOUCHSCREEN
+        bool "Infotm Touchscrenns support"
+        default n
+        help
+			Kinds of TS IC drivers
+
+if INFOTM_TOUCHSCREEN
+
+
+config	CTP_GSLX682
+       tristate "gslX682 CTP for x9 EVB"
+	   depends on I2C
+	   default n
+       help
+	   Say Y here if you want to use the GSLX682 of x9 EVB.
+config	CTP_GSLX681
+       tristate "gslX681 CTP for x9 EVB"
+	   depends on I2C
+	   default n
+       help
+	   Say Y here if you want to use the GSLX681 of x9 EVB.
+
+config	CTP_GSLX680_Q8
+       tristate "gslX680 CTP for Q8"
+	   depends on I2C
+	   default n
+       help
+	   Say Y here if you want to use the GSLX680_Q8 of Q8.
+
+config	CTP_GT9147
+       tristate "gt9147 CTP for Q3"
+	   depends on I2C
+	   default n
+       help
+	   Say Y here if you want to use the GT9147 of Q3.
+	   
+config	CTP_GT911
+       tristate "gt911 CTP for Q3"
+	   depends on I2C
+	   default n
+       help
+	   Say Y here if you want to use the GT911 of Q3.
+endif
+
+

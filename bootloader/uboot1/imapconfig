@@ -1,0 +1,101 @@
+#!/bin/sh -e
+
+# Script to create header files and links to configure
+# U-Boot for a specific board.
+#
+# Parameters:  Target  Architecture  CPU  Board [VENDOR] [SOC]
+#
+# (C) 2002-2006 DENX Software Engineering, Wolfgang Denk <wd@denx.de>
+#
+
+APPEND=no	# Default: Create new config file
+BOARD_NAME=""	# Name to print in make output
+
+echo "Configuring for $4 ..."
+echo "Board ID: $1"
+echo "Cpu ID: $3"
+ARCH__=arm
+CPU__=armv7
+BOARD__=imap_dev
+VENDOR__=infotm
+SOC__=$3
+
+OID=`echo $1 | column -ts '.' | awk '{print $1}'`
+BID=`echo $1 | column -ts '.' | awk '{print $2}'`
+HID1=`echo $1 | column -ts '.' | awk '{print $4}'`
+HID2=`echo $1 | column -ts '.' | awk '{print $5}'`
+
+#
+# Create link to architecture specific headers
+#
+if [ "$SRCTREE" != "$OBJTREE" ] ; then
+	mkdir -p ${OBJTREE}/include
+	mkdir -p ${OBJTREE}/include2
+	cd ${OBJTREE}/include2
+	rm -rf asm
+	ln -s ${SRCTREE}/include/asm-${ARCH__} asm
+	LNPREFIX="../../include2/asm/"
+	cd ../include
+	rm -rf asm-${ARCH__}
+	rm -f asm
+	mkdir asm-${ARCH__}
+	ln -s asm-${ARCH__} asm
+else
+	cd ./include
+	rm -rf asm
+	ln -s asm-${ARCH__} asm
+fi
+
+rm -rf asm-${ARCH__}/arch
+
+if [ -z "${SOC__}" -o "${SOC__}" = "NULL" ] ; then
+	ln -s ${LNPREFIX}arch-${CPU__} asm-${ARCH__}/arch
+else
+	ln -s ${LNPREFIX}arch-${SOC__} asm-${ARCH__}/arch
+fi
+
+if [ "${ARCH__}" = "arm" ] ; then
+	rm -rf asm-${ARCH__}/proc
+	ln -s ${LNPREFIX}proc-armv asm-${ARCH__}/proc
+fi
+
+#
+# Create include file for Make
+#
+echo "ARCH   = ${ARCH__}" >  config.mk
+echo "CPU    = ${CPU__}" >> config.mk
+echo "BOARD  = ${BOARD__}" >> config.mk
+
+[ "${VENDOR__}" ] && [ "${VENDOR__}" != "NULL" ] && echo "VENDOR = ${VENDOR__}" >> config.mk
+
+[ "${SOC__}" ] && [ "${SOC__}" != "NULL" ] && echo "SOC    = ${SOC__}" >> config.mk
+
+#
+# Create board specific header file
+#
+if [ "$APPEND" = "yes" ]	# Append to existing config file
+then
+	echo >> config.h
+else
+	> config.h		# Create new config file
+fi
+echo "/* Automatically generated - do not edit */" >>config.h
+echo "#include <configs/$2.h>" >>config.h
+echo "#include <asm/config.h>" >>config.h
+echo "#undef CONFIG_BOARD_HWVER" >>config.h
+echo "#undef CONFIG_BOARD_OEM" >>config.h
+echo "#define CONFIG_BOARD_HWVER (($BID << 16) | ($HID1 << 8) | $HID2)" >>config.h
+echo "#define CONFIG_BOARD_OEM ($OID)" >>config.h
+
+if [ "$SRCTREE" != "$OBJTREE" ] ; then
+mkdir -p ${OBJTREE}/tools
+mkdir -p ${OBJTREE}/board/infotm/
+fi
+
+gcc ${SRCTREE}/tools/boot_addr.c -o ${OBJTREE}/tools/boot_addr -I${OBJTREE}/include \
+		-I${SRCTREE}/include -I${OBJTREE}/include2 > /dev/null
+${OBJTREE}/tools/boot_addr x >> ${OBJTREE}/board/infotm/config.tmp
+${OBJTREE}/tools/boot_addr
+echo "CONFIG_NAND_U_BOOT = y" >> ${OBJTREE}/include/config.mk
+
+exit 0

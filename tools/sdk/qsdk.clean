@@ -1,0 +1,39 @@
+#!/bin/bash
+help(){
+    echo -e "clean rootfs_dir"
+    echo -e "\t app rootfs_dir"
+}
+if [[ ! -d tools ]];then
+    help
+    exit 1
+fi
+if [[ $# < 1 ]] ; then
+    help
+    exit 1
+fi
+find $1 -name "*.o" | xargs -i rm -rf {}
+find $1 -name "*.a" | xargs -i rm -rf {}
+find $1 -name "*.la" | xargs -i rm -rf {}
+find $1 -name "*.la~" | xargs -i rm -rf {}
+find $1 -name "*.old" | xargs -i rm -rf {}
+rm -rf $1/usr/local 
+rm -rf $1/usr/share
+rm -rf $1/usr/include
+rm -rf $1/THIS_IS_NOT_YOUR_ROOT_FILESYSTEM
+rm -rf $1/usr/lib/alsa-lib
+rm -rf $1/usr/lib/engins
+rm -rf $1/usr/lib/pkgconfig
+rm -rf $1/usr/lib/libpthread*
+rm -rf $1/usr/lib/libform*
+rm -rf $1/usr/lib/libpanel*
+#echo -e "\tremove useless shared library"
+rm -rf $1/usr/lib/php
+rm -rf $1/usr/lib/engines
+rm -rf $1/usr/lib/esmtp-plugins
+rm -rf $1/usr/lib/libarchive*
+rm -rf $1/usr/lib/libc.so
+rm -rf $1/usr/lib/libfreetype.so.6.11.0
+rm -rf $1/usr/lib/libmenu*
+rm -rf $1/usr/lib/libmount*
+rm -rf $1/usr/lib/libpthread_db.so
+

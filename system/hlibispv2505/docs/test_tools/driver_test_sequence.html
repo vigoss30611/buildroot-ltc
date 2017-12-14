@@ -1,0 +1,1516 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Driver_test sequence diagrams (Internal only) &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="up" title="Capture Interface test: driver_test" href="driver_test.html" />
+    <link rel="next" title="ISP Control test: ISPC_test" href="ispc_test.html" />
+    <link rel="prev" title="Capture Interface test: driver_test" href="driver_test.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="ispc_test.html" title="ISP Control test: ISPC_test"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="driver_test.html" title="Capture Interface test: driver_test"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="test_tools.html" >Test Tools</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="driver_test.html" accesskey="U">Capture Interface test: <code class="docutils literal"><span class="pre">driver_test</span></code></a> &raquo;</li><li>Driver_test sequence diagrams (Internal only)</li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="driver-test-sequence-diagrams-internal-only">
+<span id="isp-driver-test-sequence"></span><h1>Driver_test sequence diagrams (Internal only)<a class="headerlink" href="#driver-test-sequence-diagrams-internal-only" title="Permalink to this headline">¶</a></h1>
+<p>These diagrams illustrate the usage of the CI user-space of the
+<code class="docutils literal"><span class="pre">driver_test</span></code> application. It also shows the system calls done when using
+the application.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>These diagram do not cover HDR insertion and the &#8220;late allocation&#8221; option.</p>
+<p>The former adds additional kernel calls to acquire HDR insertion buffers
+before triggering is possible.</p>
+<p class="last">The latter makes the <code class="docutils literal"><span class="pre">AllocateBuffers()</span></code> call just before triggering the
+shoot.</p>
+</div>
+<div class="figure align-center">
+<p class="plantuml">
+<img src="../_images/plantuml-26aef8bd3829e7a5504ffb809730738144df3fad.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+
+participant felix_main
+participant felixtest
+participant CI
+participant DG
+entity system
+
+[-&gt; felix_main : main()
+activate felix_main
+
+note over felix_main
+    get command line
+    parameters with DYNCMD_
+end note
+
+note over felix_main
+    check that CTX and
+    respective inputs
+end note
+
+note over felix_main
+    If Fake driver:
+    fake insmod
+end note
+
+felix_main -&gt; felixtest : run_drivers()
+    activate felixtest
+
+    == Connect to device ==
+
+    felixtest -&gt; CI : CI_DriverInit()
+        activate CI
+
+        CI -&gt; system : open()
+        CI -&gt; system : ioctl(CI_IOCTL_INFO)
+
+        felixtest &lt;-- CI
+        deactivate CI
+
+    felixtest -&gt; DG : DG_DriverInit()
+        activate DG
+
+        DG -&gt; system : open()
+
+        felixtest &lt;-- DG
+        deactivate DG
+
+    == Configure ==
+
+    loop for every context
+
+        note over felixtest
+            Configure the context associated DG.
+
+            See Internal data-generator configuration and
+            External data-generator configuration diagrams.
+        end note
+
+        note over felixtest
+            Configure Pipeline.
+        end note
+
+        felixtest -&gt; CI : CI_PipelineCreate()
+            activate CI
+
+            felixtest &lt;-- CI
+            deactivate CI
+
+        felixtest -&gt; felixtest : configurePipeline()
+            activate felixtest
+
+            felixtest -&gt; CI : CI_PipelineRegister()
+                activate CI
+
+                CI -&gt; system : ioctl(CI_IOCTL_PIPE_REG)
+
+                felixtest &lt;-- CI
+                deactivate CI
+
+            felixtest -&gt; CI : CI_PipelineAddPool()
+                activate CI
+
+                loop for each shot
+
+                    CI -&gt; system : ioctl(CI_IOCTL_PIPE_ADD)
+                    CI -&gt; system : mmap()
+
+                end
+
+                felixtest &lt;-- CI
+                deactivate CI
+
+            felixtest &lt;-- felixtest
+            deactivate felixtest
+
+        felixtest -&gt; felixtest : AllocateBuffers()
+            activate felixtest
+
+            loop for each buffer
+
+                felixtest -&gt; CI : CI_PipelineAllocateBuffer()
+                    activate CI
+
+                    CI -&gt; system : ioctl(CI_IOCTL_CREATE_BUFF)
+                    CI -&gt; system : mmap()
+
+                    felixtest &lt;-- CI
+                    deactivate CI
+
+            end
+
+            felixtest &lt;-- felixtest
+            deactivate felixtest
+
+    end
+
+    == run test ==
+
+    alt if running serial
+
+        loop for each context
+
+            felixtest -&gt; felixtest : CaptureRunSerial()
+                activate felixtest
+
+                note over felixtest
+                    See Running Serial capture diagram.
+                end note
+
+                felixtest &lt;-- felixtest
+                deactivate felixtest
+
+        end
+
+    else running parallel
+
+        felixtest -&gt; felixtest : CaptureRunParallel()
+            activate felixtest
+
+            note over felixtest
+                See Running Parallel capture diagram.
+            end note
+
+            felixtest &lt;-- felixtest
+            deactivate felixtest
+
+    end
+
+    == clean-up ==
+
+    loop for each context
+
+        felixtest -&gt; CI : CI_PipelineDestroy()
+            activate CI
+
+            note over CI
+                May stop the capture if pipeline is still running.
+            end note
+
+            alt if has allocate shots
+
+                CI -&gt; CI : CI_PipelineDeleteShots()
+                    activate CI
+
+                    loop for each allocate shot
+
+                        CI -&gt; system : munmap()
+                        CI -&gt; system : ioctl(CI_IOCTL_PIPE_REM)
+
+                    end
+
+                    CI &lt;-- CI
+                    deactivate CI
+            end
+
+
+
+            loop for each allocate buffer
+
+                CI -&gt; system : munmap()
+
+            end
+
+            CI -&gt; system : ioctl(CI_IOCTL_PIPE_DEL)
+
+            felixtest &lt;-- CI
+            deactivate CI
+
+        alt using IIF DG
+
+            felixtest -&gt; CI : CI_DatagenDestroy()
+                activate CI
+
+                note over CI
+                    May disable Datagen if still running.
+                end note
+
+                loop for each allocated buffer
+
+                    CI -&gt; system : munmap()
+                    CI -&gt; system : ioctl(CI_IOCTL_INDG_FRE)
+
+                end
+
+                CI -&gt; system : ioctl(CI_IOCTL_INDG_REG)
+
+                felixtest &lt;-- CI
+                deactivate CI
+
+        end
+        alt using EXT DG
+
+            felixtest -&gt; DG : DG_CameraDestroy()
+                activate DG
+
+                note over DG
+                    May disable Camera if still running.
+                end note
+
+                DG -&gt; system : ioctl(DG_IOCTL_CAM_DEL)
+
+                felixtest &lt;-- DG
+                deactivate DG
+
+        end
+
+    end
+
+    felixtest -&gt; DG : DG_DriverFinalise()
+        activate DG
+
+        DG -&gt; system : close()
+
+        felixtest &lt;-- DG
+        deactivate DG
+
+    felixtest -&gt; CI : CI_DriverFinalise()
+        activate CI
+
+        CI -&gt; system : close()
+
+        felixtest &lt;-- CI
+        deactivate CI
+
+    felix_main &lt;-- felixtest
+    deactivate felixtest
+
+[&lt;-- felix_main
+deactivate felix_main
+
+&#64;enduml" />
+</p>
+</div>
+<div class="figure align-center">
+<p class="plantuml">
+<img src="../_images/plantuml-a7d925cdf4c724fb695cfd6d2e04ec760236323b.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+
+participant felixtest
+participant CI
+participant system
+
+== Configure internal data generator ==
+
+activate felixtest
+
+felixtest -&gt; CI : CI_DatagenCreate()
+    activate CI
+
+    CI -&gt; system : ioctl(CI_IOCTL_INDG_REG)
+
+    felixtest &lt;-- CI
+    deactivate CI
+
+felixtest -&gt; felixtest : configureIntDG()
+    activate felixtest
+
+    loop for each frame to allocate
+
+    felixtest -&gt; CI : CI_DatagenAllocateFrame()
+        activate CI
+
+        CI -&gt; system : ioctl(CI_IOCTL_INDG_ALL)
+        CI -&gt; system : memap()
+
+        felixtest &lt;-- CI
+        deactivate CI
+
+    end
+
+    felixtest &lt;-- felixtest
+    deactivate felixtest
+
+felixtest -&gt; CI : CI_DatagenStart()
+    activate CI
+
+    CI -&gt; system : ioctl(CI_IOCTL_INDG_STA)
+
+    felixtest &lt;-- CI
+    deactivate CI
+
+felixtest &lt;-- felixtest
+deactivate felixtest
+
+&#64;enduml" />
+</p>
+</div>
+<div class="figure align-center">
+<p class="plantuml">
+<img src="../_images/plantuml-9b1fb5273b21be5144ca5beb23df4ad3f7a2c79a.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+
+participant felixtest
+participant DG
+participant CI
+participant system
+
+== Configure external data generator ==
+
+activate felixtest
+
+felixtest -&gt; DG : DG_CameraCreate()
+    activate DG
+
+    felixtest &lt;-- DG
+    deactivate DG
+
+felixtest -&gt; felixtest : ConfigureExtDG()
+    activate felixtest
+
+    felixtest -&gt; DG : DG_CameraRegister()
+        activate DG
+
+        DG -&gt; system : ioctl(DG_IOCTL_CAM_REG)
+
+        felixtest &lt;-- DG
+        deactivate DG
+
+    felixtest -&gt; DG : DG_CameraAddPoll()
+        activate DG
+
+        DG -&gt; system : ioctl(DG_IOCTL_CAM_ADD)
+
+        felixtest &lt;-- DG
+        deactivate DG
+
+    felixtest &lt;-- felixtest
+    deactivate felixtest
+
+felixtest -&gt; DG : DG_CameraStart()
+    activate DG
+
+    DG -&gt; CI : CI_GasketAcquire()
+        activate CI
+
+        CI -&gt; system : ioctl(CI_IOCTL_GASK_ACQ)
+
+        DG &lt;-- CI
+        deactivate CI
+
+    DG -&gt; system : ioctl(DG_IOCTL_CAM_STA)
+
+    felixtest &lt;-- DG
+    deactivate DG
+
+felixtest &lt;-- felixtest
+deactivate felixtest
+
+&#64;enduml" />
+</p>
+</div>
+<div class="figure align-center">
+<p class="plantuml">
+<img src="../_images/plantuml-e0e611af5240cabd8929bfdb2be7d250a670f3b2.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+
+participant felixtest
+participant CI
+participant system
+
+== Running Serial capture ==
+
+[-&gt; felixtest : CaptureSerial()
+activate felixtest
+
+note over felixtest
+    See Capture initialise run diagram.
+end note
+
+loop for each frame to capture
+
+    felixtest -&gt; felixtest : CaptureRunShoot()
+        activate felixtest
+
+        note over felixtest
+            See Capture shoot frame diagram.
+        end note
+
+        felixtest &lt;-- felixtest
+        deactivate felixtest
+
+    felixtest -&gt; felixtest : CaptureRunWrite()
+        activate felixtest
+
+        note over felixtest
+            See Capture handle frame diagram.
+        end note
+
+        felixtest &lt;-- felixtest
+        deactivate felixtest
+
+end
+
+felixtest -&gt; felixtest : CaptureRunClean()
+    activate felixtest
+
+    note over felixtest
+        Close inputs/output files.
+    end note
+
+    felixtest &lt;-- felixtest
+    deactivate felixtest
+
+felixtest -&gt; CI : CI_PipelineStopCapture()
+    activate CI
+
+    CI -&gt; system : ioctl(CI_IOCTL_CAPT_STP)
+
+    felixtest &lt;-- CI
+    deactivate CI
+
+[&lt;-- felixtest
+deactivate felixtest
+
+&#64;enduml" />
+</p>
+</div>
+<div class="figure align-center">
+<p class="plantuml">
+<img src="../_images/plantuml-5a6bee878e497fc853053894ab28fc3cc3233948.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+
+participant felixtest
+participant CI
+participant system
+
+== Running Parallel capture ==
+
+[-&gt; felixtest : CaptureParallel()
+activate felixtest
+
+loop for each context
+
+    note over felixtest
+        See Capture initialise run diagram.
+    end note
+
+end
+
+loop until there are no more frames to capture
+
+    loop for each context that has frames to capture
+
+        note over felixtest
+            Trigger as many shots as possible (computed
+            at initialisation time by comparing each
+            CTX and their associated DG).
+        end note
+
+        felixtest -&gt; felixtest : CaptureShoot()
+            activate felixtest
+
+            note over felixtest
+                See Capture shoot frame diagram.
+            end note
+
+            felixtest &lt;-- felixtest
+            deactivate felixtest
+    end
+
+    loop for each data generator that has frames to push
+
+        note over felixtest
+            See Capture shoot frame diagram.
+        end note
+
+    end
+
+    loop for each frame that was captured
+
+        felixtest -&gt; felixtest : CaptureRunWrite()
+            activate felixtest
+
+            note over felixtest
+                See Capture handle frame diagram.
+            end note
+
+            felixtest &lt;-- felixtest
+            deactivate felixtest
+
+        alt if current pipeline has finished all its captures
+
+            felixtest -&gt; CI : CI_PipelineStopCapture()
+                activate CI
+
+                CI -&gt; system : ioctl(CI_IOCTL_CAPT_STP)
+
+                felixtest &lt;-- CI
+                deactivate CI
+
+        end
+    end
+end
+
+[&lt;- felixtest
+deactivate felixtest
+
+&#64;enduml" />
+</p>
+</div>
+<div class="figure align-center">
+<p class="plantuml">
+<img src="../_images/plantuml-f27868278481ae0d18cf12610a0fa68a29b89ace.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+
+participant felixtest
+participant CI
+participant system
+
+== Capture initialise run ==
+
+activate felixtest
+
+felixtest -&gt; felixtest : CaptureRunInit()
+    activate felixtest
+
+    note over felixtest
+        Copy parameters
+
+        Initialise input and output files
+    end note
+
+    felixtest &lt;-- felixtest
+    deactivate felixtest
+
+felixtest -&gt; CI : CI_PipelineComputeLinestore()
+    activate CI
+
+    CI -&gt; CI : CI_DriverGetLinestore()
+        activate CI
+
+        CI -&gt; system : ioctl(CI_IOCTL_LINE_GET)
+
+        CI &lt;-- CI
+        deactivate CI
+
+    note over CI
+        compute linestore limits
+    end note
+
+    CI -&gt; CI : CI_DriverSetLinestore()
+        activate CI
+
+        CI -&gt; system : ioctl(CI_IOCTL_LINE_SET)
+
+        CI &lt;-- CI
+        deactivate CI
+
+    felixtest &lt;-- CI
+    deactivate CI
+
+felixtest -&gt; CI : CI_PipelineStartCapture()
+    activate CI
+
+    CI -&gt; system : ioctl(CI_IOCTL_CAPT_STA)
+
+    felixtest &lt;-- CI
+    deactivate CI
+
+deactivate felixtest
+
+&#64;enduml" />
+</p>
+</div>
+<div class="figure align-center">
+<p class="plantuml">
+<img src="../_images/plantuml-ce883e1fd74663ed1496bfdb28c5e14c2e4539fa.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+
+participant felixtest
+participant CI
+participant DG
+participant system
+
+== Capture shoot frame ==
+
+[-&gt; felixtest
+activate felixtest
+
+felixtest -&gt; felixtest : CaptureShoot()
+    activate felixtest
+
+    felixtest -&gt; CI : CI_PipelineFindFirstAvailable()
+        activate CI
+
+        note over CI
+            Find first buffer available for each output.
+        end note
+
+        felixtest &lt;-- CI
+        deactivate CI
+
+    note over felixtest
+        If using HDR insertion more operations
+        are done here.
+
+        For each found buffer get information
+            (to know if it is tiled).
+    end note
+
+    felixtest -&gt; CI : CI_PipelineTriggerSpecifiedShoot()
+        activate CI
+
+            CI -&gt; system : ioctl(CI_IOCTL_CAPT_TRG)
+
+        felixtest &lt;-- CI
+        deactivate CI
+
+    alt if using IIF DG
+
+        felixtest -&gt; CI : CI_DatagenGetAvailableFrame()
+            activate CI
+
+            CI -&gt; system : ioctl(CI_IOCTL_INDG_ACQ)
+
+            felixtest &lt;-- CI
+            deactivate CI
+
+        felixtest -&gt; CI : CI_DatagenConvertFrame()
+            activate CI
+
+            note over CI
+                Convert the FLX input into DG
+                frame format using function
+                pointer selected at configuration.
+            end note
+
+            felixtest &lt;-- CI
+            deactivate CI
+
+        felixtest -&gt; CI : CI_DatagenInsertFrame()
+            activate CI
+
+            CI -&gt; system : ioctl(CI_IOCTL_INDG_TRG)
+
+            felixtest &lt;-- CI
+            deactivate CI
+
+    end
+    alt if using EXT DG
+
+        felixtest -&gt; DG : DG_CameraShoot()
+            activate DG
+
+            DG -&gt; system : ioctl(DG_IOCTL_CAM_BAQ)
+
+            DG -&gt; DG : DG_ConvSimImage()
+                activate DG
+
+                note over DG
+                    Convert the FLX input into DG
+                    frame format using function
+                    pointer selected at configuration.
+                end note
+
+                DG &lt;-- DG
+                deactivate DG
+
+            DG -&gt; system : ioctl(DG_IOCTL_CAM_BRE)
+
+            felixtest &lt;-- DG
+            deactivate DG
+
+    end
+
+    felixtest &lt;-- felixtest
+    deactivate felixtest
+
+[&lt;-- felixtest
+deactivate felixtest
+
+&#64;enduml" />
+</p>
+</div>
+<div class="figure align-center">
+<p class="plantuml">
+<img src="../_images/plantuml-543ae04763a78069ce15016b810bc6d5929e81f1.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+
+== Capture handle frame ==
+
+[-&gt; felixtest : CaptureRunWrite()
+activate felixtest
+
+felixtest -&gt; CI : CI_PipelineHasWaiting()
+    activate CI
+
+    CI -&gt; system : ioctl(CI_IOCTL_PIPE_WAI)
+
+    felixtest &lt;-- CI
+    deactivate CI
+
+felixtest -&gt; CI : CI_PipelineAcquireShot()
+    activate CI
+
+    CI -&gt; system : ioctl(CI_IOCTL_CAPT_BAQ)
+
+    felixtest &lt;-- CI
+    deactivate CI
+
+felixtest -&gt; felixtest : WriteToFile()
+    activate felixtest
+
+    note over felixtest
+        Write output files
+    end note
+
+    felixtest &lt;-- felixtest
+    deactivate felixtest
+
+felixtest -&gt; CI : CI_PipelineReleaseShot()
+    activate CI
+
+    CI -&gt; system : ioctl(CI_IOCTL_CAPT_BRE)
+
+    felixtest &lt;-- CI
+    deactivate CI
+
+[&lt;-- felixtest
+deactivate felixtest
+
+&#64;enduml" />
+</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="driver_test.html"
+                        title="previous chapter">Capture Interface test: <code class="docutils literal"><span class="pre">driver_test</span></code></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="ispc_test.html"
+                        title="next chapter">ISP Control test: <code class="docutils literal"><span class="pre">ISPC_test</span></code></a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

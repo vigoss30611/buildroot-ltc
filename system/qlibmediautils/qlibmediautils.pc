@@ -1,0 +1,12 @@
+prefix=/usr
+exec_prefix=/usr
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+LINKS=
+Name:  qlibmediautils
+Description: qlibmediautils  infotm
+Version: 1.0.0
+Requires:
+Libs: -L${libdir} -lqmediautils  ${LINKS}
+#Libs: -L${libdir} -lqmediautils -lexif -lavformat -lavfilter -lswscale -lavcodec
+Cflags:  -I${includedir}/qsdk

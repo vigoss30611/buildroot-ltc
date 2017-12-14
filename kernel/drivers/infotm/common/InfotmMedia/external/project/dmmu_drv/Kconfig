@@ -1,0 +1,11 @@
+#
+# Kconfig InfotmMedia dmmu driver.
+#
+# Copyright (c) 2009~2014 ShangHai Infotm Ltd all rights reserved.
+#
+#
+
+config INFOTM_MEDIA_DMMU_SUPPORT
+	bool "InfotmMedia dmmu driver support"
+    depends on INFOTM_MEDIA_SUPPORT
+	default y

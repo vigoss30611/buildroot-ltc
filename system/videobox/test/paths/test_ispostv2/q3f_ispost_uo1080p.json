@@ -1,0 +1,47 @@
+{
+	"isp": {
+		"ipu": "v2500",
+		"args": {
+			"mode": 5,
+			"name": "AR330MIPI",
+			"config": "/root/.ispddk/config-normal.txt"
+		},
+		"port": {
+			"out": {
+				"w": 1920,
+				"h": 1080,
+				"pixel": "nv12",
+				"bind": { 
+                    "ispost": "in" 
+                }
+			}
+		}
+	},
+
+	"ispost": {
+		"ipu": "ispostv2",
+		"args": {
+			"lc_grid_file_name1": "/root/.ispost/lc_v1_0-0-0-0_hermite32_1920x1080-1920x1080.bin",
+			"lc_geometry_file_name1": "/root/.ispost/lc_v1_0-0-0-0_hermite32_1920x1080-1920x1080_geo.bin",
+			"dn_enable": 1
+		},
+		"port": {
+			"dn": {
+				"w": 1920,
+				"h": 1080,
+				"pixel": "nv12"
+			},
+			"uo": {
+				"w": 1920,
+				"h": 1080,
+				"pixel": "nv12",
+				"bind": {
+					"display": "osd0"
+				}
+			}
+		}
+	},
+
+	"display": { "ipu": "ids"}
+}
+

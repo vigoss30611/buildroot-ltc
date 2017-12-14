@@ -1,0 +1,112 @@
+{
+    "dgpixel":{
+        "ipu":"dg-pixel",
+        "args":{
+            "path":"/root/.videobox/dgpixel"
+        },
+        "port":{
+            "out":{
+                "w":1920,
+                "h":1088,
+                "fps":27,
+                "pixel_format":"nv12"
+            }
+        }
+    },
+
+    "dec0":{
+        "ipu":"g2",
+        "port":{
+            "frame":{
+                "w":1088,
+                "h":1088,
+                "fps": 25,
+                "pixel_format":"nv12",
+                "bind":{ "ispost0":"in", "ispost3":"in", "ispost1":"in", "ispost2":"in" }
+            }
+        }
+    },
+
+    "ispost0":{
+        "ipu":"ispost",
+        "args":{
+            "lc_grid_file_name1":"/root/.ispost/lc_v1_hermite32_1088x1088-960x544_45.bin"
+        },
+        "port":{
+            "dn":{
+                "pip_x":0,
+                "pip_y":0,
+                "pip_w":960,
+                "pip_h":544,
+                "w":1920,
+                "h":1088,
+                "fps":25,
+                "pixel_format":"nv12",
+                "embezzle":{ "dgpixel":"out" }
+            }
+        }
+    },
+
+    "ispost1":{
+        "ipu":"ispost",
+        "args":{
+            "lc_grid_file_name1":"/root/.ispost/lc_v1_hermite32_1088x1088-960x544_135.bin"
+        },
+        "port":{
+            "dn":{
+                "pip_x":960,
+                "pip_y":0,
+                "pip_w":960,
+                "pip_h":544,
+                "w":1920,
+                "h":1088,
+                "fps":25,
+                "pixel_format":"nv12",
+                "embezzle":{ "ispost0":"dn" }
+            }
+        }
+    },
+
+    "ispost2":{
+        "ipu":"ispost",
+        "args":{
+            "lc_grid_file_name1":"/root/.ispost/lc_v1_hermite32_1088x1088-960x544_220.bin"
+        },
+        "port":{
+            "dn":{
+                "pip_x":0,
+                "pip_y":544,
+                "pip_w":960,
+                "pip_h":544,
+                "w":1920,
+                "h":1088,
+                "fps":25,
+                "pixel_format":"nv12",
+                "embezzle":{ "ispost1":"dn" }
+            }
+        }
+    },
+
+    "ispost3":{
+        "ipu":"ispost",
+        "args":{
+            "lc_grid_file_name1":"/root/.ispost/lc_v1_hermite32_1088x1088-960x544_315.bin"
+        },
+        "port":{
+            "dn":{
+                "pip_x":960,
+                "pip_y":544,
+                "pip_w":960,
+                "pip_h":544,
+                "w":1920,
+                "h":1088,
+                "fps":25,
+                "pixel_format":"nv12",
+                "bind":{ "display":"osd0" },
+                "embezzle":{ "ispost2":"dn" }
+            }
+        }
+    },
+
+    "display":{ "ipu":"ids" }
+}

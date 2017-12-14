@@ -1,0 +1,150 @@
+items.start
+#config.vol.regulator pwm.0
+board.cpu apollo
+board.case 1
+board.disk emmc
+board.string.product Q3EVB
+board.string.device Q3EVB
+soc.cpu.freq -200
+soc.cpu.dvfs 1
+soc.gpu.freq 444
+soc.gpu.dvfs 1
+soc.vpu.dvfs 1
+soc.usb.otg 1
+soc.usb.host 1
+config.ui tablet
+config.phase final
+config.preload preboot
+config.root 1
+config.trace 0
+config.uboot.logo 0
+config.otg.nluns 2
+config.otg.extraid pads.138
+config.policy.power 1
+config.wdt 0
+board.arch q3pv10
+cpu.power pmu.sw1
+cpu.io33.power pmu.sw2
+dram.count 1
+dram.power pmu.swio
+dram.freq 380 #425
+dram.type DDR3
+dram.width 16
+dram.capacity 256
+memory.cl 5
+memory.rtt 4
+memory.driver 6
+memory.tras 15
+memory.trfc 64
+part0					uboot.48.boot
+part1					item.16.boot
+part2					ramdisk.2512.boot
+part3					kernel.6100.boot
+#part4					kernel.2560.boot
+part5					system.860000.fs
+part6					id.512.fs
+part7					config.512.fs
+camera.front.interface    camif     #modify for apollo
+camera.front.model        nc_nvp9124b
+camera.front.orientation  270
+camera.front.align	  low8_align
+camera.front.ctrl         i2c.0     #modify for apollo
+camera.front.power.iovdd  pmu.ldo3
+camera.front.power.dvdd   pmu.ldo4
+camera.front.power.down   pads.55
+camera.front.reset	  pads.61
+
+#camera.rear.interface    camif      #modify for apollo
+#camera.rear.model        gc2035_demo
+#camera.rear.orientation  90
+#camera.rear.align	 low8_align
+#camera.rear.ctrl         i2c.0      #modify for apollo
+#camera.rear.power.iovdd  pmu.ldo3
+#camera.rear.power.dvdd   pmu.ldo4
+#camera.rear.power.down   pads.56
+#camera.rear.reset	 pads.61
+ids.pixformat 888
+ids.default lcd
+ids.acm 60
+lcd.model GM05004001Q_800_480
+lcd.port ids.0
+lcd.cable 888
+lcd.rgb rgb
+prescaler.vic 2001
+lcd.vic 2000
+lcd.interface 1
+dss.implementation.product.type mid
+dss.implementation.board.type lcd1
+dss.implementation.framebuffer.vic 2000
+dss.implementation.lcdpanel.name GM05004001Q_800_480
+dss.implementation.lcdpanel.rgbseq 0
+dss.implementation.lcdpanel.rgbbpp 32
+dss.implementation.lcdpanel.bl.gpio 163
+dss.implementation.lcdpanel.bl.polarity 1
+dss.implementation.lcdpanel.ids0.rgbseq 6
+dss.implementation.lcdpanel.master.pmu pmu.ldo5
+dss.implementation.lcdpanel.ids1.rgbseq 6
+hdmi.scale      1
+bl.ctrl pwm.0
+bl.periodns 99000
+bl.max_brightness 200
+bl.min_brightness 20
+bl.dft_brightness 120
+bl.polarity 0
+codec.model 9624tqlp
+codec.data i2s.0
+sound.speaker pads.160
+soc.usb.host 0
+soc.usb.otg 0
+ts.model gt9147
+ts.ctrl i2c.2
+ts.orientation xy
+sensor.grivaty.model mir3da
+sensor.grivaty.ctrl i2c.1
+sensor.grivaty.int pads.141
+sensor.grivaty.orientation yxz
+keys.menu adc.10.5
+keys.up adc.10.0
+keys.down adc.10.23
+keys.ok adc.10.15
+keyboard.model ht82b40xv150
+pmu.model ec610
+pmu.ctrl i2c.0
+power.full pads.130
+power.dcdetect pads.139
+power.curve.capacity    3800.3700.3600.3450 #means High-100 Middle-80 Low-50 Empty-20(Shutdown voltage)
+power.curve.charge      4169.4150.4130.4101.4067.4013.3950.3916.3857.3784.3720.3666
+power.curve.discharge   4000.3902.3785.3725.3681.3615.3554.3496.3441.3373.3323.3300
+initi2c.0 i2c.0.40.99
+virtualvolkey 1
+
+app.product.type q3_sportdv
+app.sensor.type mipi
+app.sensor.name AR330MIPI
+app.sensor.mode 6
+app.sensor.lane 1
+app.sensor.fps 30
+app.sensor.setupfile /etc/AR330.txt
+app.sensor.buffersize 5 #7
+app.sensor.awbmode 4
+app.sensor.csi_freq 410
+app.sensor.isp_freq 192000000
+sensor.frametimeout 200
+sensor.mclk.pads 112
+sensor.reset.pads 168
+sensor.iovdd.ldo ldo1
+sensor.iovdd.vol 3300000
+sensor.dvdd.ldo ldo4
+sensor.dvdd.vol 2800000
+sensor.corevdd.ldo ldo2
+sensor.corevdd.vol 1500000
+sensor.direct    3 # SENSOR_FLIP_NONE = 0, SENSOR_FLIP_HORIZONTAL = 1, SENSOR_FLIP_VERTICAL = 2, SENSOR_FLIP_BOTH = 3
+
+app.evbboard.ver one
+app.mmc.device /dev/mmcblk0p1
+#enable gui's log info
+#debug.enable
+#enable auto play next video in playback
+video.autoplay.enable
+
+items.end

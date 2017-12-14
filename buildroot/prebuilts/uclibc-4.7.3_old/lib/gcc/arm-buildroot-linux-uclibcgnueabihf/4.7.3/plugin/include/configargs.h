@@ -1,0 +1,7 @@
+/* Generated automatically. */
+static const char configuration_arguments[] = "./configure --prefix=/home/fengwu/b/work/sportDv_x15_6/output/host/usr --sysconfdir=/home/fengwu/b/work/sportDv_x15_6/output/host/etc --enable-shared --disable-static --disable-gtk-doc --disable-doc --disable-docs --disable-documentation --with-xmlto=no --with-fop=no --target=arm-buildroot-linux-uclibcgnueabihf --with-sysroot=/home/fengwu/b/work/sportDv_x15_6/output/host/usr/arm-buildroot-linux-uclibcgnueabihf/sysroot --disable-__cxa_atexit --with-gnu-ld --disable-libssp --disable-multilib --with-gmp=/home/fengwu/b/work/sportDv_x15_6/output/host/usr --with-mpfr=/home/fengwu/b/work/sportDv_x15_6/output/host/usr --enable-target-optspace --enable-tls --disable-libmudflap --enable-threads --with-mpc=/home/fengwu/b/work/sportDv_x15_6/output/host/usr --disable-decimal-float --with-arch=armv7-a --with-tune=cortex-a5 --with-abi=aapcs-linux --with-fpu=neon --with-float=hard --with-mode=thumb --with-pkgversion='Buildroot 2014.02-git' --with-bugurl=http://bugs.buildroot.net/ --enable-languages=c,c++ --with-build-time-tools=/home/fengwu/b/work/sportDv_x15_6/output/host/usr/arm-buildroot-linux-uclibcgnueabihf/bin --disable-libgomp";
+static const char thread_model[] = "posix";
+
+static const struct {
+  const char *name, *value;
+} configure_default_options[] = { { "abi", "aapcs-linux" }, { "arch", "armv7-a" }, { "tune", "cortex-a5" }, { "float", "hard" }, { "mode", "thumb" }, { "fpu", "neon" }, { "tls", "gnu" } };

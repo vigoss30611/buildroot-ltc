@@ -1,0 +1,248 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Lens Shading Grid Control &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="up" title="ISP Control Library" href="ispc_library.html" />
+    <link rel="next" title="Automatic Tone Mapping Control (TNMC)" href="ispc_controls_tnmc.html" />
+    <link rel="prev" title="Automatic focus (AF)" href="ispc_controls_af.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="ispc_controls_tnmc.html" title="Automatic Tone Mapping Control (TNMC)"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="ispc_controls_af.html" title="Automatic focus (AF)"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="ispc_library.html" accesskey="U">ISP Control Library</a> &raquo;</li><li>Lens Shading Grid Control</li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="lens-shading-grid-control">
+<span id="isp-icm-lsh"></span><h1>Lens Shading Grid Control<a class="headerlink" href="#lens-shading-grid-control" title="Permalink to this headline">¶</a></h1>
+<p>Main task of lens shading correction control is choice of de-shading grid
+relevant to detected illuminant temperature reported by the AWB module. Current
+implementation uses linear mapping between detected temperature and available
+deshading grids. If deshading matrix for detected temperature doesn&#8217;t exist the
+one with temperature closest to the detected temperature is used.</p>
+<p>User can decide not to use <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_l_s_h.html">ControlLSH</a>. In that case de-shading
+matrices can be loaded by <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_module_l_s_h.html#a031243c8c13ebd2a1add653838e4ecdc">ModuleLSH::loadMatrices()</a> and applied by
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_module_l_s_h.html#abc45534e0fa74183481047d9da441a14">ModuleLSH::configureMatrix()</a>.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The HW design does not allow the update of all the LSH related
+registers in one operation. Therefore when using multiple LSH
+it is required to ensure all matrices have the same configuration and
+size. This also includes the fact that a LSH matrix must be loaded
+before <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html#abddc81e02333326583cb57e82d32f1a4">Pipeline::startCapture()</a> otherwise multiple registers
+need to be written.</p>
+</div>
+<div class="section" id="code-organization">
+<span id="isp-lshc-code"></span><h2>Code Organization<a class="headerlink" href="#code-organization" title="Permalink to this headline">¶</a></h2>
+<p>The lens de-shading control is implemented in the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_l_s_h.html">ControlLSH</a> class which,
+as the rest of the control modules, inherits from the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a>
+class. The virtual function <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_l_s_h.html#a1965bdd2375a5149855360e4a8dc4e15">ControlLSH::update()</a> is call after the
+capture of each new shot and it is in that function where the updates in the
+configuration must be carried out. From such function the method
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_l_s_h.html#af15d9955cbee295e4e78f603a3e5b229">ControlLSH::programCorrection()</a> is called to update the pipeline
+de-shading grid <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_l_s_h.html">ControlLSH</a> polls <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b.html">ControlAWB</a> for calculated
+illuminant temperature. Because of that <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b.html">ControlAWB</a> must be registered in
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">ISPC::Camera</a> before ControlLSH. It must be also registered in ControlLSH
+using <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_l_s_h.html#a9822621d675eba2ae1e41074c66075c4">ControlLSH::registerCtrlAWB()</a>.
+De-shading matrices are loaded by ControlLSH during <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_l_s_h.html#a87d978051348129f6d1780672919f0ab">ControlLSH::load()</a>
+call.</p>
+</div>
+<div class="section" id="control-lsh-high-level-parameters">
+<span id="isp-lshc-hlp"></span><h2>Control LSH High Level Parameters<a class="headerlink" href="#control-lsh-high-level-parameters" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>LSH_CTRL_BITS_DIFF:</dt>
+<dd><p class="first"><strong>Format:</strong> int range [0,10]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">How many bits are needed to differentially encode all LSH matrices. Matrix
+with biggest value determines the common value for the others. If parameter
+is omitted ControlLSH will calculate it, but it is strongly recommended to
+define paremeter, as auto-calculation slows down the ISP start and doubles
+number of LSH matrix file reads.</p>
+</dd>
+<dt>LSH_CTRL_CORRECTIONS:</dt>
+<dd><p class="first"><strong>Format:</strong> int range [0,200]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">How many correction matrices are available. Will determine how many of
+LSH_CTRL_TEMPERATURE_X, LSH_CTRL_FILE_X and LSH_CTRL_SCALE_WB_X
+are loaded.</p>
+</dd>
+<dt>LSH_CTRL_TEMPERATURE_X:</dt>
+<dd><p class="first"><strong>Format:</strong> unsigned range [0,100000]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p>Iluminant temperature correlated LSH group X.</p>
+<p class="last">E.g. LSH_CTRL_TEMPERATURE_0 goes with LSH_CTRL_FILE_0 and
+LSH_CTRL_SCALE_WB_0.</p>
+</dd>
+<dt>LSH_CTRL_FILE_X:</dt>
+<dd><p class="first"><strong>Format:</strong> string</p>
+<p><strong>Defaults:</strong> &lt;matrix file&gt;</p>
+<p>File with deshading matrix correlated to LSH group X.</p>
+<p class="last">E.g. LSH_CTRL_FILE_0 goes with LSH_CTRL_TEMPERATURE_0 and
+LSH_CTRL_SCALE_WB_0.</p>
+</dd>
+<dt>LSH_CTRL_SCALE_WB_X:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,100]</p>
+<p><strong>Defaults:</strong> 1</p>
+<p>Factor to scale the WB gains when using this matrix to compensate for the
+scaling to cope with HW limitations for LSH group X.</p>
+<p class="last">E.g. LSH_CTRL_SCALE_WB_0 goes with LSH_CTRL_TEMPERATURE_0 and
+LSH_CTRL_FILE_0.</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Lens Shading Grid Control</a><ul>
+<li><a class="reference internal" href="#code-organization">Code Organization</a></li>
+<li><a class="reference internal" href="#control-lsh-high-level-parameters">Control LSH High Level Parameters</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="ispc_controls_af.html"
+                        title="previous chapter">Automatic focus (AF)</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="ispc_controls_tnmc.html"
+                        title="next chapter">Automatic Tone Mapping Control (TNMC)</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

@@ -1,0 +1,174 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical" >
+    
+    <RelativeLayout
+        android:id="@+id/device_connect_mode"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/function_seting_item_height"
+        android:gravity="center_vertical" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10dip"
+            android:text="@string/device_connect_mode_str"
+            android:textColor="@color/black_control_dialog"
+            android:textSize="@dimen/function_seting_item_text_size" />
+
+        <TextView
+            android:id="@+id/device_connect_modeconnect_mode_p2p"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView1"
+            android:layout_alignBottom="@+id/textView1"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/more_function_selector"
+            android:clickable="true"
+            android:gravity="bottom"
+            android:padding="5dip"
+            android:text="@string/device_connect_modeconnect_mode_p2p_str"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/device_connect_modeconnect_mode_direct"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/device_connect_modeconnect_mode_p2p"
+            android:layout_alignBottom="@+id/device_connect_modeconnect_mode_p2p"
+            android:layout_toLeftOf="@+id/device_connect_modeconnect_mode_p2p"
+            android:background="@drawable/more_function_selector"
+            android:clickable="true"
+            android:gravity="bottom"
+            android:padding="5dip"
+            android:text="@string/device_connect_modeconnect_mode_direct_str"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/device_connect_modeconnect_mode_forward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView1"
+            android:layout_alignBottom="@+id/textView1"
+            android:layout_toLeftOf="@+id/device_connect_modeconnect_mode_convert"
+            android:background="@drawable/more_function_selector"
+            android:clickable="true"
+            android:gravity="bottom"
+            android:padding="5dip"
+            android:text="@string/device_connect_modeconnect_mode_forward_str"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/device_connect_modeconnect_mode_convert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/device_connect_modeconnect_mode_direct"
+            android:layout_alignBottom="@+id/device_connect_modeconnect_mode_direct"
+            android:layout_toLeftOf="@+id/device_connect_modeconnect_mode_direct"
+            android:background="@drawable/more_function_selector"
+            android:clickable="true"
+            android:gravity="bottom"
+            android:padding="5dip"
+            android:text="@string/device_connect_modeconnect_mode_convert_str"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
+
+    <View 
+        android:layout_width="wrap_content"
+        android:layout_height="1dip"
+        android:layout_marginLeft="4dip"
+        android:layout_marginRight="4dip"
+        android:background="@color/gray"/>
+           <RelativeLayout
+        android:id="@+id/device_ssid_set" 
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/function_seting_item_height"
+        android:gravity="center_vertical"
+        android:clickable="true"
+        android:onClick="functionSettingClick"
+        android:background="@drawable/funciont_botton_selector">
+        <TextView
+            android:layout_width="wrap_content"
+    		android:layout_height="wrap_content" 
+            android:text="@string/device_ssid_set_str"
+            android:textSize="@dimen/function_seting_item_text_size"
+            android:textColor="@color/black_control_dialog"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10dip"/>
+        
+    </RelativeLayout>
+    <View 
+        android:layout_width="wrap_content"
+        android:layout_height="1dip"
+        android:layout_marginLeft="3dip"
+        android:layout_marginRight="3dip"
+        android:background="@color/gray"/>
+    
+   <RelativeLayout
+        android:id="@+id/device_operate_script" 
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/function_seting_item_height"
+        android:gravity="center_vertical"
+        android:clickable="true"
+        android:onClick="functionSettingClick"
+        android:background="@drawable/funciont_botton_selector">
+        <TextView
+            android:layout_width="wrap_content"
+    		android:layout_height="wrap_content" 
+            android:text="@string/device_operate_script_str"
+            android:textSize="@dimen/function_seting_item_text_size"
+            android:textColor="@color/black_control_dialog"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10dip"/>
+        
+    </RelativeLayout>
+    <View 
+        android:layout_width="wrap_content"
+        android:layout_height="1dip"
+        android:layout_marginLeft="3dip"
+        android:layout_marginRight="3dip"
+        android:background="@color/gray"/>
+   
+   <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/function_seting_item_height"
+        android:gravity="center_vertical">
+        <TextView
+            android:layout_width="wrap_content"
+    		android:layout_height="wrap_content" 
+            android:text="@string/device_version_str"
+            android:textSize="@dimen/function_seting_item_text_size"
+            android:textColor="@color/black_control_dialog"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10dip"/>
+        
+       <TextView 
+        android:id="@+id/version_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:text="V1.1"
+        android:layout_alignParentRight="true"
+        android:textColor="@color/black"
+        android:padding="5dip"
+        android:layout_marginRight="25dip"/>
+        
+    </RelativeLayout>
+    <View 
+        android:layout_width="wrap_content"
+        android:layout_height="1dip"
+        android:layout_marginLeft="3dip"
+        android:layout_marginRight="3dip"
+        android:background="@color/gray"/>
+
+</LinearLayout>

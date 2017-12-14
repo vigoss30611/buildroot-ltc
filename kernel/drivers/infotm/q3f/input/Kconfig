@@ -1,0 +1,13 @@
+ #                                                 
+ #  Input device configuration                     
+ #                                                 
+ #                                                 
+menuconfig Q3F_INPUT                            
+        bool "Q3F input device driver support"  
+        default n                                  
+        help                                       
+               Infotm input device driver support   
+if Q3F_INPUT                                    
+source "drivers/infotm/q3f/input/keyboard/Kconfig"     
+endif                                              
+

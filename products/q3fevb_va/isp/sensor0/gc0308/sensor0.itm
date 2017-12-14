@@ -1,0 +1,16 @@
+sensor0.interface camif
+sensor0.name gc0308_demo
+sensor0.mclk 24000000
+sensor0.imager 0
+sensor0.i2c chn.3.addr.66
+sensor0.mclk.src imap-camo
+sensor0.wraper.use 0
+sensor0.wraper.width 1920
+sensor0.wraper.height 1080
+sensor0.wraper.hdelay 114
+sensor0.wraper.vdelay 12
+sensor0.bootup.seq.0 pmu.ldo7.2800000.0
+sensor0.bootup.seq.1 pmu.ldo8.1800000.0
+sensor0.bootup.seq.2 mclk.gpio.114.0
+sensor0.bootup.seq.3.pwd.gpio.28.5
+sensor0.bootup.seq.3 reset.gpio.44.20

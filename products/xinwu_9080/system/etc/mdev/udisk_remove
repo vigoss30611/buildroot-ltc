@@ -1,0 +1,7 @@
+#!/bin/sh
+event_umount="umount"
+eventsend $event_umount /mnt/udisk
+#sync
+#umount -l /mnt/udisk*
+#rm -rf /mnt/udisk*
+exit 0

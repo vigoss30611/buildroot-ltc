@@ -1,0 +1,73 @@
+{
+    "mode_number": 1,
+    "mode_list0": {
+        "file_number":5,
+        "in_res":"3072x1520",
+        "out_res":"3040x1520",
+        "file_list0": {
+            "file_grid":"/root/.ispost/lc_stitching_0-0-0-0_hermite32_3040x1520_64x1520_ml_744.bin",
+            "outport_number":1,
+            "need_alloc_buf": 1,
+            "ov0_x":744,
+            "ov0_y":0,
+            "ov0_width":48,
+            "ov0_height":1520,
+            "outport_list0": {
+                "port":"uo",
+                "x":0,
+                "y":0,
+                "w":48,
+                "h":1520
+            }
+        },
+        "file_list1": {
+            "file_grid":"/root/.ispost/lc_stitching_0-0-0-0_hermite32_3040x1520_792x1520_l_0.bin",
+            "outport_number":1,
+            "outport_list0": {
+                "port":"uo",
+                "x":0,
+                "y":0,
+                "w":792,
+                "h":1520
+            }
+        },
+        "file_list2": {
+            "file_grid":"/root/.ispost/lc_stitching_0-0-0-0_hermite32_3040x1520_64x1520_mr_2248.bin",
+            "outport_number":1,
+            "need_alloc_buf": 1,
+            "ov0_x":2248,
+            "ov0_y":0,
+            "ov0_width":48,
+            "ov0_height":1520,
+            "outport_list0": {
+                "port":"uo",
+                "x":0,
+                "y":0,
+                "w":48,
+                "h":1520
+            }
+        },
+        "file_list3": {
+            "file_grid":"/root/.ispost/lc_stitching_0-0-0-0_hermite32_3040x1520_792x1520_r_2248.bin",
+            "outport_number":1,
+            "outport_list0": {
+                "port":"uo",
+                "x":2248,
+                "y":0,
+                "w":792,
+                "h":1520
+            }
+        },
+        "file_list4": {
+            "file_grid":"/root/.ispost/lc_stitching_0-0-0-0_hermite32_3040x1520_1488x1520_m_776.bin",
+            "outport_number":1,
+            "outport_list0": {
+                "port":"uo",
+                "x":776,
+                "y":0,
+                "w":1488,
+                "h":1520
+            }
+        }
+    }
+}

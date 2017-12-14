@@ -1,0 +1,12 @@
+menuconfig INFOTM_REGULATOR
+  bool "Infotm regulator driver support"
+  help
+    Infotm regulator driver support
+
+if INFOTM_REGULATOR
+
+config CORONAMPW_REGULATOR_IP6313
+ bool "ip6313 regulator driver"
+ help
+   IP6313 regulator driver
+endif

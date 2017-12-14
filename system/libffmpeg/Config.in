@@ -1,0 +1,284 @@
+config BR2_PACKAGE_LIBFFMPEG
+	bool "libffmpeg"
+        default y
+	help
+	  ffmpeg enable you need module
+
+if BR2_PACKAGE_LIBFFMPEG
+menu "Options"
+
+	config BR2_PACKAGE_LIBFFMPEG_ENCODER
+		bool "encoder enable"
+		default y
+		help
+			say y if you want to enable encoder
+	if BR2_PACKAGE_LIBFFMPEG_ENCODER
+		config BR2_PACKAGE_LIBFFMPEG_ENCODER_LIBFDK_AAC
+			bool "libfdk-aac"
+			default n
+			select BR2_PACKAGE_FDK_AAC
+			help
+				say y if you want to support libfdk-aac
+		config BR2_PACKAGE_LIBFFMPEG_ENCODER_AAC
+			bool "aac"
+			default n
+			help
+				say y if you want to support aac
+		config BR2_PACKAGE_LIBFFMPEG_ENCODER_AC3
+			bool "ac3"
+			default n
+			help
+				say y if you want to support ac3
+		config BR2_PACKAGE_LIBFFMPEG_ENCODER_PCM_ALAW
+			bool "g711"
+			default n
+			help
+				say y if you want to support g711
+		config BR2_PACKAGE_LIBFFMPEG_ENCODER_PCM_G726
+			bool "g726"
+			default n
+			help
+				say y if you want to support g726
+		config BR2_PACKAGE_LIBFFMPEG_ENCODER_MJPEG
+			bool "mjpeg"
+			default n
+			help
+				say y if you want to support mjpeg
+		config BR2_PACKAGE_LIBFFMPEG_ENCODER_H264
+			bool "h264, not support"
+			default n
+			help
+				say y if you want to support h264
+		config BR2_PACKAGE_LIBFFMPEG_ENCODER_HEVC
+			bool "hevc, not support"
+			default n
+			help
+				say y if you want to support hevc
+	endif
+	config BR2_PACKAGE_LIBFFMPEG_DECODER
+		bool "decoder enable"
+		default y
+		help
+			say y if you want to enable decoder
+	if BR2_PACKAGE_LIBFFMPEG_DECODER
+		config BR2_PACKAGE_LIBFFMPEG_DECODER_LIBFDK_AAC
+			bool "libfdk-aac"
+			default n
+			select BR2_PACKAGE_FDK_AAC
+			help
+				say y if you want to support libfdk-aac
+		config BR2_PACKAGE_LIBFFMPEG_DECODER_AAC
+			bool "aac"
+			default n
+			help
+				say y if you want to support ffmpeg aac decoder
+		config BR2_PACKAGE_LIBFFMPEG_DECODER_AC3
+			bool "ac3"
+			default n
+			help
+				say y if you want to support libfdk-aac
+		config BR2_PACKAGE_LIBFFMPEG_DECODER_PCM_ALAW
+			bool "g711"
+			default n
+			help
+				say y if you want to support g711
+		config BR2_PACKAGE_LIBFFMPEG_DECODER_MJPEG
+			bool "mjpeg"
+			default n
+			help
+				say y if you want to support mjpeg
+		config BR2_PACKAGE_LIBFFMPEG_DECODER_H264
+			bool "h264"
+			default n
+			help
+				say y if you want to support h264
+		config BR2_PACKAGE_LIBFFMPEG_DECODER_HEVC
+			bool "hevc"
+			default n
+			help
+				say y if you want to support hevc
+		config BR2_PACKAGE_LIBFFMPEG_DECODER_MP3
+			bool "mp3"
+			default y
+			help
+				say y if you want to support mp3
+	endif
+	config BR2_PACKAGE_LIBFFMPEG_PARSER
+		bool "parser enable"
+		default y
+		help
+			say y if you want to enable parser
+	if BR2_PACKAGE_LIBFFMPEG_PARSER
+		config BR2_PACKAGE_LIBFFMPEG_PARSER_AAC
+			bool "aac"
+			default n
+			help
+				say y if you want to support parser aac
+		config BR2_PACKAGE_LIBFFMPEG_PARSER_MJPEG
+			bool "mjpeg"
+			default n
+			help
+				say y if you want to support ffmpeg parser mjpeg
+		config BR2_PACKAGE_LIBFFMPEG_PARSER_H264
+			bool "h264"
+			default n
+			help
+				say y if you want to support parser
+		config BR2_PACKAGE_LIBFFMPEG_PARSER_HEVC
+			bool "hevc"
+			default n
+			help
+				say y if you want to support ffmpeg parser hevc
+
+
+	endif
+
+
+	config BR2_PACKAGE_LIBFFMPEG_MUXER
+		bool "muxer enable"
+		default n
+		help
+			say y if you want to support muxer
+
+	if BR2_PACKAGE_LIBFFMPEG_MUXER
+		config BR2_PACKAGE_LIBFFMPEG_MUXER_MP4_MOV
+			bool "mp4/mov"
+			default n
+			help
+				say y if you want to enable muxer
+		config BR2_PACKAGE_LIBFFMPEG_MUXER_MKV
+			bool "mkv"
+			default n
+			help
+				say y if you want to enable muxer matroska
+		config BR2_PACKAGE_LIBFFMPEG_MUXER_MJPEG
+			bool "mjpeg"
+			default n
+			help
+				say y if you want to enable muxer mjpeg
+	endif
+
+	config BR2_PACKAGE_LIBFFMPEG_DEMUXER
+		bool "demuxer enable"
+		default n
+		help
+			say y if you want to enable demuxer
+	if BR2_PACKAGE_LIBFFMPEG_DEMUXER
+		config BR2_PACKAGE_LIBFFMPEG_DEMUXER_MP4_MOV
+			bool "mp4/mov"
+			default y
+			help
+				say y if you want to enable demuxer  mp4/mov
+		config BR2_PACKAGE_LIBFFMPEG_DEMUXER_MKV
+			bool "mkv"
+			default y
+			help
+				say y if you want to enable demuxer matroska
+		config BR2_PACKAGE_LIBFFMPEG_DEMUXER_WAV
+			bool "wav"
+			default n
+			help
+			say y if you want to enable demuxer wav
+		config BR2_PACKAGE_LIBFFMPEG_DEMUXER_MP3
+			bool "mp3"
+			default y
+			help
+				say y if you want to enable demuxer mp3
+		config BR2_PACKAGE_LIBFFMPEG_DEMUXER_MJPEG
+			bool "mjpeg"
+			default n
+			help
+				say y if you want to enable demuxer mjpeg
+	endif
+
+	config BR2_PACKAGE_LIBFFMPEG_BSF_FILTER
+		bool "bsf filter enable"
+		default y
+		help
+			say y if you want to enable bsf
+
+	if BR2_PACKAGE_LIBFFMPEG_BSF_FILTER
+		config BR2_PACKAGE_LIBFFMPEG_BSF_FILTER_H264_MP4TOANNEXB
+			bool "h264_mp4toannexb"
+			default n
+			help
+				The default option for h264_mp4toannexb module
+		config BR2_PACKAGE_LIBFFMPEG_BSF_FILTER_HEVC_MP4TOANNEXB
+			bool "hevc_mp4toannexb"
+			default n
+			help
+				The default option for hevc_mp4toannexab bsf filter module
+		config BR2_PACKAGE_LIBFFMPEG_BSF_FILTER_AAC_ADTSTOASC
+			bool "aac_adtstoasc"
+			default n
+			help
+				The default option for aac_adtstoasc module
+		config BR2_PACKAGE_LIBFFMPEG_BSF_FILTER_MJPEG2JPEG
+			bool "mjpeg2jpeg"
+			default n
+			help
+				The default option for bsf mjeg2jpeg module
+	endif
+	config BR2_PACKAGE_LIBFFMPEG_AVFILTER
+		bool "avfilter enable"
+		default n
+		help
+			say y if you want to enable demuxer
+	if BR2_PACKAGE_LIBFFMPEG_AVFILTER
+		config BR2_PACKAGE_LIBFFMPEG_AVFILTER_CROP
+			bool "crop"
+			default n
+			help
+				crop
+		config BR2_PACKAGE_LIBFFMPEG_AVFILTER_SCALE
+			bool "scale"
+			default n
+			help
+				scale
+	endif
+	config BR2_PACKAGE_LIBFFMPEG_SWRESAMPLE
+		bool "swresample enable"
+		default n
+		help
+			say n if you want to enable ffmpeg tools
+	config BR2_PACKAGE_LIBFFMPEG_SWSCALE
+		bool "swscale enable"
+		default n
+		help
+			say n if you want to enable ffmpeg tools
+
+	config BR2_PACKAGE_LIBFFMPEG_PROTOCOL
+		bool "protocol enable"
+		default y
+		help
+			say y if you want to enable protocol
+	if BR2_PACKAGE_LIBFFMPEG_PROTOCOL
+		config BR2_PACKAGE_LIBFFMPEG_PROTOCOL_HTTP
+			bool "http"
+			default y
+			help
+				http
+	endif
+
+	config BR2_PACKAGE_LIBFFMPEG_PROGRAMES
+		bool "ffmpeg tools enable"
+		default n
+		help
+			say n if you want to enable ffmpeg tools
+	if BR2_PACKAGE_LIBFFMPEG_PROGRAMES
+		config BR2_PACKAGE_LIBFFMPEG_FFMPEG
+			bool "ffmpeg"
+			select BR2_PACKAGE_LIBFFMPEG_SWRESAMPLE
+			select BR2_PACKAGE_LIBFFMPEG_SWSCALE
+			default n
+			help
+				say n if you want to enable ffmpeg tools
+		config BR2_PACKAGE_LIBFFMPEG_FFPROBE
+			bool "ffprobe enable"
+			default n
+			help
+				say n if you want to enable ffprobe tools
+	endif
+
+endmenu
+endif

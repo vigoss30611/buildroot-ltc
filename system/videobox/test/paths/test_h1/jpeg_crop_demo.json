@@ -1,0 +1,36 @@
+{
+	"isp": {
+		"ipu": "v2500",
+		"args": {
+			"mode": 6,
+			"name": "AR330MIPI",
+			"config": "/root/.ispddk/config-normal.txt"
+		},
+		"port": {
+			"out": {
+				"w": 1920,
+				"h": 1088,
+				"pixel": "nv12",
+				"bind": { "display": "osd0", "h1jpeg":"in" }
+			}
+		}
+	},
+
+	"h1jpeg":{
+		"ipu":"h1jpeg",
+		"args":{
+			"mode":"auto",
+			"rotate":"90R"
+		},
+		"port":{
+			"in":{
+				"pip_x":32,
+				"pip_y":32,
+				"pip_w":1280,
+				"pip_h":720
+			}
+		}
+	},
+	
+	"display": { "ipu": "ids"}
+}

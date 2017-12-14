@@ -1,0 +1,2 @@
+obj-$(CONFIG_IMAP_REGULATOR_TPS65910)	+= tps65910-regulator.o
+

@@ -1,0 +1,22 @@
+config BR2_PACKAGE_LIBISPV2500
+	bool "hlibispv2500"
+	default y
+	help
+		This is for ISP
+
+if BR2_PACKAGE_LIBISPV2500
+
+
+config BR2_PACKAGE_LIBISPV2500_MNEON
+	bool "math neon use"
+	default n
+	help 
+		Whether use math neon libaray
+
+config BR2_PACKAGE_LIBISPV2500_Q360
+	bool "q360 project"
+	default n
+	help 
+		Whether is Q360 project
+endif
+

@@ -1,0 +1,854 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Automatic White Balance (AWB) &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="up" title="ISP Control Library" href="ispc_library.html" />
+    <link rel="next" title="Automatic focus (AF)" href="ispc_controls_af.html" />
+    <link rel="prev" title="Automatic Exposure (AE)" href="ispc_controls_ae.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="ispc_controls_af.html" title="Automatic focus (AF)"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="ispc_controls_ae.html" title="Automatic Exposure (AE)"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="ispc_library.html" accesskey="U">ISP Control Library</a> &raquo;</li><li>Automatic White Balance (AWB)</li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="automatic-white-balance-awb">
+<span id="isp-icm-awb"></span><h1>Automatic White Balance (AWB)<a class="headerlink" href="#automatic-white-balance-awb" title="Permalink to this headline">¶</a></h1>
+<p>The automatic white balance algorithm is in charge of estimating the captured
+scene illuminant temperature and set the colour correction matrix, gains and
+offsets accordingly to compensate for the colour cast produced by the
+illuminant.</p>
+<p>V2500 hardware provides various types of statistics to support AWB mechanism.</p>
+<div class="section" id="ac-hlw-wp-statistics">
+<span id="isp-awb-achlwwp"></span><h2>AC/HLW/WP statistics<a class="headerlink" href="#ac-hlw-wp-statistics" title="Permalink to this headline">¶</a></h2>
+<p>Estimation is based on statistics gathered by the <a class="reference internal" href="ispc_statistics.html#isp-ispc-wbs"><span>White Balance Statistics (WBS)</span></a>
+module in the pipeline and will provide accumulated pixel
+values for the R,G,B channels using three different approaches:</p>
+<ul class="simple">
+<li>AC - Average Colour: Added up value per channel (RGB) of all the pixels in
+the image.</li>
+<li>HLW – High Luminance White: Added up value per channel (RGB) of all the
+pixels in the image whose luminance value is above certain threshold.</li>
+<li>WP – White Patch: Added up value per channel (RGB) of all the pixels in the
+image whose channel value is above certain threshold. A different threshold
+per RGB channel is applied.</li>
+</ul>
+<p>The gathered statistics are post-processed in the AWB algorithm implementation
+to convert them from accumulated pixel values to averages later used for the
+illuminant estimation. The AWB algorithm is also in charge of dynamically
+calculating and programming the thresholds for the HLW and WP statistics in the
+pipeline WBS module.</p>
+<div class="section" id="code-organization">
+<span id="isp-awb-code"></span><h3>Code Organization<a class="headerlink" href="#code-organization" title="Permalink to this headline">¶</a></h3>
+<p>The automatic WB control has a couple of implementations these are implemented
+in the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b.html">ControlAWB</a> and <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b___p_i_d.html">ControlAWB_PID</a> the classes in the
+ISPControl 2 library.  Such class, as the rest of the control algorithms for
+the capture, inherits from the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> class and the main entry
+point is the update() function.  The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b.html#a18fed9a362fb6011156d450a35efdcf7">ControlAWB::update()</a> function of
+every control module registered in a given Camera instance is called once per
+captured shot (unless it is intentionally set up in a different way), being
+able to update whatever pipeline parameters are required regularly.</p>
+<p>The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b.html#a18fed9a362fb6011156d450a35efdcf7">ControlAWB::update()</a> function receives an <a class="reference external" href="../doxygen/struct_i_s_p_c_1_1_metadata.html">ISPC::Metadata</a>
+structure containing the metadata corresponding to a previously captured shot
+as generated by the pipeline. Such structure is where the statistics for AC,
+HLW and WP are gathered from.  In the case of the automatic white balance
+algorithms, the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b.html#a18fed9a362fb6011156d450a35efdcf7">ControlAWB::update()</a> function is used just for
+encapsulation of the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b.html#ab6a038acab371df4e0111fed232d21cf">ControlAWB::programCorrection()</a> function which
+contains all the logic for threshold update, illuminant estimation and colour
+correction calculation.  The two implementations differ in their approach.  The
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b.html#ab6a038acab371df4e0111fed232d21cf">ControlAWB::programCorrection()</a> function performs all the tasks in the
+following steps:</p>
+<ul class="simple">
+<li>Calculation of the adequate thresholds for the WB statistics: The optimum
+thresholds to be set up are those which generate statistics using about 7.5%
+of the pixels only.  The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b.html#a4feb121aa57d1875327bdd2e8ae4e42b">estimateWPThresholds()</a> and
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b.html#abfdfdd10766782d6b4a1cfa5affa2c2f">estimateHLWThreshold()</a> functions deal with this calculation. Both
+functions make use of the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b.html#ac53c9c013656106d6b5ab7e2fdc190e9">estimateThreshold()</a> function which
+implements a PID controller for the dynamic adjustment of the thresholds.</li>
+</ul>
+<ul class="simple">
+<li>Thresholds are programmed in the pipeline with the <code class="docutils literal"><span class="pre">programStatistics()</span></code>
+function.</li>
+<li>A proportional controller adjusts a temperature estimate control variable,
+the controller attempts get the ratio of R/G and B/G average values of the
+statistics being used to be 1:1</li>
+<li>Using the temperature control variable an interpolated colour correction
+matrix, gains and offsets are calculated from the set of predefined
+corrections for different colour temperatures (see setup parameters section
+below) in the call to the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_temperature_correction.html#a88451fc1a4fdc6fc655c169845018010">TemperatureCorrection::getCorrection()</a>
+method from the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_temperature_correction.html">TemperatureCorrection</a> class.</li>
+<li>The colour correction matrix gains and offsets are programmed in the pipeline
+in the call to the <code class="docutils literal"><span class="pre">programCorrection()</span></code> function.</li>
+</ul>
+<p>The <code class="docutils literal"><span class="pre">ControlAWB::programAWB_PID()</span></code> function performs all the tasks in the
+following steps:</p>
+<ul class="simple">
+<li>Calculation of the adequate thresholds for the WB statistics: The optimum
+thresholds to be set up are those which generate statistics using about 7.5%
+of the pixels only. The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b.html#a4feb121aa57d1875327bdd2e8ae4e42b">estimateWPThresholds()</a> and
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b.html#abfdfdd10766782d6b4a1cfa5affa2c2f">estimateHLWThreshold()</a> functions deal with this calculation. Both
+functions make use of the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b.html#ac53c9c013656106d6b5ab7e2fdc190e9">estimateThreshold()</a> function which
+implements a PID controller for the dynamic adjustment of the thresholds.</li>
+<li>Thresholds are programmed in the pipeline with the <code class="docutils literal"><span class="pre">programStatistics()</span></code>
+function.</li>
+<li>A pair of PID control loops are used to adjust the red and blue gain factors.
+The setpoint of the control loops are to reduce the ratios of R/G and B/G to
+be 1. Note that this balances the green channel as well as the red/blue
+channels.</li>
+<li>Using the computed red, green and blue gains the temperature is estimated
+using the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_temperature_correction.html#acf402933939d02799098cd057dccab43">getCorrelatedTemperature()</a> function.</li>
+<li>The CCM is interpolated from the predefined CCMs for different colour
+temperatures</li>
+<li>The computed gain factors get the inverse quantum efficiency applied, this is
+taken from the precomputed gains for the 6500 colour temperature.</li>
+<li>The colour correction matrix gains and offsets are programmed in the pipeline
+in the call to the programCorrection function.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="nearest-to-planckian-locus-statistics">
+<span id="isp-awb-plankian"></span><h2>Nearest to Planckian Locus statistics<a class="headerlink" href="#nearest-to-planckian-locus-statistics" title="Permalink to this headline">¶</a></h2>
+<p>This estimation algorithm is implemented in <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b___planckian.html">ControlAWB_Planckian</a> class
+and uses statistics data collected by <a class="reference internal" href="ispc_statistics.html#isp-ispc-aws"><span>Auto White Balance Statistics (AWS)</span></a> module. This class
+inherits from <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b.html">ControlAWB</a> and uses <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_temperature_correction.html">TemperatureCorrection</a> and
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_color_correction.html">ColorCorrection</a> auxiliary classes.</p>
+<div class="section" id="module-operation">
+<span id="isp-awb-plankian-operations"></span><h3>Module operation<a class="headerlink" href="#module-operation" title="Permalink to this headline">¶</a></h3>
+<p>The AWS statistics for each tile contain log2() sums of every R, G and B channel accumulated
+across all analyzed CFA cells and a total counter of CFA&#8217;s which have met ALL
+of the following conditions:</p>
+<ul class="simple">
+<li>all pixels in CFA are above respective dark thresholds (AWS_X_DARK_THRESH)</li>
+<li>all pixels in CFA are below clip threshold (AWS_X_CLIP_THRESH)</li>
+<li>CFA distance to Planckian Locus is below AWS_BB_DIST</li>
+<li>counters for a tile are not saturated</li>
+</ul>
+<p>For every tile <cite>i</cite>, AWS statistics module produces <span class="math">\(COLLECTED\_R_i\)</span>,
+<span class="math">\(COLLECTED\_G_i\)</span>, <span class="math">\(COLLECTED\_B_i\)</span> and <span class="math">\(CFA\_NUM_i\)</span> registers.
+These values allow control module to calculate R/G and B/G ratios for every tile
+<cite>i</cite> with non zero <span class="math">\(CFA\_NUM_i\)</span>.</p>
+<p id="isp-awb-ratio-calculation">The calculation formulas for R and B channels ratios are presented below:</p>
+<div class="math">
+\[log_2(\text{ratio R}_i) = \frac{COLLECTED\_R_i+CFA\_NUM_i \cdot log_2(QEr)-COLLECTED\_G_i}{CFA\_NUM_i}\]\[log_2(\text{ratio B}_i) = \frac{COLLECTED\_B_i+CFA\_NUM_i \cdot log_2(QEb)-COLLECTED\_G_i}{CFA\_NUM_i}\]\[\text{ratio R}_i = 2^{log_2(\text{ratio R}_i)}\]\[\text{ratio B}_i = 2^{log_2(\text{ratio B}_i)}\]</div>
+<p>Ratio R and B formulas for tile <cite>i</cite></p>
+<p>Where QEr and QEb are sensor quantum efficiences for R and B channel
+respectively.</p>
+<p>Having R and B ratios for every tile <cite>i</cite> in a set of <cite>N</cite> valid tiles,
+control module processes them in the following sequence:</p>
+<p>1. Preprocess the valid tiles by filtering out those which occur below low range
+bounding box.</p>
+<blockquote>
+<div><p>This software defined boundary is defined by quantum efficiency
+of the sensor calibration point captured for the lowest available temperature
+(<span class="math">\(R/G_{low}, B/G_{low}\)</span>) with a AWS_BB_DIST threshold margin applied
+(see <a class="reference internal" href="ispc_statistics.html#isp-ispc-aws-hlp"><span>AWS High Level Parameters</span></a>).</p>
+<p>Effectively, the pass condition for each tile is:</p>
+</div></blockquote>
+<div class="math">
+\[\begin{split}\text{ratio R}_i &lt; \text{R/G}_{low}+AWS\_BB\_DIST\end{split}\]\[and\]\[\begin{split}\text{ratio B}_i &gt; \text{B/G}_{low}-AWS\_BB\_DIST\end{split}\]</div>
+<blockquote id="isp-awb-tiles-distribution">
+<div>This step discards all tiles, for which the estimated
+tile temperature lies outside the lowest temperature point of calibration
+(please refer to the image below).</div></blockquote>
+<div class="figure align-center" id="id4">
+<a class="reference internal image-reference" href="../_images/awb_boundaries.svg"><img src="../_images/awb_boundaries.svg" width="100%" /></a>
+<p class="caption"><span class="caption-text">Visualization of R/G (horizontal) and B/G (vertical) ratios,
+Planckian Locus approximation and tile boundaries.</span></p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">On the upper side of calibration temperature range, this functionality
+is implemented in hardware by AWS_CURVE_BOUNDARIES parameter defined
+for the line 0 segment (see <a class="reference internal" href="ispc_statistics.html#isp-ispc-aws-hlp"><span>AWS High Level Parameters</span></a>).</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>To obtain a much fine grained filtering of CFA&#8217;s near low range
+temperature area, the hardware can be also used by defining not
+currently used planckian approximation line segments as impossible to
+reach for R and B ratios:</p>
+<p>AWS_CURVE_X_COEFFS = 0</p>
+<p>AWS_CURVE_Y_COEFFS = 1.0</p>
+<p>AWS_CURVE_OFFSETS = -0.2</p>
+<p class="last">AWS_CURVE_BOUNDARIES = <span class="math">\(B/G_{low}-\text{AWS_BB_DIST}\)</span></p>
+</div>
+<p id="isp-awb-centroid-formula">2. For a set of N tiles which have passed the previous step, calculate the <em>main</em>
+centroid point using weighted average formula</p>
+<blockquote>
+<div>The centroid represents the heaviest (regarding the number of collected CFA&#8217;s) center
+point of a group of tiles in ratio R and B coordinate space (please refer to
+<a class="reference internal" href="#isp-awb-tiles-distribution"><span>the image</span></a>).</div></blockquote>
+<div class="math">
+\[\text{centroid R} = \frac{1}{\displaystyle\sum_{i=1}^{N} CFA\_NUM_i} \cdot \displaystyle\sum_{i=1}^{N} \Bigl( \text{ratio R}_i \cdot CFA\_NUM_i \Bigr)\]\[\text{centroid B} = \frac{1}{\displaystyle\sum_{i=1}^{N} CFA\_NUM_i} \cdot \displaystyle\sum_{i=1}^{N} \Bigl( \text{ratio B}_i \cdot CFA\_NUM_i \Bigr)\]</div>
+<p>3. Determine whether the tiles form single (close enough) or multiple (distant)
+<cite>clouds</cite> on R/B plane.</p>
+<blockquote>
+<div><p>This step is required to properly handle images containing
+areas with colors close to Planckian Locus but interpreted as different light
+temperatures.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If, for example, the scene contains substantial areas of white and light blue,
+and is lit using 2800K warm light source, the white would be categorized
+as white in 2800K but light blue may have be most probably placed near cold
+range of planckian locus, 7000K and even higher.
+I such case main centroid could be calculated in between, near 5000K.
+If only this point were used as the center for white balance correction,
+the result of correction would be most probably incorrect.</p>
+</div>
+</div></blockquote>
+<p>3.1. Division of statistics to two distinct &#8216;clouds&#8217; of tiles.</p>
+<blockquote>
+<div>The main centroid point <span class="math">\((\text{centroid R}, \text{centroid B})\)</span> is
+projected on the Planckian Locus, which divides the curve into two parts,
+called <em>above</em> and <em>below</em>.
+For each tile <span class="math">\((R_i, B_i)\)</span>, a point of projection on the Planckian
+Locus is calculated. If <span class="math">\(B_i &gt; \text{centroid B}\)</span>, the
+tile belongs to <em>above</em>, otherwise to <em>below</em>.</div></blockquote>
+<p>3.2. Then two side centroids, using tiles belonging to <em>above</em> or <em>below</em>
+respectively,  are calculated.</p>
+<blockquote>
+<div>The same formula as described in <a class="reference internal" href="#isp-awb-centroid-formula"><span>this step</span></a> is used.</div></blockquote>
+<p>3.3. Distance between main centroid point and each side centroid is calculated.</p>
+<blockquote>
+<div>If only one is greater than <span class="math">\(1.5 \cdot MaxDistance\)</span>
+(on MaxDistance please refer <a class="reference internal" href="#isp-ispc-aws-rb-condition-form"><span>the paragraph</span></a>), the
+centroid is treated as &#8216;weak&#8217; and all tiles composing respective centroid are
+discarded in further processing. This case is visualized in the picture below,
+where <em>above</em> centroid is strong and <em>below</em> is weak.</div></blockquote>
+<div class="figure align-center" id="id6">
+<a class="reference internal image-reference" href="../_images/awb_two_centroids.svg"><img src="../_images/awb_two_centroids.svg" width="100%" /></a>
+<p class="caption"><span class="caption-text">Example distribution of log2(R/G) (horizontal) and log2(B/G)
+(vertical) ratios. Tiles form two clouds with below side centroid being
+too distant from main centroid point.</span></p>
+</div>
+<p>If both side centroids are &#8216;strong&#8217; (that is close enough to main centroid) or
+both are &#8216;weak&#8217; (distant to each other), their
+weights are compared (sum of <span class="math">\(NUM\_CFA_i\)</span> of all respective tiles).
+Another threshold is used here, and the tiles of which the weight is less than
+0.7 of second centroid, are discarded. Otherwise, the weights are treated as
+similar and the centroid which distance to planckian locus is smaller, is
+finally used in further processing.</p>
+<p>The image below shows the case of two strong centroids.</p>
+<div class="figure align-center" id="id8">
+<a class="reference internal image-reference" href="../_images/awb_two_centroids_close.svg"><img src="../_images/awb_two_centroids_close.svg" width="100%" /></a>
+<p class="caption"><span class="caption-text">Example distribution of log2(R/G) (horizontal) and log2(B/G)
+(vertical) ratios. Tiles form two clouds with both side centroids being
+close to main centroid point.</span></p>
+</div>
+<p id="isp-ispc-aws-rb-condition-form">4. Next step is to filter out the tiles which are too distant from derived
+centroid point.</p>
+<blockquote>
+<div><p>The distance is defined as the radius of the circle with the center placed in
+the point defined by (centroid R, centroid B) coordinates (called <em>MaxDistance</em>).</p>
+<p>The pass condition for every tile <cite>i</cite> from a set of <cite>N</cite> tiles is:</p>
+<div class="math">
+\[\begin{split}\sqrt{(\text{ratio R}_i-\text{centroid R})^2+(\text{ratio B}_i-\text{centroid B})^2} &lt; MaxDistance\end{split}\]</div>
+<p>The figure below illustrates the process for an example capture.
+The horizontal axis is R/G, vertical is B/G.
+The example MaxDistance has picked radius of 0.2, which is shown as a dark
+blue circle around centroid cross.</p>
+<p>This diagram shows that more distant tiles (that is the tiles with farthest
+estimated temperature, bright red) won&#8217;t take take part in final
+estimation of illuminator.</p>
+</div></blockquote>
+<div class="figure align-center" id="id10">
+<a class="reference internal image-reference" href="../_images/awb_centroid1.svg"><img src="../_images/awb_centroid1.svg" width="100%" /></a>
+<p class="caption"><span class="caption-text">All tiles placed at most MaxDistance to the centroid are marked green
+and used for final correction.</span></p>
+</div>
+<p>5. After filtering, the set of <cite>M</cite> closest tiles is used to calculate output ratios
+and estimate illuminator temperature and final CCM correction coefficients.</p>
+<blockquote>
+<div><p>Firstly, AWB driver calculates the sums of <span class="math">\(COLLECTED\_R_j\)</span>,
+<span class="math">\(COLLECTED\_G_j\)</span>, <span class="math">\(COLLECTED\_B_j\)</span> and <span class="math">\(CFA\_NUM_j\)</span> fields
+separately for all <cite>M</cite> tiles, getting:</p>
+<div class="math">
+\[COLLECTED\_R = \sum_{j=1}^{M} COLLECTED\_R_j\]\[COLLECTED\_G = \sum_{j=1}^{M} COLLECTED\_G_j\]\[COLLECTED\_B = \sum_{j=1}^{M} COLLECTED\_B_j\]\[NUM\_CFA = \sum_{j=1}^{M} NUM\_CFA_j\]</div>
+<p>Now the R and B ratios can be calculated using
+<a class="reference internal" href="#isp-awb-ratio-calculation"><span>the formula</span></a></p>
+<p>Now, just like in <a class="reference internal" href="#isp-awb-achlwwp"><span>AC/HLW/WP statistics</span></a>, the following steps are taken to have
+the color correction applied for the consecutive captures:</p>
+<ul class="simple">
+<li>Using the computed red, green and blue gains the temperature is estimated
+using the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_temperature_correction.html#acf402933939d02799098cd057dccab43">getCorrelatedTemperature()</a> function.</li>
+<li>The CCM is interpolated from the predefined CCMs for different colour
+temperatures</li>
+<li>The computed gain factors get the inverse quantum efficiency applied, this is
+taken from the precomputed gains for the 6500 colour temperature.</li>
+<li>The colour correction matrix gains and offsets are programmed in the pipeline
+in the call to the programCorrection function.</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="auxiliary-classes">
+<span id="isp-icm-awn-auxiliary"></span><h2>Auxiliary Classes<a class="headerlink" href="#auxiliary-classes" title="Permalink to this headline">¶</a></h2>
+<p>All <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b.html">ControlAWB</a> and all it&#8217;s child classes depend on two auxiliary
+classes implemented to encapsulate additional functionality, structures and
+operations.</p>
+<div class="section" id="colour-correction">
+<span id="isp-awb-colourcorrection"></span><h3>Colour Correction<a class="headerlink" href="#colour-correction" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">ColourCorrection</span></code> class encapsulates colour correction
+transform information: colour correction matrix coefficients, offsets and white
+balance gains. It also overloads addition and product operators to ease the
+interpolation of colour correction transforms.</p>
+</div>
+<div class="section" id="temperature-correction">
+<span id="isp-icm-temperaturecorrection"></span><h3>Temperature Correction<a class="headerlink" href="#temperature-correction" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_temperature_correction.html">TemperatureCorrection</a> class provides functionality for estimation of
+colour correlated temperature from RGB values as well as a mechanism for
+storing an arbitrary number of colour transforms associated to specific colour
+temperatures. It provides the colour correction interpolation when transformed
+for specific colour temperatures not included in the list are requested.</p>
+<p>The class implements three methods of Correlated Color Temperature estimation:</p>
+<ul>
+<li><p class="first">Planckian Locus linear approximation from sensor calibration points</p>
+<p>Used as the default temperature correlation algorithm to obtain most precise
+temperature correlation for given calibrated imager sensor.</p>
+<p>The paragraphs <a class="reference internal" href="#isp-awb-linesegment"><span>Line Segment</span></a> and
+<a class="reference internal" href="#isp-awb-linesegments"><span>Line Segments</span></a> provide some details of math behind this
+method.</p>
+</li>
+<li><p class="first">McCamy&#8217;s formula</p>
+<p>Used as fallback in case no calibration points are available.</p>
+<blockquote>
+<div><div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Please refer to McCamy, Calvin S. (April 1992). &#8220;Correlated color
+temperature as an explicit function of chromaticity coordinates&#8221;.
+Color Research &amp; Application 17 (2): 142–144</p>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">sRGB colorspace table lookup with interpolation</p>
+<p>Provided for reference, not used in current image processing.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="line-segment">
+<span id="isp-awb-linesegment"></span><h3>Line Segment<a class="headerlink" href="#line-segment" title="Permalink to this headline">¶</a></h3>
+<p>Each line segment, which approximates the sensor calibration curve between two
+calibration points <span class="math">\((x1, y1, T1)\)</span> and <span class="math">\((x2, y2, T2)\)</span>, is represented
+by <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_line_segment.html">LineSegment</a> class. This class provides all required functions to:</p>
+<ul>
+<li><p class="first">Calculate coordinates <span class="math">\((X_{R_1}, Y_{B_1})\)</span> of point <span class="math">\((R_1, B_1)\)</span> projected
+on the line segment</p>
+</li>
+<li><p class="first">Calculate the distance between given point and a line segment (blue dashed
+lines).</p>
+</li>
+<li><p class="first">Interpolate the temperature represented by given point (<span class="math">\(RB_1\)</span> to
+<span class="math">\(T_{RB_1}\)</span>)</p>
+</li>
+<li><p class="first">Handle the cases where the line segment is not bound to one or both sides.
+This gives the ability to either:</p>
+<ul class="simple">
+<li>extrapolate the temperature if the coordinates of the point projected on
+the line are placed outside of the segment (<span class="math">\(RB_3\)</span> to <span class="math">\(T_{RB_3}\)</span>)</li>
+</ul>
+<p>or</p>
+<ul class="simple">
+<li>clip the temperature to the maximum defined by line segment
+(<span class="math">\(RB_2\)</span> to <span class="math">\(T_{RB_2}\)</span>)</li>
+</ul>
+</li>
+</ul>
+<p>The diagram below visualizes the described functionality of <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_line_segment.html">LineSegment</a>
+class.</p>
+<div class="figure align-center" id="id12">
+<a class="reference internal image-reference" href="../_images/LineSegment_bounds.svg"><img src="../_images/LineSegment_bounds.svg" width="60%" /></a>
+<p class="caption"><span class="caption-text">Functionality of LineSegment object</span></p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This class is used by <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_temperature_correction.html">TemperatureCorrection</a> and
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b___planckian.html">ControlAWB_Planckian</a> classes.</p>
+</div>
+</div>
+<div class="section" id="line-segments">
+<span id="isp-awb-linesegments"></span><h3>Line Segments<a class="headerlink" href="#line-segments" title="Permalink to this headline">¶</a></h3>
+<p>This class is a container of a set of <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_line_segment.html">LineSegment</a> objects, and abstracts
+line approximation of the full Planckian Locus curve.
+The object of <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_line_segment.html">LineSegment</a> is a field of <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_temperature_correction.html">TemperatureCorrection</a> and
+provides the following functionality:</p>
+<ul class="simple">
+<li>Return an iterator to <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_line_segment.html">LineSegment</a> which is the closest to the given
+point <em>(ratioR, ratioB)</em>.</li>
+<li>Calculate the <em>(Xp, Yp)</em> coordinates of point <em>(ratioR, ratioB)</em> projected
+on the linear approximation of the curve.</li>
+<li>Estimate the temperature represented by given point <em>(ratioR, ratioB)</em>.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This container object is initialized by <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_temperature_correction.html">TemperatureCorrection</a> object.</p>
+</div>
+</div>
+</div>
+<div class="section" id="awb-high-level-parameters">
+<span id="isp-awb-hlp"></span><h2>AWB High Level Parameters<a class="headerlink" href="#awb-high-level-parameters" title="Permalink to this headline">¶</a></h2>
+<p>This Control module replaces the WBC and CCM correction based on temperature
+computation using the WBS statistics. It interpolates between several
+corrections defined for a specific temperature at tuning time.</p>
+<div class="math">
+\[\begin{split}\text{Temperature estimation} = (\text{temperature estimation} – \\
+                                 WB\_ESTIMATION\_SCALE) \cdot
+                                 WB\_ESTIMATION\_SCALE\end{split}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <code class="docutils literal"><span class="pre">WB_*</span></code> parameters are not used in <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b___planckian.html">ControlAWB_Planckian</a> module.</p>
+</div>
+<dl class="docutils">
+<dt>AWB_USE_AWS_CONFIG:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p><strong>Defaults:</strong> 0</p>
+<p>If 1 then certain AWS settings are not overwritten by sensor runtime
+parameters in <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b___planckian.html#a9fc0bcfb57bbec6734d095f345fb3f71">ControlAWB_Planckian::configureStatistics()</a>.
+Usable when debugging.</p>
+<p class="last">Applies to AWS_LOG2_R_QEFF, AWS_LOG2_B_QEFF, AWS_TILE_START_COORDS
+and AWS_TILE_SIZE.</p>
+</dd>
+<dt>AWB_MAX_RATIO_DISTANCE:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,1]</p>
+<p><strong>Defaults:</strong> 0.2</p>
+<p class="last">Max distance of tile R and B ratios from centroid point.</p>
+</dd>
+</dl>
+<div class="section" id="temperature-ccm">
+<span id="isp-awb-hlp-ccm"></span><h3>Temperature CCM<a class="headerlink" href="#temperature-ccm" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>WB_CORRECTIONS:</dt>
+<dd><p class="first"><strong>Format:</strong> int range [0,20]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Number of corrections to load from the file. Will load the following
+parameters from 0 to WB_CORRECTIONS-1</p>
+</dd>
+<dt>WB_TEMPERATURE_X:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,100000]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p>E.g. WB_TEMPERATURE_0</p>
+<p class="last">Temperature (in Kelvin) of that correction.</p>
+</dd>
+<dt>WB_CCM_X:</dt>
+<dd><p class="first"><strong>Format:</strong> double[9] range [-3,3]</p>
+<p><strong>Defaults:</strong> 1 0 0 0 1 0 0 0 1</p>
+<p>E.g. WB_CCM_0</p>
+<p class="last">3x3 matrix that will replace the value in CCM module (see
+<a class="reference internal" href="ispc_modules.html#isp-ispc-ccm"><span>Colour Correction Matrix (CCM)</span></a>).</p>
+</dd>
+<dt>WB_OFFSETS_X:</dt>
+<dd><p class="first"><strong>Format:</strong> double[3] range [-32768,32767]</p>
+<p><strong>Defaults:</strong> 0 0 0</p>
+<p>E.g. WB_OFFSETS_0</p>
+<p class="last">Offsets for the CCM. Will replace the value loaded in CCM module (see
+<a class="reference internal" href="ispc_modules.html#isp-ispc-ccm"><span>Colour Correction Matrix (CCM)</span></a>).</p>
+</dd>
+<dt>WB_GAINS_X:</dt>
+<dd><p class="first"><strong>Format:</strong> double[4] range [0.5,8]</p>
+<p><strong>Defaults:</strong> 1 1 1 1</p>
+<p>E.g. WB_GAINS_0</p>
+<p>1 value per Bayer channel in R, G, G, B order regardless of the sensor
+mosaic.</p>
+<p>Will replace the value loaded in WBC module (see <a class="reference internal" href="ispc_modules.html#isp-ispc-wbc"><span>White Balance Correction (WBC)</span></a>).</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The LSH_WBCLIP is not replaced</p>
+</div>
+</dd>
+</dl>
+</div>
+<div class="section" id="parameters-modified">
+<span id="isp-awb-hlp-modified"></span><h3>Parameters modified<a class="headerlink" href="#parameters-modified" title="Permalink to this headline">¶</a></h3>
+<p>When a <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b.html">ControlAWB</a> (and all it&#8217;s derivatives) module is enabled
+in the pipeline, the colour correction configuration parameters
+(<a class="reference internal" href="ispc_modules.html#isp-ispc-ccm"><span>Colour Correction Matrix (CCM)</span></a>) are ignored and taken care of by the control module.</p>
+<p>The white balance statistics (<a class="reference internal" href="ispc_statistics.html#isp-ispc-aws"><span>Auto White Balance Statistics (AWS)</span></a> in
+case of <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b___planckian.html">ControlAWB_Planckian</a> and <a class="reference internal" href="ispc_statistics.html#isp-ispc-wbs"><span>White Balance Statistics (WBS)</span></a> for other
+modules) module configuration is also overridden (refer to
+<a class="reference internal" href="#isp-awb-statistics"><span>Statistics Configuration</span></a>).</p>
+</div>
+</div>
+<div class="section" id="statistics-configuration">
+<span id="isp-awb-statistics"></span><h2>Statistics Configuration<a class="headerlink" href="#statistics-configuration" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This paragraph applies only to AWB modules which use <a class="reference internal" href="ispc_statistics.html#isp-ispc-wbs"><span>White Balance Statistics (WBS)</span></a>
+statistics.</p>
+</div>
+<p>As previously explained, the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b.html">ControlAWB</a> modules takes care of
+automatically configuring the white balance statistics so the number of pixels
+counted for the statistics is close to the desired ratios. Both implementations
+handle the statistics identically.</p>
+<p>The WBS statistics allow defining two different ROIs (region of interests) to
+extract the statistics from. The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b.html">ControlAWB</a> configures both of them to
+use the whole image but only one of them uses dynamic thresholds while the
+other is kept to keep count of (near) clipped pixels. For the clipping count
+<code class="docutils literal"><span class="pre">YHLW_TH</span></code> is set to 0.9 and <code class="docutils literal"><span class="pre">RED_MAX_TH</span></code>, <code class="docutils literal"><span class="pre">GREEN_MAX_TH</span></code> and
+<code class="docutils literal"><span class="pre">BLUE_MAX_TH</span></code> are set to 0.45. Those fixed values correspond to a threshold
+set to a value 90% of the maximum brightness of the pixels received in the WBS
+module. It is assumed that the pipeline is configured in such a way than the
+luminances of the pixels are ranged between -64 and 64 (in a s8.x precision).
+If for whatever reason the configuration of the pipeline changes the fixed
+thresholds must be adjusted accordingly.</p>
+<p>The dynamic thresholds are calculated automatically by the WB control module
+and set appropriately. By default the target of pixels to be considered in the
+statistics is a 7.5% and the thresholds vary according to the image statistics
+to keep close to such ratio.</p>
+</div>
+<div class="section" id="correction-configuration">
+<span id="isp-awb-correction-configuration"></span><h2>Correction Configuration<a class="headerlink" href="#correction-configuration" title="Permalink to this headline">¶</a></h2>
+<p>As mentioned in the setup parameters section below, it is possible to redefine
+the correction configurations applied by the WB control algorithm for different
+illuminant temperatures. The module will automatically interpolate between the
+registered configurations with temperature immediately above or below the
+requested temperature. In case the requested temperature is below the lowest or
+above the highest defined temperatures no interpolation is carried out an only
+the closest temperature correction will be selected.</p>
+</div>
+<div class="section" id="white-balance-flash-filtering-wbff">
+<span id="isp-awb-wbff"></span><h2>White Balance Flash Filtering (WBFF)<a class="headerlink" href="#white-balance-flash-filtering-wbff" title="Permalink to this headline">¶</a></h2>
+<p>The purpose of Flash Filtering algorithm is to identify single frame
+illuminated with changed light and to prevent from using statistics for this
+frame. This applies to any changed light but most common example is flash
+because this is (almost) guaranteed to last for no more than one frame. Other
+changed light conditions usually occupy more than one frame. The following
+figures show how the flash filtering works.</p>
+<div class="figure align-center" id="id13">
+<a class="reference internal image-reference" href="../_images/awb_ex1_single_frame_light_change_input.png"><img alt="../_images/awb_ex1_single_frame_light_change_input.png" src="../_images/awb_ex1_single_frame_light_change_input.png" style="width: 444.5px; height: 70.0px;" /></a>
+<p class="caption"><span class="caption-text">Light change for single frame. Input to AWB.</span></p>
+</div>
+<div class="figure align-center" id="id14">
+<a class="reference internal image-reference" href="../_images/awb_ex1_single_frame_light_change_ff_disabled.png"><img alt="../_images/awb_ex1_single_frame_light_change_ff_disabled.png" src="../_images/awb_ex1_single_frame_light_change_ff_disabled.png" style="width: 444.5px; height: 70.0px;" /></a>
+<p class="caption"><span class="caption-text">Light change for single frame. Flash filtering disabled.</span></p>
+</div>
+<div class="figure align-center" id="id15">
+<a class="reference internal image-reference" href="../_images/awb_ex1_single_frame_light_change_ff_enabled.png"><img alt="../_images/awb_ex1_single_frame_light_change_ff_enabled.png" src="../_images/awb_ex1_single_frame_light_change_ff_enabled.png" style="width: 444.5px; height: 70.0px;" /></a>
+<p class="caption"><span class="caption-text">Light change for single frame. Flash filtering enabled.</span></p>
+</div>
+<div class="section" id="wbff-high-level-parameters">
+<span id="isp-awb-wbff-hlp"></span><h3>WBFF High Level Parameters<a class="headerlink" href="#wbff-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>WBT_USE_FLASH_FILTERING:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Flash filtering enabled/disabled.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="isp-awb-wbff-code">
+<span id="id1"></span><h3>Code Organization<a class="headerlink" href="#isp-awb-wbff-code" title="Permalink to this headline">¶</a></h3>
+<p>Flash filtering is implemented as function called in
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b___planckian.html#ab78ea2018fc35c8f14ea65c753dc29ac">ControlAWB_Planckian::update()</a>. Intercepts calculated Red to Green and B
+blue Green ratios, identifies changed lighting condition, and prevents from
+using changed ratio statistics if they last for less then 2 frames. The
+possitive effect of flash filtering effect is experienced when only one frame
+is illuminated with different light. The negative effect of flash filtering is
+when scene changes because the algorithm causes two frames to be incorrect
+instead of one. However, this effect is only important when white balance
+temporal smoothing is disabled. The output from flash filtering is passed to
+white balance temporal smoothing algorithm.</p>
+</div>
+</div>
+<div class="section" id="white-balance-temporal-smoothing-wbts">
+<span id="isp-awb-wbts"></span><h2>White Balance Temporal Smoothing (WBTS)<a class="headerlink" href="#white-balance-temporal-smoothing-wbts" title="Permalink to this headline">¶</a></h2>
+<p>The purpose of White Balance Temporal Smoothing (WBTS or WBT) is to improve
+user experience when temperature of light in the scene changes rapidly. Because
+statistics for the picture arrive to driver when this picture is already on his
+way for display it is not possible to react on this picture. Therefore some
+colour incorrections are inevitable. The role of temporal smoothing is to
+improve user experience.</p>
+<p>The pictures below shows the series of grey background images.</p>
+<p>Second picture shows corresponding output images after AWB corrections had been
+applied. First image is not corrected because there are no statistics yet.</p>
+<div class="figure align-center" id="id16">
+<a class="reference internal image-reference" href="../_images/awb_ex1_input.png"><img alt="../_images/awb_ex1_input.png" src="../_images/awb_ex1_input.png" style="width: 397.5px; height: 75.0px;" /></a>
+<p class="caption"><span class="caption-text">The images without any white balance corrections i.e. the images as received from the sensor (lsh already applied). Input to AWB.</span></p>
+</div>
+<div class="figure align-center" id="id17">
+<a class="reference internal image-reference" href="../_images/awb_ex1_only.png"><img alt="../_images/awb_ex1_only.png" src="../_images/awb_ex1_only.png" style="width: 397.5px; height: 75.0px;" /></a>
+<p class="caption"><span class="caption-text">AWB applied.</span></p>
+</div>
+<p>Third image is incorrect because the statistics applied by hardware to process
+this input are taken from previous image. There is no way to avoid that. The
+hardware block uses &#8220;incorrect&#8221; data. This generates incorrect frame. White
+balance temporal smoothing task is to make change from incorrect to correct
+more gradual as this improves user experience.</p>
+<p>The WBTS algorithm has two calibration parameters:</p>
+<ul class="simple">
+<li>temporal stretch</li>
+<li>smoothing strength</li>
+</ul>
+<div class="section" id="temporal-stretch">
+<span id="isp-awb-wbts-temporal-stretch"></span><h3>Temporal Stretch<a class="headerlink" href="#temporal-stretch" title="Permalink to this headline">¶</a></h3>
+<p>The temporal stretch defines the maximum time needed to stabilize output after illumination of the scene changes.
+Smoothing algorithm operates on gain ratios. Red to Green (R/G) and Blue to Green (B/G).
+Note smoothing strength is related in sw to base of the algorith.
+The base takes values 1-10. Outside range values are clipped.</p>
+<div class="math">
+\[strength = 11 - base\]</div>
+<div class="figure align-center" id="id18">
+<a class="reference internal image-reference" href="../_images/awb_and_wbts_temporal_stretch_graph.png"><img alt="../_images/awb_and_wbts_temporal_stretch_graph.png" src="../_images/awb_and_wbts_temporal_stretch_graph.png" style="width: 759.0px; height: 340.0px;" /></a>
+<p class="caption"><span class="caption-text">WBTS output depending on temporal stretch. Gain ratio graph.</span></p>
+</div>
+<div class="figure align-center" id="id19">
+<a class="reference internal image-reference" href="../_images/awb_and_wbts_temporal_stretch_input.png"><img alt="../_images/awb_and_wbts_temporal_stretch_input.png" src="../_images/awb_and_wbts_temporal_stretch_input.png" style="width: 100%; height: 80px;" /></a>
+<p class="caption"><span class="caption-text">WBTS temporal stretch input.</span></p>
+</div>
+<div class="figure align-center" id="id20">
+<a class="reference internal image-reference" href="../_images/awb_and_wbts_temporal_stretch_5frames.png"><img alt="../_images/awb_and_wbts_temporal_stretch_5frames.png" src="../_images/awb_and_wbts_temporal_stretch_5frames.png" style="width: 100%; height: 80px;" /></a>
+<p class="caption"><span class="caption-text">WBTS output depending on temporal stretch. 7 frames stretch.</span></p>
+</div>
+<div class="figure align-center" id="id21">
+<a class="reference internal image-reference" href="../_images/awb_and_wbts_temporal_stretch_10frames.png"><img alt="../_images/awb_and_wbts_temporal_stretch_10frames.png" src="../_images/awb_and_wbts_temporal_stretch_10frames.png" style="width: 100%; height: 80px;" /></a>
+<p class="caption"><span class="caption-text">WBTS output depending on temporal stretch. 13 frames stretch.</span></p>
+</div>
+</div>
+<div class="section" id="smoothing-strength">
+<span id="isp-awb-wbts-smoothing-strength"></span><h3>Smoothing Strength<a class="headerlink" href="#smoothing-strength" title="Permalink to this headline">¶</a></h3>
+<p>The smoothing strength defines how aggressive is the smoothing algorith. The less agreessive algorithm the closer the output is to not smoothed.</p>
+<div class="figure align-center" id="id22">
+<span id="my-figure"></span><a class="reference internal image-reference" href="../_images/awb_and_wbts_smoothing_strength_graph.png"><img alt="../_images/awb_and_wbts_smoothing_strength_graph.png" src="../_images/awb_and_wbts_smoothing_strength_graph.png" style="width: 729.6px; height: 328.0px;" /></a>
+<p class="caption"><span class="caption-text">WBTS output depending on smoothing strength. Gain ratio graph.</span></p>
+</div>
+<p>The figure above shows that smoothing strength parameter can affect temporal stretch.
+Temporal stretch is maintained for smoothing strength values above 9.5.</p>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="figure align-center" id="id23">
+<a class="reference internal image-reference" href="../_images/awb_and_wbts_smoothing_strength_input.png"><img alt="../_images/awb_and_wbts_smoothing_strength_input.png" src="../_images/awb_and_wbts_smoothing_strength_input.png" style="width: 738.5px; height: 70.0px;" /></a>
+<p class="caption"><span class="caption-text">WBTS input.</span></p>
+</div>
+<div class="figure align-center" id="id24">
+<a class="reference internal image-reference" href="../_images/awb_and_wbts_smoothing_strength_large.png"><img alt="../_images/awb_and_wbts_smoothing_strength_large.png" src="../_images/awb_and_wbts_smoothing_strength_large.png" style="width: 738.5px; height: 70.0px;" /></a>
+<p class="caption"><span class="caption-text">WBTS output depending on smoothing strength. Smoothing strength large.</span></p>
+</div>
+<div class="figure align-center" id="id25">
+<a class="reference internal image-reference" href="../_images/awb_and_wbts_smoothing_strength_medium.png"><img alt="../_images/awb_and_wbts_smoothing_strength_medium.png" src="../_images/awb_and_wbts_smoothing_strength_medium.png" style="width: 738.5px; height: 70.0px;" /></a>
+<p class="caption"><span class="caption-text">WBTS output depending on smoothing strength. Smoothing strength medium.</span></p>
+</div>
+<div class="figure align-center" id="id26">
+<a class="reference internal image-reference" href="../_images/awb_and_wbts_smoothing_strength_small.png"><img alt="../_images/awb_and_wbts_smoothing_strength_small.png" src="../_images/awb_and_wbts_smoothing_strength_small.png" style="width: 738.5px; height: 70.0px;" /></a>
+<p class="caption"><span class="caption-text">WBTS output depending on smoothing strength. Smoothing strength small.</span></p>
+</div>
+</div>
+<div class="section" id="wbts-high-level-parameters">
+<span id="isp-awb-wbts-hlp"></span><h3>WBTS High Level Parameters<a class="headerlink" href="#wbts-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>WBT_USE_SMOOTHING:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Temporal smoothing enabled/disabled.</p>
+</dd>
+<dt>WBT_TEMPORAL_STRETCH:</dt>
+<dd><p class="first"><strong>Format:</strong> int range [200,5000]</p>
+<p><strong>Defaults:</strong> 300</p>
+<p class="last">Temporal smoothing enabled/disabled.</p>
+</dd>
+<dt>WBT_WEIGHT_BASE:</dt>
+<dd><p class="first"><strong>Format:</strong> float range [1.001,10]</p>
+<p><strong>Defaults:</strong> 2</p>
+<p class="last">Base for temporal smoothing algorithm. Should be regarded as smoothing strength were smoothing_strength = 11 - WEIGHT_BASE. The stronger the smoothing strength is the more smooth are the changes.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="isp-awb-wbts-code">
+<span id="id2"></span><h3>Code Organization<a class="headerlink" href="#isp-awb-wbts-code" title="Permalink to this headline">¶</a></h3>
+<p>White balance temporal smoothing is implemented as function called in
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b___planckian.html#ab78ea2018fc35c8f14ea65c753dc29ac">ControlAWB_Planckian::update()</a>. Intercepts calculated (and flash filtered) Red to Green
+and B blue Green ratios, and calculate weighted average of the values for this and previous frames.
+The number of previous frames taken into account is determined by &#8220;temporal stretch&#8221; parameter.
+The weights for paritcular values are detemined by &#8220;smoothing strength&#8221; paramter. The lower smoothing
+strenght is the higher weight is applied to latest frame statistics leading to values closer
+to  calculated for the most recent frame.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Automatic White Balance (AWB)</a><ul>
+<li><a class="reference internal" href="#ac-hlw-wp-statistics">AC/HLW/WP statistics</a><ul>
+<li><a class="reference internal" href="#code-organization">Code Organization</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#nearest-to-planckian-locus-statistics">Nearest to Planckian Locus statistics</a><ul>
+<li><a class="reference internal" href="#module-operation">Module operation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#auxiliary-classes">Auxiliary Classes</a><ul>
+<li><a class="reference internal" href="#colour-correction">Colour Correction</a></li>
+<li><a class="reference internal" href="#temperature-correction">Temperature Correction</a></li>
+<li><a class="reference internal" href="#line-segment">Line Segment</a></li>
+<li><a class="reference internal" href="#line-segments">Line Segments</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#awb-high-level-parameters">AWB High Level Parameters</a><ul>
+<li><a class="reference internal" href="#temperature-ccm">Temperature CCM</a></li>
+<li><a class="reference internal" href="#parameters-modified">Parameters modified</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#statistics-configuration">Statistics Configuration</a></li>
+<li><a class="reference internal" href="#correction-configuration">Correction Configuration</a></li>
+<li><a class="reference internal" href="#white-balance-flash-filtering-wbff">White Balance Flash Filtering (WBFF)</a><ul>
+<li><a class="reference internal" href="#wbff-high-level-parameters">WBFF High Level Parameters</a></li>
+<li><a class="reference internal" href="#isp-awb-wbff-code">Code Organization</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#white-balance-temporal-smoothing-wbts">White Balance Temporal Smoothing (WBTS)</a><ul>
+<li><a class="reference internal" href="#temporal-stretch">Temporal Stretch</a></li>
+<li><a class="reference internal" href="#smoothing-strength">Smoothing Strength</a></li>
+<li><a class="reference internal" href="#wbts-high-level-parameters">WBTS High Level Parameters</a></li>
+<li><a class="reference internal" href="#isp-awb-wbts-code">Code Organization</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="ispc_controls_ae.html"
+                        title="previous chapter">Automatic Exposure (AE)</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="ispc_controls_af.html"
+                        title="next chapter">Automatic focus (AF)</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

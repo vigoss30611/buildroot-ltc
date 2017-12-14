@@ -1,0 +1,156 @@
+
+items.start
+#config.vol.regulator pwm.0
+board.hwid    Q3FEVB
+board.cpu apollo2
+board.arch    q3f_fpga
+board.case    0
+board.disk	    emmc
+board.string.product Q3FEVB
+board.string.device Q3FEVB
+board.string.model Q3FEVB
+board.string.label Q3FEVB
+soc.cpu.freq -300
+soc.cpu.dvfs 1
+soc.gpu.freq 444
+soc.gpu.dvfs 1
+soc.vpu.dvfs 1
+soc.usb.otg 1
+soc.usb.host 1
+config.ui tablet
+config.phase final
+config.preload preboot
+config.root 1
+config.trace 0
+config.media.pmm 0
+config.media.out rgb565
+config.uboot.logo 0
+config.otg.nluns 2
+config.otg.extraid pads.138
+config.policy.power 1
+config.wdt 0
+
+cpu.power pmu.sw1
+cpu.io33.power pmu.sw2
+dram.count 2
+dram.power pmu.swio
+dram.freq  400
+dram.type DDR3
+dram.width 16
+dram.capacity 512
+memory.cl  6
+memory.rtt 4
+memory.driver 6
+memory.tras 15
+memory.trfc 64
+part0					uboot.48.boot
+part1					item.16.boot
+part2					ramdisk.4096.boot
+part3					kernel.4096.boot
+#part4					kernel.2560.boot
+part5					system.19968.fs
+part6					id.512.fs
+part7					config.512.fs
+
+#camera.front.interface    camif     #modify for apollo
+#camera.front.model        gc0308_demo
+#camera.front.orientation  270
+#camera.front.align	  low8_align
+#camera.front.ctrl         i2c.3     #modify for apollo
+##camera.front.power.iovdd  pmu.ldo3
+##camera.front.power.dvdd   pmu.ldo4
+#camera.front.power.down   pads.107
+#camera.front.reset	  pads.44
+#
+#camera.rear.interface    camif      #modify for apollo
+#camera.rear.model        gc2035_demo
+#camera.rear.orientation  90
+#camera.rear.align	 low8_align
+#camera.rear.ctrl         i2c.3      #modify for apollo
+##camera.rear.power.iovdd  pmu.ldo3
+##camera.rear.power.dvdd   pmu.ldo4
+#camera.rear.power.down   pads.108
+#camera.rear.reset	 pads.44
+#
+ids.pixformat 888
+ids.default lcd
+ids.acm 60
+lcd.model ILI8961_360_240 #KR070LB0S_1024_600
+lcd.port ids.0
+lcd.cable 888
+lcd.rgb rgb
+prescaler.vic 2006
+lcd.vic 2000
+lcd.interface 6 ## 1: lcd 2: tvif 6: srgb
+
+dss.srgb.dev.name ili8961
+dss.srgb.iftype 0 	## 0: rgb dummy 1:  dummy rgb 2: rgb
+dss.srgb.dev.reset 159	## reset pin gpio number
+
+dss.product.type mid
+dss.board.type lcd1
+dss.framebuffer.vic 2000
+dss.lcdpanel.name ILI8961_360_240 #KR070LB0S_1024_600
+dss.lcdpanel.rgbseq 0
+dss.lcdpanel.rgbbpp 8
+#8	## 8: srgb 32: nv12 & nv 21
+dss.lcdpanel.bl.gpio 163
+dss.lcdpanel.bl.polarity 1
+dss.lcdpanel.ids0.rgbseq 6
+#dss.lcdpanel.master.pmu pmu.ldo5
+dss.lcdpanel.ids1.rgbseq 6
+hdmi.scale      1
+
+led0.ctrl pads.161
+led0.polarity 0
+led1.ctrl pads.147
+led1.polarity 1
+bl.ctrl pwm.0
+bl.start 1136
+bl.msleep 250
+bl.low_intensity 255
+bl.high_intensity 20
+bl.def_intensity 102
+codec.model 9624tqlp
+codec.data i2s.0
+sound.speaker pads.160
+soc.usb.host 0
+soc.usb.otg 0
+ts.model gt9147
+ts.ctrl i2c.2
+ts.orientation xy
+sensor.grivaty.model mir3da
+sensor.grivaty.ctrl i2c.1
+sensor.grivaty.int pads.141
+sensor.grivaty.orientation yxz
+#keys.menu adc.10.5
+#keys.up adc.10.0
+#keys.down adc.10.23
+#keys.ok adc.10.15
+#keys.lock adc.10.10
+#keys.mode adc.10.20
+keys.down adc.10.5
+keys.up adc.10.0
+keys.ok adc.10.23
+keys.menu adc.10.15
+keys.mode adc.10.10
+keys.lock adc.10.20
+keyboard.model ht82b40xv150
+pmu.model ec610
+pmu.ctrl i2c.0
+power.full pads.130
+power.dcdetect pads.139
+power.curve.charge      4169.4150.4130.4101.4067.4013.3950.3916.3857.3784.3720.3666
+power.curve.discharge   4000.3902.3785.3725.3681.3615.3554.3496.3441.3373.3323.3300
+initi2c.0 i2c.0.40.99
+virtualvolkey 1
+sensor.mclk.pads 40
+sensor.reset.pads 44
+app.evbboard.ver one
+app.mmc.device /dev/mmcblk0p1
+#enable gui's log info
+#debug.enable
+#enable auto play next video in playback
+video.autoplay.enable
+
+items.end

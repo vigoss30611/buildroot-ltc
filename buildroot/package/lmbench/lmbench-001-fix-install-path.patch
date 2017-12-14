@@ -1,0 +1,166 @@
+diff -Nuar lmbench/scripts/config-run fix/scripts/config-run
+--- lmbench/scripts/config-run	2006-11-27 04:11:04.000000000 +0800
++++ fix/scripts/config-run	2013-12-09 18:43:13.630651879 +0800
+@@ -677,13 +677,13 @@
+ 
+ EOF
+ 
+-echo $ECHON "Mail results [default yes]: $ECHOC"
++echo $ECHON "Mail results [default no]: $ECHOC"
+ read MAIL
+ case $MAIL in 
+-    [Nn]*)	MAIL=no
+-		echo OK, no results mailed.
++    [Yy]*)	MAIL=yes
++		echo OK, results mailed.
+ 		;;
+-    *)		MAIL=yes
++    *)		MAIL=no
+ 		;;
+ esac
+ 
+@@ -750,7 +750,11 @@
+ 
+ VERSION=`../scripts/version`
+ 
+-C=../bin/$OS/`../scripts/config`
++if ! test -d ${LMRESULT}/lmresult
++then
++	mkdir ${LMRESULT}/lmresult
++fi
++C=${LMRESULT}/lmresult/`../scripts/config`
+ echo DISKS=\"$DISKS\" > $C
+ echo DISK_DESC=\"$DISK_DESC\" >> $C
+ echo OUTPUT=$OUTPUT >> $C
+diff -Nuar lmbench/scripts/results fix/scripts/results
+--- lmbench/scripts/results	2003-03-10 16:27:51.000000000 +0800
++++ fix/scripts/results	2013-12-09 18:31:28.974634297 +0800
+@@ -3,19 +3,19 @@
+ # $Id$
+ 
+ OS=`../scripts/os`
+-CONFIG=`../scripts/config`
+-RESULTS=results/$OS
+-BASE=../$RESULTS/`uname -n`
++RESULTS=${LMRESULT}/lmresult
++CONFIG=${RESULTS}/`../scripts/config`
++BASE=$RESULTS/`uname -n`
+ EXT=0
+ 
+-if [ ! -f "../bin/$OS/$CONFIG" ]
++if [ ! -f "$CONFIG" ]
+ then	echo "No config file?"
+ 	exit 1
+ fi
+-. ../bin/$OS/$CONFIG
++. $CONFIG
+ 
+-if [ ! -d ../$RESULTS ]
+-then	mkdir -p ../$RESULTS
++if [ ! -d $RESULTS ]
++then	mkdir -p $RESULTS
+ fi
+ RESULTS=$BASE.$EXT
+ while [ -f $RESULTS ]
+@@ -27,13 +27,13 @@
+ PATH=.:${PATH}; export PATH
+ export SYNC_MAX
+ export OUTPUT
+-lmbench $CONFIG 2>../${RESULTS}
++${LMBASE}/scripts/lmbench $CONFIG 2> ${RESULTS}
+ 
+ if [ X$MAIL = Xyes ]
+ then	echo Mailing results
+ 	(echo ---- $INFO ---
+ 	cat $INFO 
+ 	echo ---- $RESULTS ---
+-	cat ../$RESULTS) | mail lmbench3@bitmover.com 
++	cat $RESULTS) | mail lmbench3@bitmover.com 
+ fi
+ exit 0
+diff -Nuar lmbench-3.0-a9/scripts/config-scaling fix/scripts/config-scaling
+--- lmbench-3.0-a9/scripts/config-scaling	2006-11-27 04:11:04.000000000 +0800
++++ fix/scripts/config-scaling	2013-12-19 20:33:58.073001308 +0800
+@@ -7,7 +7,7 @@
+ # $Id$
+ 
+ # Make sure we can find: ./cmd, df, and netstat
+-PATH=.:../../scripts:$PATH:/etc:/usr/etc:/sbin:/usr/sbin
++PATH=.:${LMBASE}/scripts:$PATH:/etc:/usr/etc:/sbin:/usr/sbin
+ export PATH
+ 
+ if [ ! -f $1 ]; then exit 1; fi
+diff -Nuar lmbench-3.0-a9/scripts/lmbench fix/scripts/lmbench
+--- lmbench-3.0-a9/scripts/lmbench	2006-06-28 00:27:19.000000000 +0800
++++ fix/scripts/lmbench	2013-12-19 20:32:25.013002162 +0800
+@@ -7,7 +7,7 @@
+ # $Id$
+ 
+ # Make sure we can find: ./cmd, df, and netstat
+-PATH=.:../../scripts:$PATH:/etc:/usr/etc:/sbin:/usr/sbin
++PATH=.:${LMBASE}/scripts:$PATH:/etc:/usr/etc:/sbin:/usr/sbin
+ export PATH
+ 
+ if [ -f $1 ]
+@@ -237,14 +237,14 @@
+ 
+ date >> ${OUTPUT}
+ echo Local networking >> ${OUTPUT}
+-if [ ! -d ../../src/webpage-lm ]
+-then	(cd ../../src && tar xf webpage-lm.tar)
++if [ ! -d ${LMRESULT}/lmresult/webpage-lm ]
++then	(cd ${LMRESULT}/lmresult && tar xf ${LMBASE}/webpage-lm.tar)
+ 	sync
+ 	sleep 1
+ fi
+ SERVERS="lat_udp lat_tcp lat_rpc lat_connect bw_tcp"
+ for server in $SERVERS; do $server -s; done
+-DOCROOT=../../src/webpage-lm lmhttp 8008 &
++DOCROOT=${LMRESULT}/lmresult/webpage-lm lmhttp 8008 &
+ sleep 2;
+ 
+ if [ X$BENCHMARK_OS = XYES -o X$BENCHMARK_UDP = XYES ]; then
+@@ -280,15 +280,15 @@
+ 
+ if [ X$BENCHMARK_OS = XYES -o X$BENCHMARK_HTTP = XYES ]; then
+ 	# I want a hot cache number
+-	lat_http localhost 8008 < ../../src/webpage-lm/URLS > /dev/null 2>&1
+-	lat_http localhost 8008 < ../../src/webpage-lm/URLS
++	lat_http localhost 8008 < ${LMRESULT}/lmresult/webpage-lm/URLS > /dev/null 2>&1
++	lat_http localhost 8008 < ${LMRESULT}/lmresult/webpage-lm/URLS
+ fi
+ lat_http -S localhost 8008
+ 
+ for remote in $REMOTE 
+ do
+ 	echo Networking to $remote >> ${OUTPUT}
+-	$RCP $SERVERS lmhttp ../../src/webpage-lm.tar ${remote}:/tmp
++	$RCP $SERVERS lmhttp ${LMBASE}/webpage-lm.tar ${remote}:/tmp
+ 	for server in $SERVERS
+ 	do	$RSH $remote -n /tmp/$server -s &
+ 	done
+@@ -327,8 +327,8 @@
+ 
+ 	if [ X$BENCHMARK_OS = XYES -o X$BENCHMARK_HTTP = XYES ]; then
+ 		# I want a hot cache number
+-		lat_http $remote 8008 < ../../src/webpage-lm/URLS > /dev/null 2>&1
+-		lat_http $remote 8008 < ../../src/webpage-lm/URLS
++		lat_http $remote 8008 < ${LMRESULT}/lmresult/webpage-lm/URLS > /dev/null 2>&1
++		lat_http $remote 8008 < ${LMRESULT}/lmresult/webpage-lm/URLS
+ 	fi
+ 	lat_http -S $remote 8008
+ 
+diff -Nuar lmbench-3.0-a9/scripts/os fix/scripts/os
+--- lmbench-3.0-a9/scripts/os	2006-06-28 00:27:19.000000000 +0800
++++ fix/scripts/os	2013-12-19 20:33:36.309001481 +0800
+@@ -13,8 +13,8 @@
+     if [ -f ../scripts/gnu-os ]
+     then	OS=`../scripts/gnu-os | sed s/unknown-//`
+     fi
+-    if [ -f ../../scripts/gnu-os ]
+-    then	OS=`../../scripts/gnu-os | sed s/unknown-//`
++    if [ -f ${LMBASE}/scripts/gnu-os ]
++    then	OS=`${LMBASE}/scripts/gnu-os | sed s/unknown-//`
+     fi
+ fi
+ echo $OS

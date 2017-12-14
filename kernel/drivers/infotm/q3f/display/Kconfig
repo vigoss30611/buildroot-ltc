@@ -1,0 +1,47 @@
+menuconfig INFOTM_DISPLAY
+	bool "Infotm display support"
+	default y
+	select FB_CFB_FILLRECT
+	select FB_CFB_COPYAREA
+	select FB_CFB_IMAGEBLIT
+	select FB_SYS_FILLRECT
+	select FB_SYS_COPYAREA
+	select FB_SYS_IMAGEBLIT
+	select FB_SYS_FOPS
+	help
+		This enables support for the Infotm display driver.
+
+if INFOTM_DISPLAY
+
+config DISPLAY_IMAPX
+	bool "iMAPx display driver"
+	default y
+	help
+		This enables support for the iMAPx series display driver.
+
+choice Q3F_LCD_MODULE_SUPPORT
+	bool "LCD module support in Q3F"
+	default Q3F_LCD_SPI_ILI8961
+
+	comment "must one lcd selected"
+
+config Q3F_LCD_SPI_ILI8961
+	tristate "ili8961 lcd driver support in Q3F"
+	depends on LCD_SPI
+	help
+		This enables support ili8961 lcd driver in Q3F
+
+config Q3F_LCD_SPI_OTA5182A
+	tristate "ota5182a lcd driver support in Q3F"
+	depends on LCD_SPI
+	help
+		This enables support ota5182a lcd driver in Q3F
+
+config Q3F_CVBS_I2C_IP2906
+	tristate "ip2906 lcd driver support in Q3F"
+	depends on SND_SOC_IP2906
+	help
+		This enables support ip2906 cvbs driver in Q3F
+
+endchoice
+endif

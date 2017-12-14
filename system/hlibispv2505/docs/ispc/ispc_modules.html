@@ -1,0 +1,1828 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Implemented Setup Modules &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="up" title="ISP Control Library" href="ispc_library.html" />
+    <link rel="next" title="Implemented Statistics Modules" href="ispc_statistics.html" />
+    <link rel="prev" title="ISP Control Library" href="ispc_library.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="ispc_statistics.html" title="Implemented Statistics Modules"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="ispc_library.html" title="ISP Control Library"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="ispc_library.html" accesskey="U">ISP Control Library</a> &raquo;</li><li>Implemented Setup Modules</li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="implemented-setup-modules">
+<span id="isp-ispc-setup-modules"></span><h1>Implemented Setup Modules<a class="headerlink" href="#implemented-setup-modules" title="Permalink to this headline">¶</a></h1>
+<p>The following sections will detail what the modules provide as corrections.
+It is mainly is composed of the high level parameters loaded for the SW modules.
+More information about the modules order is available in the
+<a class="reference internal" href="../dictionary.html#isp-dictionary-v2500-modules"><span>V2500 modules</span></a> section.</p>
+<div class="section" id="black-level-correction-blc">
+<span id="isp-ispc-blc"></span><h2>Black Level Correction (BLC)<a class="headerlink" href="#black-level-correction-blc" title="Permalink to this headline">¶</a></h2>
+<p>Correct the black level of the sensor by a fixed offset per channel.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The HW also supports a black average mode but current implementation
+does not support it.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The BLC module in HW only applies the black correction. The system black
+is actually applied in the LSH module in HW but configured in the BLC in
+SW for simplicity</p>
+</div>
+<p>This module is part of the tuning procedure: <a class="reference internal" href="../tuning/user_tuning_guide.html#isp-utg-blc"><span>Sensor BLC tuning</span></a>.</p>
+<div class="section" id="blc-high-level-parameters">
+<span id="isp-ispc-blc-hlp"></span><h3>BLC High Level Parameters<a class="headerlink" href="#blc-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>BLC_SENSOR_BLACK:</dt>
+<dd><p class="first"><strong>Format:</strong> int[4] range [-128,127]</p>
+<p><strong>Defaults:</strong> 127 127 127 127</p>
+<p>Sensor black level in R, G, G, B order (regardless of sensor mosaic).</p>
+<p class="last">Consider as HW fixed point [s7.1] scaled to 8-bit image dynamic range in
+floating point terms. The parameter does not cover full dynamic range of
+the image.</p>
+</dd>
+<dt>BLC_SYS_BLACK:</dt>
+<dd><p class="first"><strong>Format:</strong> int range [0,32767]</p>
+<p><strong>Defaults:</strong> 64</p>
+<p class="last">Desired internal black level. Consider as HW fixed point [u8.2].</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="colour-correction-matrix-ccm">
+<span id="isp-ispc-ccm"></span><h2>Colour Correction Matrix (CCM)<a class="headerlink" href="#colour-correction-matrix-ccm" title="Permalink to this headline">¶</a></h2>
+<p>Colour Correction matrix used for white balance in RGB domain.</p>
+<p>This module is part of the tuning procedure: <a class="reference internal" href="../tuning/user_tuning_guide.html#isp-utg-wbc"><span>White Balance Correction Tuning</span></a>.</p>
+<div class="section" id="ccm-high-level-parameters">
+<span id="isp-ispc-ccm-hlp"></span><h3>CCM High Level Parameters<a class="headerlink" href="#ccm-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>CCM_MATRIX:</dt>
+<dd><p class="first"><strong>Format:</strong> double[9] range [-3,3]</p>
+<p><strong>Defaults:</strong> 1 0 0 0 1 0 0 0 1 (identity)</p>
+<p class="last">3x3 row-wise colour correction matrix. First three values convert input
+R,G,B into output R.</p>
+</dd>
+<dt>CCM_OFFSETS:</dt>
+<dd><p class="first"><strong>Format:</strong> double[3] range [-32768,32767]</p>
+<p><strong>Defaults:</strong> 0 0 0</p>
+<p class="last">Offset vector added as HW fixed point [s9.3].</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="display-gamut-mapper-dgm">
+<span id="isp-ispc-dgm"></span><h2>Display Gamut Mapper (DGM)<a class="headerlink" href="#display-gamut-mapper-dgm" title="Permalink to this headline">¶</a></h2>
+<p>Gamut modifier after CCM and before Gamma is applied. It is similar to the
+<a class="reference internal" href="#isp-ispc-mgm"><span>Main Gamut Mapper (MGM)</span></a> but at a later point in the pipeline.</p>
+<div class="section" id="gamut-algorithm-overview">
+<span id="isp-ispc-dgm-algorithm"></span><h3>Gamut Algorithm overview<a class="headerlink" href="#gamut-algorithm-overview" title="Permalink to this headline">¶</a></h3>
+<p>The Gamut algorithm is the same for the MGM and DGM modules. The HW block is
+composed of several parameters that allow it to be set up to do any
+conversion from clipping to scaling. The mapping operation uses a simple
+two-slope scaling depicted in Figure <a class="reference internal" href="#isp-ispc-gamut-slopes-fig"><span>Gamut transfer and gains curve</span></a>. The
+gamut mapper processes a single pixel at a time without any consideration of
+the locality.</p>
+<p>The components of pixels input are individually clipped to an extended gamut
+range (normally equivalent to xvYCC) set by <em>clip min</em> and <em>clip max</em>.</p>
+<div class="highlight-python"><div class="highlight"><pre>for ch = 1:3
+    pixel[ch] = max(clip_min, pixel[ch])
+    pixel[ch] = min(clip_max, pixel[ch])
+end for
+</pre></div>
+</div>
+<p>In the first stage of the mapping, two variables are created to control the
+transfer of negative components to the complementary colour. Negative
+components are multiplied by <em>slope 0</em>.</p>
+<div class="highlight-python"><div class="highlight"><pre>for ch = 1:3
+   if (pixel[ch] &lt; 0) then
+      var_0[ch] = pixel[ch] * slope[0]
+      var_1[ch] = pixel[ch]
+   else
+      var_0[ch] = pixel[ch]
+      var_1[ch] = 0
+   end if
+end for
+</pre></div>
+</div>
+<p>For tuning the strength of the effect, each transfer (negative red to green,
+negative red to blue, etc. for all combinations) is weighted by a
+coefficient that is nominally -0.5 but can range from 0 to -2.0.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pixel</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">var_0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">coeff</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">var_1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">coeff</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">var_1</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">pixel</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">var_0</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">coeff</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">var_1</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">coeff</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">var_1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">pixel</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">var_0</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">coeff</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span> <span class="n">var_1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">coeff</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span> <span class="n">var_1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>In the next stage, all three components are mapped through a two segment gain
+curve in such a way that the hue is preserved by maintaining the component
+ratios.  The largest component is used to lookup a gain factor which is
+applied to all three components.</p>
+<div class="highlight-python"><div class="highlight"><pre>if (largest &lt; point[1]) then
+   gain = slope[1]
+else
+   gain = slope[1] – slope[2] * (largest – point[1])
+end if
+</pre></div>
+</div>
+<p>Finally, the pixel is multiplied by the gain.</p>
+<div class="figure" id="id5">
+<span id="isp-ispc-gamut-slopes-fig"></span><a class="reference internal image-reference" href="../_images/gamut_slopes.png"><img alt="../_images/gamut_slopes.png" src="../_images/gamut_slopes.png" style="width: 632px; height: 220px;" /></a>
+<p class="caption"><span class="caption-text">Gamut transfer and gains curve</span></p>
+</div>
+</div>
+<div class="section" id="dgm-high-level-parameters">
+<span id="isp-ispc-dgm-hlp"></span><h3>DGM High Level Parameters<a class="headerlink" href="#dgm-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Similar to <a class="reference internal" href="#isp-ispc-mgm"><span>Main Gamut Mapper (MGM)</span></a> but in different point in the pipeline.</p>
+</div>
+<dl class="docutils">
+<dt>DGM_CLIP_MAX:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,2]</p>
+<p><strong>Defaults:</strong> 1.5</p>
+<p class="last">The upper clip limit common to all three input channels.</p>
+</dd>
+<dt>DGM_SRC_NORM:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,2]</p>
+<p><strong>Defaults:</strong> 1</p>
+<p class="last">Defines the knee point on the input side of the transfer curve.
+Corresponds to the upper limit of normal gamut at the source.</p>
+</dd>
+<dt>DGM_CLIP_MIN:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [-1,0]</p>
+<p><strong>Defaults:</strong> -0.5</p>
+<p class="last">This is the lower clip limit common to all three input channels.</p>
+</dd>
+<dt>DGM_COEFF:</dt>
+<dd><p class="first"><strong>Format:</strong> double[6] range [-2,2]</p>
+<p><strong>Defaults:</strong> 0 0 0 0 0 0</p>
+<p>Scaling factors for converting negative extended range to increased
+positive range.</p>
+<p class="last">0: green to red, 1: blue to red, 2: blue to green, 3: red to green, 4:
+red to blue, 5: green to blue</p>
+</dd>
+<dt>DGM_SLOPE:</dt>
+<dd><p class="first"><strong>Format:</strong> double[3] range [0,2]</p>
+<p><strong>Defaults:</strong> 1 1 1</p>
+<p>0: The conversion gain for the negative sector of the input range.
+Applied after the input DGM_CLIP_MIN.</p>
+<p>1: The conversion gain for the input range from 0 to DGM_SRC_NORM.</p>
+<p class="last">2: The conversion gain for the input range from DGM_SRC_NORM to
+DGM_CLIP_MAX.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="denoiser-dns-sha-dn">
+<span id="isp-ispc-dns"></span><h2>Denoiser (DNS/SHA_DN)<a class="headerlink" href="#denoiser-dns-sha-dn" title="Permalink to this headline">¶</a></h2>
+<p>This Module configures several HW blocks: the primary denoiser (DNS) and the
+denoiser part of the SHA module.</p>
+<p>The primary denoiser reduces noise before the defective pixels are corrected
+while the secondary denoiser is used to avoid artefacts after the MIE and TNM
+modified the image.</p>
+<p>This module is part of the tuning procedures: <a class="reference internal" href="../tuning/user_tuning_guide.html#isp-utg-dns"><span>Primary Denoiser Tuning</span></a> and
+<a class="reference internal" href="../tuning/user_tuning_guide.html#isp-utg-sha-dn2"><span>Sharpening and Secondary denoiser Tuning</span></a>.</p>
+<div class="section" id="denoiser-high-level-parameters">
+<span id="isp-ispc-dns-hlp"></span><h3>Denoiser High Level Parameters<a class="headerlink" href="#denoiser-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="primary-denoiser-dns">
+<span id="isp-ispc-dns1-hlp"></span><h4>Primary denoiser (DNS)<a class="headerlink" href="#primary-denoiser-dns" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>DNS_COMBINE_ENABLE:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p><strong>Defaults:</strong> 1</p>
+<p class="last">Combine green channels during denoising. This should be enabled and never
+changed.</p>
+</dd>
+<dt>DNS_STRENGTH:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,6]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Denoising strength.</p>
+</dd>
+<dt>DNS_GREYSC_PIXTHRESH_MULT:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0.07,14.5]</p>
+<p><strong>Defaults:</strong> 0.25</p>
+<p class="last">Pixel threshold multiplier used to adjust the sensitivity of colour
+differences for the greyscale weights. This value is typically around 0.25.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="secondary-denoiser-part-of-sha-in-hw">
+<span id="isp-ispc-dns2-hlp"></span><h4>Secondary Denoiser (part of SHA in HW)<a class="headerlink" href="#secondary-denoiser-part-of-sha-in-hw" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>SHA_DENOISE_BYPASS:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Enable (0) or Disable (1) the secondary denoiser in the HW SHA block.</p>
+</dd>
+<dt>SHA_DN_SIGMA_MULTIPLIER:</dt>
+<dd><p class="first"><strong>Format:</strong> double range
+[0,16]</p>
+<p><strong>Defaults:</strong> 1</p>
+<p class="last">Multiplier to apply to sharpening denoiser standard deviation (sigma
+curve) (1.0=no effect, &lt;1.0=less denoising, &gt;1.0=more denoising).</p>
+</dd>
+<dt>SHA_DN_TAU_MULTIPLIER:</dt>
+<dd><p class="first"><strong>Format:</strong> double range
+[0,16]</p>
+<p><strong>Defaults:</strong> 1</p>
+<p class="last">Multiplier to apply to the driver-determined sharpening denoiser edge
+avoid effort (tau curve) (1.0=no effect, &lt;1.0=less edge avoidance,
+&gt;1.0=more edge avoidance).</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="sensor-information-for-denoiser">
+<h4>Sensor information for denoiser<a class="headerlink" href="#sensor-information-for-denoiser" title="Permalink to this headline">¶</a></h4>
+<p>This is information read from the sensor object but can be saved to record the
+value that was used:</p>
+<dl class="docutils">
+<dt>Gain:</dt>
+<dd>Multiplier used for the capture of the frame.</dd>
+<dt>Read Noise:</dt>
+<dd>Standard deviation of noise when reading pixel value off a sensor in
+electrons.</dd>
+<dt>Sensor bit depth:</dt>
+<dd>Size of the data from the sensor.</dd>
+<dt>Sensor well depth:</dt>
+<dd>Maximum number of electrons a sensor pixel can collect before clipping.</dd>
+</dl>
+<p>Values ported to the sensor driver should be provided by the company
+providing the sensor.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>The information used to be loaded from following parameters which are
+now deprecated. The information is loaded directly from the Sensor
+object attached to the Pipeline that owns the module.</p>
+<dl class="docutils">
+<dt>DNS_ISO_GAIN:</dt>
+<dd>Deprecated, saved as SENSOR_GAIN.</dd>
+<dt>DNS_READ_NOISE:</dt>
+<dd>Deprecated, see SENSOR_READ_NOISE.</dd>
+<dt>DNS_SENSOR_BITDEPTH:</dt>
+<dd>Deprecated, see SENSOR_BITDEPTH.</dd>
+<dt>DNS_SENSOR_WELLDEPTH:</dt>
+<dd>Deprecated, see SENSOR_WELL_DEPTH.</dd>
+</dl>
+<p class="last">See <a class="reference internal" href="ispc_library.html#isp-ispcl-sensor-parameters"><span>Sensor High-level Parameters</span></a> for details on the sensor high level
+parameters.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="defective-pixels-fixing-dpf">
+<span id="isp-ispc-dpf"></span><h2>Defective Pixels Fixing (DPF)<a class="headerlink" href="#defective-pixels-fixing-dpf" title="Permalink to this headline">¶</a></h2>
+<p>The Defective Pixel Fixing module is responsible for detecting and correcting
+potential defective pixels from the sensor. It is also considered as a statistics
+module as it can output a list of detected defects.</p>
+<p>The defective pixels are detected by analysing the surrounding pixels colours.
+The neighbouring pixels also provide a candidate replacement value if the difference
+between the current pixel predicted value exceeds the configured threshold.</p>
+<p>Additionally the map of defects can be loaded from a customised defect map (see
+section <a class="reference internal" href="../test_tools/test_tools.html#isp-tt-dpf-read"><span>Defective Pixels Fixing read map (DPF)</span></a> for details about the format).
+The loading of defects is done using a <strong>shared</strong> HW buffer amongst all
+contexts therefore the map size is limited when using several contexts at
+once. The size of this shared context is configuration dependent and the value
+reported by the HW is available in the
+<a class="reference external" href="../doxygen/struct_c_i___h_w_i_n_f_o.html#a9db25304cd807a0fb504223a32614e33">CI_HWINFO::config_ui32DPFInternalSize</a> attribute.</p>
+<p>Finally all discovered defects (excluding the one loaded) can be saved as
+statistics.</p>
+<p>This module is part of the tuning procedure: <a class="reference internal" href="../tuning/user_tuning_guide.html#isp-utg-dpf"><span>Defective Pixels Tuning</span></a>.</p>
+<div class="section" id="dpf-high-level-parameters">
+<span id="isp-ispc-dpf-hlp"></span><h3>DPF High Level Parameters<a class="headerlink" href="#dpf-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>DPF_DETECT_ENABLE:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Enable HW detection of defective pixels (uses threshold and weight).</p>
+</dd>
+<dt>DPF_READ_MAP_ENABLE:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Enable the usage of the read map defined by DPF_READ_MAP_FILE.</p>
+</dd>
+<dt>DPF_WRITE_MAP_ENABLE:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p><strong>Defaults:</strong> 0</p>
+<p>Enable writing of the HW detection to the write map output.</p>
+<p class="last">Application can use that output to save it to disk or analyse it.</p>
+</dd>
+<dt>DPF_READ_MAP_FILE:</dt>
+<dd>The path to the file to load as a DPF input list in HW format (see
+<a class="reference internal" href="../test_tools/test_tools.html#isp-tt-dpf-read"><span>Defective Pixels Fixing read map (DPF)</span></a>).</dd>
+<dt>DPF_THRESHOLD:</dt>
+<dd><p class="first"><strong>Format:</strong> int range [0,63]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Detection threshold</p>
+</dd>
+<dt>DPF_WEIGHT:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,255]</p>
+<p><strong>Defaults:</strong> 16</p>
+<p class="last">Detection MAD weight.</p>
+</dd>
+</dl>
+<div class="section" id="differences-with-csim-internal-driver">
+<span id="isp-ispc-dpf-differences"></span><h4>Differences with CSIM internal driver<a class="headerlink" href="#differences-with-csim-internal-driver" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">DPF_WRITE_MAP_SIZE</span></code> is ignored in drivers! The size of the write map is
+computed from the size of the imager in <a class="reference external" href="../doxygen/group___m_c.html#ga124f82d1c7ab1c26ed6c426fe9163776">MC_DPFInit()</a> and stored in
+<a class="reference external" href="../doxygen/struct_m_c___d_p_f.html#a5b0c033fb39e5cceeacd6bdefc4d776e">MC_DPF::ui32OutputMapSize</a>. <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_module_d_p_f.html#ae57aed973174067e14aa1deb40cec151">ISPC::ModuleDPF::setup()</a> could be
+modified to load the size from a parameter or override the computed value.</li>
+<li><code class="docutils literal"><span class="pre">PF_WRITE_MAP_POS_THR</span></code> and <code class="docutils literal"><span class="pre">DPF_WRITE_MAP_NEG_THR</span></code> are ignored in
+drivers! The registers are forced to 0 to ensure the whole DPF write map is
+written to file as recommended by HW TRM.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="display-pipeline-scaler-dsc">
+<span id="isp-ispc-dsc"></span><h2>Display Pipeline Scaler (DSC)<a class="headerlink" href="#display-pipeline-scaler-dsc" title="Permalink to this headline">¶</a></h2>
+<p>Scaler in YUV domain before the image is converted to RGB for the display
+pipeline.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Similar to <a class="reference internal" href="#isp-ispc-esc"><span>Encoder Pipeline Scaler (ESC)</span></a> but data processed is going to the display
+pipeline output while ESC goes to encoder pipeline output.</p>
+<p class="last">The resolution of the DSC is also smaller (less filtering taps).</p>
+</div>
+<div class="section" id="dsc-high-level-parameters">
+<span id="isp-ispc-dsc-hlp"></span><h3>DSC High Level Parameters<a class="headerlink" href="#dsc-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>DSC_ADJUST_CUTOFF_FREQ:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range
+{0,1}</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Adjust the cut-off frequency when the taps are computed in MC.</p>
+</dd>
+<dt>DSC_PITCH:</dt>
+<dd><p class="first"><strong>Format:</strong> double[2] range [0,16]</p>
+<p><strong>Defaults:</strong> 1 1</p>
+<p>Scaling factor for horizontal and vertical direction (input/output).</p>
+<p class="last">Can be set to 0 and automatically computed using the imager&#8217;s size and
+the DSC_RECT.</p>
+</dd>
+<dt>DSC_RECT:</dt>
+<dd><p class="first"><strong>Format:</strong> int[4] range [0,8192]</p>
+<p><strong>Defaults:</strong> 0 0 0 0</p>
+<p class="last">Cropping rectangle coordinates (see DSC_RECT_TYPE).</p>
+</dd>
+<dt>DSC_RECT_TYPE:</dt>
+<dd><p class="first"><strong>Format:</strong> {cliprect, croprect, outsize}</p>
+<p><strong>Defaults:</strong> croprect</p>
+<p>Clip rectangle: X/Y of Top Left point, X/Y of Bottom Right point.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The points are <strong>included</strong> so a value of:</p>
+<div class="highlight-python"><div class="highlight"><pre>0 0 1280 720
+</pre></div>
+</div>
+<p class="last">Will be an image of <strong>1281</strong> by <strong>721</strong> pixels.</p>
+</div>
+<p>Crop rectangle: margins from Left, Top, Right, Bottom.</p>
+<p class="last">Out size: X/Y of Top Left point and width/height of input (before scaling)</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="encoder-pipeline-scaler-esc">
+<span id="isp-ispc-esc"></span><h2>Encoder Pipeline Scaler (ESC)<a class="headerlink" href="#encoder-pipeline-scaler-esc" title="Permalink to this headline">¶</a></h2>
+<p>Scaler in YUV domain for the encoder pipeline output.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Similar to <a class="reference internal" href="#isp-ispc-dsc"><span>Display Pipeline Scaler (DSC)</span></a> but data processed is going to the encoder
+pipeline output while DSC goes to display pipeline output.</p>
+<p class="last">The ESC has a higher resolution scaling than the DSC (more filtering taps).</p>
+</div>
+<div class="section" id="esc-high-level-parameters">
+<span id="isp-ispc-esc-hlp"></span><h3>ESC High Level Parameters<a class="headerlink" href="#esc-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>ESC_ADJUST_CUTOFF_FREQ:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range
+{0,1}</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Adjust the cut-off frequency when the taps are computed in MC.</p>
+</dd>
+<dt>ESC_PITCH:</dt>
+<dd><p class="first"><strong>Format:</strong> double[2] range [0,16]</p>
+<p><strong>Defaults:</strong> 1 1</p>
+<p>Scaling factor for horizontal and vertical direction (input/output).</p>
+<p class="last">Can be set to 0 and automatically computed using the imager&#8217;s size and
+the ESC_RECT.</p>
+</dd>
+<dt>ESC_RECT:</dt>
+<dd><p class="first"><strong>Format:</strong> int[4] range [0,8192]</p>
+<p><strong>Defaults:</strong> 0 0 0 0</p>
+<p class="last">Cropping rectangle coordinates (see ESC_RECT_TYPE).</p>
+</dd>
+<dt>ESC_RECT_TYPE:</dt>
+<dd><p class="first"><strong>Format:</strong> {cliprect, croprect, outsize}</p>
+<p><strong>Defaults:</strong> croprect</p>
+<p>Clip rectangle: X/Y of Top Left point, X/Y of Bottom Right point.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The points are <strong>included</strong> so a value of:</p>
+<div class="highlight-python"><div class="highlight"><pre>0 0 1280 720
+</pre></div>
+</div>
+<p class="last">Will be an image of <strong>1281</strong> by <strong>721</strong> pixels.</p>
+</div>
+<p>Crop rectangle: margins from Left, Top, Right, Bottom.</p>
+<p class="last">Out size: X/Y of Top Left point and width/height of input (before scaling)</p>
+</dd>
+<dt>ESC_CHROMA_MODE:</dt>
+<dd><p class="first"><strong>Format:</strong> {inter, co-sited}</p>
+<p><strong>Defaults:</strong> inter</p>
+<p class="last">Horizontal chroma placement relative to luma (interstitial or co-sited).</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="gamma-look-up-table-gma">
+<span id="isp-ispc-gma"></span><h2>Gamma Look-Up table (GMA)<a class="headerlink" href="#gamma-look-up-table-gma" title="Permalink to this headline">¶</a></h2>
+<p>The driver allows to change the Gamma Look Up table at insmod time as
+explained in the <a class="reference internal" href="../getting_started.html#isp-gsg-insmod-options"><span>V2500 Insertion options</span></a> section. It is also possible
+to add additional GMA LUTs following the
+<a class="reference internal" href="../ci/ci_library.html#isp-ci-gamma-lut-customisation"><span>Gamma Look-Up table customisation</span></a> section. This module only controls if
+the gamma curve is applied or not.</p>
+<div class="section" id="gma-high-level-parameters">
+<span id="isp-ispc-gma-hlp"></span><h3>GMA High Level Parameters<a class="headerlink" href="#gma-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>GMA_BYPASS:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Disable (1) or enabled (0) the loaded Gamma look up table.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="output-formats-out">
+<span id="isp-ispc-out"></span><h2>Output formats (OUT)<a class="headerlink" href="#output-formats-out" title="Permalink to this headline">¶</a></h2>
+<p>Not technically a single HW module but regroups all output formats for the
+pipeline.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Some output formats are version dependent and may not be available in all
+HW configurations. Check the relevant <a class="reference external" href="../doxygen/ci__api__structs_8h.html#afd58126ef14843a0c8439244a18fb5f0">CI_INFO_eSUPPORTED</a> in the
+CI driver connection.</p>
+</div>
+<div class="section" id="out-high-level-parameters">
+<span id="isp-ispc-out-hlp"></span><h3>OUT High Level Parameters<a class="headerlink" href="#out-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>OUT_DE:</dt>
+<dd><p class="first"><strong>Format:</strong> {NONE, BAYER8, BAYER10, BAYER12}</p>
+<p><strong>Defaults:</strong> NONE</p>
+<p>Data Extraction output format (if OUT_DE_POINT is enabled).</p>
+<p class="last">Cannot be enabled if OUT_DISP is enabled.</p>
+</dd>
+<dt>OUT_DE_POINT:</dt>
+<dd><p class="first"><strong>Format:</strong> int range [1,3]</p>
+<p><strong>Defaults:</strong> 1</p>
+<p>Data Extraction output position (shared between all contexts):</p>
+<p>1 = after IIF, before BLC blocks</p>
+<p>2 = after LSH, before DNS blocks</p>
+<p class="last">3 = disabled</p>
+</dd>
+<dt>OUT_DISP:</dt>
+<dd><p class="first"><strong>Format:</strong> {NONE, RGB888_24, RGB888_32, RGB101010_32, BGR888_24, BGR888_32, BGR101010_32}</p>
+<p><strong>Defaults:</strong> NONE</p>
+<p class="last">Display output format (will disable DE format if enabled as HW can only
+support 1).</p>
+</dd>
+<dt>OUT_ENC:</dt>
+<dd><p class="first"><strong>Format:</strong> {NONE, NV21, NV12, NV61, NV16, NV21-10bit, NV12-10bit, NV61-10bit, NV16-10bit}</p>
+<p><strong>Defaults:</strong> NONE</p>
+<p class="last">Encoder output format.</p>
+</dd>
+<dt>OUT_DE_HDF:</dt>
+<dd><p class="first"><strong>Format:</strong> {NONE, BGR101010_32}</p>
+<p><strong>Defaults:</strong> NONE</p>
+<p class="last">HDR Extraction output format. Only available from V2500 HW v2 and may not
+be availabel on all HW configurations.</p>
+</dd>
+<dt>OUT_DI_HDF:</dt>
+<dd><p class="first"><strong>Format:</strong> {NONE, BGR161616_64}</p>
+<p><strong>Defaults:</strong> NONE</p>
+<p class="last">HDR Insertion format. Only available from V2500 HW v2 and may not be
+availabel on all HW configurations.</p>
+</dd>
+<dt>OUT_DE_RAW2D:</dt>
+<dd><p class="first"><strong>Format:</strong> {NONE, TIFF10, TIFF12}</p>
+<p><strong>Defaults:</strong> NONE</p>
+<p class="last">Raw 2D Extraction output format. Only available from V2500 HW v2 and may
+not be availabel on all HW configurations.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="imager-interface-iif">
+<span id="isp-ispc-iif"></span><h2>Imager Interface (IIF)<a class="headerlink" href="#imager-interface-iif" title="Permalink to this headline">¶</a></h2>
+<p>Point of entry of the image in the ISP pipeline. Can decimate and crop the
+image.</p>
+<div class="section" id="iif-high-level-parameters">
+<span id="isp-ispc-iif-hlp"></span><h3>IIF High Level Parameters<a class="headerlink" href="#iif-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>IIF_BAYER_FORMAT:</dt>
+<dd><p class="first"><strong>Format:</strong> {RGGB, GRBG, GBRG, BGGR}</p>
+<p><strong>Defaults:</strong> RGGB</p>
+<p>Sensor bayer mosaic used.</p>
+<p><strong>Loaded from the sensor but saved to know which one was used</strong>.</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">When running with data-generator <code class="docutils literal"><span class="pre">IIF_BAYER_FORMAT</span></code> information is
+given by the FLX file meta-data.</p>
+</div>
+</dd>
+<dt>IIF_CAP_RECT_TL:</dt>
+<dd><p class="first"><strong>Format:</strong> int[2] range [0,8192]</p>
+<p><strong>Defaults:</strong> 0 0</p>
+<p class="last">Top left coordinate of capture rectangle in bayer image pixels.</p>
+</dd>
+<dt>IIF_CAP_RECT_BR:</dt>
+<dd><p class="first"><strong>Format:</strong> int[2] range [0,8192]</p>
+<p><strong>Defaults:</strong> 0 0</p>
+<p>Bottom right coordinate of capture rectangle (included).</p>
+<p>This means values of:</p>
+<div class="highlight-python"><div class="highlight"><pre>IIF_CAP_RECT_TL 0 0
+IIF_CAP_RECT_BR 1920 720
+</pre></div>
+</div>
+<p class="last">Will capture an image of <strong>1921</strong> by <strong>721</strong> pixels!</p>
+</dd>
+<dt>IIF_DECIMATION:</dt>
+<dd><p class="first"><strong>Format:</strong> int[2] range [1,16]</p>
+<p><strong>Defaults:</strong> 1 1</p>
+<p>Horizontal and vertical decimation factor (1; 1 means no decimation, 2; 1
+means half horizontal, same vertical, etc).</p>
+<p class="last">Can be used to reduce output size drastically but quality will suffer
+greatly from it (no interpolation).</p>
+</dd>
+</dl>
+<div class="section" id="iif-size-information">
+<span id="isp-ipsc-iif-sizes"></span><h4>IIF Size information<a class="headerlink" href="#iif-size-information" title="Permalink to this headline">¶</a></h4>
+<p>When cropping or decimation is enabled the setup module computes the size
+of the IIF will process as (knowing that CFA_SIZE is 2 pixels):</p>
+<div class="math">
+\[sizeCFA[x] = \frac{cropBR[x] - cropTL[x] +
+CFA\_SIZE}{CFA\_SIZE*decimation[x]}\]</div>
+</div>
+<div class="section" id="isp-ispc-iif-differences">
+<span id="id1"></span><h4>Differences with CSIM internal driver<a class="headerlink" href="#isp-ispc-iif-differences" title="Permalink to this headline">¶</a></h4>
+<p><code class="docutils literal"><span class="pre">IIF_BAYER_FORMAT</span></code> is ignored by drivers. This value is loaded from the
+camera information.</p>
+</div>
+</div>
+</div>
+<div class="section" id="lateral-chromatic-aberration-lca">
+<span id="isp-ispc-lca"></span><h2>Lateral Chromatic Aberration (LCA)<a class="headerlink" href="#lateral-chromatic-aberration-lca" title="Permalink to this headline">¶</a></h2>
+<p>Chromatic aberration is caused by the lens having a different focal length for
+different wavelengths of light (i.e. colours). This fringing is corrected by
+applying a differential scaling factor to the red and blue channels relative
+to the green one.</p>
+<p>This module is part of the tuning procedure: <a class="reference internal" href="../tuning/user_tuning_guide.html#isp-utg-lca"><span>Lateral Chromatic Aberration Tuning</span></a>.</p>
+<div class="section" id="lca-high-level-parameters">
+<span id="isp-ispc-lca-hlp"></span><h3>LCA High Level Parameters<a class="headerlink" href="#lca-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>LCA_BLUEPOLY_X:</dt>
+<dd><p class="first"><strong>Format:</strong> double[3] range [-16,15.9]</p>
+<p><strong>Defaults:</strong> 0 0 0</p>
+<p class="last">Coefficients of horizontal correction polynomial for blue channel
+(x,x^2,x^3).</p>
+</dd>
+<dt>LCA_BLUEPOLY_Y:</dt>
+<dd><p class="first"><strong>Format:</strong> double[3] range [-16,15.9]</p>
+<p><strong>Defaults:</strong> 0 0 0</p>
+<p class="last">Coefficients of vertical correction polynomial for blue channel
+(x,x^2,x^3).</p>
+</dd>
+<dt>LCA_BLUE_CENTER:</dt>
+<dd><p class="first"><strong>Format:</strong> int[2] range [-4095,4095]</p>
+<p><strong>Defaults:</strong> 0 0</p>
+<p class="last">Position of blue channel LCA correction centre, relative to left edge of
+frame cropped &amp; decimated in IIF.</p>
+</dd>
+<dt>LCA_REDPOLY_X:</dt>
+<dd><p class="first"><strong>Format:</strong> double[3] range [-16,15.9]</p>
+<p><strong>Defaults:</strong> 0 0 0</p>
+<p class="last">Coefficients of horizontal correction polynomial for red channel
+(x,x^2,x^3).</p>
+</dd>
+<dt>LCA_REDPOLY_Y:</dt>
+<dd><p class="first"><strong>Format:</strong> double[3] range [-16,15.9]</p>
+<p><strong>Defaults:</strong> 0 0 0</p>
+<p class="last">Coefficients of vertical correction polynomial for red channel
+(x,x^2,x^3).</p>
+</dd>
+<dt>LCA_RED_CENTER:</dt>
+<dd><p class="first"><strong>Format:</strong> int[2] range [-4095,4095]</p>
+<p><strong>Defaults:</strong> 0 0</p>
+<p class="last">Position of red channel LCA correction centre, relative to left edge of
+frame cropped &amp; decimated in IIF.</p>
+</dd>
+<dt>LCA_DEC:</dt>
+<dd><p class="first"><strong>Format:</strong> int[2] range [0,15]</p>
+<p><strong>Defaults:</strong> 0 0</p>
+<p class="last">Decimation compensation multiplier used with LCA_SHIFT. Should convert
+image size from post-IIF (decimated) to pre-IIF (sensor).</p>
+</dd>
+<dt>LCA_SHIFT:</dt>
+<dd><p class="first"><strong>Format:</strong> int[2] range [0,3]</p>
+<p><strong>Defaults:</strong> 0 0</p>
+<p class="last">Right-shift (division) to normalise pre-IIF image width/2 in CFAs to 512.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="lens-shading-lsh">
+<span id="isp-ispc-lsh"></span><h2>Lens Shading (LSH)<a class="headerlink" href="#lens-shading-lsh" title="Permalink to this headline">¶</a></h2>
+<p>Image vignetting caused by lens shading decreases brightness of the image
+around its edges. Lens Shading HW module present in ISP fixes this effect by
+applying additional gain to colour channels. The gain value depends on location
+of image tile - closer the image edge, larger the gain value (see
+<a class="reference internal" href="#isp-ispc-lsh"><span>Lens Shading (LSH)</span></a>). Because lens shading depends on illuminant temperature a
+set of de-shading grids can be loaded by ISP driver. Each grid should be
+generated during ISP calibration process (<a class="reference internal" href="../tuning/user_tuning_guide.html#isp-utg-lsh"><span>Sensor Lens Shading Tuning</span></a>) and should
+corresponds to given illuminant temperature. The <a class="reference internal" href="ispc_controls_lshc.html#isp-icm-lsh"><span>Lens Shading Grid Control</span></a> module is
+responsible for choosing which grid should be applied based on the temperature
+reported by the AWB module.</p>
+<div class="figure align-center" id="id6">
+<a class="reference internal image-reference" href="../_images/lsh_before_correction.png"><img alt="../_images/lsh_before_correction.png" src="../_images/lsh_before_correction.png" style="width: 436.0px; height: 331.0px;" /></a>
+<p class="caption"><span class="caption-text">Image before LSH correction</span></p>
+</div>
+<div class="figure align-center" id="id7">
+<a class="reference internal image-reference" href="../_images/lsh_after_correction.png"><img alt="../_images/lsh_after_correction.png" src="../_images/lsh_after_correction.png" style="width: 433.0px; height: 301.0px;" /></a>
+<p class="caption"><span class="caption-text">Image after LSH correction</span></p>
+</div>
+<p>Lens shading gradients and deshading matrix loading from the HW LSH module.</p>
+<p>The channel gradients are applied evenly across the entire image to correct
+vertical and horizontal gradual shading.</p>
+<p>The de-shading grid can be used to correct vignetting effect caused by the
+lens. Typically there is less light captured in the corners of the image and
+the lens shading grid is a 2D matrix of gains to apply to compensate for that.
+The sampling step is referred as a <em>tile</em> (in CFA) and needs to be a power of
+2. Smaller tile size yields better approximation of the ideal surface at the
+expense of using more memory.</p>
+<div class="figure" id="id8">
+<a class="reference internal image-reference" href="../_images/lsh_tile.png"><img alt="../_images/lsh_tile.png" src="../_images/lsh_tile.png" style="width: 627px; height: 257px;" /></a>
+<p class="caption"><span class="caption-text">LSH grid sampling and tile size (source: TRM)</span></p>
+</div>
+<p>This module is part of the tuning procedure: <a class="reference internal" href="../tuning/user_tuning_guide.html#isp-utg-lsh"><span>Sensor Lens Shading Tuning</span></a>.</p>
+<p>The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_module_l_s_h.html">ModuleLSH</a> can load several deshading grid and the user can
+either choose which one to use at run time or instantiate the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_l_s_h.html">ControlLSH</a> control Module to choose from the colour temperature provided
+by the Auto White Balance algorithm.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>In <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_module_l_s_h.html#a9b91481086989a2f6e22ab6b5f4c10c1">ModuleLSH::load()</a> the matrix grids are not loaded. The function
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_module_l_s_h.html#a031243c8c13ebd2a1add653838e4ecdc">ModuleLSH::loadMatrices()</a> can be used to load all the available
+matrices from the parameter file using the <a class="reference internal" href="ispc_controls_lshc.html#isp-icm-lsh"><span>Lens Shading Grid Control</span></a> method.</p>
+<p class="last">If the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_l_s_h.html">ControlLSH</a> module is instantiated then loading the matrices
+is the responsibility of the ControlLSH object.</p>
+</div>
+<div class="section" id="lsh-high-level-parameters">
+<span id="isp-ispc-lsh-hlp"></span><h3>LSH High Level Parameters<a class="headerlink" href="#lsh-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>LSH_GRADIENTX:</dt>
+<dd><p class="first"><strong>Format:</strong> double[4] range [-4,4]</p>
+<p><strong>Defaults:</strong> 0 0 0 0</p>
+<p class="last">Horizontal linear shading gradient per channel (R, G, G, B).</p>
+</dd>
+<dt>LSH_GRADIENTY:</dt>
+<dd><p class="first"><strong>Format:</strong> double[4] range [-4,4]</p>
+<p><strong>Defaults:</strong> 0 0 0 0</p>
+<p class="last">Vertical linear shading gradient per channel (R, G, G, B).</p>
+</dd>
+<dt>LSH_MATRIX_ENABLE:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Enable/disable use of lens shading matrix.</p>
+</dd>
+</dl>
+<div class="section" id="isp-ispc-lsh-differences">
+<span id="id2"></span><h4>Differences with CSIM internal driver<a class="headerlink" href="#isp-ispc-lsh-differences" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">LSH_MATRIX_FILE</span></code> is ignored by ISPC! The matrices are loaded using the
+<a class="reference internal" href="ispc_controls_lshc.html#isp-icm-lsh"><span>Lens Shading Grid Control</span></a> module.</li>
+<li><code class="docutils literal"><span class="pre">LSH_MATRIX_TILE_SIZE</span></code> is ignored by ISPC! The tile size is loaded
+from the file.</li>
+<li><code class="docutils literal"><span class="pre">LSH_MATRIX_DELTA_BITS</span></code> is ignored by ISPC!  The number of bits used in
+the matrix are computed when translating the matrix from Floats to HW format
+in <a class="reference external" href="../doxygen/group___m_c.html#ga28b297d5bbb460421dceca3029102a55">MC_LSHConvert()</a>.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="main-gamut-mapper-mgm">
+<span id="isp-ispc-mgm"></span><h2>Main Gamut Mapper (MGM)<a class="headerlink" href="#main-gamut-mapper-mgm" title="Permalink to this headline">¶</a></h2>
+<p>Similar to DGM but in different point in the pipeline.
+Algorithm is detailed in section <a class="reference internal" href="#isp-ispc-dgm"><span>Display Gamut Mapper (DGM)</span></a>.</p>
+<div class="section" id="mgm-high-level-parameters">
+<span id="isp-ispc-mgm-hlp"></span><h3>MGM High Level Parameters<a class="headerlink" href="#mgm-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>MGM_CLIP_MAX:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,2]</p>
+<p><strong>Defaults:</strong> 1.5</p>
+<p class="last">The upper clip limit common to all three input channels.</p>
+</dd>
+<dt>MGM_SRC_NORM:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,2]</p>
+<p><strong>Defaults:</strong> 1</p>
+<p class="last">Defines the knee point on the input side of the transfer curve.
+Corresponds to the upper limit of normal gamut at the source.</p>
+</dd>
+<dt>MGM_CLIP_MIN:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [-1,0]</p>
+<p><strong>Defaults:</strong> -0.5</p>
+<p class="last">This is the lower clip limit common to all three input channels.</p>
+</dd>
+<dt>MGM_COEFF:</dt>
+<dd><p class="first"><strong>Format:</strong> double[6] range [-2,2]</p>
+<p><strong>Defaults:</strong> 0 0 0 0 0 0</p>
+<p>Scaling factors for converting negative extended range to increased
+positive range.</p>
+<p class="last">0: green to red, 1: blue to red, 2: blue to green, 3: red to green, 4:
+red to blue, 5: green to blue</p>
+</dd>
+<dt>MGM_SLOPE:</dt>
+<dd><p class="first"><strong>Format:</strong> double[3] range [0,2]</p>
+<p><strong>Defaults:</strong> 1 1 1</p>
+<p>0: The conversion gain for the negative sector of the input range.
+Applied after the input MGM_CLIP_MIN.</p>
+<p>1: The conversion gain for the input range from 0 to MGM_SRC_NORM.</p>
+<p class="last">2: The conversion gain for the input range from MGM_SRC_NORM to
+MGM_CLIP_MAX.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="memory-image-enhancer-mie">
+<span id="isp-ispc-mie"></span><h2>Memory Image Enhancer (MIE)<a class="headerlink" href="#memory-image-enhancer-mie" title="Permalink to this headline">¶</a></h2>
+<p>This configures the Image Enhancer Memory Colour part of the HW module. The
+vibrancy part is configured with the <a class="reference internal" href="#isp-ispc-vib"><span>Vibrancy (VIB)</span></a> parameters.</p>
+<p>Information about the tuning process for this block is available in
+<a class="reference internal" href="../tuning/user_tuning_guide.html#isp-utg-mie"><span>Image Enhancer Tuning</span></a>.</p>
+<div class="section" id="algorithm-overview">
+<span id="isp-ispc-mie-algorithm"></span><h3>Algorithm overview<a class="headerlink" href="#algorithm-overview" title="Permalink to this headline">¶</a></h3>
+<p>In human perception, people strongly associate certain colours with common
+objects and features. The term &#8220;Memory Colour&#8221; (MC) is used for these
+colours.</p>
+<p>Example of memory colours include:</p>
+<ol class="arabic simple">
+<li>The pink/brown tone associated with skin tones.</li>
+<li>The blue tones associated with sky and sea.</li>
+<li>The green/brown tones associated with foliage and outdoor nature shots.</li>
+</ol>
+<p>These colours often require specialized colour correction, because observers
+are particularly sensitive to a correct reproduction of those colours.</p>
+<p>The Memory Image Enhancement (MIE) block supports 3 Memory Colours (MC). For
+each MC:</p>
+<ul class="simple">
+<li>Calculates the likelihood <span class="math">\(L_X\)</span> of the current pixel i.e. its
+similarity to the current MC.</li>
+<li>Modify the pixel YCC value according to MC-specific transformation
+<span class="math">\(T_X\)</span>.</li>
+</ul>
+<p>Image Enhancement mixes the 3 MC transformations and the original YCbCr
+value (non-memory colour path) into a single one using the likelihood as
+mixing weights. Figure <a class="reference internal" href="#isp-ispc-mie-mixture-fig"><span>Memory Colour Mixture (source: TRM)</span></a> shows the mixing
+scheme, including the bypass branch.</p>
+<div class="figure" id="id9">
+<span id="isp-ispc-mie-mixture-fig"></span><a class="reference internal image-reference" href="../_images/mie_mixture.png"><img alt="../_images/mie_mixture.png" src="../_images/mie_mixture.png" style="width: 570px; height: 417px;" /></a>
+<p class="caption"><span class="caption-text">Memory Colour Mixture (source: TRM)</span></p>
+</div>
+</div>
+<div class="section" id="likelihood-estimate">
+<span id="isp-ispc-mie-likelihood"></span><h3>Likelihood estimate<a class="headerlink" href="#likelihood-estimate" title="Permalink to this headline">¶</a></h3>
+<p>The statistical distribution of a memory colour in YCbCr is modelled as
+piecewise linear gain function <span class="math">\(G(y)\)</span> on the Y-axis and a
+diamond-shaped Gaussian distribution <span class="math">\(W_y(Cb,Cr)\)</span> centred around a
+CbCr centroid <span class="math">\(Cb0,Cr0\)</span> and fading to zero, representing the prototype
+memory colour (e.g. a blue tint for sky):
+<span class="math">\(L(y,Cb,Cr) = G(y) \cdot W_y(Cb,Cr)\)</span></p>
+<p>Figure <a class="reference internal" href="#isp-ispc-mie-likelihood-fig"><span>Memory Colour Likelihood Model (source: TRM)</span></a> graphically illustrates how the
+memory colour is modelled in YCbCr space. Four equally spaced,
+diamond-shaped CbCr layers (slices) are stacked on the Y-axis. The
+Likelihood is interpolated (dotted line in inset A and B) for pixels
+yielding Y value between two slices.</p>
+<p>The diamond shape in Figure <a class="reference internal" href="#isp-ispc-mie-likelihood-fig"><span>Memory Colour Likelihood Model (source: TRM)</span></a> inset C
+represents the iso value curve in CbCr where the distribution is 50% of its
+peak value in <span class="math">\(Cb0,Cr0\)</span>. In fact the distribution in CbCr is
+theoretically unbound and fades to zero as the CbCr value moves away from
+<span class="math">\(Cb0,Cr0\)</span>, following a Gaussian decay (see inset B). The fading
+control parameters are  and corresponding to the axes of the diamond shape.
+Note how  can be rotated in CbCr by an angle.</p>
+<p>The Extent (dashed line in Figure <a class="reference internal" href="#isp-ispc-mie-likelihood-fig"><span>Memory Colour Likelihood Model (source: TRM)</span></a> inset
+C,) is the equivalent circular area with radius equal to the geometric
+average of the diamond shape axis. The Variance parameters
+<span class="math">\(\sigma{}_b\)</span>, <span class="math">\(\sigma{}_r\)</span> change with the slice number.</p>
+<div class="figure" id="id10">
+<span id="isp-ispc-mie-likelihood-fig"></span><img alt="../_images/mie_likelihood.png" src="../_images/mie_likelihood.png" />
+<p class="caption"><span class="caption-text">Memory Colour Likelihood Model (source: TRM)</span></p>
+</div>
+</div>
+<div class="section" id="mie-high-level-parameters">
+<span id="isp-ispc-mie-hlp"></span><h3>MIE High Level parameters<a class="headerlink" href="#mie-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="mie-generic-parameters">
+<span id="isp-ispc-mie-generic"></span><h4>MIE Generic Parameters<a class="headerlink" href="#mie-generic-parameters" title="Permalink to this headline">¶</a></h4>
+<p>These parameters affect the loading of all the memory colours.</p>
+<dl class="docutils">
+<dt>MIE_BLACK_LEVEL:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,1]</p>
+<p><strong>Defaults:</strong> 0.0625</p>
+<p>Black level at input of MIE, specified in normalized 0.0 to 1.0.</p>
+<p>E.g. black level = 16/256 = 0.0625</p>
+<div class="last admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Also used by VIB HW module.</p>
+</div>
+</dd>
+<dt>MIE_MEMORY_COLOURS:</dt>
+<dd><p class="first"><strong>Format:</strong> unsigned range [0,9]</p>
+<p><strong>Defaults:</strong> 3</p>
+<p>Number of memory colours configurations to load from the parameters.</p>
+<p>For each of the memory colours parameters the _X is the memory colour it
+is applied to (e.g. <cite>MIE_ENABLED_0 1</cite> enabled memory colours 0,
+<cite>MIE_OUT_BRIGHTNESS_2 0.5</cite> sets the brightness to 0.5 for memory colours
+2).</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p>The HW supports up to 3 enabled memory colours but the parameters and
+the drivers can have more memory colours defined.</p>
+<p class="last">If more than 3 memory colours are enabled the driver will only use the
+first 3 and discard the others.</p>
+</div>
+</dd>
+</dl>
+<div class="section" id="isp-ispc-mie-differences">
+<span id="id3"></span><h5>Differences with CSIM internal driver<a class="headerlink" href="#isp-ispc-mie-differences" title="Permalink to this headline">¶</a></h5>
+<p>The CSIM internal driver uses the deprecated parameters. Please ensure the
+setup parameters used for the module were updated properly.</p>
+</div>
+</div>
+<div class="section" id="luma-input-and-modification">
+<span id="isp-ispc-mie-luma"></span><h4>Luma input and modification<a class="headerlink" href="#luma-input-and-modification" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>MIE_ENABLED_X:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Memory Colour enabled.</p>
+</dd>
+<dt>MIE_YMIN_X:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,1]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Minimum Y value selection (1st slice of the 4 evenly distributed between
+YMin and YMax).</p>
+</dd>
+<dt>MIE_YMAX_X:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,2]</p>
+<p><strong>Defaults:</strong> 1</p>
+<p class="last">Maximum Y value selection (4th slice of the 4 evenly distributed between
+YMin and YMax).</p>
+</dd>
+<dt>MIE_YGAINS_X:</dt>
+<dd><p class="first"><strong>Format:</strong> double[4] range [0,1]</p>
+<p><strong>Defaults:</strong> 0 0 0 0</p>
+<p>4 values, 1 per slice.</p>
+<p class="last">Gain per slice of the likelihood function.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="chroma-input">
+<span id="isp-ispc-mie-chroma-input"></span><h4>Chroma input<a class="headerlink" href="#chroma-input" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>MIE_CCENTER_X:</dt>
+<dd><p class="first"><strong>Format:</strong> double[2] range [-0.5,0.5]</p>
+<p><strong>Defaults:</strong> 0 0</p>
+<p class="last">Chroma likelyhood center point: Cb and Cr values.</p>
+</dd>
+<dt>MIE_CEXTENT_X:</dt>
+<dd><p class="first"><strong>Format:</strong> double[4] range [0.0039,4]</p>
+<p><strong>Defaults:</strong> 0.5 0.5 0.5 0.5</p>
+<p>4 values, 1 per slice.</p>
+<p class="last">Extension of the Chroma likelihood (the bigger the likelier).</p>
+</dd>
+<dt>MIE_CASPECT_X:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [-2,2]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Ellipsoid aspect ratio (log2) in CbCr plane.</p>
+</dd>
+<dt>MIE_CROTATION_X:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [-1,1]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Ellipsoid rotation in CbCr plane.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="chroma-output-effects">
+<span id="isp-ispc-chroma-output"></span><h4>Chroma output effects<a class="headerlink" href="#chroma-output-effects" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>MIE_OUT_HUE_X:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [-1,1]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Output hue rotation (degrees).</p>
+</dd>
+<dt>MIE_OUT_SATURATION_X:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,4]</p>
+<p><strong>Defaults:</strong> 1</p>
+<p class="last">Output saturation.</p>
+</dd>
+<dt>MIE_OUT_BRIGHTNESS_X:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [-1,1]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Output brightness.</p>
+</dd>
+<dt>MIE_OUT_CONTRAST_X:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,4]</p>
+<p><strong>Defaults:</strong> 1</p>
+<p class="last">Output contrast.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="deprecated-parameters">
+<h4>Deprecated parameters<a class="headerlink" href="#deprecated-parameters" title="Permalink to this headline">¶</a></h4>
+<p>These parameters are now deprecated and will not be loaded by the setup module.
+They are provided as references to allow the update of previous parameters.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The provided example values are not tuning parameters and only provided to
+easily differentiate between memory colours and slices.</p>
+</div>
+<dl class="docutils">
+<dt>MIE_VERIFY_PARAMS:</dt>
+<dd><p class="first">This was not used by the drivers.</p>
+<p class="last">This parameter modifies gains if they get too strong. The Setup tools do
+it for the driver.</p>
+</dd>
+<dt>MIE_MC_ON:</dt>
+<dd>Is now enabled per memory colour.</dd>
+<dt>MIE_MC_YMIN:</dt>
+<dd><p class="first">Used to be a vector of 1 value per memory colour.
+Now is specified per memory colour using MIE_YMIN_X.</p>
+<p>Deprecated:</p>
+<div class="highlight-python"><div class="highlight"><pre>MIE_MC_YMIN 0.2422 0.1 0.8
+</pre></div>
+</div>
+<p>Updated:</p>
+<div class="last highlight-python"><div class="highlight"><pre>MIE_YMIN_0 0.2422
+MIE_YMIN_1 0.1
+MIE_YMIN_2 0.8
+</pre></div>
+</div>
+</dd>
+<dt>MIE_MC_YMAX:</dt>
+<dd><p class="first">Used to be a vector of 1 value per memory colour.
+Is now specified per memory colour using MIE_YMAX_X.</p>
+<p>Deperacted:</p>
+<div class="highlight-python"><div class="highlight"><pre>MIE_MC_YMAX 0.4 0.3 1.0
+</pre></div>
+</div>
+<p>Updated:</p>
+<div class="last highlight-python"><div class="highlight"><pre>MIE_YMAX_0 0.4
+MIE_YMAX_1 0.3
+MIE_YMAX_2 1.0
+</pre></div>
+</div>
+</dd>
+<dt>MIE_MC_YGAIN_1:</dt>
+<dd><p class="first">Used to be a vector of 1 value per memory colour for each parameter.
+Is now specified as a vector of 4 values per memory colour using
+MIE_YGAINS_X</p>
+<p>Deprecated:</p>
+<div class="highlight-python"><div class="highlight"><pre>MIE_MC_YGAIN_1 0.4 0.2 0.4
+MIE_MC_YGAIN_2 0.5 0.4 0.1
+MIE_MC_YGAIN_3 0.68 0.2 0.1
+MIE_MC_YGAIN_4 0.75 0.1 0
+</pre></div>
+</div>
+<p>Updated:</p>
+<div class="last highlight-python"><div class="highlight"><pre>MIE_YGAINS_0 0.4 0.5 0.68 0.75
+MIE_YGAINS_1 0.2 0.4 0.2 0.1
+MIE_YGAINS_2 0.4 0.1 0.1 0
+</pre></div>
+</div>
+</dd>
+<dt>MIE_MC_YGAIN_2:</dt>
+<dd>See MIE_MC_YGAIN_1.</dd>
+<dt>MIE_MC_YGAIN_3:</dt>
+<dd>See MIE_MC_YGAIN_1.</dd>
+<dt>MIE_MC_YGAIN_4:</dt>
+<dd>See MIE_MC_YGAIN_1.</dd>
+<dt>MIE_MC_CB0:</dt>
+<dd><p class="first">Used to be 1 value per memory colour representing the centre of the
+chroma slices.
+Now specified as a centre per memory colour using MIE_CCENTER_X.</p>
+<p>Deprecated:</p>
+<div class="highlight-python"><div class="highlight"><pre>MIE_MC_CB0 0.038 -0.038 0.222
+MIE_MC_CR0 0.044 -0.044 0.33
+</pre></div>
+</div>
+<p>Updated:</p>
+<div class="last highlight-python"><div class="highlight"><pre>MIE_CCENTER_0 0.038 0.044
+MIE_CCENTER_1 -0.0388 -0.044
+MIE_CCENTER_2 0.222 0.33
+</pre></div>
+</div>
+</dd>
+<dt>MIE_MC_CR0:</dt>
+<dd>See MIE_MC_CB0.</dd>
+<dt>MIE_MC_CEXTENT_1:</dt>
+<dd><p class="first">Used to be 1 value per memory colour for each parameter.
+Is now specified as a vector of 4 values per memory colour using
+MIE_CEXTENT_X.</p>
+<p>Deprecated:</p>
+<div class="highlight-python"><div class="highlight"><pre>MIE_MC_CEXTENT_1 0.08 0.05 0.15
+MIE_MC_CEXTENT_2 0.09 0.25 0.01
+MIE_MC_CEXTENT_3 0.1 0.5 0.05
+MIE_MC_CEXTENT_4 0.11 0.2 0.3
+</pre></div>
+</div>
+<p>Updated:</p>
+<div class="last highlight-python"><div class="highlight"><pre>MIE_CEXTENT_0 0.08 0.09 0.1 0.11
+MIE_CEXTENT_1 0.05 0.25 0.5 0.2
+MIE_CEXTENT_2 0.15 0.01 0.05 0.3
+</pre></div>
+</div>
+</dd>
+<dt>MIE_MC_CEXTENT_2:</dt>
+<dd>See MIE_MC_CEXTENT_1.</dd>
+<dt>MIE_MC_CEXTENT_3:</dt>
+<dd>See MIE_MC_CEXTENT_1.</dd>
+<dt>MIE_MC_CEXTENT_4:</dt>
+<dd>See MIE_MC_CEXTENT_1.</dd>
+<dt>MIE_MC_CASPECT:</dt>
+<dd><p class="first">Used to be 1 value per memory colour.
+Is now specified per memory colour using MIE_CASPECT_X.</p>
+<p>Deprecated:</p>
+<div class="highlight-python"><div class="highlight"><pre>MIE_MC_CASPECT -0.444 0.444 0.666
+</pre></div>
+</div>
+<p>Updated:</p>
+<div class="last highlight-python"><div class="highlight"><pre>MIE_CASPECT_0 -0.444
+MIE_CASPECT_1 0.444
+MIE_CASPECT_2 0.666
+</pre></div>
+</div>
+</dd>
+<dt>MIE_MC_CROTATION:</dt>
+<dd><p class="first">Used to be 1 value per memory colour.
+Is now specified per memory colour using MIE_CROTATION_X.</p>
+<p>Deprecated:</p>
+<div class="highlight-python"><div class="highlight"><pre>MIE_MC_CROTATION -0.259 0.259 0.5
+</pre></div>
+</div>
+<p>Updated:</p>
+<div class="last highlight-python"><div class="highlight"><pre>MIE_CROTATION_0 -0.259
+MIE_CROTATION_1 0.259
+MIE_CROTATION_2 0.5
+</pre></div>
+</div>
+</dd>
+<dt>MIE_MC_HUE:</dt>
+<dd><p class="first">Used to be 1 value per memory colour.
+Is now specified per memory colour using MIE_OUT_HUE_X.</p>
+<p>Deprecated:</p>
+<div class="highlight-python"><div class="highlight"><pre>MIE_MC_HUE 0.889 0 0.5
+</pre></div>
+</div>
+<p>Updated:</p>
+<div class="last highlight-python"><div class="highlight"><pre>MIE_OUT_HUE_0 0.889
+MIE_OUT_HUE_1 0
+MIE_OUT_HUE_2 0.5
+</pre></div>
+</div>
+</dd>
+<dt>MIE_MC_SATURATION:</dt>
+<dd><p class="first">Used to be 1 value per memory. colour.
+Is now specified per memory colour using MIE_OUT_SATURATION_X.</p>
+<p>Deprecated:</p>
+<div class="highlight-python"><div class="highlight"><pre>MIE_MC_SATURATION 1.84 0.2 0.5
+</pre></div>
+</div>
+<p>Updated:</p>
+<div class="last highlight-python"><div class="highlight"><pre>MIE_OUT_SATURATION_0 1.84
+MIE_OUT_SATURATION_1 0.2
+MIE_OUT_SATURATION_2 0.5
+</pre></div>
+</div>
+</dd>
+<dt>MIE_MC_BRIGHTNESS:</dt>
+<dd><p class="first">Used to be 1 value per memory colour.
+Is now specified per memory colour using MIE_OUT_BRIGHTNESS_X.</p>
+<p>Deprecated:</p>
+<div class="highlight-python"><div class="highlight"><pre>MIE_MC_BRIGHTNESS 0 0.5 -0.4
+</pre></div>
+</div>
+<p>Updated:</p>
+<div class="last highlight-python"><div class="highlight"><pre>MIE_OUT_BRIGHTNESS_0 0
+MIE_OUT_BRIGHTNESS_1 0.5
+MIE_OUT_BRIGHTNESS_2 -0.4
+</pre></div>
+</div>
+</dd>
+<dt>MIE_MC_CONTRAST:</dt>
+<dd><p class="first">Used to be 1 value per memory colour.
+Is now specified per memory colour using MIE_OUT_CONTRAST_X.</p>
+<p>Deprecated:</p>
+<div class="highlight-python"><div class="highlight"><pre>MIE_MC_CONTRAST 1 0.2 0
+</pre></div>
+</div>
+<p>Updated:</p>
+<div class="last highlight-python"><div class="highlight"><pre>MIE_OUT_CONTRAST_0 1
+MIE_OUT_CONTRAST_1 0.2
+MIE_OUT_CONTRAST_2 0
+</pre></div>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="section" id="rgb-to-yuv-r2y">
+<span id="isp-ispc-r2y"></span><h2>RGB to YUV (R2Y)<a class="headerlink" href="#rgb-to-yuv-r2y" title="Permalink to this headline">¶</a></h2>
+<p>Similar to <a class="reference internal" href="#isp-ispc-y2r"><span>YUV to RGB (Y2R)</span></a> but converts RGB to YUV while Y2R converts
+YUV to RGB at a different point in the pipeline.</p>
+<div class="section" id="r2y-high-level-parameters">
+<span id="isp-ispc-r2y-hlp"></span><h3>R2Y High Level Parameters<a class="headerlink" href="#r2y-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>R2Y_MATRIX:</dt>
+<dd><p class="first"><strong>Format:</strong> {BT601, BT709, JFIF}</p>
+<p><strong>Defaults:</strong> BT709</p>
+<p class="last">Standard matrix to use as base.</p>
+</dd>
+<dt>R2Y_BRIGHTNESS:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [-0.5,0.5]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Output brightness (offset).</p>
+</dd>
+<dt>R2Y_CONTRAST:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,2]</p>
+<p><strong>Defaults:</strong> 1</p>
+<p class="last">Output contrast (luma gain).</p>
+</dd>
+<dt>R2Y_HUE:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [-30,30]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Hue rotation in degrees.</p>
+</dd>
+<dt>R2Y_SATURATION:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0.1,10]</p>
+<p><strong>Defaults:</strong> 1</p>
+<p class="last">Output saturation (chroma gain).</p>
+</dd>
+<dt>R2Y_OFFSETU:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [-0.5,0.5]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Normalised offset on the U plane (Cb).</p>
+</dd>
+<dt>R2Y_OFFSETV:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [-0.5,0.5]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Normalised offset on the V plane (Cr).</p>
+</dd>
+<dt>R2Y_RANGE_MUL:</dt>
+<dd><p class="first"><strong>Format:</strong> double[3] range [0,2]</p>
+<p><strong>Defaults:</strong> 1 1 1</p>
+<p class="last">Gain multipliers for Y, Cb, Cr (before output offset).</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="raw-look-up-table-rlt">
+<span id="isp-ispc-rlt"></span><h2>Raw Look-up Table (RLT)<a class="headerlink" href="#raw-look-up-table-rlt" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="rlt-high-level-parameters">
+<span id="isp-ispc-rlt-hlp"></span><h3>RLT High Level Parameters<a class="headerlink" href="#rlt-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>RLT_CORRECTION_MODE:</dt>
+<dd><p class="first"><strong>Format:</strong> {DISABLED, LINEAR, CUBIC}</p>
+<p><strong>Defaults:</strong> DISABLED</p>
+<p class="last">RLT correction mode to use. Changes the meaning of the RLT_POINTS_X
+parameters.</p>
+</dd>
+<dt>RLT_POINTS_X:</dt>
+<dd><p class="first"><strong>Format:</strong> unsigned[16] range [0,65536]</p>
+<p><strong>Defaults:</strong> 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</p>
+<p>RLT_POINTS_0, RLT_POINTS_1, RLT_POINTS_2 and RLT_POINTS_3 are
+the RLT correction points.</p>
+<p>If mode is linear the curve is 64 points loaded in order (0 is 1st 16, 1
+is 2nd 16 etc).</p>
+<p class="last">If mode is cubic each entry used for 1 colour channel (0=R, 1=G1, 2=G2,
+3=B).</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="sharpening-sha">
+<span id="isp-ispc-sha"></span><h2>Sharpening (SHA)<a class="headerlink" href="#sharpening-sha" title="Permalink to this headline">¶</a></h2>
+<p>This module is part of the tuning procedure: <a class="reference internal" href="../tuning/user_tuning_guide.html#isp-utg-sha-dn2"><span>Sharpening and Secondary denoiser Tuning</span></a>.</p>
+<div class="section" id="sha-high-level-parameters">
+<span id="isp-ispc-sha-hlp"></span><h3>SHA High Level Parameters<a class="headerlink" href="#sha-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>SHA_DETAIL:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,1]</p>
+<p><strong>Defaults:</strong> 1</p>
+<p>Sharpening texture vs. edges detail parameter.</p>
+<p class="last">0 is only edges while 1 is everything.</p>
+</dd>
+<dt>SHA_EDGE_OFFSET:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [-1,1]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">It is recommended to keep this parameter at 0.</p>
+</dd>
+<dt>SHA_EDGE_SCALE:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,1]</p>
+<p><strong>Defaults:</strong> 0.25</p>
+<p>Sharpening edge likelihood scale parameter.</p>
+<p>High values produce abrupt changes in edge/non-edge likelihood map.</p>
+<p class="last">It is recommended to keep this parameter at 0.</p>
+</dd>
+<dt>SHA_RADIUS:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0.5,10]</p>
+<p><strong>Defaults:</strong> 2.5</p>
+<p>Sharpening radius in pixels that sharpening will be applied to.</p>
+<p class="last">Any value over 5 would be meaningless, if blur is spread over 5 pixels
+then it will only have a small impact. Typical values for modern small
+pixel sensors would be in the range of [1.5, 2.5]</p>
+</dd>
+<dt>SHA_STRENGTH:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,1]</p>
+<p><strong>Defaults:</strong> 0.4</p>
+<p class="last">Sharpening strength.</p>
+</dd>
+<dt>SHA_THRESH:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,1]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p>Sharpening mask threshold.</p>
+<p class="last">It is recommended to keep this parameter at 0.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="tone-mapper-tnm">
+<span id="isp-ispc-tnm"></span><h2>Tone Mapper (TNM)<a class="headerlink" href="#tone-mapper-tnm" title="Permalink to this headline">¶</a></h2>
+<p>The tone mapper module allows the modification of the global and local tone
+as well as modifying the luma range. Information about how to tune this module
+is available in <a class="reference internal" href="../tuning/user_tuning_guide.html#isp-utg-tnm"><span>Tone-mapping Tuning</span></a>.</p>
+<p>This module is part of the tuning procedure: <a class="reference internal" href="../tuning/user_tuning_guide.html#isp-utg-tnm"><span>Tone-mapping Tuning</span></a>.</p>
+<div class="section" id="isp-ispc-tnm-algorithm">
+<span id="id4"></span><h3>Algorithm overview<a class="headerlink" href="#isp-ispc-tnm-algorithm" title="Permalink to this headline">¶</a></h3>
+<p>The tone mapping module operates with YCC data and the complete tone mapping
+process can be separated into 5 distinct phases (see
+<a class="reference internal" href="#isp-ispc-tnm-phases-fig"><span>Tone Mapper block diagram (source: TRM)</span></a>). The first and last phases are simply to
+scale the input and output ranges of the luma and chroma signals according
+to the desired gamut. After input range correction, the luma component
+undergoes a global tone map transfer using a predetermined tone curve that
+is programmed through the host interface. Then, the globally tone mapped
+luma values undergo a localised tone map transfer, using statistics that are
+collected from previously processed pixels of the current frame. After tone
+mapping of the luma signal, the chroma values are adjusted according to the
+change in the corresponding luma component.</p>
+<div class="figure" id="id11">
+<span id="isp-ispc-tnm-phases-fig"></span><a class="reference internal image-reference" href="../_images/tnm_block.png"><img alt="../_images/tnm_block.png" src="../_images/tnm_block.png" style="width: 1056px; height: 321px;" /></a>
+<p class="caption"><span class="caption-text">Tone Mapper block diagram (source: TRM)</span></p>
+</div>
+<div class="section" id="luma-range">
+<span id="isp-ispc-tnm-luma"></span><h4>Luma range<a class="headerlink" href="#luma-range" title="Permalink to this headline">¶</a></h4>
+<p>The values specified in the TNM_IN_Y setup parameter define the valid range
+for the application of tone mapping. This range will be used for both global
+and local tone mapping and any values below or above the defined range will
+be clipped.</p>
+<p>The global tone mapping curve is scaled to cover the defined range so the
+same global mapping curve applied with different TNM_IN_Y values will
+produce different effects in the output of the tone mapper. That implies as
+well that if the global tone mapping curve is derived from the frame to be
+processed (or previous frames) the gathering of statistics and curve
+generation must take into consideration the tone mapper TNM_IN_Y for a
+proper alignment of the image data and the global curve.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">It is expected that the range for the tone map collection is -64 to 64
+and it should not need to be changed by the user.</p>
+</div>
+<div class="figure" id="id12">
+<span id="isp-ispc-tnm-luma-range-fig"></span><img alt="../_images/tnm_lumarange.png" src="../_images/tnm_lumarange.png" />
+<p class="caption"><span class="caption-text">Tone Mapper Luma range</span></p>
+</div>
+</div>
+<div class="section" id="colour-saturation">
+<span id="isp-ispc-tnm-colour"></span><h4>Colour saturation<a class="headerlink" href="#colour-saturation" title="Permalink to this headline">¶</a></h4>
+<p>Apart from the global and local tone mapping controls there are two setup
+parameters devoted to control the colour appearance after tone mapping:
+<em>colour confidence</em> and <em>colour saturation</em>.</p>
+<p>The saturation controls are used because, as result of the luminance changes
+carried out by the tone mapper, the saturation of the output colours may
+vary. In order to deal with that the tone mapper internally scales the
+chroma values of the pixels to keep the same levels of saturation in the
+input and the output.</p>
+<p>Nevertheless, depending on the global and local configuration, there are
+cases in which the output perceived colour saturation might vary with
+respect to the input. The <em>colour saturation</em> is a scaling factor for the
+saturation aimed to correct any perceived bias in the output saturation.
+Typically we would like to set it up so the input and output saturation look
+the same but it is basically a matter of preference.</p>
+<p>The Figure <a class="reference internal" href="#isp-ispc-tnm-cmp-2-fig"><span>Effect of different values of colour saturation</span></a> show an example of two different
+<em>colour saturation</em> values and how they affect the output.</p>
+<div class="figure" id="id13">
+<span id="isp-ispc-tnm-cmp-2-fig"></span><img alt="../_images/tnm_cmp_2.png" src="../_images/tnm_cmp_2.png" />
+<p class="caption"><span class="caption-text">Effect of different values of <em>colour saturation</em></span></p>
+</div>
+<p>The <em>colour confidence</em> parameter serves as a safeguard for undesired
+colour effects that might occur when the original luma values are very close
+to the black or white level. For example, very dark regions in the original
+image might contain some colour cast not perceivable in the original image.
+If such pixels luminance values are heavily increased by the tone mapper
+such colour cast will be amplified resulting in unnatural colours in certain
+regions of the image.</p>
+<p>Figure <a class="reference internal" href="#isp-ispc-tnm-cmp-3-fig"><span>Effect of different values of colour confidence</span></a>, generated with a bit excessive local
+enhancement and <em>colour confidence</em> of 4, shows an example of those colour
+casts in the right bottom corner (see augmented region).</p>
+<div class="figure" id="id14">
+<span id="isp-ispc-tnm-cmp-3-fig"></span><img alt="../_images/tnm_cmp_3.png" src="../_images/tnm_cmp_3.png" />
+<p class="caption"><span class="caption-text">Effect of different values of <em>colour confidence</em></span></p>
+</div>
+<p>In order to deal with such problem the <em>colour confidence</em> reduces the
+saturation correction in the output image, specially for values close to the
+black/white levels. The tone mapper calculates a confidence measure for
+chroma correction according to the input luma value as shown in Figure
+<a class="reference internal" href="#isp-ispc-tnm-confidence-fig"><span>Colour confidence scaling calculations</span></a> (A). The <em>colour confidence</em> value is used
+to scale up or down the confidence value. As the confidence measure will be
+always between 0 and 1 obtained values above 1 will be clipped as shown in
+the figure below (B).</p>
+<div class="figure" id="id15">
+<span id="isp-ispc-tnm-confidence-fig"></span><a class="reference internal image-reference" href="../_images/tnm_confidence.png"><img alt="../_images/tnm_confidence.png" src="../_images/tnm_confidence.png" style="width: 401px; height: 146px;" /></a>
+<p class="caption"><span class="caption-text">Colour confidence scaling calculations</span></p>
+</div>
+<p>This mechanism allows smoothing the chrominance correction near the black or
+white points, where the saturation ratio between chrominance and luminance
+is less reliable.</p>
+<p>Figure <a class="reference internal" href="#isp-ispc-tnm-cmp-4-fig"><span>Colour confidence = 4 (LHS) vs Colour confidence = 1 (RHS)</span></a> shows the effect of a colour confidence
+value reduction applied to remove unwanted colour casts when low luminance
+regions of the image are highlighted by the tone mapper. It must be noted
+that depending on the colour confidence value applied the saturation in
+pixels with luminance values not that close to black or white could be
+affected as well.</p>
+<div class="figure" id="id16">
+<span id="isp-ispc-tnm-cmp-4-fig"></span><img alt="../_images/tnm_cmp_4.png" src="../_images/tnm_cmp_4.png" />
+<p class="caption"><span class="caption-text">Colour confidence = 4 (LHS) vs Colour confidence = 1 (RHS)</span></p>
+</div>
+</div>
+</div>
+<div class="section" id="tnm-high-level-parameters">
+<span id="isp-ispc-tnm-hlp"></span><h3>TNM High Level Parameters<a class="headerlink" href="#tnm-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="tnm-generic-parameters">
+<span id="isp-ispc-tnm-generic"></span><h4>TNM Generic parameters<a class="headerlink" href="#tnm-generic-parameters" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>TNM_BYPASS:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Enable (0) or disable (1) tone mapping. If disabled the Luma is still
+rescaled.</p>
+</dd>
+<dt>TNM_IN_Y:</dt>
+<dd><p class="first"><strong>Format:</strong> double[2] range [-127,127]</p>
+<p><strong>Defaults:</strong> -64 64</p>
+<p>Valid range of input luma values. Values outside get clipped.</p>
+<p class="last">It is recommended to always be -64, 64.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="tnm-tone-mapping-parameters">
+<span id="isp-ispc-tnm-tone-mapping"></span><h4>TNM Tone Mapping parameters<a class="headerlink" href="#tnm-tone-mapping-parameters" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>TNM_FLAT_FACTOR:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,1]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Strength of histogram flattening for local tone mapping (0=none, 1=full).</p>
+</dd>
+<dt>TNM_FLAT_MIN:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,1]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Minimum histogram flattening applied for local tone mapping (0=none,
+1=full).</p>
+</dd>
+<dt>TNM_WEIGHT_LINE:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,1]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Rate at which local tone mapping curves adapt (cca per line, 0=none,
+1=full).</p>
+</dd>
+<dt>TNM_WEIGHT_LOCAL:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,1]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Strength of local tone mapping (0=none, 1=full).</p>
+</dd>
+<dt>TNM_CURVE:</dt>
+<dd><p class="first"><strong>Format:</strong> double[63] range [0,1]</p>
+<p><strong>Defaults:</strong> 0.0153846 0.0307692 0.0461538 0.0615385 0.0769231 0.0923077 0.107692 0.123077 0.138462 0.153846 0.169231 0.184615 0.2 0.215385 0.230769 0.246154 0.261538 0.276923 0.292308 0.307692 0.323077 0.338462 0.353846 0.369231 0.384615 0.4 0.415385 0.430769 0.446154 0.461538 0.476923 0.492308 0.507692 0.523077 0.538462 0.553846 0.569231 0.584615 0.6 0.615385 0.630769 0.646154 0.661538 0.676923 0.692308 0.707692 0.723077 0.738462 0.753846 0.769231 0.784615 0.8 0.815385 0.830769 0.846154 0.861538 0.876923 0.892308 0.907692 0.923077 0.938462 0.953846 0.969231 (linear identity)</p>
+<p>Tone mapping curve normalised Y=[0, 1].</p>
+<p class="last">The HW uses a 65 point curve and assumes that 1st point is 0 and last
+point 1.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="tnm-colour-parameters">
+<span id="isp-ispc-tnm-hlp-colour"></span><h4>TNM Colour parameters<a class="headerlink" href="#tnm-colour-parameters" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>TNM_COLOUR_CONFIDENCE:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,64]</p>
+<p><strong>Defaults:</strong> 1</p>
+<p class="last">Colour confidence factor. Applies always unless module is bypassed.</p>
+</dd>
+<dt>TNM_COLOUR_SATURATION:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,16]</p>
+<p><strong>Defaults:</strong> 1</p>
+<p class="last">Colour saturation factor. Applies always unless module is bypassed.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="section" id="vibrancy-vib">
+<span id="isp-ispc-vib"></span><h2>Vibrancy (VIB)<a class="headerlink" href="#vibrancy-vib" title="Permalink to this headline">¶</a></h2>
+<p>This block applies an input/output transfer curve to the Chroma signal Cb,
+Cr, according to an estimate of the pixel saturation. The goal is to
+increase saturation of low and mid-saturated pixels without affecting those
+pixels whose saturation value is already high, therefore providing vibrancy
+(colourfulness) without amplifying colours that are already &#8220;colourful&#8221;.
+This provides superior performance compared to simple saturation.</p>
+<p>Vibrancy curve is specified with a 32 point piecewise linear curve, which
+in principle can be arbitrary (within the register bit depth limitations).
+However a procedure is used in the GUI tools to generate a 32-point curve
+that can be controlled with two control points and provides an intuitive way
+to add vibrancy to the frame.</p>
+<p>The Figure <a class="reference internal" href="#isp-ispc-vib-curve-fig"><span>Vibrancy curve example</span></a> shows an exemplary vibrancy curve
+(green - using similar 2 points as in
+<a class="reference internal" href="../test_tools/vision_live_2.html#isp-vl2-modulevib"><span>VisionLive VIB tab</span></a>) compared against an equivalent
+saturation curve (red, clipped to 1). The green curve
+allows more control.</p>
+<div class="figure" id="id17">
+<span id="isp-ispc-vib-curve-fig"></span><img alt="../_images/vib_curve.png" src="../_images/vib_curve.png" />
+<p class="caption"><span class="caption-text">Vibrancy curve example</span></p>
+</div>
+<div class="section" id="vib-high-level-parameters">
+<span id="isp-ispc-vib-hlp"></span><h3>VIB High Level Parameters<a class="headerlink" href="#vib-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<p>This configures the Vibrancy part of the MIE HW module.</p>
+<dl class="docutils">
+<dt>MIE_VIB_ON:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Enable vibrancy module.</p>
+</dd>
+<dt>MIE_VIB_SAT_CURVE:</dt>
+<dd><p class="first"><strong>Format:</strong> double[32] range [0,1]</p>
+<p><strong>Defaults:</strong> 0 0.0322581 0.0645161 0.0967742 0.129032 0.16129 0.193548 0.225806 0.258065 0.290323 0.322581 0.354839 0.387097 0.419355 0.451613 0.483871 0.516129 0.548387 0.580645 0.612903 0.645161 0.677419 0.709677 0.741935 0.774194 0.806452 0.83871 0.870968 0.903226 0.935484 0.967742 1</p>
+<p class="last">Output Saturation curve normalised [0, 1]. Input points are evenly
+distributed in [0, 1] using 32 samples.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="white-balance-correction-wbc">
+<span id="isp-ispc-wbc"></span><h2>White Balance Correction (WBC)<a class="headerlink" href="#white-balance-correction-wbc" title="Permalink to this headline">¶</a></h2>
+<p>This is the White Balance part of the LSH HW module that a applies a gain
+value (a multiplier) to each Bayer colour channel.</p>
+<p>This module is part of the tuning procedure: <a class="reference internal" href="../tuning/user_tuning_guide.html#isp-utg-wbc"><span>White Balance Correction Tuning</span></a>.</p>
+<div class="section" id="wbc-high-level-parameters">
+<span id="isp-ispc-wbc-hlp"></span><h3>WBC High Level Parameters<a class="headerlink" href="#wbc-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>LSH_WBCLIP:</dt>
+<dd><p class="first"><strong>Format:</strong> double[4] range [0.5,2]</p>
+<p><strong>Defaults:</strong> 1 1 1 1</p>
+<p class="last">Output pixel white clip level per channel. One per Bayer channel using
+R, G, G, B order regardless of sensor’s mosaic.</p>
+</dd>
+<dt>LSH_WBGAIN:</dt>
+<dd><p class="first"><strong>Format:</strong> double[4] range [0.5,8]</p>
+<p><strong>Defaults:</strong> 1 1 1 1</p>
+<p class="last">White balance gains. One per Bayer channel using R, G, G, B order
+regardless of sensor’s mosaic.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="yuv-to-rgb-y2r">
+<span id="isp-ispc-y2r"></span><h2>YUV to RGB (Y2R)<a class="headerlink" href="#yuv-to-rgb-y2r" title="Permalink to this headline">¶</a></h2>
+<p>Similar to <a class="reference internal" href="#isp-ispc-r2y"><span>RGB to YUV (R2Y)</span></a> but converts YUV to RGB while R2Y converts
+RGB to YUV at a different point in the pipeline.</p>
+<div class="section" id="y2r-high-level-parameters">
+<span id="isp-ispc-y2r-hlp"></span><h3>Y2R High Level Parameters<a class="headerlink" href="#y2r-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>Y2R_MATRIX:</dt>
+<dd><p class="first"><strong>Format:</strong> {BT601, BT709, JFIF}</p>
+<p><strong>Defaults:</strong> BT709</p>
+<p class="last">Standard matrix to use as base.</p>
+</dd>
+<dt>Y2R_BRIGHTNESS:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [-0.5,0.5]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Output brightness (offset).</p>
+</dd>
+<dt>Y2R_CONTRAST:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0.1,10]</p>
+<p><strong>Defaults:</strong> 1</p>
+<p class="last">Output contrast (luma gain).</p>
+</dd>
+<dt>Y2R_HUE:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [-30,30]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Hue rotation in degrees.</p>
+</dd>
+<dt>Y2R_SATURATION:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0.1,10]</p>
+<p><strong>Defaults:</strong> 1</p>
+<p class="last">Output saturation (chroma gain).</p>
+</dd>
+<dt>Y2R_OFFSETU:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [-0.5,0.5]</p>
+<p><strong>Defaults:</strong> -0.5</p>
+<p class="last">Normalised offset on the U plane (Cb).</p>
+</dd>
+<dt>Y2R_OFFSETV:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [-0.5,0.5]</p>
+<p><strong>Defaults:</strong> -0.5</p>
+<p class="last">Normalised offset on the V plane (Cr).</p>
+</dd>
+<dt>Y2R_RANGE_MUL:</dt>
+<dd><p class="first"><strong>Format:</strong> double[3] range [0,2]</p>
+<p><strong>Defaults:</strong> 1 1 1</p>
+<p class="last">Gain multipliers for Y, Cb, Cr (before output offset).</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Implemented Setup Modules</a><ul>
+<li><a class="reference internal" href="#black-level-correction-blc">Black Level Correction (BLC)</a><ul>
+<li><a class="reference internal" href="#blc-high-level-parameters">BLC High Level Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#colour-correction-matrix-ccm">Colour Correction Matrix (CCM)</a><ul>
+<li><a class="reference internal" href="#ccm-high-level-parameters">CCM High Level Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#display-gamut-mapper-dgm">Display Gamut Mapper (DGM)</a><ul>
+<li><a class="reference internal" href="#gamut-algorithm-overview">Gamut Algorithm overview</a></li>
+<li><a class="reference internal" href="#dgm-high-level-parameters">DGM High Level Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#denoiser-dns-sha-dn">Denoiser (DNS/SHA_DN)</a><ul>
+<li><a class="reference internal" href="#denoiser-high-level-parameters">Denoiser High Level Parameters</a><ul>
+<li><a class="reference internal" href="#primary-denoiser-dns">Primary denoiser (DNS)</a></li>
+<li><a class="reference internal" href="#secondary-denoiser-part-of-sha-in-hw">Secondary Denoiser (part of SHA in HW)</a></li>
+<li><a class="reference internal" href="#sensor-information-for-denoiser">Sensor information for denoiser</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#defective-pixels-fixing-dpf">Defective Pixels Fixing (DPF)</a><ul>
+<li><a class="reference internal" href="#dpf-high-level-parameters">DPF High Level Parameters</a><ul>
+<li><a class="reference internal" href="#differences-with-csim-internal-driver">Differences with CSIM internal driver</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#display-pipeline-scaler-dsc">Display Pipeline Scaler (DSC)</a><ul>
+<li><a class="reference internal" href="#dsc-high-level-parameters">DSC High Level Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#encoder-pipeline-scaler-esc">Encoder Pipeline Scaler (ESC)</a><ul>
+<li><a class="reference internal" href="#esc-high-level-parameters">ESC High Level Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#gamma-look-up-table-gma">Gamma Look-Up table (GMA)</a><ul>
+<li><a class="reference internal" href="#gma-high-level-parameters">GMA High Level Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#output-formats-out">Output formats (OUT)</a><ul>
+<li><a class="reference internal" href="#out-high-level-parameters">OUT High Level Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#imager-interface-iif">Imager Interface (IIF)</a><ul>
+<li><a class="reference internal" href="#iif-high-level-parameters">IIF High Level Parameters</a><ul>
+<li><a class="reference internal" href="#iif-size-information">IIF Size information</a></li>
+<li><a class="reference internal" href="#isp-ispc-iif-differences">Differences with CSIM internal driver</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#lateral-chromatic-aberration-lca">Lateral Chromatic Aberration (LCA)</a><ul>
+<li><a class="reference internal" href="#lca-high-level-parameters">LCA High Level Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#lens-shading-lsh">Lens Shading (LSH)</a><ul>
+<li><a class="reference internal" href="#lsh-high-level-parameters">LSH High Level Parameters</a><ul>
+<li><a class="reference internal" href="#isp-ispc-lsh-differences">Differences with CSIM internal driver</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#main-gamut-mapper-mgm">Main Gamut Mapper (MGM)</a><ul>
+<li><a class="reference internal" href="#mgm-high-level-parameters">MGM High Level Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#memory-image-enhancer-mie">Memory Image Enhancer (MIE)</a><ul>
+<li><a class="reference internal" href="#algorithm-overview">Algorithm overview</a></li>
+<li><a class="reference internal" href="#likelihood-estimate">Likelihood estimate</a></li>
+<li><a class="reference internal" href="#mie-high-level-parameters">MIE High Level parameters</a><ul>
+<li><a class="reference internal" href="#mie-generic-parameters">MIE Generic Parameters</a><ul>
+<li><a class="reference internal" href="#isp-ispc-mie-differences">Differences with CSIM internal driver</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#luma-input-and-modification">Luma input and modification</a></li>
+<li><a class="reference internal" href="#chroma-input">Chroma input</a></li>
+<li><a class="reference internal" href="#chroma-output-effects">Chroma output effects</a></li>
+<li><a class="reference internal" href="#deprecated-parameters">Deprecated parameters</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rgb-to-yuv-r2y">RGB to YUV (R2Y)</a><ul>
+<li><a class="reference internal" href="#r2y-high-level-parameters">R2Y High Level Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#raw-look-up-table-rlt">Raw Look-up Table (RLT)</a><ul>
+<li><a class="reference internal" href="#rlt-high-level-parameters">RLT High Level Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#sharpening-sha">Sharpening (SHA)</a><ul>
+<li><a class="reference internal" href="#sha-high-level-parameters">SHA High Level Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tone-mapper-tnm">Tone Mapper (TNM)</a><ul>
+<li><a class="reference internal" href="#isp-ispc-tnm-algorithm">Algorithm overview</a><ul>
+<li><a class="reference internal" href="#luma-range">Luma range</a></li>
+<li><a class="reference internal" href="#colour-saturation">Colour saturation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tnm-high-level-parameters">TNM High Level Parameters</a><ul>
+<li><a class="reference internal" href="#tnm-generic-parameters">TNM Generic parameters</a></li>
+<li><a class="reference internal" href="#tnm-tone-mapping-parameters">TNM Tone Mapping parameters</a></li>
+<li><a class="reference internal" href="#tnm-colour-parameters">TNM Colour parameters</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#vibrancy-vib">Vibrancy (VIB)</a><ul>
+<li><a class="reference internal" href="#vib-high-level-parameters">VIB High Level Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#white-balance-correction-wbc">White Balance Correction (WBC)</a><ul>
+<li><a class="reference internal" href="#wbc-high-level-parameters">WBC High Level Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#yuv-to-rgb-y2r">YUV to RGB (Y2R)</a><ul>
+<li><a class="reference internal" href="#y2r-high-level-parameters">Y2R High Level Parameters</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="ispc_library.html"
+                        title="previous chapter">ISP Control Library</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="ispc_statistics.html"
+                        title="next chapter">Implemented Statistics Modules</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

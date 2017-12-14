@@ -1,0 +1,15 @@
+sensor0.interface dvp
+sensor0.name ar330dvp
+sensor0.mclk 24000000
+sensor0.imager 1
+sensor0.i2c chn.3.addr.32
+sensor0.mclk.src imap-camo
+sensor0.wraper.use 1
+sensor0.wraper.width 1920
+sensor0.wraper.height 1088
+sensor0.wraper.hdelay 0
+sensor0.wraper.vdelay 0
+sensor0.bootup.seq.0 pmu.ldo7.2800000.0
+sensor0.bootup.seq.1 pmu.ldo8.1800000.0
+sensor0.bootup.seq.2 mclk.gpio.114.0
+sensor0.bootup.seq.3 reset.gpio.44.20

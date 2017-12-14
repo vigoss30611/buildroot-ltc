@@ -1,0 +1,192 @@
+/***************************************************************************** 
+** imapx200.h 
+** 
+** Copyright (c) 2009~2014 ShangHai Infotm Ltd all rights reserved. 
+** 
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+** 
+** Description: All registers used in U-BOOT on imapx200.
+**
+** Author:
+**     Warits   <warits.wang@infotm.com>
+**      
+** Revision History: 
+** ----------------- 
+** 1.1  XXX 12/16/2009 XXX	Initialized by warits
+*****************************************************************************/
+
+
+#ifndef __IMAPX200_UART_H__
+#define __IMAPX200_UART_H__
+#include <config.h>
+
+
+/*! UART */
+#if defined(CONFIG_SERIAL1)
+#define IMAPX200_UART_BASE		UART0_BASE_REG_PA
+#elif defined(CONFIG_SERIAL2)
+#define IMAPX200_UART_BASE      UART1_BASE_REG_PA
+#elif defined(CONFIG_SERIAL3)
+#define IMAPX200_UART_BASE      UART2_BASE_REG_PA
+#elif defined(CONFIG_SERIAL4)
+#define IMAPX200_UART_BASE		UART3_BASE_REG_PA
+#else
+#error "Bad: you didn't configure serial ..."
+#endif
+
+/* Register definition */
+#define IMAPX200_RBR	(IMAPX200_UART_BASE+0x000)
+#define IMAPX200_THR	(IMAPX200_UART_BASE+0x000)
+#define IMAPX200_DLL	(IMAPX200_UART_BASE+0x000)
+#define IMAPX200_DLH	(IMAPX200_UART_BASE+0x004)
+#define IMAPX200_IER	(IMAPX200_UART_BASE+0x004)
+#define IMAPX200_IIR	(IMAPX200_UART_BASE+0x008)
+#define IMAPX200_FCR	(IMAPX200_UART_BASE+0x008)
+#define IMAPX200_LCR	(IMAPX200_UART_BASE+0x00C)
+#define IMAPX200_MCR	(IMAPX200_UART_BASE+0x010)
+#define IMAPX200_LSR	(IMAPX200_UART_BASE+0x014)
+#define IMAPX200_CSR	(IMAPX200_UART_BASE+0x018)
+#define IMAPX200_LPDLL	(IMAPX200_UART_BASE+0x020)
+#define IMAPX200_LPDLH	(IMAPX200_UART_BASE+0x024)
+#define IMAPX200_USR	(IMAPX200_UART_BASE+0x07C)
+#define IMAPX200_TFL	(IMAPX200_UART_BASE+0x080)
+#define IMAPX200_RFL	(IMAPX200_UART_BASE+0x084)
+#define IMAPX200_HTX	(IMAPX200_UART_BASE+0x0A4)
+#define IMAPX200_DMASA	(IMAPX200_UART_BASE+0x0A8)
+#define IMAPX200_CKSR	(IMAPX200_UART_BASE+0x100)
+
+#define IMAPX200_DLL_DIVISOR_LOW_BYTE(x)	(((x)&0xff)<<0)
+#define IMAPX200_DLH_DIVISOR_HIGH_BYTE(x)	(((x)&0xff)<<0)
+
+#define IMAPX200_IER_PTIME_THRE_INT_ENABLE			(1<<7)
+#define IMAPX200_IER_PTIME_THRE_INT_DISABLE			(0<<7)
+#define IMAPX200_IER_ELSI_LINE_STATUS_INT_ENABLE	(1<<2)
+#define IMAPX200_IER_ELSI_LINE_STATUS_INT_DISABLE	(0<<2)
+#define IMAPX200_IER_ETBEI_TX_INT_ENABLE				(1<<1)
+#define IMAPX200_IER_ETBEI_TX_INT_DISABLE				(0<<1)
+#define IMAPX200_IER_ERBFI_RX_INT_ENABLE				(1<<0)
+#define IMAPX200_IER_ERBFI_RX_INT_DISABLE				(0<<0)
+
+#define IMAPX200_IIR_FIFOSE_MASK		(0x3<<6)
+#define IMAPX200_IIR_FIFOSE_ENABLE	(0x3<<6)
+#define IMAPX200_IIR_FIFOSE_DISABLE	(0x0<<6)
+#define IMAPX200_IIR_IID_MASK			(0xf<<0)
+#define IMAPX200_IIR_IID_NO_INT		(0x1<<0)
+#define IMAPX200_IIR_IID_TX				(0x2<<0)
+#define IMAPX200_IIR_IID_RX				(0x4<<0)
+#define IMAPX200_IIR_IID_LINE_STATUS	(0x6<<0)
+#define IMAPX200_IIR_IID_BUSY_DETECT	(0x7<<0)
+#define IMAPX200_IIR_IID_TIMEOUT		(0xC<<0)
+
+#define IMAPX200_FCR_RT_RX_TRIGGER_LEVEL_ONE_CHAR			(0x0<<6)
+#define IMAPX200_FCR_RT_RX_TRIGGER_LEVEL_QUARTER_FULL		(0x1<<6)
+#define IMAPX200_FCR_RT_RX_TRIGGER_LEVEL_HALF_FULL			(0x2<<6)
+#define IMAPX200_FCR_RT_RX_TRIGGER_LEVEL_TWO_LESS_FULL		(0x3<<6)
+#define IMAPX200_FCR_TET_TX_THRESHOLD_LEVEL_EMPTY			(0x0<<4)
+#define IMAPX200_FCR_TET_TX_THRESHOLD_LEVEL_TWO_CHAR		(0x1<<4)
+#define IMAPX200_FCR_TET_TX_THRESHOLD_LEVEL_QUARTER_FULL	(0x2<<4)
+#define IMAPX200_FCR_TET_TX_THRESHOLD_LEVEL_HALF_FULL		(0x3<<4)
+#define IMAPX200_FCR_XFIFOR_TX_FIFO_RESET					(1<<2)
+#define IMAPX200_FCR_RFIFOR_RX_FIFO_RESET					(1<<1)
+#define IMAPX200_FCR_FIFOE_FIFO_ENABLE						(1<<0)
+#define IMAPX200_FCR_FIFOE_FIFO_DISABLE						(0<<0)
+
+#define IMAPX200_LCR_DLAB_ENABLE					(1<<7)
+#define IMAPX200_LCR_DLAB_DISABLE					(0<<7)
+#define IMAPX200_LCR_Break_ENABLE					(1<<6)
+#define IMAPX200_LCR_Break_DISABLE				(0<<6)
+#define IMAPX200_LCR_EPS_EVEN_PARITY				(1<<4)
+#define IMAPX200_LCR_EPS_ODD_PARITY				(0<<4)
+#define IMAPX200_LCR_PEN_PARITY_ENABLE			(1<<3)
+#define IMAPX200_LCR_PEN_PARITY_DISABLE			(0<<3)
+#define IMAPX200_LCR_STOP_1POINT5_2_STOP_BIT	(1<<2)
+#define IMAPX200_LCR_STOP_ONE_STOP_BIT			(0<<2)
+#define IMAPX200_LCR_DLS_MASK						(0x3<<0)
+#define IMAPX200_LCR_DLS_5BIT						(0x0<<0)
+#define IMAPX200_LCR_DLS_6BIT						(0x1<<0)
+#define IMAPX200_LCR_DLS_7BIT						(0x2<<0)
+#define IMAPX200_LCR_DLS_8BIT						(0x3<<0)
+
+#define IMAPX200_MCR_SIRE_IRDA_ENABLE	(1<<6)
+#define IMAPX200_MCR_SIRE_IRDA_DISABLE	(0<<6)
+#define IMAPX200_MCR_AFCE_AFC_ENABLE		(1<<5)
+#define IMAPX200_MCR_AFCE_AFC_DISABLE	(0<<5)
+#define IMAPX200_MCR_LB_LoopBack_ENABLE	(1<<4)
+#define IMAPX200_MCR_LB_LoopBack_DISABLE	(0<<4)
+#define IMAPX200_MCR_RTS_ENABLE			(1<<1)
+#define IMAPX200_MCR_RTS_DISABLE			(0<<1)
+
+#define IMAPX200_LSR_RFE_MASK					(1<<7)
+#define IMAPX200_LSR_RFE_RX_FIFO_ERR			(1<<7)
+#define IMAPX200_LSR_RFE_RX_FIFO_NO_ERR		(0<<7)
+#define IMAPX200_LSR_TEMT_MASK				(1<<6)
+#define IMAPX200_LSR_TEMT_XMITER_EMPTY		(1<<6)
+#define IMAPX200_LSR_TEMT_XMITER_NO_EMPTY	(0<<6)
+#define IMAPX200_LSR_THRE_MASK				(1<<5)
+#define IMAPX200_LSR_THRE_TX_HOLD_EMPTY		(1<<5)
+#define IMAPX200_LSR_THRE_TX_HOLD_NO_EMPTY	(0<<5)
+#define IMAPX200_LSR_BI_MASK					(1<<4)
+#define IMAPX200_LSR_BI_Break_INT				(1<<4)
+#define IMAPX200_LSR_BI_NO_Break_INT			(0<<4)
+#define IMAPX200_LSR_FE_MASK					(1<<3)
+#define IMAPX200_LSR_FE_FRAME_ERR				(1<<3)
+#define IMAPX200_LSR_FE_NO_FRAME_ERR			(0<<3)
+#define IMAPX200_LSR_PE_MASK					(1<<2)
+#define IMAPX200_LSR_PE_PARITY_ERR			(1<<2)
+#define IMAPX200_LSR_PE_NO_PARITY_ERR		(0<<2)
+#define IMAPX200_LSR_OE_MASK					(1<<1)
+#define IMAPX200_LSR_OE_OVERRUN_ERR			(1<<1)
+#define IMAPX200_LSR_OE_NO_OVERRUN_ERR		(0<<1)
+#define IMAPX200_LSR_DR_MASK					(1<<0)
+#define IMAPX200_LSR_DR_DATA_READY			(1<<0)
+#define IMAPX200_LSR_DR_DATA_NOT_READY		(0<<0)
+#define IMAPX200_LSR_ANY	(IMAPX200_LSR_BI_Break_INT |				\
+	IMAPX200_LSR_FE_NO_FRAME_ERR | IMAPX200_LSR_PE_PARITY_ERR |		\
+	IMAPX200_LSR_OE_OVERRUN_ERR)
+
+#define IMAPX200_CSR_MASK			(1<<4)
+#define IMAPX200_CSR_CTS_ASSERT	(1<<4)
+#define IMAPX200_CSR_CTS_DEASSERT	(0<<4)
+
+#define IMAPX200_LPDLL_LOW_POWER_DIVISOR_LOW_BYTE(x)	(((x)&0xf)<<0)
+#define IMAPX200_LPDLH_LOW_POWER_DIVISOR_HIGH_BYTE(x)	(((x)&0xf)<<0)
+
+#define IMAPX200_USR_RFF_MASK						(1<<4)
+#define IMAPX200_USR_RFF_RX_FIFO_FULL			(1<<4)
+#define IMAPX200_USR_RFF_RX_FIFO_NOT_FULL		(0<<4)
+#define IMAPX200_USR_RFNE_MASK					(1<<3)
+#define IMAPX200_USR_RFNE_RX_FIFO_NOT_EMPTY		(1<<3)
+#define IMAPX200_USR_RFNE_RX_FIFO_EMPTY			(0<<3)
+#define IMAPX200_USR_TFE_MASK						(1<<2)
+#define IMAPX200_USR_TFE_TX_FIFO_EMPTY			(1<<2)
+#define IMAPX200_USR_TFE_TX_FIFO_NOT_EMPTY		(0<<2)
+#define IMAPX200_USR_TFNF_MASK					(1<<1)
+#define IMAPX200_USR_TFNF_TX_FIFO_NOT_FULL		(1<<1)
+#define IMAPX200_USR_TFNF_TX_FIFO_FULL			(0<<1)
+#define IMAPX200_USR_BUSY_MASK					(1<<0)
+#define IMAPX200_USR_BUSY_UART_BUSY				(1<<0)
+#define IMAPX200_USR_BUSY_UART_IDLE				(0<<0)
+
+#define IMAPX200_TFL_TX_FIFO_LEVEL_MASK	(0x3f<<0)
+#define IMAPX200_RFL_RX_FIFO_LEVEL_MASK	(0x3f<<0)
+
+#define IMAPX200_HTX_HALT_TX_ENABLE	(1<<0)
+#define IMAPX200_HTX_HALT_TX_DISABLE	(0<<0)
+
+#define IMAPX200_DMASA_DMA_SOFT_ACK_ENABLE		(1<<0)
+#define IMAPX200_DMASA_DMA_SOFT_ACK_DISABLE	(0<<0)
+
+#define IMAPX200_CKSR_CKSEL_MASK		(0x3<<0)
+#define IMAPX200_CKSR_CKSEL_PCLK		(0x0<<0)
+#define IMAPX200_CKSR_CKSEL_UEXTCLK	(0x1<<0)
+
+#define UART_RX_INT			(1<<0)
+#define UART_TX_INT			(1<<1)
+#define UART_ERR_INT		(1<<2)
+#define UART_THRE_INT		(1<<7)
+/*!END UART */
+
+#endif /*__IMAPX200_UART_H__*/ 

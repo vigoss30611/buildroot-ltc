@@ -1,0 +1,14 @@
+prefix=/usr
+exec_prefix=/usr
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+ADDMNEONLIB=
+
+Name:  hlibispv2500
+Description: hlibispv2500  infotm
+Version: 2.7.0
+Requires:
+Libs: -L${libdir} -lhlibcamsensor -lispv2500 -lCI_User -lImgLib_DynamicCommand -lsim_image -lFelixCommon -lImgLib_LinkedList -lISPC2Test -lFelixParamSocket2 -lsensorapi ${ADDMNEONLIB}
+Libs.private: -lm -ldl -lpthread -lrt
+
+Cflags:  -I${includedir}/hlibispv2500 -I${includedir}/hlibispv2500/c99 -I${includedir}/hlibispv2500/Auxiliar -I${includedir}/hlibispv2500/Controls -I${includedir}/hlibispv2500/Modules

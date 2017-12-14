@@ -1,0 +1,28 @@
+{
+    "dg-frame":{
+            "ipu":"dg-frame",
+            "args": {
+                    "mode": "yuvfile",
+                    "data":"/nfs/yuv/std/BQTerrace/BQTerrace_1920_1080_nv12_300M.yuv",
+                    "frames":4
+                    },
+            "port":{
+                "out":{
+                    "w":1920,
+                    "h":1080,
+                    "pixel_format":"nv12",
+                    "bind": {
+                              "enc1080p": "frame",
+                              "display":"osd0"
+                            }
+                }
+            }
+        },
+
+    "enc1080p":{ "ipu": "vencoder",
+		"args": {
+			"encode_type": "h264"
+		}
+	},
+    "display": { "ipu": "ids", "args": { "no_osd1": 1 }}
+}

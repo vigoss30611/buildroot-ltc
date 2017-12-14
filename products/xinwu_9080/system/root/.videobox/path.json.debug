@@ -1,0 +1,25 @@
+{
+	"v4l2": {
+		"ipu": "v4l2",
+		"args": {
+			"driver":"imapx_camif",
+			"model": "xc9080",
+			"pixfmt": "nv12"
+		},
+		"port": {
+			"out": {
+				"w": 2160,
+				"h": 1080,
+				"pixel": "nv12",
+				"bind": { "sink": "in" }
+			}
+		}
+	},
+	"sink": {
+		"ipu": "filesink",
+		"args": {
+			"path": "/mnt/sd0/camera.raw",
+            "save": 1
+		}
+	}
+}

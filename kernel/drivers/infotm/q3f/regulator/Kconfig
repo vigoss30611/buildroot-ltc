@@ -1,0 +1,27 @@
+menuconfig INFOTM_REGULATOR
+  bool "Infotm regulator driver support"
+  help
+    Infotm regulator driver support
+
+if INFOTM_REGULATOR
+
+config Q3F_REGULATOR_EC610
+ bool "ec610 regulator driver"
+ help
+   EC610 regulator driver
+
+config Q3F_REGULATOR_IP6203
+ bool "ip6203 regulator driver"
+ help
+   IP6203 regulator driver
+
+config Q3F_REGULATOR_IP620x
+ bool "ip620x regulator driver"
+ help
+   IP620x regulator driver
+
+config Q3F_REGULATOR_IP6303
+ bool "ip6303 regulator driver"
+ help
+   IP6303 regulator driver
+endif

@@ -1,0 +1,16 @@
+
+APP_VREC_VERSION = 1.0.0
+APP_VREC_SOURCE =
+APP_VREC_SITE  =
+
+APP_VREC_LICENSE =
+APP_VREC_LICENSE_FILES = README
+
+APP_VREC_MAINTAINED = YES
+APP_VREC_AUTORECONF = YES
+APP_VREC_INSTALL_STAGING = YES
+APP_VREC_MAKE = make -s
+APP_VREC_DEPENDENCIES = host-pkgconf videobox eventhub hlibfr audiobox qlibvplay
+
+$(eval $(cmake-package))
+

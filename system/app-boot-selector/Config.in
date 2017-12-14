@@ -1,0 +1,4 @@
+config BR2_PACKAGE_BOOT_SELECTOR
+	bool "boot selector"
+	help
+	  boot selector, enter charging mode or system

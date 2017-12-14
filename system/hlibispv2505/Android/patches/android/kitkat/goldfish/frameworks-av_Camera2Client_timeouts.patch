@@ -1,0 +1,60 @@
+diff --git a/services/camera/libcameraservice/api1/Camera2Client.cpp b/services/camera/libcameraservice/api1/Camera2Client.cpp
+index df3b162..e6b85d9 100644
+--- a/services/camera/libcameraservice/api1/Camera2Client.cpp
++++ b/services/camera/libcameraservice/api1/Camera2Client.cpp
+@@ -36,6 +36,9 @@
+ #define ALOG1(...) ALOGD_IF(gLogLevel >= 1, __VA_ARGS__);
+ #define ALOG2(...) ALOGD_IF(gLogLevel >= 2, __VA_ARGS__);
+ 
++#ifndef FELIX_USES_EMULATOR
++#define FELIX_USES_EMULATOR
++#endif
+ namespace android {
+ using namespace camera2;
+ 
+@@ -841,7 +844,12 @@ void Camera2Client::stopPreview() {
+ void Camera2Client::stopPreviewL() {
+     ATRACE_CALL();
+     status_t res;
++
++#ifdef FELIX_USES_EMULATOR
++    const nsecs_t kStopCaptureTimeout = 60000000000LL; // 60 seconds
++#else
+     const nsecs_t kStopCaptureTimeout = 3000000000LL; // 3 seconds
++#endif
+     Parameters::State state;
+     {
+         SharedParameters::Lock l(mParameters);
+@@ -1669,6 +1677,7 @@ status_t Camera2Client::updateRequests(Parameters &params) {
+                 __FUNCTION__, mCameraId, strerror(-res), res);
+         return res;
+     }
++
+     res = mStreamingProcessor->updateRecordingRequest(params);
+     if (res != OK) {
+         ALOGE("%s: Camera %d: Unable to update recording request: %s (%d)",
+@@ -1726,7 +1735,12 @@ size_t Camera2Client::calculateBufferSize(int width, int height,
+ 
+ status_t Camera2Client::syncWithDevice() {
+     ATRACE_CALL();
+-    const nsecs_t kMaxSyncTimeout = 500000000; // 500 ms
++#ifdef FELIX_USES_EMULATOR
++    const nsecs_t kMaxSyncTimeout = 100000000000LL; // 500 ms * 2000
++#else
++    const nsecs_t kMaxSyncTimeout = 500000000LL; // 500 ms
++#endif
++
+     status_t res;
+ 
+     int32_t activeRequestId = mStreamingProcessor->getActiveRequestId();
+@@ -1734,8 +1748,8 @@ status_t Camera2Client::syncWithDevice() {
+ 
+     res = mDevice->waitUntilRequestReceived(activeRequestId, kMaxSyncTimeout);
+     if (res == TIMED_OUT) {
+-        ALOGE("%s: Camera %d: Timed out waiting sync with HAL",
+-                __FUNCTION__, mCameraId);
++        ALOGE("%s: Camera %d: Timed out waiting sync with HAL (%lld ns)",
++                __FUNCTION__, mCameraId, kMaxSyncTimeout);
+     } else if (res != OK) {
+         ALOGE("%s: Camera %d: Error while waiting to sync with HAL",
+                 __FUNCTION__, mCameraId);

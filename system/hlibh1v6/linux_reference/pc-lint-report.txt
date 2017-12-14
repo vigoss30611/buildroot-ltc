@@ -1,0 +1,40 @@
+
+--- Module:   ..\source\h264\H264CodeFrame.c
+
+--- Module:   ..\source\h264\H264Init.c
+
+--- Module:   ..\source\h264\H264NalUnit.c
+
+--- Module:   ..\source\h264\H264PictureParameterSet.c
+
+--- Module:   ..\source\h264\H264PutBits.c
+
+--- Module:   ..\source\h264\H264RateControl.c
+
+--- Module:   ..\source\h264\H264SequenceParameterSet.c
+
+--- Module:   ..\source\h264\H264Slice.c
+
+--- Module:   ..\source\h264\H264EncApi.c
+
+--- Module:   ..\source\h264\H264Cabac.c
+
+--- Module:   ..\source\h264\H264Sei.c
+
+--- Module:   ..\source\jpeg\EncJpeg.c
+
+--- Module:   ..\source\jpeg\EncJpegInit.c
+
+--- Module:   ..\source\jpeg\EncJpegCodeFrame.c
+
+--- Module:   ..\source\jpeg\EncJpegPutBits.c
+
+--- Module:   ..\source\jpeg\JpegEncApi.c
+
+--- Module:   ..\source\camstab\vidstabcommon.c
+
+--- Module:   ..\source\camstab\vidstabalg.c
+
+--- Module:   ..\source\camstab\vidstabapi.c
+
+--- Module:   ..\source\camstab\vidstabinternal.c

@@ -1,0 +1,25 @@
+
+header:
+DDKSource/ISP_Control/ISPC_lib/include/*		usr/include/hlibispv2500
+DDKSource/common/img_includes/*					usr/include/hlibispv2500
+DDKSource/CI/felix/felix_lib/user/include/*		usr/include/hlibispv2500
+DDKSource/common/felixcommon/include/*			usr/include/hlibispv2500
+DDKSource/CI/felix/regdefs/vhc_out/*			usr/include/hlibispv2500
+DDKSource/CI/felix/regdefs/include/*			usr/include/hlibispv2500
+DDKSource/sensorapi/include/*					usr/include/hlibispv2500
+DDKSource/common/dyncmd/include/*				usr/include/hlibispv2500
+
+shared:
+static:
+DDKSource/out/lib/*.a						usr/lib
+
+binary:
+resource:
+root/.ispddk/config-normal.txt				root/.ispddk
+root/.ispddk/config-lsh.lsh					root/.ispddk
+
+pkgconfig:
+
+module:
+DDKSource/CI/felix/felix_lib/km/Felix.ko
+

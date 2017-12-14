@@ -1,0 +1,17 @@
+config BR2_PACKAGE_TESTBENCH_HEVC_DEC
+	bool "testbench_hevc_dec"
+
+	help
+		foo library
+		http://www.infotm.com/
+
+if BR2_PACKAGE_TESTBENCH_HEVC_DEC
+menu "options"
+	config  BR2_PACKAGE_TESTBENCH_HEVC_DEC_INSTALL_SHARED
+		bool "Install Shared"
+		default y
+		help
+	  		install shared library into target dir	
+endmenu
+
+endif

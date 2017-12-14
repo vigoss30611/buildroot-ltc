@@ -1,0 +1,13 @@
+#
+# Infotm spi norflash FTL configuration
+#
+
+menu "Infotm norfalsh ftl support"
+
+config INFOTM_NORFALSH_FTL
+	bool "Infotm Norflash ftl SUPPORT"
+	default y
+        help
+		This is nor flash ftl suport
+
+endmenu

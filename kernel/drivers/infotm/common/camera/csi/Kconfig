@@ -1,0 +1,14 @@
+
+menuconfig INFOTM_MIPI_CSI
+	bool "Infotm mipi csi controller"
+	default y
+	help
+		you should select_on all of them
+		
+if INFOTM_MIPI_CSI
+
+config INFOTM_MIPI_CSI_CORE
+	bool "infotm csi core"
+	default y
+
+endif

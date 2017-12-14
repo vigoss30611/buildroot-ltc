@@ -1,0 +1,42 @@
+#ifndef __SPV_INDICATION_H__
+#define __SPV_INDICATION_H__
+
+typedef enum {
+    IND_KEY,
+    IND_VIDEO_MODE,
+    IND_VIDEO_START,
+    IND_VIDEO_END,
+    IND_PHOTO_MODE,
+    IND_PHOTO,
+    IND_PHOTO_BURST,
+    IND_SDCARD_FULL,
+    IND_BOOTING_UP,
+    IND_SHUTDOWN,
+    IND_AUTO_SHUTDOWN,
+    IND_BATTERY,
+    IND_POWER_FULL,
+    IND_POWER_HIGH,
+    IND_POWER_MIDDLE,
+    IND_POWER_LOW,
+    IND_POWER_EMPTY,
+	IND_CHARGE,
+	IND_CHARGE_FULL,
+	IND_DISCHARGE,
+    IND_WIFI_ON,
+    IND_WIFI_OFF,
+    IND_WIFI_CONNECT,
+    IND_WIFI_DISCONNECT,
+    IND_WIFI_SWITCH,
+    IND_WIFI_AIRKISS,
+    IND_CAMERA_ERROR,
+    IND_CAMERA_RESET,
+    IND_FCWS_WARN,
+    IND_LDWS_WARN,
+    IND_DEVICE_MODE,
+    IND_CALIBRATION,
+} IND_TYPE;
+
+void SpvSetBatteryLed(int capacity, int charging);
+int SpvIndication(IND_TYPE type, int wParam, int lParam);
+
+#endif

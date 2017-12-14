@@ -1,0 +1,36 @@
+#! /bin/sh
+
+case "$1" in
+        start|"")
+            e2fsck -a /dev/spiblock2
+            val=$?
+            echo $val
+            if [ $val = 4 ] || [ $val = 8 ];then
+                echo "config partition is broken, format it"
+                mkfs.ext4 /dev/spiblock2
+                e2fsck -a /dev/spiblock2
+            elif [ $val = 2 ];then
+                echo "config partition have been repaired, system need reboot.."
+                reboot
+            fi
+
+        if [ ! -d /config ];then
+                 mkdir -p /config
+        fi
+		ln -s /config /mnt/
+		mount -a
+        if [ ! -d /config/wifi ];then
+                 mkdir -p /config/wifi
+                 cp /wifi/*.conf /config/wifi
+        fi
+        if [ ! -d /config/bt ];then
+                mkdir -p /config/bt
+        fi
+                ;;
+        stop)
+                ;;
+        *)
+                echo "Usage: initdir {start|stop}" >&2
+                exit 1
+                ;;
+esac

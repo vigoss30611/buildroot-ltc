@@ -1,0 +1,383 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Appendix: Errors troubleshooting &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="index.html" />
+    <link rel="next" title="CI Appendix: Adding a new DebugFS counter" href="ci/ci_appendix.html" />
+    <link rel="prev" title="Frequently Asked Questions" href="faq.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="index.html"><img src="_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="index.html">Documents</a></li>
+        <li><a href="index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="ci/ci_appendix.html" title="CI Appendix: Adding a new DebugFS counter"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="faq.html" title="Frequently Asked Questions"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Home</a> &raquo;</li><li>Appendix: Errors troubleshooting</li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="appendix-errors-troubleshooting">
+<span id="isp-building-errors"></span><h1>Appendix: Errors troubleshooting<a class="headerlink" href="#appendix-errors-troubleshooting" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="building-gui-tools-troubleshooting">
+<span id="isp-bet-gui-build"></span><h2>Building GUI tools: troubleshooting<a class="headerlink" href="#building-gui-tools-troubleshooting" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="failure-to-find-qt-or-opencv">
+<span id="isp-bet-gui-find-opencv-qt"></span><h3>Failure to find Qt or OpenCV<a class="headerlink" href="#failure-to-find-qt-or-opencv" title="Permalink to this headline">¶</a></h3>
+<p>It is possible that Qt or OpenCV are not detected by CMake on your system. This
+can also be used if several versions of Qt or OpenCV are available on the build
+computer and a specific one has to be selected. To solve this the user is
+expected to specify the location to Qt and OpenCV using the standard CMake
+variables.</p>
+<p>E.g. Qt not found:</p>
+<div class="highlight-python"><div class="highlight"><pre>CMake Error at CMakeLists.txt:24 (message):
+  qmake is not in your path, try defining QT_BINARY_DIR to your QT
+  installation /bin path
+</pre></div>
+</div>
+<p>E.g. OpenCV not found:</p>
+<div class="highlight-python"><div class="highlight"><pre>CMake Error at GUI/tuning/FindVisionTuning.cmake:9 (find_package):
+  Could not find module FindOpenCV.cmake or a configuration file for
+  package OpenCV.
+
+  Adjust CMAKE_MODULE_PATH to find FindOpenCV.cmake or set OpenCV_DIR to
+  the directory containing a CMake configuration file for OpenCV.  The
+  file will have one of the following names:
+    OpenCVConfig.cmake
+    opencv-config.cmake
+</pre></div>
+</div>
+<p>The variables to define are:</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">QT_BINARY_DIR</span></code>:</dt>
+<dd><p class="first">The location of qmake, e.g. on windows:</p>
+<div class="highlight-python"><div class="highlight"><pre>C:\QtSDK\Desktop\Qt\4.8.1\msvc2010\bin
+</pre></div>
+</div>
+<p>E.g. on manual installation on linux:</p>
+<div class="last highlight-python"><div class="highlight"><pre>/opt/Qt/5.4/gcc_64/bin/
+</pre></div>
+</div>
+</dd>
+<dt><code class="docutils literal"><span class="pre">QT_LIBRARY_CMAKE_DIR</span></code>:</dt>
+<dd><p class="first">The location of the cmake folder - if not specified it is guessed in
+cmake:</p>
+<div class="highlight-python"><div class="highlight"><pre>set(QT_LIBRARY_CMAKE_DIR ${QT_BINARY_DIR}/../lib/cmake)
+</pre></div>
+</div>
+<p class="last">This is the top level folder where Qt5Widgets, Qt5Concurrent and any other
+needed modules can be found.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">OpenCV_DIR</span></code>:</dt>
+<dd><p class="first">The location of the <code class="docutils literal"><span class="pre">OpenCVConfig.cmake</span></code>
+of your OpenCV installation, e.g. on windows:</p>
+<div class="last highlight-python"><div class="highlight"><pre>C:\opencv\opencv2.4.9\build
+</pre></div>
+</div>
+</dd>
+</dl>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>cmake ../DDKSource -DBUILD_GUI<span class="o">=</span>ON -DQT_BINARY_DIR<span class="o">=</span>&lt;...&gt; <span class="se">\</span>
+-DOpenCV_DIR<span class="o">=</span>&lt;...&gt;
+</pre></div>
+</div>
+<p>It is possible that some Qt installation under windows do not install the
+needed <code class="docutils literal"><span class="pre">.dll</span></code> and <code class="docutils literal"><span class="pre">.lib</span></code> in the same folder. In case of failure of the
+<code class="docutils literal"><span class="pre">FindQtDll</span></code> CMake function please ensure the <code class="docutils literal"><span class="pre">.dll</span></code> are in the same
+folder than the <code class="docutils literal"><span class="pre">.lib</span></code> (copy should be enough).</p>
+</div>
+</div>
+<div class="section" id="running-the-gui-troubleshooting">
+<span id="isp-bet-gui-run"></span><h2>Running the GUI: troubleshooting<a class="headerlink" href="#running-the-gui-troubleshooting" title="Permalink to this headline">¶</a></h2>
+<p>These are some potential run time errors that can occure if the system is not
+configured properly when running or compiling the tools.</p>
+<div class="section" id="opencv-and-qt-mismatch">
+<h3>OpenCV and Qt mismatch<a class="headerlink" href="#opencv-and-qt-mismatch" title="Permalink to this headline">¶</a></h3>
+<p>If OpenCV was installed on the computer with GUI support and was compiled with
+a different version of Qt than the one the DDK uses failures may occure when
+running such as the cryptic message:</p>
+<div class="highlight-python"><div class="highlight"><pre>QMetaType::registerType: Binary compatibility break -- size mismatch for
+type &#39;QPaintBufferCacheEntry&#39;[1024]. Previously registered size 0 now
+registering size 16.
+</pre></div>
+</div>
+<p>To solve this problem download the recommended OpenCV library sources and
+compile them without Qt support. Then use the appropriate location at CMake
+(see <a class="reference internal" href="getting_started.html#isp-gsg-standard-cmake-options"><span>Standard CMake options</span></a>) to use it instead of the system
+wide library.</p>
+<p>This solution may requiere that you export the correct <code class="docutils literal"><span class="pre">LD_LIBRARY_PATH</span></code> on
+linux to be able to run the application.</p>
+</div>
+<div class="section" id="qt-dll-missing-on-windows">
+<h3>Qt dll missing on windows<a class="headerlink" href="#qt-dll-missing-on-windows" title="Permalink to this headline">¶</a></h3>
+<p>If some dlls are missing from the path of the application (including the
+environment variable <cite>PATH</cite>) the following message can occure when starting
+a GUI application:</p>
+<div class="highlight-python"><div class="highlight"><pre>The application was unable to start correctly (0xc000007b). Clik OK to
+close the application.
+</pre></div>
+</div>
+<p>This is most likely due to fact that the following dlls not starting with
+the Qt5 prefix in the QT_BINARY_DIR (specified for compilation) are not
+available (copy them in your local folder or include their location in the
+system&#8217;s <cite>PATH</cite>), for example:</p>
+<ul class="simple">
+<li>icudt53.dll</li>
+<li>icuin53.dll</li>
+<li>icuuc53.dll</li>
+</ul>
+</div>
+<div class="section" id="no-icons-in-visionlive">
+<h3>No icons in VisionLive<a class="headerlink" href="#no-icons-in-visionlive" title="Permalink to this headline">¶</a></h3>
+<p>On some systems the icons do show in the VisionLive or VisionTuning and Jpeg
+libraries errors can be see on the stderr output. This is most likely caused
+by a different libJPEG used for Qt and OpenCV.</p>
+<p>To fix it compile OpenCV without PNG support (<code class="docutils literal"><span class="pre">-DBUILD_PNG=OFF</span></code>).</p>
+</div>
+</div>
+<div class="section" id="kernel-module-insertion-errors">
+<span id="isp-bet-ko"></span><h2>Kernel module insertion errors<a class="headerlink" href="#kernel-module-insertion-errors" title="Permalink to this headline">¶</a></h2>
+<p>It is possible that insmod fails to initialise the driver. Here is a list of
+possible failures and how to check which one has occurred.</p>
+<div class="section" id="invalid-module">
+<h3>Invalid module<a class="headerlink" href="#invalid-module" title="Permalink to this headline">¶</a></h3>
+<p>Insmod:</p>
+<div class="highlight-python"><div class="highlight"><pre>Error: could not insert module Felix.ko: Invalid module format
+</pre></div>
+</div>
+<p>Dmesg: none</p>
+<dl class="docutils">
+<dt>Reason: Most likely the kernel used to compile the module and the one</dt>
+<dd>currently used on the system are different.</dd>
+</dl>
+</div>
+<div class="section" id="device-not-found">
+<h3>Device not found<a class="headerlink" href="#device-not-found" title="Permalink to this headline">¶</a></h3>
+<p>Insmod:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Success</span>
+</pre></div>
+</div>
+<p>But no device are available in <code class="docutils literal"><span class="pre">/dev</span></code></p>
+<p>Dmesg:</p>
+<div class="highlight-python"><div class="highlight"><pre>[757543.881595] FELIX driver initialisation
+[757543.881634] imgfelix PCI board not found
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>Reason: The device was not found when registering the driver, therefore the</dt>
+<dd>initialisation did not occur. Ensure that the device is present on the
+system and verify that the mean of discovery uses the correct identifiers
+(e.g. by using lspci)</dd>
+</dl>
+</div>
+<div class="section" id="device-is-incompatible">
+<h3>Device is incompatible<a class="headerlink" href="#device-is-incompatible" title="Permalink to this headline">¶</a></h3>
+<p>This is a variation of the previous problem, where a device was found but not
+considered compatible.</p>
+<p>Insmod:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Success</span>
+</pre></div>
+</div>
+<p>But no device are available in /dev</p>
+<p>Dmesg:</p>
+<div class="highlight-python"><div class="highlight"><pre>[ 6540.629206] FELIX driver initialisation...
+[ 6540.629246] FELIX:KRN_CI_DriverCreate:1122 unsopported HW found!
+Driver supports design 0 2.0 - found design 0 2.1
+[ 6540.630972] FELIX shutting down HW
+[ 6540.630975] FELIX:probeSuccess:415 felix driver creation failed
+- returned 22
+[ 6540.632706] Driver found but refused device!
+[ 6540.652624] failed to request HW
+[ 6540.652631] imgfelix 0000:01:00.0: PCI INT A disabled
+[ 6540.652638] imgfelix: probe of 0000:01:00.0 failed with error -1
+[ 6540.652660] imgfelix: PCI board not found
+</pre></div>
+</div>
+<p>Reason: The device was found when registering the driver, but the
+discovered HW is not compatible with the driver (e.g. different register
+map or the discovered HW is not Felix).</p>
+</div>
+<div class="section" id="initialisation-fails">
+<h3>Initialisation fails<a class="headerlink" href="#initialisation-fails" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>The driver gets initialised by insmod correctly, the <code class="docutils literal"><span class="pre">/dev</span></code> is populated
+but the user side fails to open the device. In that case the first obvious
+thing to verify is that the user-side is trying to open the correct device
+(e.g. <code class="docutils literal"><span class="pre">/dev/imgfelix0</span></code>). It is also possible that the entry in <code class="docutils literal"><span class="pre">/dev</span></code>
+is protected (<code class="docutils literal"><span class="pre">ls</span> <span class="pre">-l</span></code> will show that). If it is the case udev rules
+should be added to automatically change the accessibility of the /dev
+entries (or a chmod done by root after insmod). Example of udev rule from
+<code class="docutils literal"><span class="pre">/etc/udev/rules.d/img.rules</span></code>:</p>
+<div class="highlight-linux-config"><div class="highlight"><pre>KERNEL==”img*”,”MODE=0777”
+</pre></div>
+</div>
+<p>The device name that the user-space is trying to open is available in
+<code class="docutils literal"><span class="pre">ci_api.c</span></code> (<code class="docutils literal"><span class="pre">FELIX_DEV</span></code> macro). The device name that the kernel-space
+creates is available in <code class="docutils literal"><span class="pre">ci_init_km.c</span></code> (<code class="docutils literal"><span class="pre">DEV_NAME</span></code> macro, <code class="docutils literal"><span class="pre">/dev/</span></code> and
+device number will be added to it by the Linux kernel device registration).</p>
+</div></blockquote>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Appendix: Errors troubleshooting</a><ul>
+<li><a class="reference internal" href="#building-gui-tools-troubleshooting">Building GUI tools: troubleshooting</a><ul>
+<li><a class="reference internal" href="#failure-to-find-qt-or-opencv">Failure to find Qt or OpenCV</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#running-the-gui-troubleshooting">Running the GUI: troubleshooting</a><ul>
+<li><a class="reference internal" href="#opencv-and-qt-mismatch">OpenCV and Qt mismatch</a></li>
+<li><a class="reference internal" href="#qt-dll-missing-on-windows">Qt dll missing on windows</a></li>
+<li><a class="reference internal" href="#no-icons-in-visionlive">No icons in VisionLive</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#kernel-module-insertion-errors">Kernel module insertion errors</a><ul>
+<li><a class="reference internal" href="#invalid-module">Invalid module</a></li>
+<li><a class="reference internal" href="#device-not-found">Device not found</a></li>
+<li><a class="reference internal" href="#device-is-incompatible">Device is incompatible</a></li>
+<li><a class="reference internal" href="#initialisation-fails">Initialisation fails</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="faq.html"
+                        title="previous chapter">Frequently Asked Questions</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="ci/ci_appendix.html"
+                        title="next chapter">CI Appendix: Adding a new DebugFS counter</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

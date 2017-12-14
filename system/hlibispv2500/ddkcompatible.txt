@@ -1,0 +1,11 @@
+//sim/projects/felix_hwsim/DEV/REL_2.1.x/...@3590907
+//sim/projects/felix_hwsim/DEV/REL_2.3.x/...@3591142
+//sim/projects/felix_hwsim/DEV/REL_2.4.x/...@3635464
+HW FPGA 2.1.3 006 3480105 (no gasket fix on demo config)
+HW FPGA 2.1.5 014 3578413 (original gasket fix for 2.1.0 014)
+HW FPGA 2.1.6 014 3582132 (OR gasket fix for 2.1.0 014)
+HW FPGA 2.1.7 004 3582165 (original gasket fix for 2.1.4 004)
+HW FPGA 2.3.1 003 3599888 (gasket fix for 2.3.0 003)
+HW FPGA 2.4.0 000 3636595 (SCB moved outside)
+
+IMGVIDEO@3743497

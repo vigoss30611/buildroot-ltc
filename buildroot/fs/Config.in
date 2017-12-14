@@ -1,0 +1,95 @@
+menu "Filesystem images"
+
+config BR2_FS_MAKE_SYSTEM
+	bool "Make system image for most files"
+	default y
+	select BR2_TARGET_ROOTFS_CPIO
+	help
+	  make most files into system image instead of rootfs, build
+	  a ramdisk for rootfs and a system image for real system.
+
+if BR2_FS_MAKE_SYSTEM
+choice
+	prompt "system.img format"
+	default BR2_FS_SYSTEM_NONE
+	help
+	  Select a rootfs format as system.img and it will be copied
+	  to system.img. Select none, you should choice one of the
+	  rootfs as system.img.
+
+config BR2_FS_SYSTEM_NONE
+	bool "none"
+	help
+	  Manually choice a rootfs format as system.img later.
+	
+config BR2_FS_SYSTEM_CLOOP
+	bool "cloop"
+	select BR2_TARGET_ROOTFS_CLOOP
+	help
+	  Copy cloop rootfs as system.img.
+	
+config BR2_FS_SYSTEM_CRAMFS
+	bool "cramfs"
+	select BR2_TARGET_ROOTFS_CRAMFS
+	help
+	  Copy cramfs rootfs as system.img.
+	
+config BR2_FS_SYSTEM_EXT2
+	bool "ext2/3/4"
+	select BR2_TARGET_ROOTFS_EXT2
+	help
+	  Copy ext2/3/4 rootfs as system.img.
+	
+config BR2_FS_SYSTEM_ISO9660
+	bool "iso9660"
+	select BR2_TARGET_ROOTFS_ISO9660
+	help
+	  Copy iso9660 rootfs as system.img.
+	
+config BR2_FS_SYSTEM_JFFS2
+	bool "jffs2"
+	select BR2_TARGET_ROOTFS_JFFS2
+	help
+	  Copy jffs2 rootfs as system.img.
+	
+config BR2_FS_SYSTEM_ROMFS
+	bool "romfs"
+	select BR2_TARGET_ROOTFS_ROMFS
+	help
+	  Copy romfs rootfs as system.img.
+	
+config BR2_FS_SYSTEM_SQUASHFS
+	bool "squashfs"
+	select BR2_TARGET_ROOTFS_SQUASHFS
+	help
+	  Copy squashfs rootfs as system.img.
+	
+config BR2_FS_SYSTEM_TAR
+	bool "tar"
+	select BR2_TARGET_ROOTFS_TAR
+	help
+	  Copy tar rootfs as system.img.
+	
+config BR2_FS_SYSTEM_UBIFS
+	bool "ubifs"
+	select BR2_TARGET_ROOTFS_UBIFS
+	help
+	  Copy ubifs rootfs as system.img.
+	
+endchoice
+endif
+
+source "buildroot/fs/cpio/Config.in"
+source "buildroot/fs/cloop/Config.in"
+source "buildroot/fs/cramfs/Config.in"
+source "buildroot/fs/ext2/Config.in"
+source "buildroot/fs/initramfs/Config.in"
+source "buildroot/fs/iso9660/Config.in"
+source "buildroot/fs/jffs2/Config.in"
+source "buildroot/fs/romfs/Config.in"
+source "buildroot/fs/squashfs/Config.in"
+source "buildroot/fs/tar/Config.in"
+source "buildroot/fs/ubifs/Config.in"
+source "buildroot/fs/yaffs2/Config.in"
+
+endmenu

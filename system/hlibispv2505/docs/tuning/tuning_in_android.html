@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Android Appendix: Live Tuning &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="prev" title="Android Appendix: Debugging" href="../android/hal_appendix.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../android/hal_appendix.html" title="Android Appendix: Debugging"
+             accesskey="P">previous</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li><li>Android Appendix: Live Tuning</li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="android-appendix-live-tuning">
+<span id="isp-androidlivetuning"></span><h1>Android Appendix: Live Tuning<a class="headerlink" href="#android-appendix-live-tuning" title="Permalink to this headline">¶</a></h1>
+<p>This section shows how to use the <a class="reference internal" href="../test_tools/vision_live_2.html#isp-visionlive-2-0"><span>VisionLive and ISPC_tcp</span></a>
+applications to tune the V2500 ISP under Android.</p>
+<p>It is assumed that the reader is familiar with the VisionLive tool.</p>
+<div class="section" id="enabling-ispc-tcp-in-android">
+<span id="isp-androidlivetuning-enabling-ispc-tcp"></span><h2>Enabling ISPC_tcp in Android<a class="headerlink" href="#enabling-ispc-tcp-in-android" title="Permalink to this headline">¶</a></h2>
+<p>The current Android build doesn&#8217;t compile ISPC_tcp by defult. To enable the
+application you need to edit the Android.mk file located in DDKSource
+directory of the project. Following line has to be uncommented:</p>
+<div class="highlight-python"><div class="highlight"><pre>include $(FELIX_TOP)/DDKSource/ISP_Control/ISPC_tcp2/Android.mk
+</pre></div>
+</div>
+<p>The next step is rebuilding Android and the re-creation of a new <code class="docutils literal"><span class="pre">system.img</span></code>
+file, which will contain ISPC_tcp. Assuming an Android build environment is
+already configured (see <a class="reference internal" href="../android/hal_build_instructions.html#isp-android-build-instructions"><span>Android Build Instructions</span></a>) the operation
+is simple (for example building x86):</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd</span> /path/to/android/root
+<span class="nv">$ </span><span class="nb">source </span>build/envsetup.sh
+<span class="nv">$ </span>lunch android_x86-eng
+<span class="nv">$ </span>make
+</pre></div>
+</div>
+<p>After these steps the <code class="docutils literal"><span class="pre">system.img</span></code> should be loaded on the device. If
+using a PC with and FPGA refer to the
+<a class="reference internal" href="../android/hal_build_instructions.html#isp-android-prepare-img-for-grub"><span>Prepare Android x86 images for GRUB</span></a> section.</p>
+</div>
+<div class="section" id="running-ispc-tcp">
+<span id="isp-androidlivetuning-running-ispc-tcp"></span><h2>Running ISPC_tcp<a class="headerlink" href="#running-ispc-tcp" title="Permalink to this headline">¶</a></h2>
+<p>This assumes that both ISPC_tcp and VisionLive are already built.</p>
+<p>This also assumes that the device with the ISP HW is connected to the network
+and has an available IP address (<code class="docutils literal"><span class="pre">IP_ADDRESS</span></code>).</p>
+<ol class="arabic">
+<li><p class="first">Start a connection in VisionLive following the normal steps</p>
+</li>
+<li><p class="first">On the command line go to Android sources, activate environment and select
+combo:</p>
+<blockquote>
+<div><div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">source </span>build/envsetup.sh <span class="o">&amp;&amp;</span> lunch aosp_x86-eng
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">Connect to the device with ISP (assuming it has an IP) to it using adb:</p>
+<blockquote>
+<div><div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>adb connect IP_ADDRESS
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">On Android console go to system/bin and run ISPC_tcp giving it the
+IP address of where VisionLive is running, and providing chosen TCP port.
+Choose camera sensor the platform is using, for example OV4688:</p>
+<blockquote>
+<div><div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd </span>system/bin
+<span class="nv">$ </span>ISPC_tcp -sensor OV4688 -setupIP 10.80.2.91 -setupPort 2346
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">VisionLive should connect and live stream image should start.</p>
+</li>
+</ol>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Do not run the Android camera application if ISPC_tcp is running. Both will
+try to reserve the ISP HW and one will fail.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Android Appendix: Live Tuning</a><ul>
+<li><a class="reference internal" href="#enabling-ispc-tcp-in-android">Enabling ISPC_tcp in Android</a></li>
+<li><a class="reference internal" href="#running-ispc-tcp">Running ISPC_tcp</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../android/hal_appendix.html"
+                        title="previous chapter">Android Appendix: Debugging</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

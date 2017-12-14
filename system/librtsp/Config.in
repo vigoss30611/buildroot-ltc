@@ -1,0 +1,7 @@
+config BR2_PACKAGE_LIBRTSP
+	bool "librtsp"
+	help
+	  rtsp server lib
+
+	  http://www.infotm.com/
+

@@ -1,0 +1,19 @@
+config BR2_PACKAGE_BBLITE
+	bool "BusyBox Lite"
+	default y
+	help
+		This is the busybox for ramdisk
+
+if BR2_PACKAGE_BBLITE
+
+config BR2_PACKAGE_BBLITE_CONFIG
+	string "BusyBox configuration file to use?"
+	default "buildroot/package/busybox/busybox-1.21.x.config"
+	help
+	  Some people may wish to use their own modified BusyBox configuration
+	  file, and will specify their config file location with this option.
+
+	  Most people will just use the default BusyBox configuration file.
+
+endif
+

@@ -1,0 +1,23 @@
+menuconfig INFOTM_REGULATOR
+  bool "iMAPx910 regulator drivers support"
+  help
+    iMAPx910 regulator drivers support
+
+if INFOTM_REGULATOR
+
+config REGULATOR_RICOH618
+  tristate "Ricoh R5T618 Power regulators"
+  depends on MFD_RICOH618
+  default n
+  help
+    This driver supports regulator driver for the Ricoh R5T618
+    Power Management device.
+
+config REGULATOR_MP8845C
+  bool "mp8845c regulator"
+  depends on MFD_MP8845C
+  default n
+  help
+    mp8845c regulator.
+
+endif

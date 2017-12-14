@@ -1,0 +1,2137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ISPC Appendix: From ISPC to kernel module &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="next" title="Android Appendix: Debugging" href="../android/hal_appendix.html" />
+    <link rel="prev" title="CI Appendix: Debugging a Page Fault" href="../ci/ci_appendix_mmufault.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../android/hal_appendix.html" title="Android Appendix: Debugging"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="../ci/ci_appendix_mmufault.html" title="CI Appendix: Debugging a Page Fault"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li><li>ISPC Appendix: From ISPC to kernel module</li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="ispc-appendix-from-ispc-to-kernel-module">
+<span id="ispc-sequence"></span><h1>ISPC Appendix: From ISPC to kernel module<a class="headerlink" href="#ispc-appendix-from-ispc-to-kernel-module" title="Permalink to this headline">¶</a></h1>
+<p>This section contains several UML sequence diagrams that picture the
+interaction from the ISPC layer function calls to the <code class="docutils literal"><span class="pre">ioctl()</span></code> called by
+the CI user-side library. The goal is to illustrate the interaction of the
+ISPC layer with the CI and SensorAPI.</p>
+<p>Refere to the doxygen documentation for more details on each function call.</p>
+<p>The following diagrams should illustrate several operations from the ISPC
+lifetime:</p>
+<ul class="simple">
+<li>Creation of a Camera</li>
+<li>Allocation of Shots</li>
+<li>Allocation of Buffers</li>
+<li>Importation of Buffers</li>
+<li>Starting the Camera</li>
+<li>Trigger the capture of a frame</li>
+<li>Acquire the result of a capture</li>
+<li>Release the result of a capture</li>
+<li>Stopping the Camera</li>
+<li>Destruction of Buffers</li>
+<li>Destruction of Shots</li>
+<li>Destruction of the Camera</li>
+</ul>
+<div class="figure align-center">
+<p class="plantuml">
+<img src="../_images/plantuml-38d8281a0f763ea3193310db0370fe71ea3464bf.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+
+hide empty members
+
+ISPC::Camera o--&gt; &quot;1&quot; ISPC::Sensor
+ISPC::Camera *-up-&gt; &quot;1&quot; ISPC::Connection
+ISPC::Camera *-right-&gt; &quot;1&quot; ISPC::Pipeline
+
+ISPC::Sensor *-right-&gt; SensorAPI::SENSOR_HANDLE
+
+ISPC::Connection *-right-&gt; CI::CI_CONNECTION
+
+ISPC::Pipeline -right-&gt; CI::CI_PIPELINE
+ISPC::Pipeline &quot;*&quot; --&gt; &quot;1&quot; ISPC::Sensor
+
+legend center
+    Extract from the ISPC::Camera relations
+endlegend
+
+&#64;enduml" />
+</p>
+</div>
+<div class="figure align-center">
+<p class="plantuml">
+<img src="../_images/plantuml-7a2090be7cf0aada42870a896e26c989c7188c15.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+
+participant &quot;ISPC::Camera cam&quot; as cam
+participant &quot;ISPC::CI_Connection cam.ciConnection&quot; as ciConnection
+participant &quot;ISPC::Sensor cam.sensor&quot; as sensor
+participant &quot;ISPC::Pipeline cam.pipeline&quot; as pipeline
+
+participant CI
+participant SensorAPI
+participant system
+
+== Creation of a Camera ==
+
+[-&gt; cam : new Camera()
+activate cam
+
+cam -&gt; ciConnection : new CI_Connection()
+    activate ciConnection
+
+    note right
+        Implicit call as part of the Camera constructor.
+    end note
+
+    ciConnection -&gt; ciConnection : connect()
+        activate ciConnection
+
+        ciConnection -&gt; CI : CI_DriverInit()
+            activate CI
+
+            CI -&gt; system : open()
+            CI -&gt; system : ioctl(CI_IOCTL_INFO)
+
+            ciConnection &lt;-- CI
+            deactivate CI
+
+        ciConnection &lt;-- ciConnection
+        deactivate ciConnection
+
+    cam &lt;-- ciConnection
+    deactivate ciConnection
+
+    alt if no sensor was given
+
+        cam -&gt; sensor : new Sensor()
+            activate sensor
+
+            sensor -&gt; sensor : init()
+                activate sensor
+
+                sensor -&gt; SensorAPI : Sensor_Initialise()
+
+                sensor &lt;-- sensor
+                deactivate sensor
+
+            cam &lt;-- sensor
+            deactivate sensor
+
+    end
+
+cam -&gt; cam : init()
+    activate cam
+
+    note right
+        The sensor can be created before the call to the Camera constructor.
+        In such case the Camera does not own the Sensor and therefore will not configure it.
+    end note
+
+    alt if sensorMode is valid
+
+        cam -&gt; sensor : configure()
+            activate sensor
+
+            sensor -&gt; SensorAPI : Sensor_SetMode()
+            sensor -&gt; SensorAPI : Sensor_GetInfo()
+            sensor -&gt; SensorAPI : Sensor_GetExposure()
+            sensor -&gt; SensorAPI : Sensor_GetExposureRange()
+            sensor -&gt; SensorAPI : Sensor_GetGainRange()
+            sensor -&gt; SensorAPI : Sensor_SetGain(1.0)
+            sensor -&gt; SensorAPI : Sensor_GetFocusRange()
+
+            alt if supports focus
+
+                sensor -&gt; SensorAPI : Sensor_GetCurrentFocus()
+
+            end
+
+            cam &lt;-- sensor
+            deactivate sensor
+
+    end
+
+cam -&gt; pipeline : new Pipeline()
+    activate pipeline
+
+    note right
+        Explicit call if sensor setup was successful.
+    end note
+
+    pipeline -&gt; CI : CI_PipelineCreate()
+        activate CI
+
+        pipeline &lt;-- CI
+        deactivate CI
+
+    cam &lt;-- pipeline
+    deactivate pipeline
+
+deactivate cam
+
+&#64;enduml" />
+</p>
+</div>
+<div class="figure align-center">
+<p class="plantuml">
+<img src="../_images/plantuml-37b4e51ca4b8fa09ed72cd1f6da55cb0f8d3efc8.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+
+participant &quot;ISPC::Camera cam&quot; as cam
+participant &quot;ISPC::Pipeline cam.pipeline&quot; as pipeline
+participant CI
+participant system
+
+== Allocation of Shots ==
+
+[-&gt; cam : addShots()
+activate cam
+
+note right
+    Allocate a given number of shots.
+end note
+
+cam -&gt; pipeline : addShots()
+    activate pipeline
+
+    pipeline -&gt; CI : CI_PipelineAddPool()
+        activate CI
+
+        loop for each shot
+
+            CI -&gt; system : ioctl(CI_IOCTL_PIPE_ADD)
+            CI -&gt; system : mmap()
+
+        end
+
+        pipeline &lt;-- CI
+        deactivate CI
+
+    pipeline -&gt; CI : CI_HasAvailableShots()
+        activate CI
+
+        note right
+            To ensure the shots were created.
+        end note
+
+        CI -&gt; system : ioctl(CI_IOCTL_AVL)
+
+        pipeline &lt;-- CI
+        deactivate CI
+
+    cam &lt;-- pipeline
+    deactivate pipeline
+
+[&lt;-- cam
+deactivate cam
+
+&#64;enduml" />
+</p>
+</div>
+<div class="figure align-center">
+<p class="plantuml">
+<img src="../_images/plantuml-51329e5ecdc1c213c7d7f39ab3685d2103ccd2b3.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+
+participant &quot;ISPC::Camera cam&quot; as cam
+participant &quot;ISPC::Pipeline cam.pipeline&quot; as pipeline
+participant CI
+participant system
+
+== Allocation of Buffers ==
+
+[-&gt; cam : allocateBufferPool()
+activate cam
+
+note right
+    Helper function that allocates a given number of buffers and shots from the current
+    configuration.
+
+    The use can also call allocateBuffer() directly for each buffer and    specify the
+    type of buffer (e.g. CI_TYPE_ENCODER for YUV) and the size.
+end note
+
+cam -&gt; pipeline : addShots()
+    activate pipeline
+
+    note right
+        See the Allocation of Shots diagram.
+    end note
+
+    cam &lt;-- pipeline
+    deactivate pipeline
+
+loop for each output buffer per output format
+
+    cam -&gt; pipeline : allocateBuffer(size=0)
+        activate pipeline
+
+        note right
+            This function can be called with a size of 0 and the kernel side driver    will
+            compute the size for this format.
+
+            However a size can be manually computed and given. In that case the kernel
+            side driver will ensure the given size fits the minimum requirements.
+        end note
+
+        pipeline -&gt; CI : CI_PipelineAllocateBuffer(size)
+            activate CI
+
+            CI -&gt; system : ioctl(CI_IOCTL_CREATE_BUFF)
+            CI -&gt; system : mmap()
+
+            pipeline &lt;-- CI
+            deactivate CI
+
+        cam &lt;-- pipeline
+        deactivate pipeline
+
+end
+
+[&lt;-- cam
+deactivate cam
+
+&#64;enduml" />
+</p>
+</div>
+<div class="figure align-center">
+<p class="plantuml">
+<img src="../_images/plantuml-26006b25f4fde9254bfaecab6ecbd27a6248dce4.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+
+participant &quot;ISPC::Camera cam&quot; as cam
+participant &quot;ISPC::Pipeline cam.pipeline&quot; as pipeline
+participant CI
+participant system
+
+== Importation of Buffers ==
+
+[-&gt; cam : importBuffers()
+activate cam
+
+note right
+    This function can be used for importing buffers given by a common allocator that the kernel
+    side driver understands (e.g. ION in Android).
+
+    This function does not handle the allocation of Shots which should be done as an extra step.
+end note
+
+cam -&gt; pipeline : importBuffer()
+    activate pipeline
+
+    pipeline -&gt; CI : CI_PipelineImportBuffer()
+        activate CI
+
+        CI -&gt; system : ioctl(CI_IOCTL_CREATE_BUFF)
+
+        CI -&gt; system : mmap()
+
+        pipeline &lt;-- CI
+        deactivate CI
+
+    cam &lt;-- pipeline
+    deactivate pipeline
+
+[&lt;-- cam
+deactivate cam
+
+&#64;enduml" />
+</p>
+</div>
+<div class="figure align-center">
+<p class="plantuml">
+<img src="../_images/plantuml-6ac35c959ebe1668da415c08e978130f430165fa.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+
+participant &quot;ISPC::Camera cam&quot; as cam
+participant &quot;ISPC::Pipeline cam.pipeline&quot; as pipeline
+participant &quot;ISPC::Sensor cam.sensor&quot; as sensor
+participant SensorAPI
+participant CI
+participant system
+
+== Starting the Camera ==
+
+[-&gt; cam : startCapture()
+activate cam
+
+note over cam
+    Configure statistics from the control algorithms.
+end note
+
+cam -&gt; pipeline : programPipeline()
+    activate pipeline
+
+    note over pipeline
+        Convert MC pipeline to CI pipeline.
+    end note
+
+    alt if pipeline was not registered yet (only 1st time)
+
+        pipeline -&gt; CI : CI_PipelineRegister()
+            activate CI
+
+            CI -&gt; system : ioctl(CI_IOCTL_PIPE_REG)
+
+            pipeline &lt;-- CI
+            deactivate CI
+
+    else (done most of the time)
+
+        pipeline -&gt; CI : CI_PipelineIsStarted()
+            activate CI
+
+            CI -&gt; system : ioctl(CI_IOCTL_CAPT_ISS)
+
+            pipeline &lt;-- CI
+            deactivate CI
+
+        pipeline -&gt; CI : CI_PipelineUpdateASAP()/CI_PipelineUpdate()
+            activate CI
+
+            CI -&gt; system : ioctl(CI_IOCTL_PIPE_UPD)
+
+            pipeline &lt;-- CI
+            deactivate CI
+
+    end
+
+    cam &lt;-- pipeline
+    deactivate pipeline
+
+cam -&gt; pipeline : startCapture()
+    activate pipeline
+
+    pipeline -&gt; CI : CI_PipelineIsStarted()
+        activate CI
+
+        CI -&gt; system : ioctl(CI_IOCTL_CAPT_ISS)
+
+        pipeline &lt;-- CI
+        deactivate CI
+
+    alt if pipeline is not started
+
+        pipeline -&gt; CI : CI_PipelineComputeLinestore()
+            activate CI
+
+            CI -&gt; CI : CI_DriverGetLinestore()
+                activate CI
+
+                CI -&gt; system : ioctl(CI_IOCTL_LINE_GET)
+
+                CI &lt;-- CI
+                deactivate CI
+
+            note over CI
+                compute linestore limits
+            end note
+
+            CI -&gt; CI : CI_DriverSetLinestore()
+                activate CI
+
+                CI -&gt; system : ioctl(CI_IOCTL_LINE_SET)
+
+                CI &lt;-- CI
+                deactivate CI
+
+            pipeline &lt;-- CI
+            deactivate CI
+
+        pipeline -&gt; CI : CI_PipelineStartCapture()
+            activate CI
+
+            CI -&gt; system : ioctl(CI_IOCTL_CAPT_STA)
+
+            pipeline &lt;-- CI
+            deactivate CI
+
+    end
+
+    cam &lt;-- pipeline
+    deactivate pipeline
+
+alt if owning the sensor
+
+    cam -&gt; sensor : enable()
+        activate sensor
+
+        sensor -&gt; SensorAPI : Sensor_Enable()
+            activate SensorAPI
+
+            note over SensorAPI
+                This is done in the sensor implemented function but
+                should ALWAYS be done as part of the phy control.
+            end note
+
+            SensorAPI -&gt; CI : CI_GasketAcquire()
+                activate CI
+
+                CI -&gt; system : ioctl(CI_IOCTL_GASK_ACQ)
+
+                SensorAPI &lt;-- CI
+                deactivate CI
+
+            note over SensorAPI
+                The sensor should start streaming AFTER the gasket
+                was acquired.
+            end note
+
+            sensor &lt;-- SensorAPI
+            deactivate SensorAPI
+
+        cam &lt;-- sensor
+        deactivate sensor
+
+end
+
+[&lt;-- cam
+deactivate cam
+
+&#64;enduml" />
+</p>
+</div>
+<div class="figure align-center">
+<p class="plantuml">
+<img src="../_images/plantuml-984390b7432a0207fed0fc9d29ba5ae5452045ea.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+
+participant &quot;ISPC::Camera cam&quot; as cam
+participant &quot;ISPC::Pipeline cam.pipeline&quot; as pipeline
+participant CI
+participant system
+
+== Trigger the capture of a frame ==
+
+[-&gt; cam : enqueueShot()
+activate cam
+
+note over cam
+    Using enqueueSpecifiedShot() works in a similar way but the buffer IDs
+    to use for input/output of the pipeline.
+end note
+
+cam -&gt; pipeline : setupRequested()
+    activate pipeline
+
+    note over pipeline
+        Go over the registery of modules and call the setup()
+        from all modules that requested an updated
+    end note
+
+    cam &lt;-- pipeline
+    deactivate pipeline
+
+cam -&gt; pipeline : programPipeline()
+    activate pipeline
+
+    note over pipeline
+        Convert MC pipeline to CI pipeline.
+    end note
+
+    alt if pipeline was not registered yet (only 1st time)
+
+        pipeline -&gt; CI : CI_PipelineRegister()
+            activate CI
+
+            CI -&gt; system : ioctl(CI_IOCTL_PIPE_REG)
+
+            pipeline &lt;-- CI
+            deactivate CI
+
+    else (done most of the time)
+
+        pipeline -&gt; CI : CI_PipelineIsStarted()
+            activate CI
+
+            CI -&gt; system : ioctl(CI_IOCTL_CAPT_ISS)
+
+            pipeline &lt;-- CI
+            deactivate CI
+
+        pipeline -&gt; CI : CI_PipelineUpdateASAP()/CI_PipelineUpdate()
+            activate CI
+
+            CI -&gt; system : ioctl(CI_IOCTL_PIPE_UPD)
+
+            pipeline &lt;-- CI
+            deactivate CI
+
+    end
+
+    cam &lt;-- pipeline
+    deactivate pipeline
+
+cam -&gt; pipeline : programShot()/programSpecifiedShot()
+    activate pipeline
+
+    pipeline -&gt; CI : CI_PipelineIsStarted()
+        activate CI
+
+        CI -&gt; system : ioctl(CI_IOCTL_CAPT_ISS)
+
+        pipeline &lt;-- CI
+        deactivate CI
+
+    note over pipeline
+        The shoot can only be triggered if the capture is started.
+    end note
+
+    pipeline -&gt; CI : CI_PipelineTriggerShoot()/CI_PipelineTriggerSpecifiedShoot()
+        activate CI
+
+        CI -&gt; system : ioctl(CI_IOCTL_CAPT_TRG)
+
+        pipeline &lt;-- CI
+        deactivate CI
+
+    cam &lt;-- pipeline
+    deactivate pipeline
+
+[&lt;-- cam
+deactivate cam
+
+note over cam
+    The user can then acquire the result of the capture.
+end note
+
+&#64;enduml" />
+</p>
+</div>
+<div class="figure align-center">
+<p class="plantuml">
+<img src="../_images/plantuml-b3ec4c9f8a337542f0abecb11a10e8fb59619ccc.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+
+participant &quot;ISPC::Camera cam&quot; as cam
+participant &quot;ISPC::Pipeline cam.pipeline&quot; as pipeline
+participant CI
+participant system
+
+== Acquire the result of a capture ==
+
+[-&gt; cam : acquireShot()
+activate cam
+
+note over cam
+    Using tryAcquireShot() is equivalent but will return an error
+    if not capture is available instead of waiting (wait done in
+    kernel side driver).
+end note
+
+cam -&gt; pipeline : acquireShot()
+    activate pipeline
+
+    pipeline -&gt; CI : CI_PipelineAcquireShot()/CI_PipelineAcquireShotNB()
+        activate CI
+
+        CI -&gt; system : ioctl(CI_IOCTL_CAPT_BAQ)
+
+        pipeline &lt;-- CI
+        deactivate CI
+
+    cam &lt;-- pipeline
+    deactivate pipeline
+
+alt if update control was selected
+
+    note over cam
+        Call the enabled control modules update().
+    end note
+
+end
+
+[&lt;-- cam
+deactivate cam
+
+note over cam
+    The user of the shot can now use the captured
+    data.
+
+    Once over the shot has to be released, see the
+    Release the result of a capture diagram.
+end note
+
+&#64;enduml" />
+</p>
+</div>
+<div class="figure align-center">
+<p class="plantuml">
+<img src="../_images/plantuml-b18ebdac6ddf83ba5505e87055147cad13ddbcdc.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+
+participant &quot;ISPC::Camera cam&quot; as cam
+participant &quot;ISPC::Pipeline cam.pipeline&quot; as pipeline
+participant CI
+participant system
+
+== Release the result of a capture ==
+
+[-&gt; cam : releaseShot()
+activate cam
+
+cam -&gt; pipeline : releaseShot()
+    activate pipeline
+
+    pipeline -&gt; CI : CI_PipelineReleaseShot()
+        activate CI
+
+        CI -&gt; system : ioctl(CI_IOCTL_CAPT_BRE)
+
+        pipeline &lt;-- CI
+        deactivate CI
+
+    cam &lt;-- pipeline
+    deactivate pipeline
+
+[&lt;-- cam
+deactivate cam
+
+&#64;enduml" />
+</p>
+</div>
+<div class="figure align-center">
+<p class="plantuml">
+<img src="../_images/plantuml-4582a3c3ca1d0cd9ee3e4bc524567f8272d89595.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+
+participant &quot;ISPC::Camera cam&quot; as cam
+participant &quot;ISPC::Pipeline cam.pipeline&quot; as pipeline
+participant &quot;ISPC::Sensor cam.sensor&quot; as sensor
+participant SensorAPI
+participant CI
+participant system
+
+== Stopping the Camera ==
+
+[-&gt; cam : stopCapture()
+activate cam
+
+cam -&gt; pipeline : stopCapture()
+    activate pipeline
+
+    pipeline -&gt; CI : CI_PipelineStopCapture()
+        activate CI
+
+        CI -&gt; system : ioctl(CI_IOCTL_CAPT_STP)
+
+        pipeline &lt;-- CI
+        deactivate CI
+
+    cam &lt;-- pipeline
+    deactivate pipeline
+
+alt if owning the sensor
+
+    cam -&gt; sensor : disable()
+        activate sensor
+
+        sensor -&gt; SensorAPI : Sensor_Disable()
+            activate SensorAPI
+
+            note over SensorAPI
+                This is done in the sensor implemented function but
+                should ALWAYS be done as part of the phy control.
+            end note
+
+            note over SensorAPI
+                The sensor should stop streaming BEFORE the gasket
+                is released.
+            end note
+
+            SensorAPI -&gt; CI : CI_GasketRelease()
+                activate CI
+
+                CI -&gt; system : ioctl(CI_IOCTL_GASK_REL)
+
+                SensorAPI &lt;-- CI
+                deactivate CI
+
+            sensor &lt;-- SensorAPI
+            deactivate SensorAPI
+
+        cam &lt;-- sensor
+        deactivate sensor
+
+end
+
+[&lt;-- cam
+deactivate cam
+
+&#64;enduml" />
+</p>
+</div>
+<div class="figure align-center">
+<p class="plantuml">
+<img src="../_images/plantuml-e4ff5efe69d3939e08a1d1488d1fd0353fa6d603.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+
+participant &quot;ISPC::Camera cam&quot; as cam
+participant &quot;ISPC::Pipeline cam.pipeline&quot; as pipeline
+participant CI
+participant system
+
+== Destruction of Buffers ==
+
+[-&gt; cam : deregisterBuffer()
+activate cam
+
+note right
+    Destruction of a Buffer is the same if it was allocated or imported. The kernel side driver
+    will handle the difference.
+
+    Buffers have to be deregisters one by one using the ID provided at allocation/importation.
+end note
+
+cam -&gt; pipeline : deregisterBuffer()
+    activate pipeline
+
+    pipeline -&gt; CI : CI_PipelineDeregisterBuffer()
+        activate CI
+
+        CI -&gt; system : ioctl(CI_IOCTL_DEREG_BUFF)
+
+        CI -&gt; system : munmap()
+
+        pipeline &lt;-- CI
+        deactivate CI
+
+    cam &lt;-- pipeline
+    deactivate pipeline
+
+[&lt;-- cam
+deactivate cam
+
+&#64;enduml" />
+</p>
+</div>
+<div class="figure align-center">
+<p class="plantuml">
+<img src="../_images/plantuml-8e58395bb727661a5e9a15cfa534941d913d4def.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+
+participant &quot;ISPC::Camera cam&quot; as cam
+participant &quot;ISPC::Pipeline cam.pipeline&quot; as pipeline
+participant CI
+participant system
+
+== Destruction of Shots ==
+
+[-&gt; cam : deleteShots()
+activate cam
+
+note right
+    Unlike the buffers shots are destroyed all at once.
+    The user does not know the ID to allow a destruction one at a time.
+end note
+
+cam -&gt; pipeline : deleteShots()
+    activate pipeline
+
+    note right
+        Shots cannot be destroyed while the capture is running.
+    end note
+
+    pipeline -&gt; CI : CI_PipelineIsStarted()
+        activate CI
+
+        CI -&gt; system : ioctl(CI_IOCTL_CAPT_ISS)
+
+        pipeline &lt;-- CI
+        deactivate CI
+
+    note right
+        Shots cannot be destroyed if they are still
+        in use by the HW (pending)
+        or that the user did not release them after
+        their acquisition (acquired).
+    end note
+
+    pipeline -&gt; CI : CI_PipelineHasPending()
+        activate CI
+
+        CI -&gt; system : ioctl(CI_IOCTL_PIPE_PEN)
+
+        pipeline &lt;-- CI
+        deactivate CI
+
+    pipeline -&gt; CI : CI_PipelineHasAcquired()
+        activate CI
+
+        pipeline &lt;-- CI
+        deactivate CI
+
+    note over pipeline
+        If all previous tests were successful
+        we delete all the Shots.
+    end note
+
+    pipeline -&gt; CI : CI_PipelineDeleteShots()
+        activate CI
+
+        loop for each allocate shot
+
+            CI -&gt; system : munmap()
+            CI -&gt; system : ioctl(CI_IOCTL_PIPE_REM)
+
+        end
+
+        pipeline &lt;-- CI
+        deactivate CI
+
+    cam &lt;-- pipeline
+    deactivate pipeline
+
+[&lt;-- cam
+deactivate cam
+
+&#64;enduml" />
+</p>
+</div>
+<div class="figure align-center">
+<p class="plantuml">
+<img src="../_images/plantuml-34736113ff43e22d4efef9eedb792b56195afc30.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+
+participant &quot;ISPC::Camera cam&quot; as cam
+participant &quot;ISPC::CI_Connection cam.ciConnection&quot; as ciConnection
+participant &quot;ISPC::Sensor cam.sensor&quot; as sensor
+participant &quot;ISPC::Pipeline cam.pipeline&quot; as pipeline
+participant CI
+participant SensorAPI
+participant system
+
+== Destruction of the Camera ==
+
+[-&gt; cam : ~Camera()
+activate cam
+
+alt if state is running
+
+    cam -&gt; cam : stopCapture()
+        activate cam
+
+        note right
+            See Stopping the Camera diagram.
+        end note
+
+        cam &lt;-- cam
+        deactivate cam
+
+end
+
+cam -&gt; pipeline : ~Pipeline()
+    activate pipeline
+
+    pipeline -&gt; pipeline : clearModules()
+
+    pipeline -&gt; CI : CI_PipelineDestroy()
+        activate CI
+
+        note right
+            May stop the capture if pipeline is still running.
+            But it should not happen because we checked in
+            ISPC beforehand.
+        end note
+
+        alt if has allocate shots
+
+            CI -&gt; CI : CI_PipelineDeleteShots()
+                activate CI
+
+                loop for each allocate shot
+
+                    CI -&gt; system : munmap()
+                    CI -&gt; system : ioctl(CI_IOCTL_PIPE_REM)
+
+                end
+
+                CI &lt;-- CI
+                deactivate CI
+        end
+
+        loop for each allocate buffer
+
+            CI -&gt; system : munmap()
+
+        end
+
+        CI -&gt; system : ioctl(CI_IOCTL_PIPE_DEL)
+
+        pipeline &lt;-- CI
+        deactivate CI
+
+    cam &lt;-- pipeline
+    deactivate pipeline
+    destroy pipeline
+
+alt if owning the sensor
+
+    cam -&gt; sensor : ~Sensor()
+        activate sensor
+
+        alt if sensor is enabled
+
+            sensor -&gt; SensorAPI : Sensor_Disable()
+
+            note over sensor
+                Should not happen because we checked
+                the status in the Camera beforehand.
+            end note
+
+        end
+
+        sensor -&gt; SensorAPI : Sensor_Destroy()
+
+        cam &lt;-- sensor
+        deactivate sensor
+        destroy sensor
+
+end
+
+cam -&gt; ciConnection : ~CI_Connection()
+    activate ciConnection
+
+    note right
+        Implicit call.
+    end note
+
+    ciConnection -&gt; ciConnection : disconnect()
+        activate ciConnection
+
+        alt if it is the last connection
+
+            ciConnection -&gt; CI : CI_DriverFinalise()
+                activate CI
+
+                CI -&gt; system : close()
+
+                ciConnection &lt;-- CI
+                deactivate CI
+
+        end
+
+        ciConnection &lt;-- ciConnection
+        deactivate ciConnection
+
+    cam &lt;-- ciConnection
+    deactivate ciConnection
+    destroy ciConnection
+
+deactivate cam
+destroy cam
+
+&#64;enduml" />
+</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../ci/ci_appendix_mmufault.html"
+                        title="previous chapter">CI Appendix: Debugging a Page Fault</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../android/hal_appendix.html"
+                        title="next chapter">Android Appendix: Debugging</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

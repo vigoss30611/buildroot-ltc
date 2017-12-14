@@ -1,0 +1,32 @@
+#!/bin/sh
+#
+# Start the network....
+#
+
+#usbether=/sys/devices/platform/imap-ehci/usb2/2-1/2-1:1.0/net/
+#detected=0
+#while true; do
+##	if ls $usbether 2>/dev/null 1>&2; then
+#	if ifconfig -a 2>&1 | grep usb1 2>/dev/null 1>&2; then
+#		if [ $detected -eq 0 ]; then
+#			echo "usb ethernet found"
+#			deviceid=`ls $usbether`
+#			#ifup $deviceid
+#			ifup usb1
+#            if [ $? = "0" ]; then
+#                detected=1
+#                eventsend "usb_host_status" "connected"
+#            fi
+#		fi
+#	else
+#		if [ $detected -eq 1 ]; then
+#			echo "usb ethernet dismissed"
+#			#ifdown $deviceid
+#			ifdown usb1
+#			detected=0
+#            eventsend "usb_host_status" "disconnected"
+#		fi
+#	fi
+#	test -L /bin/sleep && sleep 1
+#done &
+

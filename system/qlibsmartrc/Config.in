@@ -1,0 +1,10 @@
+config BR2_PACKAGE_QLIBSMARTRC
+	bool "Smart RC"
+    default y
+	help
+		Smart RC
+
+if BR2_PACKAGE_QLIBSMARTRC
+
+
+endif

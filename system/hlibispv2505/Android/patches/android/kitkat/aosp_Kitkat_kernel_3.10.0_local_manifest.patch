@@ -1,0 +1,7 @@
+--- .repo_orig/local_manifests/kernel.xml	1970-01-01 01:00:00.000000000 +0100
++++ .repo/local_manifests/kernel_3.10.0.xml	2015-05-18 11:10:13.972166296 +0200
+@@ -0,0 +1,4 @@
++<manifest>
++    <project path="kernel/common" name="kernel/common"
++    remote="aosp" revision="ad41e067668c77308438ddf9c5ec6909cd11a5f9" />
++</manifest>

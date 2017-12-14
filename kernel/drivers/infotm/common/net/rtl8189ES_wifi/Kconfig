@@ -1,0 +1,5 @@
+config RTL8189ES_WIFI
+	tristate "Realtek 8189E SDIO WiFi"
+	default n
+	---help---
+	  Help message of RTL8189ES

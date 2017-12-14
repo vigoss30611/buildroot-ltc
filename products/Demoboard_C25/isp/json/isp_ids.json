@@ -1,0 +1,24 @@
+{
+    "isp": {
+        "ipu": "v2500",
+        "args": {
+            "nbuffers": 4
+        },
+        "port": {
+            "out": {
+                "w": 1280,
+                "h": 720,
+                "pixel_format": "nv12",
+                "bind":{"display": "osd0"}
+            },
+            "his": {
+                "bind": { "vam": "in" }
+            }
+        }
+    },
+
+
+    "display": { "ipu": "ids"},
+    "vam": { "ipu": "vamovement"}
+}
+

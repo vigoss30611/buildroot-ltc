@@ -1,0 +1,8 @@
+#reload/callgraph
+profon
+go
+profwrite tmp.prf
+print $statistics
+print/%d $cputime
+print $memstats
+quit

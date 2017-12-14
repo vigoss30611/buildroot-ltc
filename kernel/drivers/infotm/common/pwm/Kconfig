@@ -1,0 +1,21 @@
+menuconfig INFOTM_PWM
+		bool "Infotm pwm support"
+		default n
+		select PWM
+		help
+		This is the Infotm internal PWM driver
+if INFOTM_PWM
+config PWM_IMAPX
+		tristate "iMAPx PWM driver"
+        default n                 
+		help                       
+			PWM driver for iMAPx      
+
+config IMAPX_BEEP
+		tristate "Imapx PWM based beep driver"
+        default n                 
+		help                       
+			PWM driver for iMAPx      
+			
+endif
+

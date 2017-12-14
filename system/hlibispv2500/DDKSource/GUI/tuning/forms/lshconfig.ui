@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LSHConfig</class>
+ <widget class="QDialog" name="LSHConfig">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>484</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>LSH Configuration</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_3">
+   <item row="0" column="0" colspan="2">
+    <widget class="QGroupBox" name="input_grp">
+     <property name="title">
+      <string>Calibration file</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="1" column="1">
+       <widget class="QtExtra::FileWidget" name="inputFile" native="true"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="input_lbl">
+        <property name="text">
+         <string>Input file</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QPushButton" name="preview_btn">
+        <property name="text">
+         <string>Preview</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="standardButtons">
+        <set>QDialogButtonBox::RestoreDefaults</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="lshConfigAdv_btn">
+       <property name="text">
+        <string>Advanced Settings</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="5" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="QGroupBox" name="output_grp">
+     <property name="title">
+      <string>Output</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="5" column="1" colspan="4">
+       <widget class="QSpinBox" name="nBits">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+        <property name="suffix">
+         <string> bits</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1" colspan="4">
+       <widget class="QLabel" name="warning_lbl">
+        <property name="text">
+         <string>warning message from setConfig(output)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="4">
+       <widget class="QComboBox" name="algorithm"/>
+      </item>
+      <item row="2" column="1" colspan="4">
+       <widget class="QComboBox" name="tilesize"/>
+      </item>
+      <item row="0" column="1" colspan="4">
+       <widget class="QLineEdit" name="outputFilename"/>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="output_lbl">
+        <property name="text">
+         <string>Output filename</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="tilesize_lbl">
+        <property name="text">
+         <string>Tile size</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="4">
+       <widget class="QDoubleSpinBox" name="outputMSE_3">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+        <property name="decimals">
+         <number>0</number>
+        </property>
+        <property name="maximum">
+         <double>1000000.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1" colspan="4">
+       <widget class="QSpinBox" name="matrixSize">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+        <property name="suffix">
+         <string> Bytes</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1" colspan="4">
+       <widget class="QSpinBox" name="lineSize">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+        <property name="suffix">
+         <string> Bytes</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="0">
+       <widget class="QLabel" name="outputMin_lbl">
+        <property name="text">
+         <string>Output Min Error per channel</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="3">
+       <widget class="QDoubleSpinBox" name="outputMSE_2">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+        <property name="decimals">
+         <number>0</number>
+        </property>
+        <property name="maximum">
+         <double>1000000.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0">
+       <widget class="QLabel" name="outputMSE_lbl">
+        <property name="text">
+         <string>Output MSE per channel</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1">
+       <widget class="QDoubleSpinBox" name="outputMSE_0">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+        <property name="decimals">
+         <number>0</number>
+        </property>
+        <property name="maximum">
+         <double>1000000.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="2">
+       <widget class="QDoubleSpinBox" name="outputMSE_1">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+        <property name="decimals">
+         <number>0</number>
+        </property>
+        <property name="maximum">
+         <double>1000000.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="matrixSize_lbl">
+        <property name="text">
+         <string>Expected matrix size</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="algorithm_lbl">
+        <property name="text">
+         <string>Algorithm</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="nBits_lbl">
+        <property name="text">
+         <string>Expected bits per diff</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="lineSize_lbl">
+        <property name="text">
+         <string>Expected line size</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="warning_icon">
+        <property name="text">
+         <string>warning icon</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="3">
+       <widget class="QDoubleSpinBox" name="outputMin_2">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+        <property name="decimals">
+         <number>0</number>
+        </property>
+        <property name="maximum">
+         <double>1000000.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="4">
+       <widget class="QDoubleSpinBox" name="outputMin_3">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+        <property name="decimals">
+         <number>0</number>
+        </property>
+        <property name="maximum">
+         <double>1000000.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="2">
+       <widget class="QDoubleSpinBox" name="outputMin_1">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+        <property name="decimals">
+         <number>0</number>
+        </property>
+        <property name="maximum">
+         <double>1000000.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="1">
+       <widget class="QDoubleSpinBox" name="outputMin_0">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+        <property name="decimals">
+         <number>0</number>
+        </property>
+        <property name="maximum">
+         <double>1000000.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="0">
+       <widget class="QLabel" name="outputMax_lbl">
+        <property name="text">
+         <string>Output Max Error per channel</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="1">
+       <widget class="QDoubleSpinBox" name="outputMax_0">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+        <property name="decimals">
+         <number>0</number>
+        </property>
+        <property name="maximum">
+         <double>1000000.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="2">
+       <widget class="QDoubleSpinBox" name="outputMax_1">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+        <property name="decimals">
+         <number>0</number>
+        </property>
+        <property name="maximum">
+         <double>1000000.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="3">
+       <widget class="QDoubleSpinBox" name="outputMax_2">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+        <property name="decimals">
+         <number>0</number>
+        </property>
+        <property name="maximum">
+         <double>1000000.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="4">
+       <widget class="QDoubleSpinBox" name="outputMax_3">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+        <property name="decimals">
+         <number>0</number>
+        </property>
+        <property name="maximum">
+         <double>1000000.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QtExtra::FileWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">QtExtra/filewidget.hpp</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>preview_btn</tabstop>
+  <tabstop>outputFilename</tabstop>
+  <tabstop>tilesize</tabstop>
+  <tabstop>algorithm</tabstop>
+  <tabstop>nBits</tabstop>
+  <tabstop>lineSize</tabstop>
+  <tabstop>matrixSize</tabstop>
+  <tabstop>outputMSE_0</tabstop>
+  <tabstop>outputMSE_1</tabstop>
+  <tabstop>outputMSE_2</tabstop>
+  <tabstop>outputMSE_3</tabstop>
+  <tabstop>outputMin_0</tabstop>
+  <tabstop>outputMin_1</tabstop>
+  <tabstop>outputMin_2</tabstop>
+  <tabstop>outputMin_3</tabstop>
+  <tabstop>outputMax_0</tabstop>
+  <tabstop>outputMax_1</tabstop>
+  <tabstop>outputMax_2</tabstop>
+  <tabstop>outputMax_3</tabstop>
+  <tabstop>lshConfigAdv_btn</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,14 @@
+menuconfig INFOTM_HWMON
+	bool "Infotm Hardware monitor support"
+	default y
+	select HWMON
+	help 
+	This is for Infotm hardware monitor sensors
+if INFOTM_HWMON
+config LIGHTSENSOR_PT550
+	tristate "light-sensor pt550 sensor driver"
+	default y
+	help
+	 keep this disselected while not sure
+endif
+

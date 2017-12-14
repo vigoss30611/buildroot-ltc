@@ -1,0 +1,6 @@
+#!/usr/bin/env  python2.7
+import sys
+refer='''#!/bin/sh
+PKG_CONFIG_LIBDIR=${PKG_CONFIG_LIBDIR:-@WORKSPACE@/output/host/usr/arm-buildroot-linux-uclibcgnueabihf/sysroot/usr/lib/pkgconfig:@WORKSPACE@/output/host/usr/arm-buildroot-linux-uclibcgnueabihf/sysroot/usr/share/pkgconfig:@WORKSPACE@/output/host/usr/arm-buildroot-linux-uclibcgnueabihf/sysroot/usr/local/lib/pkgconfig} PKG_CONFIG_SYSROOT_DIR=${PKG_CONFIG_SYSROOT_DIR:-@WORKSPACE@/output/host/usr/arm-buildroot-linux-uclibcgnueabihf/sysroot} $(dirname $0)/pkgconf $@
+'''
+print refer.replace("@WORKSPACE@", sys.argv[1])

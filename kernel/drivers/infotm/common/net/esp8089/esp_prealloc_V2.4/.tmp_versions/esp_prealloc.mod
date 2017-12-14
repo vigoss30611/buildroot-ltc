@@ -1,0 +1,2 @@
+/home/xiongbiao/q3_hsj_wifi8089/linux/drivers/infotm/common/net/esp8089/esp_prealloc_V2.4/esp_prealloc.ko
+/home/xiongbiao/q3_hsj_wifi8089/linux/drivers/infotm/common/net/esp8089/esp_prealloc_V2.4/esp_mem.o /home/xiongbiao/q3_hsj_wifi8089/linux/drivers/infotm/common/net/esp8089/esp_prealloc_V2.4/esp_slab.o /home/xiongbiao/q3_hsj_wifi8089/linux/drivers/infotm/common/net/esp8089/esp_prealloc_V2.4/esp_mem_init.o

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:id="@+id/layout_online_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="10dp"
+        android:orientation="horizontal" >
+
+        <Spinner
+            android:id="@+id/spinner_online"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:spinnerMode="dropdown" />
+
+        <Button
+            android:id="@+id/btn_online_add_device"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:text="添加设备" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/lv_online"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/layout_online_bottom"
+        android:layout_below="@id/layout_online_title"
+        android:cacheColorHint="@android:color/transparent" />
+
+    <TextView
+        android:id="@id/layout_online_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:text="长按设备即可进入设置页面"
+        android:visibility="invisible" />
+
+</RelativeLayout>

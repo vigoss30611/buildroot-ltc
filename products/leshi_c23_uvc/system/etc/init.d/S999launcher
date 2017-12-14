@@ -1,0 +1,23 @@
+#! /bin/sh
+
+case "$1" in
+	start|"")
+		echo "" >  /sys/devices/platform/dwc_otg/gadget/lun0/file
+		echo 0 > /sys/class/infotm_usb/infotm0/enable
+		echo "uvc" > /sys/class/infotm_usb/infotm0/functions
+		echo 1 > /sys/class/infotm_usb/infotm0/enable
+		source /etc/profile.d/envsetup.sh
+		launcher &
+		echo 0 > /sys/kernel/debug/dwc_otg/link
+		echo 1 > /sys/kernel/debug/dwc_otg/link
+		;;
+	stop)
+		killall launcher
+		killall launcher
+		;;
+	*)
+		echo "Usage: libramain {start|stop}" >&2
+		exit 1
+		;;
+esac
+

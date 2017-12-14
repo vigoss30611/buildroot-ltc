@@ -1,0 +1,700 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Implemented Statistics Modules &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="up" title="ISP Control Library" href="ispc_library.html" />
+    <link rel="next" title="Automatic Exposure (AE)" href="ispc_controls_ae.html" />
+    <link rel="prev" title="Implemented Setup Modules" href="ispc_modules.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="ispc_controls_ae.html" title="Automatic Exposure (AE)"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="ispc_modules.html" title="Implemented Setup Modules"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="ispc_library.html" accesskey="U">ISP Control Library</a> &raquo;</li><li>Implemented Statistics Modules</li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="implemented-statistics-modules">
+<span id="isp-ispc-statistics-modules"></span><h1>Implemented Statistics Modules<a class="headerlink" href="#implemented-statistics-modules" title="Permalink to this headline">¶</a></h1>
+<p>The following sections will detail the modules that gather statistics. It
+will also list the high level parameters for the SW modules. More
+information about the modules order is available in the
+<a class="reference internal" href="../dictionary.html#isp-dictionary-v2500-modules"><span>V2500 modules</span></a> section.</p>
+<div class="section" id="defective-pixel-fixing-dpf">
+<span id="isp-ispc-dpf2"></span><h2>Defective Pixel Fixing (DPF)<a class="headerlink" href="#defective-pixel-fixing-dpf" title="Permalink to this headline">¶</a></h2>
+<p>Detailed in <a class="reference internal" href="ispc_modules.html#isp-ispc-dpf"><span>Defective Pixels Fixing (DPF)</span></a>.</p>
+</div>
+<div class="section" id="encoder-statistics-ens">
+<span id="isp-ispc-ens"></span><h2>Encoder Statistics (ENS)<a class="headerlink" href="#encoder-statistics-ens" title="Permalink to this headline">¶</a></h2>
+<p>The ENS module does a partial estimation of the entropy of regions of an image.
+The image is partitioned into regions that each accumulate their own entropy
+value. The calculation is done over a 2x2 kernel (line pairs) and measures
+the difference among the cluster of pixel. The result generated by the HW can
+be used as a histogram of differences across the image.</p>
+<div class="section" id="ens-high-level-parameters">
+<span id="isp-ispc-ens-hlp"></span><h3>ENS High Level Parameters<a class="headerlink" href="#ens-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>ENS_ENABLE:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p><strong>Defaults:</strong> 0</p>
+<p>Enable/disable encoder statistics.</p>
+<p class="last">If enabled then the ENS buffer is saved and its size computed from the
+image&#8217;s size and the other parameters. The saving format is application
+dependent but usually follows the HW format (see TRM).</p>
+</dd>
+<dt>ENS_REGION_NUMLINES:</dt>
+<dd><p class="first"><strong>Format:</strong> int range [8,256]</p>
+<p><strong>Defaults:</strong> 16</p>
+<p>Number of lines in each region. <strong>Must be a power of 2</strong>.</p>
+<p class="last">Similar to <a class="reference internal" href="../test_tools/driver_test.html#isp-driver-test"><span>driver_test</span></a> <code class="docutils literal"><span class="pre">-CTX_ENSNLines</span></code>.</p>
+</dd>
+<dt>ENS_SUBS_FACTOR:</dt>
+<dd><p class="first"><strong>Format:</strong> int range [1,32]</p>
+<p><strong>Defaults:</strong> 1</p>
+<p class="last">Horizontal sub-sampling (ratio of 1:sub-sampling) for the region. <strong>Must
+be a power of 2</strong>.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="encoder-statistics-output-encoder-signal-limitation">
+<span id="isp-ispc-ens-limitation"></span><h3>Encoder statistics output encoder signal limitation<a class="headerlink" href="#encoder-statistics-output-encoder-signal-limitation" title="Permalink to this headline">¶</a></h3>
+<p>There is no implementation enabling the <cite>out_enc</cite> HW signal to propagate
+statistics from ISP to Encoder (see core register <code class="docutils literal"><span class="pre">ENC_OUT_CTRL</span></code>) in the ISPC
+layer. The low level driver allows a selection using
+<span>CI_PIPELINE::bUseEncOutLine</span> and <span>CI_PIPELINE::ui8EncOutPulse</span>.</p>
+<p>Selecting the context enabling the signal can be controlled with <code class="docutils literal"><span class="pre">-encOutCtx</span></code>
+in <a class="reference internal" href="../test_tools/driver_test.html#isp-driver-test"><span>driver_test</span></a>.</p>
+</div>
+</div>
+<div class="section" id="exposure-statistics-exs">
+<span id="isp-ispc-exs"></span><h2>Exposure Statistics (EXS)<a class="headerlink" href="#exposure-statistics-exs" title="Permalink to this headline">¶</a></h2>
+<p>The EXS module in HW collects 2 sets of information on a column of pixels
+(or a single pixel if HW parallelism is 1):</p>
+<ul class="simple">
+<li>A number of pixels that are over the <em>pixel max</em> threshold for each
+channel over the whole image</li>
+<li>A number of pixels that are over the <em>pixel max</em> theshold for each
+channel on a region</li>
+</ul>
+<p>The regional statistics contains a grid of tiles, all of the same dimension.
+The grid is 7 tiles wide and 7 tiles high. Each tile has to be at least 8
+pixels wide.</p>
+<p>It is valid for the ROI to be partially located off the frame at the bottom
+or right edges. However the statistics may not be accurate unless the whole
+tile is located within the image (see <a class="reference internal" href="#isp-ispc-stats-grid-fig"><span>Tile update when off frame (source: TRM)</span></a>).</p>
+<ul class="simple">
+<li>If a tile is completely off the right edge of the picture then 0 will
+be stored for that tile.</li>
+<li>If a tile is partially calculated then that value will be stored.</li>
+<li>If a tile is completely off the bottom edge of the picture they will
+not be updated and may contain memory from previous frames.</li>
+</ul>
+<div class="figure" id="id1">
+<span id="isp-ispc-stats-grid-fig"></span><a class="reference internal image-reference" href="../_images/stats_grid.png"><img alt="../_images/stats_grid.png" src="../_images/stats_grid.png" style="width: 671px; height: 540px;" /></a>
+<p class="caption"><span class="caption-text">Tile update when off frame (source: TRM)</span></p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Currently not used by any algorithms.</p>
+</div>
+<div class="section" id="exs-high-level-parameters">
+<span id="isp-ispc-exs-hlp"></span><h3>EXS High Level Parameters<a class="headerlink" href="#exs-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>EXS_GLOBAL_ENABLE:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p class="last"><strong>Defaults:</strong> 0</p>
+</dd>
+<dt>EXS_GRID_START_COORDS:</dt>
+<dd><p class="first"><strong>Format:</strong> int[2] range [0,8192]</p>
+<p class="last"><strong>Defaults:</strong> 0 0</p>
+</dd>
+<dt>EXS_GRID_TILE_DIMENSIONS:</dt>
+<dd><p class="first"><strong>Format:</strong> int[2] range [8,8191]</p>
+<p class="last"><strong>Defaults:</strong> 9 9</p>
+</dd>
+<dt>EXS_PIXEL_MAX:</dt>
+<dd><p class="first"><strong>Format:</strong> int range [0,4095]</p>
+<p class="last"><strong>Defaults:</strong> 4095</p>
+</dd>
+<dt>EXS_REGIONAL_ENABLE:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p class="last"><strong>Defaults:</strong> 0</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="flicker-detection-fld">
+<span id="isp-ispc-fld"></span><h2>Flicker Detection (FLD)<a class="headerlink" href="#flicker-detection-fld" title="Permalink to this headline">¶</a></h2>
+<p>Used in <a class="reference internal" href="ispc_controls_ae.html#isp-icm-ae"><span>Automatic Exposure (AE)</span></a> module as the optional source of flicker frequency.</p>
+<div class="section" id="fld-high-level-parameters">
+<span id="isp-ispc-fld-hlp"></span><h3>FLD High Level Parameters<a class="headerlink" href="#fld-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>FLD_ENABLE:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Enable flicker detection.</p>
+</dd>
+<dt>FLD_COEF_DIFF_TH:</dt>
+<dd><p class="first"><strong>Format:</strong> int range [0,32767]</p>
+<p><strong>Defaults:</strong> 50</p>
+<p class="last">Difference between 50 and 60hz coefficients.</p>
+</dd>
+<dt>FLD_MIN_PN:</dt>
+<dd><p class="first"><strong>Format:</strong> int range [0,63]</p>
+<p><strong>Defaults:</strong> 4</p>
+<p class="last">If scene change is detected, vote for final result unless this number of
+frames has been processed.</p>
+</dd>
+<dt>FLD_NF_TH:</dt>
+<dd><p class="first"><strong>Format:</strong> int range [0,32767]</p>
+<p><strong>Defaults:</strong> 15000</p>
+<p class="last">&#8220;No flicker&#8221; threshold.</p>
+</dd>
+<dt>FLD_PN:</dt>
+<dd><p class="first"><strong>Format:</strong> int range [0,63]</p>
+<p><strong>Defaults:</strong> 16</p>
+<p class="last">If this number of frames has been processed, vote for final result.</p>
+</dd>
+<dt>FLD_RSHIFT:</dt>
+<dd><p class="first"><strong>Format:</strong> int range [0,63]</p>
+<p><strong>Defaults:</strong> 10</p>
+<p class="last">Number of bits to right-shift the cos/sin value based on the amplitude
+of difference signal.</p>
+</dd>
+<dt>FLD_SCENE_CHANGE_TH:</dt>
+<dd><p class="first"><strong>Format:</strong> int range [0,1048575]</p>
+<p><strong>Defaults:</strong> 300000</p>
+<p class="last">Scene change threshold.</p>
+</dd>
+<dt>FLD_RESET:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Reset internal variables of the detection algorithm, restart detection.</p>
+</dd>
+</dl>
+<div class="section" id="sensor-information-for-flicker-detection">
+<h4>Sensor information for flicker detection<a class="headerlink" href="#sensor-information-for-flicker-detection" title="Permalink to this headline">¶</a></h4>
+<p>This is information read from the sensor object but can be saved to record the
+value that was used:</p>
+<dl class="docutils">
+<dt>Vertical total:</dt>
+<dd>Total size in lines of the sensor (including black borders).</dd>
+<dt>Frame rate:</dt>
+<dd>Expected frames per seconds.</dd>
+</dl>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>The information used to be loaded from following parameters which are
+now deprecated. The information is loaded directly from the Sensor
+object attached to the Pipeline that owns the module.</p>
+<dl class="docutils">
+<dt>FLD_VTOT:</dt>
+<dd>Deprecated, saved as SENSOR_VTOT.</dd>
+<dt>FLD_FRAME_RATE:</dt>
+<dd>Deprecated, see SENSOR_FRAME_RATE.</dd>
+<dt>DNS_SENSOR_BITDEPTH:</dt>
+<dd>Deprecated, see SENSOR_BITDEPTH.</dd>
+<dt>DNS_SENSOR_WELLDEPTH:</dt>
+<dd>Deprecated, see SENSOR_WELL_DEPTH.</dd>
+</dl>
+<p class="last">See <a class="reference internal" href="ispc_library.html#isp-ispcl-sensor-parameters"><span>Sensor High-level Parameters</span></a> for details on the sensor high level
+parameters.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="focus-statistics-fos">
+<span id="isp-ispc-fos"></span><h2>Focus Statistics (FOS)<a class="headerlink" href="#focus-statistics-fos" title="Permalink to this headline">¶</a></h2>
+<p>The FOS module snoops a column of pixels from the pipeline and collects
+statistics on a 5x5 kernel from the selected regions (1 regions of interest
+and 1 global grid) to detect edges.</p>
+<p>The minimum ROI size is 8 pixels in width or height. The global statistics is
+composed of 7x7 tiles each of the same dimension.</p>
+<p>The global grid must be encapsulated within the frame. All the pixels inside
+the grid will be captured and cannot be within 2 pixels of the picture&#8217;s
+edges.</p>
+<p>It is valid for the ROI to be partially located off the frame at the bottom
+or right edges. However the statistics may not be accurate unless the whole
+tile is located within the image (similar to the EXS grid illustrated in
+<a class="reference internal" href="#isp-ispc-stats-grid-fig"><span>Tile update when off frame (source: TRM)</span></a>).</p>
+<ul class="simple">
+<li>If a tile is completely off the right edge of the picture then 0 will
+be stored for that tile.</li>
+<li>If a tile is partially calculated then that value will be stored.</li>
+<li>If a tile is completely off the bottom edge of the picture they will
+not be updated and may contain memory from previous frames.</li>
+</ul>
+<p>Used by the <a class="reference internal" href="ispc_controls_af.html#isp-icm-af"><span>Automatic focus (AF)</span></a> if the sensor supports focus controls.</p>
+<div class="section" id="fos-high-level-parameters">
+<span id="isp-ispc-fos-hlp"></span><h3>FOS High Level Parameters<a class="headerlink" href="#fos-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>FOS_GRID_ENABLE:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Enable the Focus Statistics grid.</p>
+</dd>
+<dt>FOS_GRID_START_COORDS:</dt>
+<dd><p class="first"><strong>Format:</strong> int[2] range [0,32767]</p>
+<p><strong>Defaults:</strong> 0 0</p>
+<p>Sets the position of the top-left corner of the grid in pixels.</p>
+<p class="last">A grid is composed of 7 tiles.</p>
+</dd>
+<dt>FOS_GRID_TILE_SIZE:</dt>
+<dd><p class="first"><strong>Format:</strong> int[2] range [0,32767]</p>
+<p><strong>Defaults:</strong> 0 0</p>
+<p class="last">Sets the size of the grid tiles in pixels.</p>
+</dd>
+<dt>FOS_ROI_ENABLE:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Enable the Region Of Interest.</p>
+</dd>
+<dt>FOS_ROI_START_COORDS:</dt>
+<dd><p class="first"><strong>Format:</strong> int[2] range [0,32767]</p>
+<p><strong>Defaults:</strong> 0 0</p>
+<p class="last">Sets the position of the top-left corner of the region of interest in
+pixels.</p>
+</dd>
+<dt>FOS_ROI_END_COORDS:</dt>
+<dd><p class="first"><strong>Format:</strong> int[2] range [0,32767]</p>
+<p><strong>Defaults:</strong> 0 0</p>
+<p class="last">Sets the position of the bottom-right corner of the region of interest
+in pixels (inclusive).Sets the position of the bottom-right corner of
+the region of interest in pixels (inclusive).</p>
+</dd>
+</dl>
+<div class="section" id="fos-coordinates">
+<span id="isp-ispc-fos-coordinates"></span><h4>FOS Coordinates<a class="headerlink" href="#fos-coordinates" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><p>The coordinates are inclusive. Therefore for a region covering the whole
+of a 720p image it would be:</p>
+<div class="highlight-python"><div class="highlight"><pre>FOS_ROI_START_COORDS 0 0
+FOS_ROI_END_COORDS 1279 719
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+</div>
+</div>
+<div class="section" id="luma-histogram-statistics-his">
+<span id="isp-ispc-his"></span><h2>Luma Histogram Statistics (HIS)<a class="headerlink" href="#luma-histogram-statistics-his" title="Permalink to this headline">¶</a></h2>
+<p>The HIS modules collects statistics from a column of luma pixels (or a single
+pixel for parallelism 1) on the distribution of values for the picture and a
+selected region of the picture. The module only records the top pixel of the
+column of pixels that is transferred at the snoop point. The collected values
+are scaled to fit the complete input pixel bit range before being ordered to
+form a histogram at either global or regional level.</p>
+<p>The regional statistics are composed of a 7x7 grid over the whole image with
+each tile being the same size. The tiles should be at least 10 pixel wide
+and 8 pixels high.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">For HW configurations with parallelism &gt;1 only the top of the column of
+pixels are used for statistics generating a sparse histogram.</p>
+</div>
+<p>Used by <a class="reference internal" href="ispc_controls_ae.html#isp-icm-ae"><span>Automatic Exposure (AE)</span></a>, <a class="reference internal" href="ispc_controls_tnmc.html#isp-icm-tnmc"><span>Automatic Tone Mapping Control (TNMC)</span></a> and <a class="reference internal" href="ispc_controls_other.html#isp-icm-lbc"><span>Light Based Control (LBC)</span></a>.</p>
+<div class="section" id="his-high-level-parameters">
+<span id="isp-ispc-his-hlp"></span><h3>HIS High Level Parameters<a class="headerlink" href="#his-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<p>These parameters may be ignored and overridden by some control algorithms!</p>
+<dl class="docutils">
+<dt>HIS_GLOBAL_ENABLE:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Enable/disable global histogram statistics.</p>
+</dd>
+<dt>HIS_REGIONAL_ENABLE:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Enable/disable regional histogram statistics.</p>
+</dd>
+<dt>HIS_GRID_START_COORDS:</dt>
+<dd><p class="first"><strong>Format:</strong> int[2] range [0,8191]</p>
+<p><strong>Defaults:</strong> 0 0</p>
+<p class="last">The position of the upper-left corner of the region in pixels.</p>
+</dd>
+<dt>HIS_GRID_TILE_DIMENSIONS:</dt>
+<dd><p class="first"><strong>Format:</strong> int[2] range
+[8,4095]</p>
+<p><strong>Defaults:</strong> 10 8</p>
+<p class="last">The dimensions of the region in pixels.</p>
+</dd>
+<dt>HIS_INPUT_OFFSET:</dt>
+<dd><p class="first"><strong>Format:</strong> int range [0,1023]</p>
+<p><strong>Defaults:</strong> 256</p>
+<p class="last">The offset to be subtracted from the input luma value in order to remove
+signal foot room.</p>
+</dd>
+<dt>HIS_INPUT_SCALE:</dt>
+<dd><p class="first"><strong>Format:</strong> int range [0,65535]</p>
+<p><strong>Defaults:</strong> 32767</p>
+<p class="last">The scaling factor used to scale the input luma value according to the
+desired gamut.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="white-balance-statistics-wbs">
+<span id="isp-ispc-wbs"></span><h2>White Balance Statistics (WBS)<a class="headerlink" href="#white-balance-statistics-wbs" title="Permalink to this headline">¶</a></h2>
+<p>The WBS module uses a column of pixels to collect statistics at the R2Y point
+in the pipeline (it accumulates both RGB and YUV statistics). It has several
+ROI and 1 global region.</p>
+<p>Used by <a class="reference internal" href="ispc_controls_awb.html#isp-icm-awb"><span>Automatic White Balance (AWB)</span></a>.</p>
+<div class="section" id="wbs-high-level-parameters">
+<span id="isp-ispc-wbs-hlp"></span><h3>WBS High Level Parameters<a class="headerlink" href="#wbs-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>WBS_ROI_ENABLE:</dt>
+<dd><p class="first"><strong>Format:</strong> int range [0,2]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Number of enabled regions of interest.</p>
+</dd>
+<dt>WBS_RMAX_TH:</dt>
+<dd><p class="first"><strong>Format:</strong> double[2] range [0,1]</p>
+<p><strong>Defaults:</strong> 0.75 0.75</p>
+<p>1 value per ROI.</p>
+<p class="last">White patch Red channel threshold.</p>
+</dd>
+<dt>WBS_GMAX_TH:</dt>
+<dd><p class="first"><strong>Format:</strong> double[2] range [0,1]</p>
+<p><strong>Defaults:</strong> 0.75 0.75</p>
+<p>1 value per ROI.</p>
+<p class="last">White patch Green channel threshold.</p>
+</dd>
+<dt>WBS_BMAX_TH:</dt>
+<dd><p class="first"><strong>Format:</strong> double[2] range [0,1]</p>
+<p><strong>Defaults:</strong> 0.75 0.75</p>
+<p>1 value per ROI.</p>
+<p class="last">White patch Blue channel threshold.</p>
+</dd>
+<dt>WBS_YHLW_TH:</dt>
+<dd><p class="first"><strong>Format:</strong> double[2] range [0,1]</p>
+<p><strong>Defaults:</strong> 0.75 0.75</p>
+<p>1 value per ROI.</p>
+<p class="last">High luminance white luma channel threshold.</p>
+</dd>
+<dt>WBS_ROI_START_COORDS:</dt>
+<dd><p class="first"><strong>Format:</strong> int[4] range [0,32767]</p>
+<p><strong>Defaults:</strong> 0 0 0 0</p>
+<p>2 values per ROI.</p>
+<p class="last">Sets the position of the left/top corner of the regions of interest in
+pixels.</p>
+</dd>
+<dt>WBS_ROI_END_COORDS:</dt>
+<dd><p class="first"><strong>Format:</strong> int[4] range [0,32767]</p>
+<p><strong>Defaults:</strong> 0 0 0 0</p>
+<p>2 values per ROI.</p>
+<p class="last">Sets the position of the right/bottom corner of the regions of interest
+in pixels.</p>
+</dd>
+</dl>
+<div class="section" id="wbs-coordinates">
+<span id="isp-ispc-wbs-coordinates"></span><h4>WBS Coordinates<a class="headerlink" href="#wbs-coordinates" title="Permalink to this headline">¶</a></h4>
+<p>The coordinates are inclusive. Therefore for a region covering the whole of
+a 720p image it would be and another covering half it would be:</p>
+<div class="highlight-python"><div class="highlight"><pre>WBS_ROI_START_COORDS 0 0 0 0
+WBS_ROI_END_COORDS 1279 719 639 359
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="auto-white-balance-statistics-aws">
+<span id="isp-ispc-aws"></span><h2>Auto White Balance Statistics (AWS)<a class="headerlink" href="#auto-white-balance-statistics-aws" title="Permalink to this headline">¶</a></h2>
+<p>The AWS module uses a tile based method of collecting statistics of CFA cells
+which contain information about all grey points (that is closest to
+Planckian Locus curve located in R/G - B/G ratio domain) found in current
+capture.</p>
+<p>For more information on AWS module please refer to TRM.</p>
+<p>Used by <a class="reference internal" href="ispc_controls_awb.html#isp-icm-awb"><span>Automatic White Balance (AWB)</span></a>.</p>
+<div class="section" id="aws-high-level-parameters">
+<span id="isp-ispc-aws-hlp"></span><h3>AWS High Level Parameters<a class="headerlink" href="#aws-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>AWS_ENABLED:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Enable AWS statistics module in ISP</p>
+</dd>
+<dt>AWS_DEBUG_MODE:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Enable statistics debug bitmap mode.</p>
+</dd>
+<dt>AWS_TILE_START_COORDS:</dt>
+<dd><p class="first"><strong>Format:</strong> int[2] range [0,32767]</p>
+<p><strong>Defaults:</strong> 0 0</p>
+<p class="last">Left top coordinate of tile [0,0] in statistics grid in pixels.</p>
+</dd>
+<dt>AWS_TILE_SIZE:</dt>
+<dd><p class="first"><strong>Format:</strong> int[2] range [0,32767]</p>
+<p><strong>Defaults:</strong> 16 16</p>
+<p class="last">Width and height in pixels of single tile.</p>
+</dd>
+<dt>AWS_LOG2_R_QEFF:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,256]</p>
+<p><strong>Defaults:</strong> 1</p>
+<p class="last">Value of log2() of Red channel quantum efficiency.</p>
+</dd>
+<dt>AWS_LOG2_B_QEFF:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,256]</p>
+<p><strong>Defaults:</strong> 1</p>
+<p class="last">Value of log2() of blue channel quantum efficiency.</p>
+</dd>
+<dt>AWS_R_DARK_THRESH:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,256]</p>
+<p><strong>Defaults:</strong> 8</p>
+<p class="last">Dark threshold for red channel.</p>
+</dd>
+<dt>AWS_G_DARK_THRESH:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,256]</p>
+<p><strong>Defaults:</strong> 8</p>
+<p class="last">Dark threshold of green channel.</p>
+</dd>
+<dt>AWS_B_DARK_THRESH:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,256]</p>
+<p><strong>Defaults:</strong> 8</p>
+<p class="last">Dark threshold of blue channel.</p>
+</dd>
+<dt>AWS_R_CLIP_THRESH:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,256]</p>
+<p><strong>Defaults:</strong> 128</p>
+<p class="last">Clip threshold of red channel.</p>
+</dd>
+<dt>AWS_G_CLIP_THRESH:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,256]</p>
+<p><strong>Defaults:</strong> 128</p>
+<p class="last">Clip threshold of green channel.</p>
+</dd>
+<dt>AWS_B_CLIP_THRESH:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,256]</p>
+<p><strong>Defaults:</strong> 128</p>
+<p class="last">Clip threshold of blue channel.</p>
+</dd>
+<dt>AWS_BB_DIST:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,128]</p>
+<p><strong>Defaults:</strong> 0.2</p>
+<p class="last">Maximum distance from Planckian Locus curve for a CFA being considered to be
+white and collected to statistics.</p>
+</dd>
+<dt>AWS_CURVES_NUM:</dt>
+<dd><p class="first"><strong>Format:</strong> int range [0,5]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Number of Planckian Locus curve approximation lines defined</p>
+</dd>
+<dt>AWS_CURVE_X_COEFFS:</dt>
+<dd><p class="first"><strong>Format:</strong> double[5] range [-16,16]</p>
+<p><strong>Defaults:</strong> 0.886719 0.966797 0.998047 0 0</p>
+<p class="last">List of X coefficients of Planckian Locus curve approximation
+lines. AWS_CURVES_NUM items.</p>
+</dd>
+<dt>AWS_CURVE_Y_COEFFS:</dt>
+<dd><p class="first"><strong>Format:</strong> double[5] range [-16,16]</p>
+<p><strong>Defaults:</strong> 0.460938 0.254883 0.0644531 0 0</p>
+<p class="last">List of Y coefficients of Planckian Locus curve approximation
+lines. AWS_CURVES_NUM items.</p>
+</dd>
+<dt>AWS_CURVE_OFFSETS:</dt>
+<dd><p class="first"><strong>Format:</strong> double[5] range [-16,16]</p>
+<p><strong>Defaults:</strong> 0.0390625 0.255859 0.636719 0 0</p>
+<p class="last">List of offsets of Planckian Locus curve approximation
+lines. AWS_CURVES_NUM items.</p>
+</dd>
+<dt>AWS_CURVE_BOUNDARIES:</dt>
+<dd><p class="first"><strong>Format:</strong> double[5] range [-16,16]</p>
+<p><strong>Defaults:</strong> 0.25 -0.84375 -1.90625 16 16</p>
+<p class="last">List of Planckian Locus curve approximation lines &#8216;Y&#8217; boundaries.
+AWS_CURVES_NUM items.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Implemented Statistics Modules</a><ul>
+<li><a class="reference internal" href="#defective-pixel-fixing-dpf">Defective Pixel Fixing (DPF)</a></li>
+<li><a class="reference internal" href="#encoder-statistics-ens">Encoder Statistics (ENS)</a><ul>
+<li><a class="reference internal" href="#ens-high-level-parameters">ENS High Level Parameters</a></li>
+<li><a class="reference internal" href="#encoder-statistics-output-encoder-signal-limitation">Encoder statistics output encoder signal limitation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#exposure-statistics-exs">Exposure Statistics (EXS)</a><ul>
+<li><a class="reference internal" href="#exs-high-level-parameters">EXS High Level Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#flicker-detection-fld">Flicker Detection (FLD)</a><ul>
+<li><a class="reference internal" href="#fld-high-level-parameters">FLD High Level Parameters</a><ul>
+<li><a class="reference internal" href="#sensor-information-for-flicker-detection">Sensor information for flicker detection</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#focus-statistics-fos">Focus Statistics (FOS)</a><ul>
+<li><a class="reference internal" href="#fos-high-level-parameters">FOS High Level Parameters</a><ul>
+<li><a class="reference internal" href="#fos-coordinates">FOS Coordinates</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#luma-histogram-statistics-his">Luma Histogram Statistics (HIS)</a><ul>
+<li><a class="reference internal" href="#his-high-level-parameters">HIS High Level Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#white-balance-statistics-wbs">White Balance Statistics (WBS)</a><ul>
+<li><a class="reference internal" href="#wbs-high-level-parameters">WBS High Level Parameters</a><ul>
+<li><a class="reference internal" href="#wbs-coordinates">WBS Coordinates</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#auto-white-balance-statistics-aws">Auto White Balance Statistics (AWS)</a><ul>
+<li><a class="reference internal" href="#aws-high-level-parameters">AWS High Level Parameters</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="ispc_modules.html"
+                        title="previous chapter">Implemented Setup Modules</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="ispc_controls_ae.html"
+                        title="next chapter">Automatic Exposure (AE)</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

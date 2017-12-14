@@ -1,0 +1,179 @@
+################################################################################
+#
+# libosa
+#
+################################################################################
+
+APP_LAUNCHER_VERSION = 1.0.0
+APP_LAUNCHER_SOURCE = 
+APP_LAUNCHER_SITE  = 
+
+APP_LAUNCHER_LICENSE = 
+APP_LAUNCHER_LICENSE_FILES = README
+
+APP_LAUNCHER_MAINTAINED = YES
+APP_LAUNCHER_AUTORECONF = YES
+APP_LAUNCHER_INSTALL_STAGING = YES
+APP_LAUNCHER_DEPENDENCIES =  hlibitems videobox qlibvplay audiobox libdemux libcodecs hlibg1v6 qlibsys cep qlibupgrade qlibmediautils
+
+
+APP_LAUNCHER_EXTRA_CFLAGS =
+ifeq ($(BR2_INFOTM_PRODUCT_DEFAULT), y)
+	APP_LAUNCHER_EXTRA_CFLAGS += -DPRODUCT_DEFAULT
+endif
+ifeq ($(BR2_INFOTM_PRODUCT_Q360), y)
+	APP_LAUNCHER_EXTRA_CFLAGS += -DPRODUCT_Q360
+endif
+ifeq ($(BR2_INFOTM_PRODUCT_LESHI_C23), y)
+	APP_LAUNCHER_EXTRA_CFLAGS += -DPRODUCT_LESHI_C23
+endif
+ifeq ($(BR2_INFOTM_GUI_ENABLE), y)
+	APP_LAUNCHER_DEPENDENCIES += libminigui
+	APP_LAUNCHER_EXTRA_CFLAGS += -DGUI_GUI_ENABLE
+	APP_LAUNCHER_CONF_OPT += --enable-gui
+endif
+ifeq ($(BR2_INFOTM_BOARD_PATTERN), "sportdv")
+	APP_LAUNCHER_EXTRA_CFLAGS += -DGUI_SPORTDV_ENABLE
+endif
+ifeq ($(BR2_INFOTM_GUI_STYLE), "large")
+	APP_LAUNCHER_EXTRA_CFLAGS += -DGUI_LARGE_SCREEN
+endif
+ifeq ($(BR2_INFOTM_GUI_SHOW_STATUS_BAR), y)
+	APP_LAUNCHER_EXTRA_CFLAGS += -DGUI_SHOW_STATUS_BAR
+endif
+ifeq ($(BR2_INFOTM_LCD_ORIENTATION), "portrait")
+	APP_LAUNCHER_EXTRA_CFLAGS += -DGUI_ROTATE_SCREEN
+endif
+ifeq ($(BR2_INFOTM_RESOLUTION_SWITCH_MODULE), "isp")
+        APP_LAUNCHER_EXTRA_CFLAGS += -DGUI_SET_RESOLUTION_SEPARATELY
+endif
+ifeq ($(BR2_INFOTM_CAMERA_REAR_ENABLE), y)
+	APP_LAUNCHER_EXTRA_CFLAGS += -DGUI_CAMERA_REAR_ENABLE
+endif
+ifeq ($(BR2_INFOTM_CAMERA_PIP_ENABLE), y)
+	APP_LAUNCHER_EXTRA_CFLAGS += -DGUI_CAMERA_PIP_ENABLE
+endif
+ifeq ($(BR2_INFOTM_NETWORK_ENABLE), y)
+	APP_LAUNCHER_EXTRA_CFLAGS += -DGUI_NETWORK_ENABLE
+endif
+ifeq ($(BR2_INFOTM_WIFI_ENABLE), y)
+	APP_LAUNCHER_DEPENDENCIES += qlibwifi
+	APP_LAUNCHER_EXTRA_CFLAGS += -DGUI_WIFI_ENABLE
+	APP_LAUNCHER_CONF_OPT += --enable-wifi
+endif
+ifeq ($(BR2_INFOTM_GPS_ENABLE), y)
+	APP_LAUNCHER_EXTRA_CFLAGS += -DGUI_GPS_ENABLE
+endif
+ifeq ($(BR2_INFOTM_ADAS_ENABLE), y)
+	APP_LAUNCHER_EXTRA_CFLAGS += -DGUI_ADAS_ENABLE
+endif
+ifeq ($(BR2_INFOTM_SOUND_OUTPUT), "buzzer")
+	APP_LAUNCHER_EXTRA_CFLAGS += -DGUI_SOUND_BUZZER
+endif
+ifeq ($(BR2_INFOTM_GUI_TIMER_RESET), y)
+	APP_LAUNCHER_EXTRA_CFLAGS += -DGUI_TIMER_RESET
+endif
+ifeq ($(BR2_INFOTM_GUI_AUTO_PLAY_ENABLE), y)
+	APP_LAUNCHER_EXTRA_CFLAGS += -DGUI_AUTO_PLAY
+endif
+ifeq ($(BR2_INFOTM_GUI_DEBUG_ENABLE), y)
+	APP_LAUNCHER_EXTRA_CFLAGS += -DGUI_DEBUG_ENABLE
+endif
+ifeq ($(BR2_INFOTM_VIDEO_WIFI_PREVIEW), y)
+	APP_LAUNCHER_EXTRA_CFLAGS += -DGUI_WIFI_PREVIEW
+endif
+ifeq ($(BR2_INFOTM_EVENT_HTTP_ENABLE), y)
+	APP_LAUNCHER_EXTRA_CFLAGS += -DGUI_EVENT_HTTP_ENABLE
+endif
+ifeq ($(BR2_INFOTM_PLAYBACK_ENABLE), y)
+	APP_LAUNCHER_EXTRA_CFLAGS += -DGUI_PLAYBACK_ENABLE
+endif
+ifeq ($(BR2_INFOTM_TIRED_ALARM), y)
+	APP_LAUNCHER_EXTRA_CFLAGS += -DGUI_TIRED_ALARM
+endif
+ifeq ($(BR2_INFOTM_P2P_DANA_ENABLE), y)
+	APP_LAUNCHER_EXTRA_CFLAGS += -DGUI_P2P_DANA_ENABLE
+	APP_LAUNCHER_CONF_OPT += --enable-p2p_dana
+endif
+ifeq ($(BR2_INFOTM_MARKER_ENABLE), y)
+	APP_LAUNCHER_EXTRA_CFLAGS += -DGUI_MARKER_ENABLE
+endif
+ifeq ($(BR2_INFOTM_PREVIEW_SECOND_WAY), y)
+	APP_LAUNCHER_EXTRA_CFLAGS += -DPREVIEW_SECOND_WAY
+endif
+ifeq ($(BR2_INFOTM_UVC_ENABLE), y)
+	APP_LAUNCHER_DEPENDENCIES += hlibguvc
+	APP_LAUNCHER_EXTRA_CFLAGS += -DUVC_ENABLE
+	APP_LAUNCHER_CONF_OPT += --enable-uvc
+endif
+ifeq ($(BR2_INFOTM_DOUBLE_CLICK_ENABLE), y)
+	APP_LAUNCHER_EXTRA_CFLAGS += -DGUI_DOUBLE_CLICK_ENABLE
+endif
+ifeq ($(BR2_INFOTM_FULL_RESOLUTION_PHOTO_ENABLE), y)
+	APP_LAUNCHER_EXTRA_CFLAGS += -DFULL_RESOLUTION_PHOTO_ENABLE
+endif
+ifeq ($(BR2_INFOTM_DEFAULT_MODE_PHOTO), y)
+	APP_LAUNCHER_EXTRA_CFLAGS += -DGUI_DEFAULT_MODE_PHOTO
+endif
+
+
+APP_LAUNCHER_CONF_ENV = CFLAGS+="$(APP_LAUNCHER_EXTRA_CFLAGS)"
+
+
+#install headers
+define APP_LAUNCHER_POST_INSTALL_STAGING_HEADERS
+	echo "++++++++++++++install staging+++++++++++++++++++++++++"
+#	mkdir -p $(STAGING_DIR)/usr/include/minigui
+#	cp -rfv $(@D)/include/*  $(STAGING_DIR)/usr/include/minigui
+endef
+APP_LAUNCHER_POST_INSTALL_STAGING_HOOKS  += APP_LAUNCHER_POST_INSTALL_STAGING_HEADERS
+
+
+define APP_LAUNCHER_POST_INSTALL_TARGET_SHARED
+	@echo "++++++++++++++++install sysserver hook  +++++++++++++++++++++++"
+	-mkdir -p $(TARGET_DIR)/usr/share/launcher
+	-mkdir -p $(TARGET_DIR)/mnt/sd0/DCIM/100CVR/
+	cp -rf $(@D)/sysserver/config  $(TARGET_DIR)/usr/share/launcher/
+	cp -rf $(@D)/sysserver/res  $(TARGET_DIR)/usr/share/launcher/
+	mkdir -p $(TARGET_DIR)/etc/profile.d
+	cp -rf $(@D)/sysserver/tools/envsetup.sh $(TARGET_DIR)/etc/profile.d/
+endef
+APP_LAUNCHER_POST_INSTALL_TARGET_HOOKS  += APP_LAUNCHER_POST_INSTALL_TARGET_SHARED
+
+define APP_LAUNCHER_POST_DELETE_WAV
+	rm -rf $(TARGET_DIR)/usr/share/launcher/res/*.wav
+endef
+ifeq ($(BR2_INFOTM_SOUND_OUTPUT), "buzzer")
+	APP_LAUNCHER_POST_INSTALL_TARGET_HOOKS  += APP_LAUNCHER_POST_DELETE_WAV
+endif
+
+define APP_LAUNCHER_POST_INSTALL_TARGET_GUI
+	@echo "++++++++++++++++install gui hook  +++++++++++++++++++++++"
+	cp -rf $(@D)/gui/res  $(TARGET_DIR)/usr/share/launcher/
+endef
+
+ifeq ($(BR2_INFOTM_GUI_ENABLE), y)
+	APP_LAUNCHER_POST_INSTALL_TARGET_HOOKS  += APP_LAUNCHER_POST_INSTALL_TARGET_GUI
+endif
+
+define APP_LAUNCHER_POST_INSTALL_TARGET_P2P_DANA
+	@echo "++++++++++++++++install p2p dana hook  +++++++++++++++++++++++"
+	mkdir -p $(TARGET_DIR)/usr/share/launcher/p2p
+	cp -rf $(@D)/p2p_dana/danale.conf  $(TARGET_DIR)/usr/share/launcher/p2p/
+endef
+
+ifeq ($(BR2_INFOTM_P2P_DANA_ENABLE), y)
+	APP_LAUNCHER_POST_INSTALL_TARGET_HOOKS  += APP_LAUNCHER_POST_INSTALL_TARGET_P2P_DANA
+endif
+
+define APP_LAUNCHER_POST_INSTALL_TARGET_Q360_UPGRADE
+	@echo "++++++++++++++++install q360 upgrade hook  +++++++++++++++++++++++"
+	-rm -f $(TARGET_DIR)/usr/bin/upgrade
+	cp -rfv $(@D)/upgrade $(TARGET_INITRD_DIR)/usr/bin/
+endef
+
+ifeq ($(BR2_INFOTM_Q360_UPGRADE_ENABLE), y)
+	APP_LAUNCHER_POST_INSTALL_TARGET_HOOKS  += APP_LAUNCHER_POST_INSTALL_TARGET_Q360_UPGRADE
+endif
+
+$(eval $(autotools-package))

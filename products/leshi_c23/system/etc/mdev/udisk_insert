@@ -1,0 +1,14 @@
+#!/bin/sh
+#mount -t vfat /dev/mmcblk1p1 /mnt
+result=`ls /dev/sda*`
+var=0
+event_mount="mount"
+for point in $result 
+do 
+	mkdir /mnt/udisk$var
+	mount  $point  /mnt/udisk$var
+	eventsend $event_mount  /mnt/udisk$var
+	let var+=1
+done
+
+exit 0

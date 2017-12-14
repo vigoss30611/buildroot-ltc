@@ -1,0 +1,23 @@
+{
+    "isp": {
+        "ipu": "v2500",
+        "args": {
+            "skipframe": 1,
+            "nbuffers": 3
+        },
+        "port": {
+            "out": {
+                "w": 1920,
+                "h": 1088,
+                "pixel_format": "nv12",
+                "bind": { "display": "osd0", "enc1080p": "frame" }
+            }
+        }
+    },
+    "enc1080p": { "ipu": "vencoder",
+		"args": {
+			"encode_type": "h264"
+		}
+	},
+    "display": { "ipu": "ids", "args": { "no_osd1": 1 }}
+}

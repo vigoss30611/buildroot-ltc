@@ -1,0 +1,69 @@
+/*!
+	\page target_doc Target Library Documentation
+
+This page describes the target libraries, including the Target Abstraction Layer.
+
+\if INTERNAL_DOCS
+\li <a href="../Target Abstraction Layer.Getting Started.*.pdf">Target Abstraction Layer.Getting Started</a> (pdf)<br>
+A guide to the Target Abstraction Layer, what it does, how it works and how it can be ported.
+\endif
+
+<h2>The IMG Target Library</h2>
+The Target library is designed so that a standard API is used for accessing any device, along with a target configuration file which gives details of the device. The host code which calls the TAL can be changed for different designs and the device interface code can be changed in order to target different incarnations of the device, for example RTL simulation or FPGA. The standard wrapper allows selection of different device interface setups using a flag in the target configuration file. The target library can also be used to generate Pdump scripts.
+
+The following diagram shows all the components of the  target library along with the host code and target config file at the top and the device itself at the bottom.
+\image html TAL_diagram.png
+
+There follows a description of each of the components and where applicable a link to documentation for the API.
+
+<h3>Host Code</h3>
+The host code can consist of any program designed to drive hardware, drivers or test software for example. Many of the tools, such as Pdump Player, use the target library, the parser for PdumpPlayer would in this case make up the host code.
+
+<h3>Target Config File</h3>
+The target config file describes the device layout in terms of register and memory offsets. It can also describe the method of connecting to the device. The syntax of the target config file is described in the following document, <a href="../PowerVR Tools.Target Configuration File.*.pdf">PowerVR Tools.Target Configuration File</a> (pdf).
+
+\if INTERNAL_DOCS
+<h3>Taget Config Code</h3>
+\li target_config.h (doxygen)
+
+The target config API provides a method of parsing a target config file.
+
+<h3>Target Abstraction Layer (TAL)</h3>
+\li tal.h (doxygen)
+\li tal_reg.h (doxygen)
+\li tal_mem.h (doxygen)
+\li tal_vmem.h (doxygen)
+\li tal_intvar.h (doxygen)
+\li tal_debug.h (doxygen)
+\li tal_pdump.h (doxygen)
+\li tal_setup.h (doxygen)
+\li tal_defs.h (doxygen)
+
+The intention of the TAL API is for a set of generic functions to be supplied which can be used on any target. This way the calling code is the same, whether it runs against RTL, emulator, FPGA or real hardware.
+\endif
+
+<h3>MMU API</h3>
+\li mmu.h (doxygen)
+This section of code can decode virtual addresses from any IMG MMU.
+
+\if INTERNAL_DOCS
+<h3>Pdump Layer</h3>
+\li pdump_cmds.h (doxygen)
+
+The pdump layer produces pdump scripts, it is provided with details of each transaction by the TAL which it then stores in files in the appropriate format.
+\endif
+
+\li binlite.h (doxygen)
+Enumerated values for the binary lite format.
+
+<h3>Device Interface Layer</h3>
+\li devif_api.h (doxygen)
+\li device_interface (doxygen)
+
+There are two device interfaces, on C and one C++. The C device interface provides the method of connecting to the device. There are various implementations already available, these include PCI (Through the imgpcidd driver) and Socket connection (used for the RTL Interface and IPCServer). 
+The device_interface class is used for the socket interface and direct connection for RTL and Csim connections. 
+
+These APIs are recommended for customers to implement their own interface. There are spaces allocated in the device type enum for customer implementations of the C device interface. To use the c++ device interface customers must write a class using device_interface.h as a base, the C 'direct' interface can then be used to connect to the new device interface using the name of the device.
+
+*/
+

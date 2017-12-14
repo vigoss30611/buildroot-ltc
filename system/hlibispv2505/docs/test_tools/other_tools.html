@@ -1,0 +1,248 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Sensor Test application sensor_test &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="up" title="Test Tools" href="test_tools.html" />
+    <link rel="next" title="VisionLive and ISPC_tcp" href="vision_live_2.html" />
+    <link rel="prev" title="Defective Pixel output converter: dpf_conv" href="dpf_conv.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="vision_live_2.html" title="VisionLive and ISPC_tcp"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="dpf_conv.html" title="Defective Pixel output converter: dpf_conv"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="test_tools.html" accesskey="U">Test Tools</a> &raquo;</li><li>Sensor Test application <code class="docutils literal"><span class="pre">sensor_test</span></code></li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="sensor-test-application-sensor-test">
+<span id="isp-sensor-test"></span><h1>Sensor Test application <code class="docutils literal"><span class="pre">sensor_test</span></code><a class="headerlink" href="#sensor-test-application-sensor-test" title="Permalink to this headline">¶</a></h1>
+<p>This test application is designed to run a sensor with a particular mode
+without using the ISP. It will use only the Sensor API and CI libraries (the
+latter only to read information on the gasket). The expected usage is to
+validate sensor modes on a particular platform. It could also be used to
+load mode registers from files (the AR330 driver has an example of such
+feature).</p>
+<p>The application will run forever and print the gasket status regularly.</p>
+<p>The source is available in <code class="docutils literal"><span class="pre">sensorapi/apps/sensor_test.c</span></code> and once
+installed it is available in <code class="docutils literal"><span class="pre">utils/</span></code>.</p>
+<div class="section" id="parameters">
+<span id="isp-sensor-test-parameters"></span><h2>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h2>
+<p>The parameters can be given by command line or in a configuration file.</p>
+<p>The parameter types are:</p>
+<ul class="simple">
+<li><cite>Bool</cite>: a Boolean value of either 0 or 1</li>
+<li><cite>Int</cite>/<cite>UInt</cite>: an integer (signed or unsigned is parameter specific)</li>
+<li><cite>Cmd</cite>: command that act as a Boolean of value 1 if present, of value 0 if
+not found</li>
+<li><cite>Str</cite>: string or path</li>
+<li><cite>Float</cite>: floating point number</li>
+</ul>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-source</span></code>:</dt>
+<dd>Provide a file to parse for command line parameters. The latest given
+parameter is used as the value for the option.</dd>
+<dt><code class="docutils literal"><span class="pre">-h</span></code>:</dt>
+<dd>Display the help and exit.</dd>
+<dt><code class="docutils literal"><span class="pre">-sensor</span></code>: Str</dt>
+<dd>Sensor name to use (one of the supported ones in sensor API).</dd>
+<dt><code class="docutils literal"><span class="pre">-sensorMode</span></code>: UInt</dt>
+<dd>Sensor running mode (chooses size and FPS for a given sensor).</dd>
+<dt><code class="docutils literal"><span class="pre">-usleeptime</span></code>: UInt</dt>
+<dd>[optional] Time to wait in µs between two printing of the gasket status.</dd>
+<dt><code class="docutils literal"><span class="pre">-ar330_registers</span></code>: Str</dt>
+<dd>[optional] If using AR330 and specified will override the mode to be the
+special mode and load the registers from this file.</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Press X key to stop the application.</p>
+<p class="last">If pressing the key does not work on your platform try to use the
+<a class="reference internal" href="#isp-rawmode-test"><span>Console Raw Mode testing</span></a> application and modify it to make it work there.</p>
+</div>
+</div>
+<div class="section" id="using-the-tool">
+<span id="isp-sensor-test-example"></span><h2>Using the tool<a class="headerlink" href="#using-the-tool" title="Permalink to this headline">¶</a></h2>
+<p>This example is using the AR330 sensor with a new set of registers. Before
+compiling the set of registers as a new mode it can be tested agasint the
+gasket on a test chip to ensure it does not produces errors.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>./sensor_test -sensor AR330 -ar330_registers ~/test_registers/ar330_newmode.txt
+</pre></div>
+</div>
+<p>But the application could also be use simply to test existing mode 0 of
+sensor OV4688:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>./sensor_test -sensor OV4688 -sensorMode 0
+</pre></div>
+</div>
+<p>Or simply to list all the available modes of the sensors:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>./sensor_test -h
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="console-raw-mode-testing">
+<span id="isp-rawmode-test"></span><h1>Console Raw Mode testing<a class="headerlink" href="#console-raw-mode-testing" title="Permalink to this headline">¶</a></h1>
+<p>This is a very small test application to ensure the raw-mode functions used
+in <a class="reference internal" href="#isp-sensor-test"><span>sensor_test</span></a> and <a class="reference internal" href="ispc_loop.html#isp-ispc-loop"><span>ISPC_loop</span></a>
+work.</p>
+<p>The source code is available in
+<code class="docutils literal"><span class="pre">ISP_Control/test_apps/src/rawemode_test.c</span></code> and will be installed in
+<code class="docutils literal"><span class="pre">utils/</span></code>.</p>
+<p>This tool only waits for the X key to pressed to quit.</p>
+<p>The expected usage is to ensure raw-mode can work on a platform. And to
+experiment until it works otherwise.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Sensor Test application <code class="docutils literal"><span class="pre">sensor_test</span></code></a><ul>
+<li><a class="reference internal" href="#parameters">Parameters</a></li>
+<li><a class="reference internal" href="#using-the-tool">Using the tool</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#console-raw-mode-testing">Console Raw Mode testing</a></li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="dpf_conv.html"
+                        title="previous chapter">Defective Pixel output converter: <code class="docutils literal"><span class="pre">dpf_conv</span></code></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="vision_live_2.html"
+                        title="next chapter">VisionLive and ISPC_tcp</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

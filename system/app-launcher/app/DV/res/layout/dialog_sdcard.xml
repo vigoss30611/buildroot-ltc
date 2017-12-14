@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5.0dip"
+    android:padding="@dimen/padding_default" >
+
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:shrinkColumns="0" >
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginBottom="4.0dip"
+            android:background="@color/black" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:paddingBottom="12.0dip"
+                android:paddingLeft="8.0dip"
+                android:paddingTop="12.0dip"
+                android:text="@string/videos_on_card"
+                android:textAppearance="@style/SmartyTextAppearanceBold"
+                android:textSize="@dimen/textsize_default" />
+
+            <TextView
+                android:id="@+id/videooncard"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="right"
+                android:paddingBottom="12.0dip"
+                android:paddingRight="12.0dip"
+                android:paddingTop="12.0dip"
+                android:text=""
+                android:textAppearance="@style/SmartyTextAppearanceBold"
+                android:textSize="@dimen/textsize_default" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginBottom="4.0dip"
+            android:background="@color/black" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:paddingBottom="12.0dip"
+                android:paddingLeft="8.0dip"
+                android:paddingTop="12.0dip"
+                android:text="@string/video_time_remain"
+                android:textAppearance="@style/SmartyTextAppearanceBold"
+                android:textSize="@dimen/textsize_default" />
+
+            <TextView
+                android:id="@+id/videominiutesavail"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="right"
+                android:paddingBottom="12.0dip"
+                android:paddingRight="12.0dip"
+                android:paddingTop="12.0dip"
+                android:text=""
+                android:textAppearance="@style/SmartyTextAppearanceBold"
+                android:textSize="@dimen/textsize_default" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginBottom="4.0dip"
+            android:background="@color/black" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:paddingBottom="12.0dip"
+                android:paddingLeft="8.0dip"
+                android:paddingTop="12.0dip"
+                android:text="@string/photo_on_card"
+                android:textAppearance="@style/SmartyTextAppearanceBold"
+                android:textSize="@dimen/textsize_default" />
+
+            <TextView
+                android:id="@+id/photooncard"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="right"
+                android:paddingBottom="12.0dip"
+                android:paddingRight="12.0dip"
+                android:paddingTop="12.0dip"
+                android:text=""
+                android:textAppearance="@style/SmartyTextAppearanceBold"
+                android:textSize="@dimen/textsize_default" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@drawable/setting_no_border" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:paddingBottom="12.0dip"
+                android:paddingLeft="8.0dip"
+                android:paddingTop="12.0dip"
+                android:text="@string/photo_remain"
+                android:textAppearance="@style/SmartyTextAppearanceBold"
+                android:textSize="@dimen/textsize_default" />
+
+            <TextView
+                android:id="@+id/photoavailable"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="right"
+                android:paddingBottom="12.0dip"
+                android:paddingRight="12.0dip"
+                android:paddingTop="12.0dip"
+                android:text=""
+                android:textAppearance="@style/SmartyTextAppearanceBold"
+                android:textSize="@dimen/textsize_default" />
+        </TableRow>
+    </TableLayout>
+
+</ScrollView>

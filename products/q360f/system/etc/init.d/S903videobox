@@ -1,0 +1,21 @@
+#! /bin/sh
+
+case "$1" in
+	start|"")
+		modprobe Felix clkRate=360000000
+		modprobe ddk_sensor i2c_addr=0x20 i2c_chn=0x03 mipi=1 lanes=4 freq=410
+		#modprobe hx280enc_265
+		#modprobe vdec_g1
+#		modprobe vdec_g2
+		modprobe hx280enc_h1  g_h1_clk=400
+		videoboxd
+		;;
+	stop)
+		killall videoboxd
+		;;
+	*)
+		echo "Usage: videobox {start|stop}" >&2
+		exit 1
+		;;
+esac
+

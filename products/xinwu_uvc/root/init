@@ -1,0 +1,16 @@
+#!/bin/sh
+# devtmpfs does not get automounted for initramfs
+echo "start init"
+/bin/mount -t devtmpfs devtmpfs /dev
+mkdir /proc
+mount -t proc proc   /proc
+mkdir /sys
+mount -t sysfs sysfs /sys
+exec 0</dev/console
+exec 1>/dev/console
+exec 2>/dev/console
+ln -sf /dev/null /dev/tty4
+echo /sbin/mdev > /proc/sys/kernel/hotplug
+exec /usr/bin/upgrade &
+exec /sbin/init $*
+

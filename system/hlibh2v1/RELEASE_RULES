@@ -1,0 +1,12 @@
+
+header:
+inc/*.h usr/include/hlibh2v1
+source/common/*.h usr/include/hlibh2v1
+source/hevc/*.h usr/include/hlibh2v1
+
+static:
+.libs/*.a usr/lib
+
+shared:
+.libs/*.so usr/lib
+

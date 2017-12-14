@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan version="1.0">  
+<Entry uri="android.hardware" exclude="android.hardware.cts.CameraGLTest;android.hardware.cts.GeomagneticFieldTest;android.hardware.cts.LowRamDeviceTest;android.hardware.cts.SensorEventOrderingTests;android.hardware.cts.SensorFrequencyTests;android.hardware.cts.SensorIntegrationTests;android.hardware.cts.SensorMeasurementTests;android.hardware.cts.SensorTest;android.hardware.cts.helpers.SensorCtsHelperTest;android.hardware.cts.helpers.SensorVerificationHelperTest;android.hardware.consumerir.cts.ConsumerIrTest"/>
+</TestPlan>

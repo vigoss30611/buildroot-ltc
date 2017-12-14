@@ -1,0 +1,15 @@
+config IMAPX820_BATTERY_COMM
+        tristate "iMAPx820 battery driver comm"
+        help
+         Say Y to include support for iMAPx820 battery comm.
+
+
+config IMAPX820_BATTERY_S
+        tristate "iMAPx820 simple battery driver"
+        help
+         Say Y to include support for iMAPx820 battery simple.
+
+config IMAPX820_BATTERY
+        tristate "iMAPx820 battery driver"
+        help
+         Say Y to include support for iMAPx820 battery.

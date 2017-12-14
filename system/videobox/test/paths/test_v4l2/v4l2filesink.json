@@ -1,0 +1,28 @@
+{
+	"v4l2": {
+		"ipu": "v4l2",
+		"args": {
+			"driver":"uvcvideo",
+			"model": "USB2.0 Camera",
+			"pixfmt": "mjpeg"
+		},
+		"port": {
+			"out": {
+				"w": 640,
+				"h": 480,
+				"pixel": "mjpeg",
+				"bind": { "sink": "in" }
+			}
+		}
+	},
+
+	"sink": {
+		"ipu": "filesink",
+		"args": {
+			"data_path": "/mnt/camera.mjpeg"
+		}
+	}
+
+
+}
+

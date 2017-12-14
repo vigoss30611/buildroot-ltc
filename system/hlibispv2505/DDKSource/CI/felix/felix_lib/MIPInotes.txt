@@ -1,0 +1,125 @@
+MIPI support in Felix
+- CSI-2 with 1,2 or 4 lanes
+- data formats RAW10, RAW12, RAW14 (data types 0x2b,0x2c,0x2d)
+Memory contents should include packet header,data,checksum and padding to 64-byte-aligned size per row.
+
+
+
+MIPI specification
+******************
+
+Multi-lane transfer (Lane Management Layer)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Bytes are sent across lanes in round-robin fashion. [1p39]
+At the end of the transmission, there may be "extra" bytes since the total byte count may not be an integer
+multiple of the number of Lanes, N. The Lane distributor, as it buffers up the final set of less-than-N bytes
+in parallel for sending to N data Lanes, de-asserts its "valid data" signal into all Lanes for which there is
+no further data.
+
+
+Packet data (Low level protocol)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ST, SH, ET                   - SH = short packet
+  ST, PH, data, PF, ET         - PH+data+PF = long packet
+
+ST = SoT = start of transmission sequence
+ET = EoT = end of transmission sequence
+PH = 32-bit packet header
+PF = 16-bit packet footer
+
+Short packet format [1p48]
+  ST
+  SH   BYTE dataId    - (2-bit virtual channel)<<6 | (data type (0..0xf))
+       WORD spData     - short packet data field
+                        frame synchronization (frame number), line synchronization (line number) or user-defined
+       BYTE ECC       - error correction code (dataId + data)
+  ET
+
+Long packet format [1p46]
+  ST
+  PH   BYTE dataId    - (2-bit virtual channel)<<6 | (data type (0x10..0x37))
+       WORD Nbytes    - size of 'data' in bytes
+       BYTE ECC       - error correction code (dataId + Nbytes)
+  ...data... (Nbytes)
+  PF   WORD chksum
+  ET
+Multi-byte values are transferred LSByte first.
+
+Data types (in dataId value)
+----------------------------
+see table [1p50] and details [1p59],[1p72]
+short
+   0 = frame start  (spData = 1-based frame number or always 0 if frame number not used)
+   1 = frame end  (spData = same as used in frame start)
+   2 = line start (spData = 1-based logical line number or always 0 if not used)
+   3 = line end (spData = same as used in line start)
+   4-7 = reserverd
+   8-15 = generic (spData = app layer specific)
+long
+   0x10 = null
+   0x11 = blanking data
+   0x12 = embedded 8-bit non image data
+   0x13-0x17 = reserved
+   0x18-0x1F = YUV formats [1p74]
+   0x20-0x27 = RGB formats [1p84]
+   0x28-0x2F = RAW formats [1p88]  RAW6,7,8,10,12,14,reserved,reserved
+
+
+
+Error correction code (ECC)
+---------------------------
+can correct 1-bit errors, can detect 2-bit errors (in the data and in the ECC code itself)
+topmost 2 bits are 0 [1p50]
+dataId = bits 0..7, data/Nbytes = bits 8..23
+ECC calculation for 24-bit header:
+   table 5 [1p52-53]
+   first 24 rows where each row corresponds to data bit 0..23
+   columns P0..P7 correspond to bits in the ECC code
+   bit 'i' in ECC code is calculated by XOR-ing those data bits 'j' (0..23) where there is a 1 in row 'j' and column 'i'
+
+
+Checksum calculation
+--------------------
+16-bit CRC using polynomial  x^16 + x^12 + x^5 + x    [1p56]
+The CRC includes only 'data' part of the long packet. CRC of 0 bytes of data must be 0xFFFF.
+
+Examples  [1p58]
+Data:  FF 00 00 02 B9 DC F3 72 BB D4 B8 5A C8 75 C2 7C 81 F8 05 DF FF 00 00 01    CRC:  0x00F0
+Data:  FF 00 00 00 1E F0 1E C7 4F 82 78 C5 82 E0 8C 70 D2 3C 78 E9 FF 00 00 01    CRC:  0xE569
+
+
+Image transmission
+------------------
+   short packet - frame start
+   [: long packets with image data and short packets with synchronization codes :]   >=1 long, >=0 short
+   short packet - frame end
+
+line start/end are optional
+
+- For YUV, RGB or RAW data types, one long packet shall contain one line of image data. [1p63]
+- Long packets of the same Data Type shall have equal length when packets are within the same Virtual Channel and
+  same frame. An exception to this rule is the YUV420. [1p63]
+- Value of any padding bytes is undefined. [1p64]
+
+
+Formats
+~~~~~~~
+RAW10
+each line of pixels is a single packet and in RAW10 it must be a multiple of 4 pixels (5 bytes)
+4 pixels are packed in 5 bytes as:
+     (p1>>2),(p2>>2),(p3>>2),(p4>>2),(p1&3)|((p2&3)<<2)|((p3&3)<<4)|((p4&3)<<6)
+
+RAW12
+each line of pixels is a single packet and in RAW12 it must be a multiple of 2 pixels (3 bytes)
+2 pixels are packed in 3 bytes as:
+     (p1>>4),(p2>>4),(p1&0xF)|((p2&0xF)<<4)
+
+RAW14
+based on MIPI spec, each line of pixels is a single packet and in RAW14 it must be a multiple of 4 pixels (7 bytes)
+4 pixels are packed in 7 bytes as:
+     (p1>>6),(p2>>6),(p3>>6),(p4>>6), and a 24-bit int (p1&0x3F)|((p2&0x3F)<<6)|((p3&0x3F)<<12)|((p4&0x3F)<<18)
+
+
+References
+~~~~~~~~~~
+[1] = c:\Juraj\Doc\Felix\ProjDocsFromGb1\MIPI\CSI-2.pdf

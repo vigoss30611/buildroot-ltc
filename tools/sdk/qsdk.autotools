@@ -1,0 +1,63 @@
+#!/bin/bash
+help(){
+    echo -e "usage :  must run in qsdk root dir"
+    echo -e "\t app source_dir reconfig"
+    echo -e "\t app source_dir config source_dir [install_dir] [other define]"
+    echo -e "\t app source_dir make"
+    echo -e "\t app source_dir install"
+    echo -e "\t app source_dir clean"
+}
+
+if [[ ! -d tools ]];then
+    help
+    exit 1
+fi
+target_rootfs=`pwd`/$1
+old_pwd=`pwd`
+case $2 in
+    reconfig )
+        echo -e "\nentry source dir"
+        cd $1
+        echo -e "\tclean old build"
+        echo -e "\tcongigure and create makefile"
+        aclocal &&autoconf &&autoheader &&libtoolize --automake  --copy --force  && automake -a
+        cd $old_pwd
+        ;;
+    config )
+        source tools/qsdk.env
+        echo -e "\nentry source dir"
+        cd $1
+        echo -e "\nbegin configure"
+        ./configure   --target=${TOOLCHAIN_PREFIX} --host=${TOOLCHAIN_PREFIX} --build=x86_64-unknown-linux-gnu  $3  $4 $5 $6 $7 
+        cd $old_pwd
+        ;;
+    make )
+        source tools/qsdk.env
+        echo -e "\nentry source dir"
+        cd $1
+        make
+        cd $old_pwd
+        ;;
+    install )
+        source tools/qsdk.env
+        echo -e "\nentry source dir"
+        cd $1
+        make install
+        cd $old_pwd
+        ;;
+    clean )
+        echo -e "\nentry source dir"
+        cd $1
+        make clean
+        cd $old_pwd
+        ;;
+    distclean )
+        echo -e "\nentry source dir"
+        cd $1
+        make clean
+        cd $old_pwd
+        ;;
+    * )
+        help
+        ;;
+esac

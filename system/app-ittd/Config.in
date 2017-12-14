@@ -1,0 +1,11 @@
+config BR2_PACKAGE_APP_ITTD
+	bool "ITTD-Server"
+	help
+	  ITTD-Server
+if BR2_PACKAGE_APP_ITTD
+    config BR2_PACKAGE_APP_ITTD_V4L2_ONLY
+        bool "Ittd tunning for V4L2"
+        default n
+        help
+            Use Ittd connect to V4L2
+endif

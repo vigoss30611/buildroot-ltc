@@ -1,0 +1,405 @@
+From 7a48986512109c176f28903e74f3759c93eb8c89 Mon Sep 17 00:00:00 2001
+From: Marcin Mielczarczyk <marcin.mielczarczyk@imgtec.com>
+Date: Fri, 5 Dec 2014 10:13:05 +0100
+Subject: [PATCH 1/2] ION: Specific implementation of ION for IMG
+
+imgion module creates ION heaps (carveout, system and system contiguous)
+depending on kernel parameters and detected device.
+---
+ BoardConfig.mk    |    1 +
+ imgion/Android.mk |   15 +++
+ imgion/Makefile   |   10 ++
+ imgion/README     |    9 ++
+ imgion/imgion.c   |  296 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ init.x86.rc       |    5 +
+ 6 files changed, 336 insertions(+)
+ create mode 100644 imgion/Android.mk
+ create mode 100644 imgion/Makefile
+ create mode 100644 imgion/README
+ create mode 100644 imgion/imgion.c
+
+diff --git a/BoardConfig.mk b/BoardConfig.mk
+index b7323e6..8dab5aa 100644
+--- a/BoardConfig.mk
++++ b/BoardConfig.mk
+@@ -39,6 +39,7 @@ TARGET_NO_RECOVERY ?= true
+ TARGET_PROVIDES_INIT_RC ?= true
+ TARGET_CPU_SMP ?= true
+ TARGET_EXTRA_KERNEL_MODULES := 8723au tp_smapi
++TARGET_EXTRA_KERNEL_MODULES += imgion
+ 
+ TARGET_USE_DISKINSTALLER ?= false
+ 
+diff --git a/imgion/Android.mk b/imgion/Android.mk
+new file mode 100644
+index 0000000..fe0738c
+--- /dev/null
++++ b/imgion/Android.mk
+@@ -0,0 +1,15 @@
++#
++# Copyright (C) 2009-2011 The Android-x86 Open Source Project
++#
++# Licensed under the Apache License, Version 2.0 (the "License");
++# you may not use this file except in compliance with the License.
++# You may obtain a copy of the License at
++#
++#      http://www.apache.org/licenses/LICENSE-2.0
++#
++
++LOCAL_PATH := $(my-dir)
++include $(CLEAR_VARS)
++
++LOCAL_MODULE := imgion
++EXTRA_KERNEL_MODULE_PATH_$(LOCAL_MODULE) := $(LOCAL_PATH)
+diff --git a/imgion/Makefile b/imgion/Makefile
+new file mode 100644
+index 0000000..40ebf51
+--- /dev/null
++++ b/imgion/Makefile
+@@ -0,0 +1,10 @@
++
++ifeq ($(wildcard drivers/staging/android/ion/ion.h),)
++ccflags-y += -DIMG_KERNEL_ION_HEADER='<linux/ion.h>'
++ccflags-y += -DIMG_KERNEL_ION_PRIV_HEADER="<$(srctree)/drivers/gpu/ion/ion_priv.h>"
++else
++ccflags-y += -DIMG_KERNEL_ION_HEADER="<$(srctree)/drivers/staging/android/ion/ion.h>"
++ccflags-y += -DIMG_KERNEL_ION_PRIV_HEADER="<$(srctree)/drivers/staging/android/ion/ion_priv.h>"
++endif
++
++obj-m += imgion.o
+diff --git a/imgion/README b/imgion/README
+new file mode 100644
+index 0000000..ac2a880
+--- /dev/null
++++ b/imgion/README
+@@ -0,0 +1,9 @@
++Kernel Parameters =:
++enable_system_heap      "heap 2: allocate from host memory using vmalloc"
++enable_contig_heap      "heap 1: allocate from host memory using kmalloc"
++carveout_size           "heap 4: allocate using carveout from pci memory: how many pages to carveout (0 to use pci bar size)"
++carveout_pci_vendor     "allocate using carveout from pci memory: PCI vendor id"
++carveout_pci_product    "carveout PCI product id"
++carveout_pci_bar        "carveout PCI BAR"
++carveout_phys_start     "carveout starting physical address (0 to use pci vendor/product"
++carveout_phys_offset    "offset to be added to carveout_phys_start: useful for sharing PCI memory with PALLOC"
+diff --git a/imgion/imgion.c b/imgion/imgion.c
+new file mode 100644
+index 0000000..e4ca5f1
+--- /dev/null
++++ b/imgion/imgion.c
+@@ -0,0 +1,296 @@
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/device.h>
++#include <linux/mm.h>
++#include <linux/string.h>
++#include <linux/kobject.h>
++#include <linux/fs.h>
++#include <asm/uaccess.h>
++#include <asm/page.h>
++#include <linux/slab.h>		// for kmalloc
++#include <linux/miscdevice.h>
++#include <linux/pci.h>
++#include <linux/version.h>
++
++/*
++ * gcc defines "linux" as "1".
++ * [ http://stackoverflow.com/questions/19210935 ]
++ * IMG_KERNEL_ION_HEADER can be <linux/ion.h>, which expands to <1/ion.h>
++ */
++#undef linux
++#include IMG_KERNEL_ION_HEADER
++#include IMG_KERNEL_ION_PRIV_HEADER
++
++MODULE_LICENSE("GPL v2");
++MODULE_AUTHOR("img");
++
++int enable_system_heap = 0;
++module_param(enable_system_heap, int, 0444);
++MODULE_PARM_DESC(enable_system_heap, "heap 2: vmalloc");
++int enable_contig_heap = 0;
++module_param(enable_contig_heap, int, 0444);
++MODULE_PARM_DESC(enable_contig_heap, "heap 1: kmalloc");
++int carveout_size = 0;
++module_param(carveout_size, int, 0444);
++MODULE_PARM_DESC(carveout_size, "heap 4: how many pages to carveout (0 to use pci bar size)");
++unsigned long carveout_phys_start = 0;
++module_param(carveout_phys_start, ulong, 0444);
++MODULE_PARM_DESC(carveout_phys_start, "carveout starting physical address (0 to use pci vendor/product");
++unsigned long carveout_phys_offset = 0;
++module_param(carveout_phys_offset, ulong, 0444);
++MODULE_PARM_DESC(carveout_phys_offset, "offset to be added to carveout_phys_start: useful for sharing PCI memory with PALLOC");
++int carveout_pci_vendor = 0;
++int carveout_pci_product = 0;
++int carveout_pci_bar = 0;
++module_param(carveout_pci_vendor, int, 0444);
++MODULE_PARM_DESC(carveout_pci_vendor, "carveout PCI vendor id");
++module_param(carveout_pci_product, int, 0444);
++MODULE_PARM_DESC(carveout_pci_product, "carveout PCI product id");
++module_param(carveout_pci_bar, int, 0444);
++MODULE_PARM_DESC(carveout_pci_bar, "carveout PCI BAR");
++
++
++static ssize_t img_write(struct file *filep, const char __user *buf, size_t count, loff_t *ppos)
++{
++	int ret = count;
++	char * str = kmalloc(count, GFP_KERNEL);
++	printk("img_write %zd\n", count);
++	if(str == 0) {
++		printk(KERN_ERR "failed to malloc %zd\n", count);
++		return -EFAULT;
++	}
++	if(copy_from_user(str, buf, count)) {
++		kfree(str);
++		return -EFAULT;
++	}
++	kfree(str);
++	return ret;
++}
++
++static int img_open(struct inode *inode, struct file *filep)
++{
++	int minor = iminor(inode);
++	struct miscdevice * imgmisc = filep->private_data;	// recent kernels only!!
++	printk("img_open: minor:%d misc:%p\n", minor, imgmisc);
++
++	return nonseekable_open(inode, filep);
++}
++static int img_release(struct inode *inode, struct file *filep)
++{
++	printk("img_release\n");
++
++	return 0;
++}
++static ssize_t img_read(struct file *filep, char __user *buf, size_t count, loff_t *ppos)
++{
++	int ret = 0;
++	char tmp[100];
++	printk("img_read count:%zd \n", count);
++	if(*ppos)
++		return 0;
++
++	snprintf(tmp, sizeof(tmp), "hello world\n");
++	ret = copy_to_user(buf, tmp, strlen(tmp)+1);
++	if(ret)
++		return ret;
++
++	count = strlen(tmp);
++	*ppos += count;
++	return count;
++}
++static int img_mmap(struct file * filep, struct vm_area_struct * vma)
++{
++	return -EINVAL;
++}
++#define IMG_IOCTL_MAGIC 'j'
++#define IMG_IOC_1 _IOW(IMG_IOCTL_MAGIC, 1, int*)
++#define IMG_IOC_MAX 1
++static long img_ioctl(struct file * file, unsigned int cmd, unsigned long arg)
++{
++	char __user * argp = (char __user*)arg;
++
++	if ((_IOC_TYPE(cmd) != IMG_IOCTL_MAGIC) ||
++			(_IOC_NR(cmd) > IMG_IOC_MAX)
++	   )
++	{
++		return -ENOTTY;
++	}
++
++	switch(cmd) {
++		char buf[4];
++		case IMG_IOC_1:
++		if(copy_from_user(buf, argp, sizeof(buf)))
++			return -EFAULT;
++		default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++static const struct file_operations img_fops = {
++	.owner   = THIS_MODULE,
++	.open    = img_open,
++	.release = img_release,
++	.read    = img_read,
++	.write   = img_write,
++	.mmap    = img_mmap,
++	.llseek  = no_llseek,
++	.unlocked_ioctl = img_ioctl,
++};
++
++static struct miscdevice imgmisc = {
++	.name = "imgion",
++	.fops = &img_fops,
++	.minor = MISC_DYNAMIC_MINOR,
++};
++
++/*
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,10,0)
++static struct ion_platform_heap generic_heaps[] = {
++{
++.type = ION_HEAP_TYPE_SYSTEM_CONTIG,
++.name = "System contig",
++.id = ION_HEAP_TYPE_SYSTEM_CONTIG,
++},
++{
++.type = ION_HEAP_TYPE_SYSTEM,
++.name = "System",
++.id = ION_HEAP_TYPE_SYSTEM,
++},
++{
++.type = ION_HEAP_TYPE_CARVEOUT,
++.name = "Carveout",
++.id = ION_HEAP_TYPE_CARVEOUT,
++.base = 0,
++.size = 0,
++}
++};
++
++static struct ion_platform_data generic_config = {
++.nr = 3,
++.heaps = generic_heaps
++};
++#else*/
++static struct ion_platform_data generic_config = {
++	.nr = 3,
++	.heaps = {
++		{
++			.type = ION_HEAP_TYPE_SYSTEM_CONTIG,
++			.name = "System contig",
++			.id = ION_HEAP_TYPE_SYSTEM_CONTIG,
++		},
++		{
++			.type = ION_HEAP_TYPE_SYSTEM,
++			.name = "System",
++			.id = ION_HEAP_TYPE_SYSTEM,
++		},
++		{
++			.type = ION_HEAP_TYPE_CARVEOUT,
++			.name = "Carveout",
++			.id = ION_HEAP_TYPE_CARVEOUT,
++			.base = 0,
++			.size = 0,
++		},
++	}
++};
++//#endif
++
++static struct ion_device *ion_dev;
++struct ion_heap *ion_heaps[3];
++
++static int ion_init(void)
++{
++	int ret = 0;
++	int i;
++
++	printk("%s\n", __FUNCTION__);
++	ion_dev = ion_device_create(NULL);
++	if(IS_ERR_OR_NULL(ion_dev)) {
++		pr_err("ion_device_create failed\n");
++		return -ENOSPC;
++	}
++	/* Register all the heaps */
++	for (i = 0; i < generic_config.nr; i++)
++	{
++		struct ion_platform_heap *heap = &generic_config.heaps[i];
++
++		switch(heap->id) {
++			case ION_HEAP_TYPE_SYSTEM_CONTIG:
++				if(!enable_contig_heap) continue;
++				break;
++			case ION_HEAP_TYPE_SYSTEM:
++				if(!enable_system_heap) continue;
++				break;
++			case ION_HEAP_TYPE_CARVEOUT:
++				if(carveout_pci_vendor && carveout_pci_product) {
++					struct pci_dev * pcidev = pci_get_device(carveout_pci_vendor, carveout_pci_product, NULL);
++					if(pcidev == NULL)
++					{
++						printk(KERN_ERR "Failed to get PCI device!\n");
++						return -EINVAL;
++					}
++					carveout_phys_start = pci_resource_start(pcidev, carveout_pci_bar);
++					if(carveout_size == 0)
++						carveout_size = pci_resource_len(pcidev, carveout_pci_bar);
++					pci_dev_put(pcidev);
++				}
++				printk(KERN_ERR "vendor: 0x%x, product: 0x%x, start = 0x%x, size = 0x%x\n",
++					carveout_pci_vendor, carveout_pci_product, carveout_phys_start, carveout_size);
++				if(carveout_size < PAGE_SIZE) continue;
++				if(!carveout_phys_start) continue;
++				heap->base = carveout_phys_start + carveout_phys_offset;
++				heap->size = carveout_size;
++				printk(KERN_ERR "IMG %s creating heap %d, phys:%lx size %zu\n", __func__, i, heap->base, heap->size);
++				break;
++		}
++		ion_heaps[i] = ion_heap_create(heap);
++		if (IS_ERR_OR_NULL(ion_heaps[i]))
++		{
++			pr_err("ion_heap_create failed\n");
++			ret = -ENOSPC;
++			goto fail;
++		}
++		ion_device_add_heap(ion_dev, ion_heaps[i]);
++	}
++	return ret;
++fail:
++	printk("Failed to initialize imgion!\n");
++	// TOBEDONE: clearup
++	return ret;
++}
++
++static void ion_deinit(void)
++{
++	int i;
++	printk("%s\n", __FUNCTION__);
++	for (i = 0; i < generic_config.nr; i++) {
++		if (ion_heaps[i])
++		{
++			ion_heap_destroy(ion_heaps[i]);
++		}
++	}
++	ion_device_destroy(ion_dev);
++}
++
++static int __init img_init(void)
++{
++	int ret = 0;
++	printk("img_init\n");
++
++	ret = misc_register(&imgmisc);
++	if(ret) {
++		pr_err("device_register failed\n");
++	}
++	ion_init();
++	return ret;
++}
++
++static void __exit img_exit(void)
++{
++	printk("img exit\n");
++	ion_deinit();
++	misc_deregister(&imgmisc);
++}
++
++module_init(img_init);
++module_exit(img_exit);
+diff --git a/init.x86.rc b/init.x86.rc
+index 4a3001c..311f98e 100644
+--- a/init.x86.rc
++++ b/init.x86.rc
+@@ -43,6 +43,11 @@ on init
+     setprop ro.product.manufacturer $[/sys/class/dmi/id/sys_vendor]
+     setprop ro.product.model $[/sys/class/dmi/id/product_name]
+ 
++	# insert imgion device
++	insmod /system/lib/modules/3.10.52-android-x86+/extra/imgion.ko enable_system_heap=1 enable_contig_heap=1 carveout_pci_vendor=0x1010 carveout_pci_product=0x1cf2 carveout_pci_bar=2
++	chmod 4666 /dev/ion
++	chmod 4666 /dev/imgion
++
+     exec /system/bin/logwrapper /system/bin/sh /system/etc/init.sh
+ 
+ on post-fs-data
+-- 
+1.7.9.5
+

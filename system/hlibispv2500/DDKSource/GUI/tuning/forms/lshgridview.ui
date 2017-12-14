@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LSHGridView</class>
+ <widget class="QWidget" name="LSHGridView">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>480</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>LSH Grid View</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="view_lay"/>
+   </item>
+   <item>
+    <widget class="QSlider" name="lineSlider">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="invertedAppearance">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="info_grp">
+     <property name="title">
+      <string>Slice information</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+     <layout class="QGridLayout" name="infoGrp_lay">
+      <item row="0" column="0">
+       <widget class="QComboBox" name="channel">
+        <item>
+         <property name="text">
+          <string>Channel 0</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Channel 1</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Channel 2</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Channel 3</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="5" column="0" colspan="3">
+       <widget class="QLabel" name="lineInfo_lbl">
+        <property name="text">
+         <string>line info</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QComboBox" name="curve"/>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="outputColour_lbl">
+        <property name="text">
+         <string>Output Colour:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QComboBox" name="outputColour"/>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="targetColour_lbl">
+        <property name="text">
+         <string>Target Colour:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QComboBox" name="targetColour"/>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLabel" name="targetMSEColour_lbl">
+        <property name="text">
+         <string>Output Error Colour:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QComboBox" name="targetMSEColour"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>lineSlider</tabstop>
+  <tabstop>channel</tabstop>
+  <tabstop>curve</tabstop>
+  <tabstop>outputColour</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

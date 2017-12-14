@@ -1,0 +1,22 @@
+menuconfig INFOTM_COMMON_DISPLAY
+        bool "Infotm display support"
+        default n
+	select FB_CFB_FILLRECT
+        select FB_CFB_COPYAREA
+        select FB_CFB_IMAGEBLIT
+	select FB_SYS_FILLRECT
+        select FB_SYS_COPYAREA
+        select FB_SYS_IMAGEBLIT
+	select FB_SYS_FOPS
+        help
+          This enables support for the Infotm display driver.
+
+if INFOTM_COMMON_DISPLAY
+
+config DISPLAY_IMAPX
+      bool "iMAPx display driver 122343444"
+           default y
+       help
+         This enables support for the iMAPx series display driver.
+
+endif

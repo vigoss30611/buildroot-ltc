@@ -1,0 +1,17 @@
+menuconfig INFOTM_NET
+        bool "Infotm Network support"
+        default y
+        help
+			Kinds of network device driver, such as ethernet, usb2eth, wifi
+
+if INFOTM_NET
+source "drivers/infotm/common/net/imap_gmac_ethernet/Kconfig"
+source "drivers/infotm/common/net/rtl8188EUS_wifi/Kconfig"
+source "drivers/infotm/common/net/rtl8189ES_wifi/Kconfig"
+source "drivers/infotm/common/net/mtk7601U_wifi/Kconfig"
+source "drivers/infotm/common/net/bcmdhd6212/Kconfig"
+source "drivers/infotm/common/net/esp8089/linux_sdio/Kconfig"
+source "drivers/infotm/common/net/esp8089/esp_prealloc_V2.4/Kconfig"
+source "drivers/infotm/common/net/rtl8188EUS_rtl8189ES_linux_v4.3.15_13239.20150112/Kconfig"
+endif
+

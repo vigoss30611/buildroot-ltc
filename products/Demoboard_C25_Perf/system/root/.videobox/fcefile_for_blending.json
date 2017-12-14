@@ -1,0 +1,111 @@
+{
+    "mode_number": 1,
+    "mode_list0": {
+        "file_number":5,
+        "file_list0": {
+            "file_grid":"/root/.ispost/lc_stitching_0-0-0-0_hermite32_1920x960_64x960_fisheye_center_left_pos_464.bin",
+            "file_geo":"/root/.ispost/lc_v1_0-0-0-0_hermite32_1920x960-1920x960_geo.bin",
+            "outport_number":2,
+            "need_alloc_buf": 1,
+            "ov0_x":464,
+            "ov0_y":0,
+            "ov0_width":48,
+            "ov0_height":960,
+            "outport_list0": {
+                "port":"uo",
+                "x":0,
+                "y":0,
+                "w":48,
+                "h":960
+            },
+            "outport_list1": {
+                "port":"dn",
+                "x":0,
+                "y":0,
+                "w":48,
+                "h":960
+            }
+        },
+        "file_list1": {
+            "file_grid":"/root/.ispost/lc_stitching_0-0-0-0_hermite32_1920x960_512x960_fisheye_left_pos_0.bin",
+            "file_geo":"/root/.ispost/lc_v1_0-0-0-0_hermite32_1920x960-1920x960_geo.bin",
+            "outport_number":2,
+            "outport_list0": {
+                "port":"uo",
+                "x":0,
+                "y":0,
+                "w":512,
+                "h":960
+            },
+            "outport_list1": {
+                "port":"dn",
+                "x":0,
+                "y":0,
+                "w":512,
+                "h":960
+            }
+        },
+        "file_list2": {
+            "file_grid":"/root/.ispost/lc_stitching_0-0-0-0_hermite32_1920x960_64x960_fisheye_center_right_pos_1408.bin",
+            "file_geo":"/root/.ispost/lc_v1_0-0-0-0_hermite32_1920x960-1920x960_geo.bin",
+            "outport_number":2,
+            "need_alloc_buf": 1,
+            "ov0_x":0,
+            "ov0_y":0,
+            "ov0_width":48,
+            "ov0_height":960,
+            "outport_list0": {
+                "port":"uo",
+                "x":0,
+                "y":0,
+                "w":48,
+                "h":960
+            },
+            "outport_list1": {
+                "port":"dn",
+                "x":0,
+                "y":0,
+                "w":48,
+                "h":960
+            }
+        },
+        "file_list3": {
+            "file_grid":"/root/.ispost/lc_stitching_0-0-0-0_hermite32_1920x960_512x960_fisheye_right_pos_1408.bin",
+            "file_geo":"/root/.ispost/lc_v1_0-0-0-0_hermite32_1920x960-1920x960_geo.bin",
+            "outport_number":2,
+            "outport_list0": {
+                "port":"uo",
+                "x":1408,
+                "y":0,
+                "w":512,
+                "h":960
+            },
+            "outport_list1": {
+                "port":"dn",
+                "x":1408,
+                "y":0,
+                "w":512,
+                "h":960
+            }
+        },
+        "file_list4": {
+            "file_grid":"/root/.ispost/lc_stitching_0-0-0-0_hermite32_1920x960_928x960_fisheye_center_pos_496.bin",
+            "file_geo":"/root/.ispost/lc_v1_0-0-0-0_hermite32_1920x960-1920x960_geo.bin",
+            "outport_number":2,
+            "outport_list0": {
+                "port":"uo",
+                "x":496,
+                "y":0,
+                "w":928,
+                "h":960
+            },
+            "outport_list1": {
+                "port":"dn",
+                "x":496,
+                "y":0,
+                "w":928,
+                "h":960
+            }
+        }
+    }
+}

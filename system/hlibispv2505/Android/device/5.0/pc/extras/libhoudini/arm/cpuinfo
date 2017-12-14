@@ -1,0 +1,4 @@
+Processor	: ARMv7 processor (v7l)
+BogoMIPS	: 1500
+Features	: vfp swp half thumb fastmult edsp vfpv3 
+CPU architecture: 7

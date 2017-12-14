@@ -1,0 +1,29 @@
+menuconfig INFOTM_SPI
+	bool "Infotm SPI support"
+	  default n
+	help
+	  This is the Infotm internal SPI driver
+
+if INFOTM_SPI
+
+config IMAPX_SPI
+	tristate "iMAPx SPI(PL022) master driver"
+	  default n
+	help
+	  iMAPx SPI driver
+
+config IMAPX_SPIMUL
+	tristate "iMAPx 4-Wire SPI  master driver"
+	  default n
+	help
+	  iMAPx SPIMUL driver
+config LCD_SPI
+	tristate "SPI slave device (lcd) driver"
+	  default n
+   depends on IMAPX_SPI
+	help
+	  iMAPx SPI slave device LCD  driver
+
+endif
+
+

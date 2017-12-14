@@ -1,0 +1,7 @@
+config BR2_PACKAGE_ISPOSTV2
+	bool "hlibispostv2"
+	help
+	  Fix me
+
+	  http://www.infotm.com/
+

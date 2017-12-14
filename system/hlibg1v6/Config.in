@@ -1,0 +1,17 @@
+config BR2_PACKAGE_HLIBG1V6
+	bool "libg1v6"
+
+	help
+		libg1v6 library
+		http://www.infotm.com/
+
+if BR2_PACKAGE_HLIBG1V6 
+menu "options"
+	config  BR2_PACKAGE_HLIBG1V6_INSTALL_SHARED
+		bool "Install Shared"
+		default y
+		help
+	  		install shared library into target dir	
+endmenu
+
+endif

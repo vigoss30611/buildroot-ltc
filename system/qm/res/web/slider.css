@@ -1,0 +1,10 @@
+@charset "utf-8";
+.imageSlider1 { margin:0;padding:0; height:12px; width:143px; background-image:url("res/scrollbg.png"); }
+.imageBar1    { margin:0;padding:0; height:12px; width:12px; background-image:url("res/scrfloat.bmp"); }
+
+/*.imageSlider2 { margin:0;padding:0; height:18px; width:148px; background-image:url("res/scrollbg.bmp"); }
+.imageBar2    { margin:0;padding:0; height:16px; width:16px; background-image:url("res/scrfloat.bmp"); }
+
+.winSlider    { margin:0;padding:0; height:15px; width:148px; background-color:#eee; border:2px solid #EAE6DD; }
+.winBar       { margin:0;padding:0; height:15px; width:10px; border:2px outset buttonhighlight; background-color:#D4D0C8; }
+*/

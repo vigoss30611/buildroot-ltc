@@ -1,0 +1,46 @@
+{
+       "dgframe":{
+                "ipu":"dg-frame",
+                "args":{
+			"frames":2,
+                        "data":"/root/.ispost/fisheye_1080x1080.yuv"
+                },
+                "port":{
+                        "out":{
+                                "w":1080,
+                                "h":1080,
+                                "pixel":"nv12",
+                                "bind":{ "ispost":"in" }
+                        }
+                }
+        },
+
+	"ispost": {
+		"ipu": "ispostv2",
+		"args": {
+			"lc_grid_file_name1": "/root/.ispost/lc_v1_0-0-0-0_hermite32_1080x1080-1024x576_180_set.bin",
+			"lc_geometry_file_name1": "/root/.ispost/lc_v1_0-0-0-0_hermite32_1080x1080-1024x576_geo_180_set.bin",
+			"lc_grid_target_index": 0,
+			"dn_enable": 1,
+			"fisheye": 1
+		},
+		"port": {
+			"dn": {
+				"w": 1024,
+				"h": 576,
+				"pixel": "nv12"
+			},
+			"uo": {
+				"w": 1024,
+				"h": 576,
+				"pixel": "nv12",
+				"bind": {
+					"display": "osd0"
+				}
+			}
+		}
+	},
+
+	"display": { "ipu": "ids"}
+}
+

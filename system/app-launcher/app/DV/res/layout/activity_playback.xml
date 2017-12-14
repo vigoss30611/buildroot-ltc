@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/black" >
+
+    <!-- <RelativeLayout -->
+    <!-- android:id="@+id/layout_live_video_control_top" -->
+    <!-- android:layout_width="fill_parent" -->
+    <!-- android:layout_height="40.0dip" -->
+    <!-- android:layout_alignParentTop="true" -->
+    <!-- android:background="#aa000000" > -->
+    <!-- <ImageButton -->
+    <!-- android:id="@+id/btn_live_video_back" -->
+    <!-- android:layout_width="40.0dip" -->
+    <!-- android:layout_height="25.0dip" -->
+    <!-- android:layout_alignParentLeft="true" -->
+    <!-- android:layout_centerVertical="true" -->
+    <!-- android:layout_marginLeft="20.0dip" -->
+    <!-- android:alpha="0.8" -->
+    <!-- android:background="@null" -->
+    <!-- android:scaleType="fitCenter" -->
+    <!-- android:src="@drawable/live_video_control_back_selector" /> -->
+    <!-- </RelativeLayout> -->
+    
+    <FrameLayout
+        android:id="@+id/player_surface_frame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:foregroundGravity="clip_vertical|clip_horizontal" >
+
+        <SurfaceView
+            android:id="@+id/player_surface"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.danale.video.view.opengl.DanaleGlSurfaceView
+            android:id="@+id/player_gl_surface"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+    
+    <RelativeLayout android:id="@+id/playback_info_control"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:clickable="false">
+        <LinearLayout
+            	        android:layout_width="match_parent"
+	                    android:layout_height="wrap_content"
+	                    android:background="@color/blue_dark"
+	                    android:clickable="true" 
+	                    android:gravity="center_vertical">
+	            <ImageView android:id="@+id/media_back"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+							android:background="@drawable/playback_back_button_selector"
+							android:paddingLeft="8dip"
+							android:paddingRight="12dip"/>                
+        <TextView android:id="@+id/media_name"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:textAppearance="@android:style/TextAppearance.Large"
+                             android:textColor="@android:color/white"/>
+        </LinearLayout>
+
+	    <LinearLayout
+	        android:id="@+id/playback_control"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentBottom="true"
+	        android:layout_centerHorizontal="true"
+	        android:animateLayoutChanges="true"
+	        android:orientation="horizontal"
+	        android:padding="@dimen/padding_default"
+	        android:clickable="true" 
+	        android:background="@color/blue_dark">
+	        <View android:layout_width="0dp"
+	            android:layout_height="1dp"
+	            android:layout_weight="1"/>
+	        <ImageView
+	            android:id="@+id/btn_play_prev"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:src="@drawable/ic_media_prev_selector" />
+	        
+			<ImageView
+	            android:id="@+id/btn_play_pause"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:src="@drawable/btn_media_play_pause" />
+			
+			<TextView android:id="@+id/text_lapse"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:layout_gravity="center_vertical"
+			    android:paddingRight="2dp"
+			    android:textColor="@android:color/white"
+			    android:textSize="18sp"/>
+			
+	        <SeekBar android:id="@+id/seekbar_playback"
+	            android:layout_width="0dp"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="99"
+	            android:layout_gravity="center_vertical"
+	            style="?android:attr/progressBarStyleHorizontal"
+	            android:max="100"
+	            android:progress="0"
+	            android:secondaryProgress="0"
+	            android:progressDrawable="@drawable/progress_bar_color"/>
+	        
+		<TextView android:id="@+id/text_duration"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:layout_gravity="center_vertical"
+			    android:paddingLeft="2dp"
+			    android:textColor="@android:color/white"
+			    android:textSize="18sp"/>
+		
+	        <ImageView
+	            android:id="@+id/btn_play_next"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:src="@drawable/ic_media_next_selector" />
+	        
+		<View android:layout_width="0dp"
+	            android:layout_height="1dp"
+	            android:layout_weight="1"/>
+	    </LinearLayout>
+    
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_live_video_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:indeterminate="true"
+            android:indeterminateOnly="true" />
+
+        <TextView
+            android:id="@+id/tv_live_video_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/live_video_loading"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_16sp" />
+    </LinearLayout>
+
+</FrameLayout>

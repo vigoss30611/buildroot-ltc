@@ -1,0 +1,20 @@
+{
+    "isp": {
+        "ipu": "v2500",
+        "args": {
+            "mode": 0,
+            "name": "OV2710",
+            "config": "/root/.ispddk/config-normal.txt"
+        },
+        "port": {
+            "out": {
+                "w": 1920,
+                "h": 1088,
+                "pixel_format": "nv12",
+                "bind": { "display": "osd0" }
+            }
+        }
+    },
+
+    "display": { "ipu": "ids", "args": { "no_osd1": 1 }}
+}

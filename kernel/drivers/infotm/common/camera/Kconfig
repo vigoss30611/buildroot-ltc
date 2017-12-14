@@ -1,0 +1,21 @@
+#
+# CAMERA device configuration
+#
+
+menuconfig INFOTM_VIDEO_CAPTURE
+	bool "infotm Video capture driver support"
+	default y
+	help
+		choose a video capture driver for your platform:
+		imapx210, imapx15, imapx9s	---- camif
+		imapx820, imapx9			---- isp
+
+if INFOTM_VIDEO_CAPTURE
+source "drivers/infotm/common/camera/sensors/Kconfig"
+source "drivers/infotm/common/camera/isp/Kconfig"
+source "drivers/infotm/common/camera/camif/Kconfig"
+source "drivers/infotm/common/camera/bridge/Kconfig"
+#source "drivers/infotm/common/camera/sensors/camif"
+source "drivers/infotm/common/camera/csi/Kconfig"
+endif
+

@@ -1,0 +1,20 @@
+config BR2_PACKAGE_TESTING_MISC
+	bool "Testing misc menu"
+
+	help
+		misc menu
+		http://www.infotm.com/
+
+if BR2_PACKAGE_TESTING_MISC 
+	config  BR2_PACKAGE_TESTING_MUXING
+		bool "Testing misc muxing"
+		default y
+		help
+	  		install shared library into target dir	
+	config  BR2_PACKAGE_TESTING_MISC_MORE_CUSTOM
+		bool "more testing misc options, will add soon"
+		default n
+		help
+	  		install shared library into target dir	
+
+endif

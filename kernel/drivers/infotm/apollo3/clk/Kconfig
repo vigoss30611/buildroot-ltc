@@ -1,0 +1,10 @@
+ #                                                 
+ #  Clock device configuration                     
+ #                                                 
+ #                                                 
+menuconfig APOLLO3_CLK                           
+        bool "APOLLO3 clock driver support"
+		depends on COMMON_CLK
+        default n                                  
+        help                                       
+               Infotm input device driver suport   

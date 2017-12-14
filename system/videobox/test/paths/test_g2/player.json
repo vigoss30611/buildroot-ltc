@@ -1,0 +1,23 @@
+{
+	"dec0":{
+		"ipu":"g2",
+		"port":{
+			"frame":{
+				"w": 1280,
+				"h": 720,
+				"bind":{"display":"osd0"}
+			}
+		}
+	 },
+
+	 "fs": {
+		 "ipu": "filesource",
+		 "port": {
+			 "out": {
+				 "bind": {"dec0": "stream"}
+			 }
+		 }
+	 },
+
+	"display": { "ipu": "ids", "args": { "no_osd1": 1 }}
+}

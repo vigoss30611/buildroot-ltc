@@ -1,0 +1,13 @@
+obj-$(CONFIG_INFOTM_DRV_Q3F)   += clk/
+obj-$(CONFIG_INFOTM_DRV_Q3F)   += dpmu/
+obj-$(CONFIG_INFOTM_DRV_Q3F)   += gpio/
+obj-$(CONFIG_INFOTM_DRV_Q3F)   += input/
+obj-$(CONFIG_INFOTM_DRV_Q3F) 	+= display/
+obj-$(CONFIG_INFOTM_DRV_Q3F)	+= emif/
+obj-$(CONFIG_INFOTM_DRV_Q3F)	+= mfd/
+obj-$(CONFIG_INFOTM_DRV_Q3F)	+= regulator/
+obj-$(CONFIG_INFOTM_DRV_Q3F)	+= char/
+obj-$(CONFIG_INFOTM_DRV_Q3F)	+= ispost/
+obj-$(CONFIG_INFOTM_DRV_Q3F)	+= fodet/
+obj-y				+= efuse/
+obj-y				+= power_domain/

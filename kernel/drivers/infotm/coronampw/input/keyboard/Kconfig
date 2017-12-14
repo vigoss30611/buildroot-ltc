@@ -1,0 +1,22 @@
+menuconfig CORONAMPW_KEYBOARD
+	bool "coronampw Keyboards and keypads"
+if CORONAMPW_KEYBOARD
+	config CORONAMPW_GPIO_KEYS
+	tristate "coronampw GPIO Keys"
+	default n
+	help
+	  Say Y here if you want to use the GPIO keys of coronampw.
+
+	config CORONAMPW_POWER_KEY_IP6313
+	tristate "coronampw ip6313 power Key"
+	default n
+	help
+	  Say Y here if you want to use the IP6313 power key of coronampw.
+
+	config CORONAMPW_POWER_KEY_FPGA
+	depends on CORONAMPW_FPGA_PLATFORM 
+	tristate "coronampw fpga power Key"
+	default n
+	help
+	  Say Y here if you want to use the IP6203 power key of coronampw.
+endif

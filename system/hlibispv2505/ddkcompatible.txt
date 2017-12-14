@@ -1,0 +1,10 @@
+//sim/projects/felix_hwsim/DEV/REL_2.1.x/...@3631896
+//sim/projects/felix_hwsim/DEV/REL_2.6.x/...@3951295 <=> BUILD_SIM_FELIX_2.6-DEV-REL-64 
+//sim/projects/felix_hwsim/DEV/REL_2.7.x/...@3948686 <=> BUILD_SIM_FELIX_2.7-DEV-REL-19
+HW FPGA 2.1.5 014 3578413
+HW FPGA 2.6.2 004 3861958
+HW FPGA 2.7.0 003 3916304
+HW FPGA 2.7.1 000 3989118 (RC)
+HW FPGA 2.7.1 004 3988029 (RC)
+
+//powervr/swvideo/projects/video/REL/7.1.0/...@3947507 <=> PVR_VIDEO_REL_7.1.0_36

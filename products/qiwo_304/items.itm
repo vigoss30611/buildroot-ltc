@@ -1,0 +1,139 @@
+items.start
+config.vol.regulator pwm.0
+board.cpu apollo
+board.case 1
+board.disk flash
+board.string.product ipc
+board.string.device qiwo304
+soc.cpu.freq -532
+soc.cpu.dvfs 1
+soc.gpu.freq 444
+soc.gpu.dvfs 1
+soc.vpu.dvfs 1
+soc.usb.otg 1
+soc.usb.host 1
+config.ui tablet
+config.otaurl ftp://infotm:111111@192.168.0.3:21/testteam/ota
+config.phase final
+config.preload preboot
+config.root 1
+config.trace 0
+config.media.pmm 0
+config.media.out rgb565
+config.uboot.logo 0
+config.otg.nluns 2
+config.otg.extraid pads.138
+config.policy.power 1
+config.wdt 5
+board.arch q3pv10
+cpu.power pmu.sw1
+cpu.io33.power pmu.sw2
+dram.count 1
+dram.power pmu.swio
+dram.freq 320
+dram.type DDR3
+dram.width 16
+dram.capacity 256
+memory.cl 5
+memory.rtt 4
+memory.driver 6
+memory.tras 15
+memory.trfc 64
+part0		uboot.48.boot
+part1		item.16.boot
+part2		ramdisk.3400.boot
+part3		kernel.1800.boot
+part4		kernel1.1800.boot
+part5		system.9000.fs
+part6		config.-1.fs.fat
+#camera.front.interface    camif     #modify for apollo
+#camera.front.model        gc0308_demo
+#camera.front.orientation  270
+#camera.front.align	  low8_align
+#camera.front.ctrl         i2c.0     #modify for apollo
+#camera.front.power.iovdd  pmu.ldo3
+#camera.front.power.dvdd   pmu.ldo4
+#camera.front.power.down   pads.55
+#camera.front.reset	  pads.61
+
+#camera.rear.interface    camif      #modify for apollo 
+#camera.rear.model        gc2035_demo
+#camera.rear.orientation  90
+#camera.rear.align	 low8_align
+#camera.rear.ctrl         i2c.0      #modify for apollo
+#camera.rear.power.iovdd  pmu.ldo3
+#camera.rear.power.dvdd   pmu.ldo4
+#camera.rear.power.down   pads.56
+#camera.rear.reset	 pads.61
+prescaler.vic 2001
+
+led0.pwm blue.1
+led0.polarity 0
+led0.dft_state nocare
+led1.pwm green.2
+led1.polarity 0
+led1.dft_state nocare
+led2.pwm red.3
+led2.polarity 0
+led2.dft_state nocare
+
+codec.model 9624tqlp
+codec.power pmu.ldo2
+codec.data i2s.0
+sound.speaker pads.160
+sound.spkon_delay	80
+codec.model1 bt
+codec.data1 pcm.0
+soc.usb.host 1
+soc.usb.otg 1
+bt.model bcm6212
+bt.enable 80
+bt.reset 159
+wifi.model sdio.bcmdhd6212
+wifi.power pads.165
+
+debug.printk_console 1
+pmu.model ec610
+pmu.ctrl i2c.0
+power.full pads.130
+power.dcdetect pads.139
+initi2c.0 i2c.0.40.99
+virtualvolkey 1
+app.product.type q3_sportdv
+############MIPI###########
+app.sensor.type mipi
+app.sensor.name AR330MIPI #AR330MIPI, AR330DVP, OV4689
+app.sensor.mode 8   #6:1lane1080@30fps 8:1lane1080p@20fps
+app.sensor.lane 1
+app.sensor.fps 20
+app.sensor.setupfile /etc/AR330_MIPI.txt
+app.sensor.buffersize 5
+app.sensor.awbmode 4
+app.sensor.csi_freq 410
+app.sensor.isp_freq 192000000
+sensor.frametimeout 300
+sensor.mclk.pads 112
+sensor.reset.pads 148
+sensor.pwdn.pads 166
+sensor.iovdd.ldo ldo1
+sensor.iovdd.vol 2800000
+###########DVP#################
+#app.sensor.type dvp
+#app.sensor.name AR330DVP
+#app.sensor.mode 6 #1080@30fps
+#app.sensor.fps 30
+#app.sensor.setupfile /etc/AR330_DVP.txt
+#app.sensor.buffersize 5
+#app.sensor.awbmode 4
+#app.sensor.isp_freq 192000000
+#sensor.frametimeout 300
+#sensor.mclk.pads 112
+#sensor.reset.pads 61
+#sensor.pwdn.pads 166
+keys.reset pads.142
+lightsensor.model pt550
+lightsensor.bus  adc.11
+
+app.evbboard.ver one
+app.mmc.device /dev/mmcblk0p1
+items.end

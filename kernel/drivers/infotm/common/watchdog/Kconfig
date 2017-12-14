@@ -1,0 +1,14 @@
+
+menuconfig INFOTM_WDT
+        bool "Infotm watchdog driver support"
+        default n
+	select WATCHDOG
+        help
+             Infotm watchdog timer driver support. say yes ifneed
+if INFOTM_WDT
+config WDT_IMAPX
+        tristate "iMAPx wdt driver"
+        default n
+	help
+		wdt driver for iMAPx
+endif

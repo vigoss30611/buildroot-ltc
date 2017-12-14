@@ -1,0 +1,23 @@
+config SND_SOC_ES8328
+	bool
+
+config SND_SOC_ES8323
+	bool
+
+config SND_SOC_ALC5631
+	bool
+
+config SND_SOC_FR1023
+	bool
+
+config SND_SOC_TQLP9624
+	bool
+
+config SND_SOC_VIRTUAL
+	bool
+
+config SND_SOC_IP6205
+	bool
+
+config SND_SOC_IP2906
+	bool

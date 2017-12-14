@@ -1,0 +1,664 @@
+---- dontUpSampleImplicitSBR Matches (6 in 3 files) ----
+Main.c (frontend):    //config->dontUpSampleImplicitSBR = 1;
+Main.c (frontend):    //config->dontUpSampleImplicitSBR = 1;
+Neaacdec.h (include):    unsigned char dontUpSampleImplicitSBR;
+Decoder.c (libfaad):    if (*samplerate <= 24000 && (hDecoder->config.dontUpSampleImplicitSBR == 0))
+Decoder.c (libfaad):    } else if (*samplerate > 24000 && (hDecoder->config.dontUpSampleImplicitSBR == 0)) {
+Decoder.c (libfaad):    if (hDecoder->config.dontUpSampleImplicitSBR == 0)
+---- forceUpSampling Matches (18 in 5 files) ----
+Neaacdec.h (include):    char forceUpSampling;
+Decoder.c (libfaad):        hDecoder->forceUpSampling = 1;
+Decoder.c (libfaad):        hDecoder->forceUpSampling = mp4ASC.forceUpSampling;
+Decoder.c (libfaad):        hDecoder->forceUpSampling = 0;
+Decoder.c (libfaad):    if (((hDecoder->sbr_present_flag == 1)&&(!hDecoder->downSampledSBR)) || hDecoder->forceUpSampling == 1)
+Decoder.c (libfaad):        if (((hDecoder->sbr_present_flag == 1)&&(!hDecoder->downSampledSBR)) || (hDecoder->forceUpSampling == 1))
+Decoder.c (libfaad):    if ((hDecoder->sbr_present_flag == 1) || (hDecoder->forceUpSampling == 1))
+Mp4.c (libfaad):            mp4ASC->forceUpSampling = 1;
+Specrec.c (libfaad):        if ((hDecoder->sbr_present_flag == 1) || (hDecoder->forceUpSampling == 1))
+Specrec.c (libfaad):        if ((hDecoder->sbr_present_flag == 1) || (hDecoder->forceUpSampling == 1))
+Specrec.c (libfaad):    if (((hDecoder->sbr_present_flag == 1) || (hDecoder->forceUpSampling == 1))
+Specrec.c (libfaad):        /* following case can happen when forceUpSampling == 1 */
+Specrec.c (libfaad):    } else if (((hDecoder->sbr_present_flag == 1) || (hDecoder->forceUpSampling == 1))
+Specrec.c (libfaad):    if (((hDecoder->sbr_present_flag == 1) || (hDecoder->forceUpSampling == 1))
+Specrec.c (libfaad):        /* following case can happen when forceUpSampling == 1 */
+Specrec.c (libfaad):    } else if (((hDecoder->sbr_present_flag == 1) || (hDecoder->forceUpSampling == 1))
+Structs.h (libfaad):    int8_t forceUpSampling;
+---- bits.h Matches (15 in 15 files) ----
+Bits.c (libfaad):#include "bits.h"
+Bits.h (libfaad):** $Id: bits.h,v 1.45 2007/11/01 12:33:29 menno Exp $
+Drm_dec.c (libfaad):#include "bits.h"
+Drm_dec.h (libfaad):#include "bits.h"
+Huffman.c (libfaad):#include "bits.h"
+Mp4.c (libfaad):#include "bits.h"
+Ps_dec.h (libfaad):#include "bits.h"
+Ps_syntax.c (libfaad):#include "bits.h"
+Rvlc.c (libfaad):#include "bits.h"
+Sbr_dec.c (libfaad):#include "bits.h"
+Sbr_huff.c (libfaad):#include "bits.h"
+Sbr_syntax.c (libfaad):#include "bits.h"
+Sbr_syntax.h (libfaad):#include "bits.h"
+Syntax.c (libfaad):#include "bits.h"
+Syntax.h (libfaad):#include "bits.h"
+---- SBR_DEC Matches (49 in 18 files) ----
+Common.h (libfaad):// Define LC_ONLY_DECODER if you want a pure AAC LC decoder (independant of SBR_DEC and PS_DEC)
+Common.h (libfaad)://#define SBR_DEC
+Decoder.c (libfaad):#ifdef SBR_DEC
+Decoder.c (libfaad):#include "sbr_dec.h"
+Decoder.c (libfaad):#ifdef SBR_DEC
+Decoder.c (libfaad):#ifdef SBR_DEC
+Decoder.c (libfaad):#ifdef SBR_DEC
+Decoder.c (libfaad):#ifdef SBR_DEC
+Decoder.c (libfaad):#ifdef SBR_DEC
+Decoder.c (libfaad):#ifdef SBR_DEC
+Decoder.c (libfaad):#ifdef SBR_DEC
+Decoder.c (libfaad):#ifdef SBR_DEC
+Drm_dec.c (libfaad):#include "sbr_dec.h"
+Mp4.c (libfaad):#ifdef SBR_DEC
+Mp4.c (libfaad):#ifdef SBR_DEC
+Mp4.c (libfaad):#ifdef SBR_DEC
+Mp4.c (libfaad):#ifdef SBR_DEC
+Sbr_dct.c (libfaad):#ifdef SBR_DEC
+Sbr_dec.c (libfaad):** $Id: sbr_dec.c,v 1.44 2009/01/26 22:32:31 menno Exp $
+Sbr_dec.c (libfaad):#ifdef SBR_DEC
+Sbr_dec.h (libfaad):** $Id: sbr_dec.h,v 1.39 2007/11/01 12:33:34 menno Exp $
+Sbr_dec.h (libfaad):#ifndef __SBR_DEC_H__
+Sbr_dec.h (libfaad):#define __SBR_DEC_H__
+Sbr_e_nf.c (libfaad):#ifdef SBR_DEC
+Sbr_fbt.c (libfaad):#ifdef SBR_DEC
+Sbr_hfadj.c (libfaad):#ifdef SBR_DEC
+Sbr_hfgen.c (libfaad):#ifdef SBR_DEC
+Sbr_huff.c (libfaad):#ifdef SBR_DEC
+Sbr_qmf.c (libfaad):#ifdef SBR_DEC
+Sbr_syntax.c (libfaad):#ifdef SBR_DEC
+Sbr_syntax.c (libfaad):#endif /* SBR_DEC */
+Sbr_tf_grid.c (libfaad):#ifdef SBR_DEC
+Specrec.c (libfaad):#ifdef SBR_DEC
+Specrec.c (libfaad):#ifdef SBR_DEC
+Specrec.c (libfaad):#ifdef SBR_DEC
+Specrec.c (libfaad):#ifdef SBR_DEC
+Structs.h (libfaad):#ifdef SBR_DEC
+Structs.h (libfaad):#include "sbr_dec.h"
+Structs.h (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+---- SBR_DEC Matches (49 in 18 files) ----
+Common.h (libfaad):// Define LC_ONLY_DECODER if you want a pure AAC LC decoder (independant of SBR_DEC and PS_DEC)
+Common.h (libfaad):#define SBR_DEC
+Decoder.c (libfaad):#ifdef SBR_DEC
+Decoder.c (libfaad):#include "sbr_dec.h"
+Decoder.c (libfaad):#ifdef SBR_DEC
+Decoder.c (libfaad):#ifdef SBR_DEC
+Decoder.c (libfaad):#ifdef SBR_DEC
+Decoder.c (libfaad):#ifdef SBR_DEC
+Decoder.c (libfaad):#ifdef SBR_DEC
+Decoder.c (libfaad):#ifdef SBR_DEC
+Decoder.c (libfaad):#ifdef SBR_DEC
+Decoder.c (libfaad):#ifdef SBR_DEC
+Drm_dec.c (libfaad):#include "sbr_dec.h"
+Mp4.c (libfaad):#ifdef SBR_DEC
+Mp4.c (libfaad):#ifdef SBR_DEC
+Mp4.c (libfaad):#ifdef SBR_DEC
+Mp4.c (libfaad):#ifdef SBR_DEC
+Sbr_dct.c (libfaad):#ifdef SBR_DEC
+Sbr_dec.c (libfaad):** $Id: sbr_dec.c,v 1.44 2009/01/26 22:32:31 menno Exp $
+Sbr_dec.c (libfaad):#ifdef SBR_DEC
+Sbr_dec.h (libfaad):** $Id: sbr_dec.h,v 1.39 2007/11/01 12:33:34 menno Exp $
+Sbr_dec.h (libfaad):#ifndef __SBR_DEC_H__
+Sbr_dec.h (libfaad):#define __SBR_DEC_H__
+Sbr_e_nf.c (libfaad):#ifdef SBR_DEC
+Sbr_fbt.c (libfaad):#ifdef SBR_DEC
+Sbr_hfadj.c (libfaad):#ifdef SBR_DEC
+Sbr_hfgen.c (libfaad):#ifdef SBR_DEC
+Sbr_huff.c (libfaad):#ifdef SBR_DEC
+Sbr_qmf.c (libfaad):#ifdef SBR_DEC
+Sbr_syntax.c (libfaad):#ifdef SBR_DEC
+Sbr_syntax.c (libfaad):#endif /* SBR_DEC */
+Sbr_tf_grid.c (libfaad):#ifdef SBR_DEC
+Specrec.c (libfaad):#ifdef SBR_DEC
+Specrec.c (libfaad):#ifdef SBR_DEC
+Specrec.c (libfaad):#ifdef SBR_DEC
+Specrec.c (libfaad):#ifdef SBR_DEC
+Structs.h (libfaad):#ifdef SBR_DEC
+Structs.h (libfaad):#include "sbr_dec.h"
+Structs.h (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+---- SBR_LOW_POWER Matches (51 in 9 files) ----
+Common.h (libfaad)://#define SBR_LOW_POWER
+Common.h (libfaad):#ifdef SBR_LOW_POWER
+Common.h (libfaad):#ifndef SBR_LOW_POWER
+Sbr_dct.c (libfaad):#ifdef SBR_LOW_POWER
+Sbr_dec.c (libfaad):#ifdef SBR_LOW_POWER
+Sbr_dec.c (libfaad):#ifdef SBR_LOW_POWER
+Sbr_dec.c (libfaad):#if 0 //def SBR_LOW_POWER
+Sbr_dec.c (libfaad):#ifdef SBR_LOW_POWER
+Sbr_dec.c (libfaad):#ifndef SBR_LOW_POWER
+Sbr_dec.c (libfaad):#ifndef SBR_LOW_POWER
+Sbr_dec.c (libfaad):#ifndef SBR_LOW_POWER
+Sbr_dec.h (libfaad):#ifdef SBR_LOW_POWER
+Sbr_hfadj.c (libfaad):#ifdef SBR_LOW_POWER
+Sbr_hfadj.c (libfaad):#ifdef SBR_LOW_POWER
+Sbr_hfadj.c (libfaad):#ifdef SBR_LOW_POWER
+Sbr_hfadj.c (libfaad):#ifdef SBR_LOW_POWER
+Sbr_hfadj.c (libfaad):#ifndef SBR_LOW_POWER
+Sbr_hfadj.c (libfaad):#ifdef SBR_LOW_POWER
+Sbr_hfadj.c (libfaad):#ifdef SBR_LOW_POWER
+Sbr_hfadj.c (libfaad):#ifndef SBR_LOW_POWER
+Sbr_hfadj.c (libfaad):#ifdef SBR_LOW_POWER
+Sbr_hfadj.c (libfaad):#ifndef SBR_LOW_POWER
+Sbr_hfadj.c (libfaad):#ifndef SBR_LOW_POWER
+Sbr_hfadj.c (libfaad):#ifndef SBR_LOW_POWER
+Sbr_hfadj.c (libfaad):#ifdef SBR_LOW_POWER
+Sbr_hfadj.c (libfaad):#ifdef SBR_LOW_POWER
+Sbr_hfadj.c (libfaad):#ifdef SBR_LOW_POWER
+Sbr_hfadj.c (libfaad):#ifndef SBR_LOW_POWER
+Sbr_hfadj.c (libfaad):#ifndef SBR_LOW_POWER
+Sbr_hfadj.c (libfaad):#ifndef SBR_LOW_POWER
+Sbr_hfadj.c (libfaad):#ifndef SBR_LOW_POWER
+Sbr_hfadj.h (libfaad):#ifdef SBR_LOW_POWER
+Sbr_hfgen.c (libfaad):#ifdef SBR_LOW_POWER
+Sbr_hfgen.c (libfaad):#ifdef SBR_LOW_POWER
+Sbr_hfgen.c (libfaad):#ifdef SBR_LOW_POWER
+Sbr_hfgen.c (libfaad):#ifdef SBR_LOW_POWER
+Sbr_hfgen.c (libfaad):#ifdef SBR_LOW_POWER
+Sbr_hfgen.c (libfaad):#ifdef SBR_LOW_POWER
+Sbr_hfgen.c (libfaad):#ifndef SBR_LOW_POWER
+Sbr_hfgen.c (libfaad):#ifndef SBR_LOW_POWER
+Sbr_hfgen.c (libfaad):#ifndef SBR_LOW_POWER
+Sbr_hfgen.c (libfaad):#ifndef SBR_LOW_POWER
+Sbr_hfgen.c (libfaad):#ifdef SBR_LOW_POWER
+Sbr_hfgen.c (libfaad):#ifndef SBR_LOW_POWER
+Sbr_hfgen.c (libfaad):#ifdef SBR_LOW_POWER
+Sbr_hfgen.c (libfaad):#ifndef SBR_LOW_POWER
+Sbr_hfgen.h (libfaad):#ifdef SBR_LOW_POWER
+Sbr_qmf.c (libfaad):#ifndef SBR_LOW_POWER
+Sbr_qmf.c (libfaad):#ifdef SBR_LOW_POWER
+Sbr_qmf.c (libfaad):#ifdef SBR_LOW_POWER
+Sbr_qmf.c (libfaad):#ifndef SBR_LOW_POWER
+---- main Matches (156 in 40 files) ----
+Main.c (aacdecdrop): * function: Main control program for aacDECdrop
+Main.c (aacdecdrop):int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, int iCmdShow)
+Main.c (aacdecdrop):				CheckDlgButton(hwndDlg,IDC_MAIN,TRUE);
+Main.c (aacdecdrop):					if (IsDlgButtonChecked(hwndDlg, IDC_MAIN) == BST_CHECKED)
+Main.c (aacdecdrop):						set_object_type(0);             // Main
+Main.c (aacdecdrop):/******************************** end of main.c ********************************/
+Resource.h (aacdecdrop):#define IDC_MAIN                        1023
+Script.rc (aacdecdrop):// remains consistent on all systems.
+Script.rc (aacdecdrop):    CONTROL         "Main",IDC_MAIN,"Button",BS_AUTORADIOBUTTON | WS_GROUP,
+Mp4atom.c (common\mp4ff):    /* will skip the remainder of the atom */
+Mp4ff.h (common\mp4ff):/* mp4 main file structure */
+Mp4ffint.h (common\mp4ff):/* mp4 main file structure */
+Mp4tagupdate.c (common\mp4ff):	uint32_t remaining = size;
+Mp4tagupdate.c (common\mp4ff):		if (remaining < 8) break;
+Mp4tagupdate.c (common\mp4ff):		if (atom_size > remaining || atom_size < 8) break;
+Mp4tagupdate.c (common\mp4ff):		remaining -= atom_size;
+Aacinfo.c (common\faad):void main(int argc, char *argv[])
+Aacinfo.c (common\faad):        object = "MAIN";
+Filestream.c (common\faad):    /* Get any old remaining data */
+Getopt.c (common\faad):main (argc, argv)
+Id3v2tag.c (common\faad):                lvi.pszText = LPSTR_TEXTCALLBACK;   /* app. maintains text */
+Id3v2tag.c (common\faad):                lvi.pszText = LPSTR_TEXTCALLBACK;   /* app. maintains text */
+Id3v2tag.c (common\faad):                lvi.pszText = LPSTR_TEXTCALLBACK;   /* app. maintains text */
+Id3v2tag.c (common\faad):                lvi.pszText = LPSTR_TEXTCALLBACK;   /* app. maintains text */
+Id3v2tag.c (common\faad):                lvi.pszText = LPSTR_TEXTCALLBACK;   /* app. maintains text */
+Id3v2tag.c (common\faad):    lvi.pszText = LPSTR_TEXTCALLBACK;   /* app. maintains text */
+Id3v2tag.c (common\faad):    lvi.pszText = LPSTR_TEXTCALLBACK;   /* app. maintains text */
+Id3v2tag.c (common\faad):            lvi.pszText = LPSTR_TEXTCALLBACK;   /* app. maintains text */
+Main.c (frontend):** $Id: main.c,v 1.85 2008/09/22 17:55:09 menno Exp $
+Main.c (frontend):    faad_fprintf(stdout, "        1:  Main object type.\n");
+Main.c (frontend):        char *ot[6] = { "NULL", "MAIN AAC", "LC AAC", "SSR AAC", "LTP AAC", "HE AAC" };
+Main.c (frontend):int main(int argc, char *argv[])
+Main.c (frontend):                        (object_type != MAIN) &&
+Neaacdec.h (include):#define MAIN       1
+Neaacdec.h (include):#define MAIN_DEC_CAP         (1<<1) /* Can decode MAIN */
+Bits.c (libfaad):    int remainder = (32 - ld->bits_left) & 0x7;
+Bits.c (libfaad):    if (remainder)
+Bits.c (libfaad):        faad_flushbits(ld, 8 - remainder);
+Bits.c (libfaad):        return (uint8_t)(8 - remainder);
+Bits.c (libfaad):    int remainder = bits & 0x1F;
+Bits.c (libfaad):    ld->bits_left = 32 - remainder;
+Bits.c (libfaad):    int remainder = bits & 0x7;
+Bits.c (libfaad):    if (remainder)
+Bits.c (libfaad):        temp = faad_getbits(ld, remainder DEBUGVAR(print,var,dbg)) << (8-remainder);
+Common.c (libfaad):     * 1    Main/LC long window
+Common.c (libfaad):     * 2    Main/LC short window
+Common.c (libfaad):    case MAIN:
+Common.c (libfaad):#ifdef MAIN_DEC
+Common.h (libfaad):/* Allow decoding of MAIN profile AAC */
+Common.h (libfaad):#define MAIN_DEC
+Common.h (libfaad):  #undef MAIN_DEC
+Common.h (libfaad):/* FIXED POINT: No MAIN decoding */
+Common.h (libfaad):# ifdef MAIN_DEC
+Common.h (libfaad):#  undef MAIN_DEC
+Common.h (libfaad):# undef MAIN_DEC
+Common.h (libfaad):/* FIXED_POINT doesn't work with MAIN and SSR yet */
+Common.h (libfaad):  #undef MAIN_DEC
+Decoder.c (libfaad):#ifdef MAIN_DEC
+Decoder.c (libfaad):    cap += MAIN_DEC_CAP;
+Decoder.c (libfaad):    hDecoder->config.defObjectType = MAIN;
+Decoder.c (libfaad):#ifdef MAIN_DEC
+Decoder.c (libfaad):#ifdef MAIN_DEC
+Decoder.c (libfaad):        DRM_aac_scalable_main_element(hDecoder, hInfo, &ld, &hDecoder->pce, hDecoder->drc);
+Drm_dec.c (libfaad):/* main DRM PS decoding function */
+Error.c (libfaad):	"MAIN prediction not initialised"
+Hcr.c (libfaad): * (at known positions), the remaining data is interleaved inbetween, 
+Hcr.c (libfaad):                                            /* remaining stuff after last segment, we unfortunately couldn't read
+Huffman.c (libfaad):Will keep track of the bits decoded and return the number of bits remaining.
+Ic_predict.c (libfaad):#ifdef MAIN_DEC
+Ic_predict.h (libfaad):#ifdef MAIN_DEC
+Is.c (libfaad):#ifdef MAIN_DEC
+Lt_predict.c (libfaad):     * fully reconstructed time domain samples, i.e., output of the decoder.
+Mdct.c (libfaad): *  Implementation of Filter Banks Based on 'Time Domain Aliasing
+Mp4.c (libfaad):#ifdef MAIN_DEC
+Mp4.c (libfaad):    1, /*  1 AAC Main */
+Mp4.c (libfaad):    0, /*  1 AAC Main */
+Mp4.c (libfaad):    0, /* 13 Main synthetic */
+Pns.c (libfaad):#ifdef MAIN_DEC
+Pns.c (libfaad):#ifdef MAIN_DEC
+Ps_dec.c (libfaad):        /* use one channel per group in the subqmf domain */
+Ps_dec.c (libfaad):/* main Parametric Stereo decoding function */
+Specrec.c (libfaad):#ifdef MAIN_DEC
+Specrec.c (libfaad):    /* MAIN object type prediction */
+Specrec.c (libfaad):    if (hDecoder->object_type == MAIN)
+Specrec.c (libfaad):#ifdef MAIN_DEC
+Specrec.c (libfaad):    /* MAIN object type prediction */
+Specrec.c (libfaad):    if (hDecoder->object_type == MAIN)
+Specrec.c (libfaad):#ifdef MAIN_DEC
+Specrec.c (libfaad):    /* MAIN object type prediction */
+Specrec.c (libfaad):    if (hDecoder->object_type == MAIN)
+Specrec.c (libfaad):#ifdef MAIN_DEC
+Specrec.c (libfaad):    /* MAIN object type prediction */
+Specrec.c (libfaad):    if (hDecoder->object_type == MAIN)
+Structs.h (libfaad):#ifdef MAIN_DEC
+Structs.h (libfaad):#ifdef MAIN_DEC
+Structs.h (libfaad):#ifdef MAIN_DEC
+Syntax.c (libfaad):static int8_t DRM_aac_scalable_main_header(NeAACDecStruct *hDecoder, ic_stream *ics1, ic_stream *ics2,
+Syntax.c (libfaad):            if (hDecoder->object_type == MAIN) /* MPEG2 style AAC predictor */
+Syntax.c (libfaad):#ifdef MAIN_DEC
+Syntax.c (libfaad):#ifdef MAIN_DEC
+Syntax.c (libfaad):#ifdef MAIN_DEC
+Syntax.c (libfaad):#ifdef MAIN_DEC
+Syntax.c (libfaad):        DEBUGVAR(1,907,"coupling_channel_element(): cc_domain"));
+Syntax.c (libfaad):void DRM_aac_scalable_main_element(NeAACDecStruct *hDecoder, NeAACDecFrameInfo *hInfo,
+Syntax.c (libfaad):    hInfo->error = DRM_aac_scalable_main_header(hDecoder, ics1, ics2, ld, this_layer_stereo);
+Syntax.c (libfaad):static int8_t DRM_aac_scalable_main_header(NeAACDecStruct *hDecoder, ic_stream *ics1, ic_stream *ics2,
+Syntax.c (libfaad):        DEBUGVAR(1,300,"aac_scalable_main_header(): ics_reserved_bits"));
+Syntax.c (libfaad):        DEBUGVAR(1,301,"aac_scalable_main_header(): window_sequence"));
+Syntax.c (libfaad):        DEBUGVAR(1,302,"aac_scalable_main_header(): window_shape"));
+Syntax.c (libfaad):            DEBUGVAR(1,303,"aac_scalable_main_header(): max_sfb (short)"));
+Syntax.c (libfaad):            DEBUGVAR(1,304,"aac_scalable_main_header(): scale_factor_grouping"));
+Syntax.c (libfaad):            DEBUGVAR(1,305,"aac_scalable_main_header(): max_sfb (long)"));
+Syntax.c (libfaad):            DEBUGVAR(1,306,"aac_scalable_main_header(): ms_mask_present"));
+Syntax.c (libfaad):                        DEBUGVAR(1,307,"aac_scalable_main_header(): faad_get1bit"));
+Syntax.h (libfaad):#define MAIN       1
+Syntax.h (libfaad):void DRM_aac_scalable_main_element(NeAACDecStruct *hDecoder, NeAACDecFrameInfo *hInfo,
+Faad2.cpp (plugins\mpeg4ip):    case MP4_MPEG2_AAC_MAIN_AUDIO_TYPE:
+Mp4_utils.c (plugins\xmms\src):    "MPEG-2 AAC Main Profile",
+Mp4_utils.c (plugins\xmms\src):    "MPEG-4 AAC Main profile",
+Mp4_utils.c (plugins\xmms\src):    "MPEG-4 Main Synthetic profile",
+QCDFAAD.c (plugins\qcd):BOOL WINAPI DllMain(HINSTANCE hInst, DWORD fdwReason, LPVOID pRes)
+QCDModDefs.h (plugins\qcd):									//					   param2 = 0 for elapsed, 1 for remaining														   
+QCDModDefs.h (plugins\qcd):	opShowMainMenu = 120,			// Display Main QCD Menu (buffer = POINT* - location to display menu)
+QCDModDefs.h (plugins\qcd):	opGetMainMenu = 121,			// Returns copy of HMENU handle to QCD Menu (must use DestroyMenu on handle when complete)
+QCDModDefs.h (plugins\qcd):// For intercepting main menu display
+QCDModDefs.h (plugins\qcd):#define WM_SHOWMAINMENU			(WM_USER + 20)
+Aac2mp4.cpp (plugins\qcdmp4):	/* adjust the frame size to what remains to be read */
+Aac2mp4.cpp (plugins\qcdmp4):			audioType = MP4_MPEG2_AAC_MAIN_AUDIO_TYPE;
+QCDModDefs.h (plugins\qcdmp4):									//					   param2 = 0 for elapsed, 1 for remaining														   
+QCDModDefs.h (plugins\qcdmp4):	opShowMainMenu = 120,			// Display Main QCD Menu (buffer = POINT* - location to display menu)
+QCDModDefs.h (plugins\qcdmp4):	opGetMainMenu = 121,			// Returns copy of HMENU handle to QCD Menu (must use DestroyMenu on handle when complete)
+QCDModDefs.h (plugins\qcdmp4):// For intercepting main menu display
+QCDModDefs.h (plugins\qcdmp4):#define WM_SHOWMAINMENU			(WM_USER + 20)
+QCDMp4.c (plugins\qcdmp4)://// post this to the main window at end of file (after playback has stopped)
+QCDMp4.c (plugins\qcdmp4):	HWND			hMainWindow;
+QCDMp4.c (plugins\qcdmp4):	module.hMainWindow = (HWND)module.QCDCallbacks.Service(opGetParentWnd, 0, 0, 0);
+QCDMp4.c (plugins\qcdmp4)://        return "Main";
+QCDMp4.c (plugins\qcdmp4):		module.hMainWindow, config_dialog_proc);
+QCDMp4.c (plugins\qcdmp4):	MessageBox(module.hMainWindow,
+QCDMp4.c (plugins\qcdmp4):				show_error(module.hMainWindow, "Memory allocation error.");
+QCDMp4.c (plugins\qcdmp4):            show_error(module.hMainWindow, "Memory allocation error.");
+QCDMp4.c (plugins\qcdmp4):                show_error(module.hMainWindow, "Unable to open decoder library.");
+QCDMp4.c (plugins\qcdmp4):                    show_error(module.hMainWindow, "Can't initialize decoder library.");
+QCDMp4.c (plugins\qcdmp4):                    show_error(module.hMainWindow, faacDecGetErrorMessage(frameInfo.error));
+QCDMp4.c (plugins\qcdmp4):            show_error(module.hMainWindow, "Can't initialize decoder library.");
+QCDMp4.c (plugins\qcdmp4):            show_error(module.hMainWindow, "Unable to open decoder library.");
+QCDMp4.c (plugins\qcdmp4):            show_error(module.hMainWindow, "Unable to open file.");
+QCDMp4.c (plugins\qcdmp4):            show_error(module.hMainWindow, "Unsupported Audio track type.");
+QCDMp4.c (plugins\qcdmp4):        show_error(module.hMainWindow, "Number of channels not supported for playback.");
+QCDMp4.c (plugins\qcdmp4):            show_error(module.hMainWindow, "Cannot create playback thread");
+QCDMp4.c (plugins\qcdmp4):            show_error(module.hMainWindow, "Cannot create playback thread");
+QCDMp4.c (plugins\qcdmp4):                    show_error(module.hMainWindow, faacDecGetErrorMessage(frameInfo.error));
+QCDMp4.c (plugins\qcdmp4):                                show_error(module.hMainWindow, faacDecGetErrorMessage(frameInfo.error));
+QCDMp4.c (plugins\qcdmp4):                        show_error(module.hMainWindow, faacDecGetErrorMessage(frameInfo.error));
+QCDMp4.c (plugins\qcdmp4):int WINAPI DllMain(HINSTANCE hInst, DWORD fdwReason, LPVOID pRes)
+---- Main( Matches (5 in 5 files) ----
+Main.c (aacdecdrop):int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, int iCmdShow)
+Aacinfo.c (common\faad):void main(int argc, char *argv[])
+Main.c (frontend):int main(int argc, char *argv[])
+QCDFAAD.c (plugins\qcd):BOOL WINAPI DllMain(HINSTANCE hInst, DWORD fdwReason, LPVOID pRes)
+QCDMp4.c (plugins\qcdmp4):int WINAPI DllMain(HINSTANCE hInst, DWORD fdwReason, LPVOID pRes)
+---- main( Matches (5 in 5 files) ----
+Main.c (aacdecdrop):int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, int iCmdShow)
+Aacinfo.c (common\faad):void main(int argc, char *argv[])
+Main.c (frontend):int main(int argc, char *argv[])
+QCDFAAD.c (plugins\qcd):BOOL WINAPI DllMain(HINSTANCE hInst, DWORD fdwReason, LPVOID pRes)
+QCDMp4.c (plugins\qcdmp4):int WINAPI DllMain(HINSTANCE hInst, DWORD fdwReason, LPVOID pRes)
+---- output.aac Matches (0 in 0 files) ----
+---- main( Matches (5 in 5 files) ----
+Main.c (aacdecdrop):int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, int iCmdShow)
+Aacinfo.c (common\faad):void main(int argc, char *argv[])
+Main.c (frontend):int main(int argc, char *argv[])
+QCDFAAD.c (plugins\qcd):BOOL WINAPI DllMain(HINSTANCE hInst, DWORD fdwReason, LPVOID pRes)
+QCDMp4.c (plugins\qcdmp4):int WINAPI DllMain(HINSTANCE hInst, DWORD fdwReason, LPVOID pRes)
+---- SBR_DEC Matches (49 in 18 files) ----
+Common.h (libfaad):// Define LC_ONLY_DECODER if you want a pure AAC LC decoder (independant of SBR_DEC and PS_DEC)
+Common.h (libfaad)://#define SBR_DEC
+Decoder.c (libfaad):#ifdef SBR_DEC
+Decoder.c (libfaad):#include "sbr_dec.h"
+Decoder.c (libfaad):#ifdef SBR_DEC
+Decoder.c (libfaad):#ifdef SBR_DEC
+Decoder.c (libfaad):#ifdef SBR_DEC
+Decoder.c (libfaad):#ifdef SBR_DEC
+Decoder.c (libfaad):#ifdef SBR_DEC
+Decoder.c (libfaad):#ifdef SBR_DEC
+Decoder.c (libfaad):#ifdef SBR_DEC
+Decoder.c (libfaad):#ifdef SBR_DEC
+Drm_dec.c (libfaad):#include "sbr_dec.h"
+Mp4.c (libfaad):#ifdef SBR_DEC
+Mp4.c (libfaad):#ifdef SBR_DEC
+Mp4.c (libfaad):#ifdef SBR_DEC
+Mp4.c (libfaad):#ifdef SBR_DEC
+Sbr_dct.c (libfaad):#ifdef SBR_DEC
+Sbr_dec.c (libfaad):** $Id: sbr_dec.c,v 1.44 2009/01/26 22:32:31 menno Exp $
+Sbr_dec.c (libfaad):#ifdef SBR_DEC
+Sbr_dec.h (libfaad):** $Id: sbr_dec.h,v 1.39 2007/11/01 12:33:34 menno Exp $
+Sbr_dec.h (libfaad):#ifndef __SBR_DEC_H__
+Sbr_dec.h (libfaad):#define __SBR_DEC_H__
+Sbr_e_nf.c (libfaad):#ifdef SBR_DEC
+Sbr_fbt.c (libfaad):#ifdef SBR_DEC
+Sbr_hfadj.c (libfaad):#ifdef SBR_DEC
+Sbr_hfgen.c (libfaad):#ifdef SBR_DEC
+Sbr_huff.c (libfaad):#ifdef SBR_DEC
+Sbr_qmf.c (libfaad):#ifdef SBR_DEC
+Sbr_syntax.c (libfaad):#ifdef SBR_DEC
+Sbr_syntax.c (libfaad):#endif /* SBR_DEC */
+Sbr_tf_grid.c (libfaad):#ifdef SBR_DEC
+Specrec.c (libfaad):#ifdef SBR_DEC
+Specrec.c (libfaad):#ifdef SBR_DEC
+Specrec.c (libfaad):#ifdef SBR_DEC
+Specrec.c (libfaad):#ifdef SBR_DEC
+Structs.h (libfaad):#ifdef SBR_DEC
+Structs.h (libfaad):#include "sbr_dec.h"
+Structs.h (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+Syntax.c (libfaad):#ifdef SBR_DEC
+---- dontUpSampleImplicitSBR Matches (6 in 3 files) ----
+Main.c (frontend):    //config->dontUpSampleImplicitSBR = 1;
+Main.c (frontend):    //config->dontUpSampleImplicitSBR = 1;
+Neaacdec.h (include):    unsigned char dontUpSampleImplicitSBR;
+Decoder.c (libfaad):    if (*samplerate <= 24000 && (hDecoder->config.dontUpSampleImplicitSBR == 0))
+Decoder.c (libfaad):    } else if (*samplerate > 24000 && (hDecoder->config.dontUpSampleImplicitSBR == 0)) {
+Decoder.c (libfaad):    if (hDecoder->config.dontUpSampleImplicitSBR == 0)
+---- Config: Matches (2 in 1 files) ----
+Main.c (frontend):        faad_fprintf(stderr, " | Config: %2d.%d Ch     |", frameInfo->channels-frameInfo->num_lfe_channels, frameInfo->num_lfe_channels);
+Main.c (frontend):        faad_fprintf(stderr, " | Config: %2d Ch       |", frameInfo->channels);
+---- fr_channels Matches (11 in 3 files) ----
+Decoder.c (libfaad):                uint8_t ch = hDecoder->fr_channels - hDecoder->has_lfe;
+Decoder.c (libfaad):                for (i = ch; i < hDecoder->fr_channels; i++)
+Decoder.c (libfaad):    channels = hDecoder->fr_channels;
+Structs.h (libfaad):    uint8_t fr_channels;
+Syntax.c (libfaad):    uint8_t channels = hDecoder->fr_channels;
+Syntax.c (libfaad):    hDecoder->fr_channels += hDecoder->element_output_channels[hDecoder->fr_ch_ele];
+Syntax.c (libfaad):    uint8_t channels = hDecoder->fr_channels;
+Syntax.c (libfaad):    hDecoder->fr_channels += 2;
+Syntax.c (libfaad):    hDecoder->fr_channels = 0;
+Syntax.c (libfaad):    uint8_t channels = hDecoder->fr_channels = 0;
+Syntax.c (libfaad):    hDecoder->fr_channels += hDecoder->element_output_channels[hDecoder->fr_ch_ele];
+---- element_output_channels Matches (19 in 3 files) ----
+Specrec.c (libfaad):    if (hDecoder->element_output_channels[hDecoder->fr_ch_ele] == 0)
+Specrec.c (libfaad):        /* element_output_channels not set yet */
+Specrec.c (libfaad):        hDecoder->element_output_channels[hDecoder->fr_ch_ele] = output_channels;
+Specrec.c (libfaad):    } else if (hDecoder->element_output_channels[hDecoder->fr_ch_ele] != output_channels) {
+Specrec.c (libfaad):        hDecoder->element_output_channels[hDecoder->fr_ch_ele] = output_channels;
+Specrec.c (libfaad):        (hDecoder->element_output_channels[hDecoder->fr_ch_ele] == 2))
+Structs.h (libfaad):    /* element_output_channels:
+Structs.h (libfaad):    uint8_t element_output_channels[MAX_SYNTAX_ELEMENTS];
+Syntax.c (libfaad):    /* for SCE hDecoder->element_output_channels[] is not set here because this
+Syntax.c (libfaad):    if (hDecoder->element_output_channels[hDecoder->fr_ch_ele] == 2)
+Syntax.c (libfaad):    hDecoder->fr_channels += hDecoder->element_output_channels[hDecoder->fr_ch_ele];
+Syntax.c (libfaad):    if (hDecoder->element_output_channels[hDecoder->fr_ch_ele] == 0)
+Syntax.c (libfaad):        /* element_output_channels not set yet */
+Syntax.c (libfaad):        hDecoder->element_output_channels[hDecoder->fr_ch_ele] = 2;
+Syntax.c (libfaad):    } else if (hDecoder->element_output_channels[hDecoder->fr_ch_ele] != 2) {
+Syntax.c (libfaad):        if (hDecoder->element_output_channels[hDecoder->fr_ch_ele] == 0)
+Syntax.c (libfaad):            hDecoder->element_output_channels[hDecoder->fr_ch_ele] = 2;
+Syntax.c (libfaad):    if (hDecoder->element_output_channels[hDecoder->fr_ch_ele] == 2)
+Syntax.c (libfaad):    hDecoder->fr_channels += hDecoder->element_output_channels[hDecoder->fr_ch_ele];
+---- fr_channels Matches (13 in 3 files) ----
+Decoder.c (libfaad):                uint8_t ch = hDecoder->fr_channels - hDecoder->has_lfe;
+Decoder.c (libfaad):                for (i = ch; i < hDecoder->fr_channels; i++)
+Decoder.c (libfaad):    printf("channels=%d = hDecoder->fr_channels=%d\n", channels , hDecoder->fr_channels);
+Decoder.c (libfaad):    channels = hDecoder->fr_channels;
+Structs.h (libfaad):    uint8_t fr_channels;
+Syntax.c (libfaad):    uint8_t channels = hDecoder->fr_channels;
+Syntax.c (libfaad):    hDecoder->fr_channels += hDecoder->element_output_channels[hDecoder->fr_ch_ele];
+Syntax.c (libfaad):    uint8_t channels = hDecoder->fr_channels;
+Syntax.c (libfaad):    hDecoder->fr_channels += 2;
+Syntax.c (libfaad):    hDecoder->fr_channels = 0;
+Syntax.c (libfaad):    uint8_t channels = hDecoder->fr_channels = 0;
+Syntax.c (libfaad):    hDecoder->fr_channels += hDecoder->element_output_channels[hDecoder->fr_ch_ele];
+---- PS_DEC Matches (54 in 14 files) ----
+Common.h (libfaad):// Define LC_ONLY_DECODER if you want a pure AAC LC decoder (independant of SBR_DEC and PS_DEC)
+Common.h (libfaad):#define PS_DEC
+Common.h (libfaad):#undef PS_DEC
+Decoder.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Decoder.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Decoder.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Decoder.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Decoder.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Decoder.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Drm_dec.c (libfaad):uint8_t drm_ps_decode(drm_ps_info *ps, uint8_t guess, qmf_t X_left[38][64], qmf_t X_right[38][64])
+Drm_dec.h (libfaad):uint8_t drm_ps_decode(drm_ps_info *ps, uint8_t guess, qmf_t X_left[38][64], qmf_t X_right[38][64]);
+Mp4.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Ps_dec.c (libfaad):** $Id: ps_dec.c,v 1.16 2009/01/26 22:32:31 menno Exp $
+Ps_dec.c (libfaad):#ifdef PS_DEC
+Ps_dec.c (libfaad):#include "ps_dec.h"
+Ps_dec.c (libfaad):static void ps_decorrelate(ps_info *ps, qmf_t X_left[38][64], qmf_t X_right[38][64],
+Ps_dec.c (libfaad):static void ps_decorrelate(ps_info *ps, qmf_t X_left[38][64], qmf_t X_right[38][64],
+Ps_dec.c (libfaad):uint8_t ps_decode(ps_info *ps, qmf_t X_left[38][64], qmf_t X_right[38][64])
+Ps_dec.c (libfaad):    ps_decorrelate(ps, X_left, X_right, X_hybrid_left, X_hybrid_right);
+Ps_dec.h (libfaad):** $Id: ps_dec.h,v 1.13 2009/01/26 22:32:31 menno Exp $
+Ps_dec.h (libfaad):#ifndef __PS_DEC_H__
+Ps_dec.h (libfaad):#define __PS_DEC_H__
+Ps_dec.h (libfaad):/* ps_dec.c */
+Ps_dec.h (libfaad):uint8_t ps_decode(ps_info *ps, qmf_t X_left[38][64], qmf_t X_right[38][64]);
+Ps_syntax.c (libfaad):#ifdef PS_DEC
+Ps_syntax.c (libfaad):#include "ps_dec.h"
+Sbr_dec.c (libfaad):#ifdef PS_DEC
+Sbr_dec.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Sbr_dec.c (libfaad):        drm_ps_decode(sbr->drm_ps, (sbr->ret > 0), X_left, X_right);
+Sbr_dec.c (libfaad):#ifdef PS_DEC
+Sbr_dec.c (libfaad):        ps_decode(sbr->ps, X_left, X_right);
+Sbr_dec.h (libfaad):#ifdef PS_DEC
+Sbr_dec.h (libfaad):#include "ps_dec.h"
+Sbr_dec.h (libfaad):#ifdef PS_DEC
+Sbr_dec.h (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Sbr_dec.h (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Sbr_syntax.c (libfaad):#ifdef PS_DEC
+Sbr_syntax.c (libfaad):#include "ps_dec.h"
+Sbr_syntax.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Sbr_syntax.c (libfaad):#ifdef PS_DEC
+Sbr_syntax.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Sbr_syntax.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Sbr_syntax.c (libfaad):#if (defined(PS_DEC) && defined(DRM_PS))
+Sbr_syntax.c (libfaad):#ifdef PS_DEC
+Sbr_syntax.c (libfaad):#ifdef PS_DEC
+Sbr_syntax.c (libfaad):#ifdef PS_DEC
+Specrec.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Specrec.c (libfaad):#elif defined(PS_DEC)
+Specrec.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Specrec.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Specrec.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Structs.h (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Syntax.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Syntax.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+---- PS_DEC Matches (54 in 14 files) ----
+Common.h (libfaad):// Define LC_ONLY_DECODER if you want a pure AAC LC decoder (independant of SBR_DEC and PS_DEC)
+Common.h (libfaad):#define PS_DEC
+Common.h (libfaad):#undef PS_DEC
+Decoder.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Decoder.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Decoder.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Decoder.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Decoder.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Decoder.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Drm_dec.c (libfaad):uint8_t drm_ps_decode(drm_ps_info *ps, uint8_t guess, qmf_t X_left[38][64], qmf_t X_right[38][64])
+Drm_dec.h (libfaad):uint8_t drm_ps_decode(drm_ps_info *ps, uint8_t guess, qmf_t X_left[38][64], qmf_t X_right[38][64]);
+Mp4.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Ps_dec.c (libfaad):** $Id: ps_dec.c,v 1.16 2009/01/26 22:32:31 menno Exp $
+Ps_dec.c (libfaad):#ifdef PS_DEC
+Ps_dec.c (libfaad):#include "ps_dec.h"
+Ps_dec.c (libfaad):static void ps_decorrelate(ps_info *ps, qmf_t X_left[38][64], qmf_t X_right[38][64],
+Ps_dec.c (libfaad):static void ps_decorrelate(ps_info *ps, qmf_t X_left[38][64], qmf_t X_right[38][64],
+Ps_dec.c (libfaad):uint8_t ps_decode(ps_info *ps, qmf_t X_left[38][64], qmf_t X_right[38][64])
+Ps_dec.c (libfaad):    ps_decorrelate(ps, X_left, X_right, X_hybrid_left, X_hybrid_right);
+Ps_dec.h (libfaad):** $Id: ps_dec.h,v 1.13 2009/01/26 22:32:31 menno Exp $
+Ps_dec.h (libfaad):#ifndef __PS_DEC_H__
+Ps_dec.h (libfaad):#define __PS_DEC_H__
+Ps_dec.h (libfaad):/* ps_dec.c */
+Ps_dec.h (libfaad):uint8_t ps_decode(ps_info *ps, qmf_t X_left[38][64], qmf_t X_right[38][64]);
+Ps_syntax.c (libfaad):#ifdef PS_DEC
+Ps_syntax.c (libfaad):#include "ps_dec.h"
+Sbr_dec.c (libfaad):#ifdef PS_DEC
+Sbr_dec.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Sbr_dec.c (libfaad):        drm_ps_decode(sbr->drm_ps, (sbr->ret > 0), X_left, X_right);
+Sbr_dec.c (libfaad):#ifdef PS_DEC
+Sbr_dec.c (libfaad):        ps_decode(sbr->ps, X_left, X_right);
+Sbr_dec.h (libfaad):#ifdef PS_DEC
+Sbr_dec.h (libfaad):#include "ps_dec.h"
+Sbr_dec.h (libfaad):#ifdef PS_DEC
+Sbr_dec.h (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Sbr_dec.h (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Sbr_syntax.c (libfaad):#ifdef PS_DEC
+Sbr_syntax.c (libfaad):#include "ps_dec.h"
+Sbr_syntax.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Sbr_syntax.c (libfaad):#ifdef PS_DEC
+Sbr_syntax.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Sbr_syntax.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Sbr_syntax.c (libfaad):#if (defined(PS_DEC) && defined(DRM_PS))
+Sbr_syntax.c (libfaad):#ifdef PS_DEC
+Sbr_syntax.c (libfaad):#ifdef PS_DEC
+Sbr_syntax.c (libfaad):#ifdef PS_DEC
+Specrec.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Specrec.c (libfaad):#elif defined(PS_DEC)
+Specrec.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Specrec.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Specrec.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Structs.h (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Syntax.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+Syntax.c (libfaad):#if (defined(PS_DEC) || defined(DRM_PS))
+---- 1output_channels Matches (1 in 1 files) ----
+Decoder.c (libfaad):	printf("1output_channels=%d,channels=%d\n",output_channels,channels);
+---- = hDecoder->fr_channels Matches (7 in 2 files) ----
+Decoder.c (libfaad):                uint8_t ch = hDecoder->fr_channels - hDecoder->has_lfe;
+Decoder.c (libfaad):    printf("channels=%d = hDecoder->fr_channels=%d\n", channels , hDecoder->fr_channels);
+Decoder.c (libfaad):    channels = hDecoder->fr_channels;
+Syntax.c (libfaad):    uint8_t channels = hDecoder->fr_channels;
+Syntax.c (libfaad):    uint8_t channels = hDecoder->fr_channels;
+Syntax.c (libfaad):    uint8_t channels = hDecoder->fr_channels = 0;
+Syntax.c (libfaad):    printf("hDecoder->element_output_channels[hDecoder->fr_ch_ele];=%d = hDecoder->fr_channels=%d\n", hDecoder->element_output_channels[hDecoder->fr_ch_ele] , hDecoder->fr_channels);
+---- 1frameInfo->channels Matches (1 in 1 files) ----
+Main.c (frontend):    printf("1frameInfo->channels=%d\n",frameInfo.channels);
+---- downMatrix Matches (38 in 6 files) ----
+Aacdec.c:                  int downMatrix, int infoOnly, int adts_out, int old_format,
+Aacdec.c:    config->downMatrix = downMatrix;
+Main.c (frontend):                  int downMatrix, int infoOnly, int adts_out, int old_format,
+Main.c (frontend):    config->downMatrix = downMatrix;
+Main.c (frontend):                  int outputFormat, int fileType, int downMatrix, int noGapless,
+Main.c (frontend):    config->downMatrix = downMatrix;
+Main.c (frontend):    int downMatrix = 0;
+Main.c (frontend):            downMatrix = 1;
+Main.c (frontend):            outputFormat, format, downMatrix, noGapless, infoOnly, adts_out, &length);
+Main.c (frontend):            def_srate, object_type, outputFormat, format, downMatrix, infoOnly, adts_out,
+Neaacdec.h (include):    unsigned char downMatrix;
+Decoder.c (libfaad):    hDecoder->config.downMatrix = 0;
+Decoder.c (libfaad):        if (config->downMatrix > 1)
+Decoder.c (libfaad):        hDecoder->config.downMatrix = config->downMatrix;
+Decoder.c (libfaad):    if (hDecoder->downMatrix)
+Decoder.c (libfaad):    if ((channels == 5 || channels == 6) && hDecoder->config.downMatrix)
+Decoder.c (libfaad):        hDecoder->downMatrix = 1;
+Output.c (libfaad):    switch (CONV(channels,hDecoder->downMatrix))
+Output.c (libfaad):                real_t inp = get_sample(input, ch, i, hDecoder->downMatrix, hDecoder->internal_channel);
+Output.c (libfaad):    switch (CONV(channels,hDecoder->downMatrix))
+Output.c (libfaad):                real_t inp = get_sample(input, ch, i, hDecoder->downMatrix, hDecoder->internal_channel);
+Output.c (libfaad):    switch (CONV(channels,hDecoder->downMatrix))
+Output.c (libfaad):                real_t inp = get_sample(input, ch, i, hDecoder->downMatrix, hDecoder->internal_channel);
+Output.c (libfaad):    switch (CONV(channels,hDecoder->downMatrix))
+Output.c (libfaad):                real_t inp = get_sample(input, ch, i, hDecoder->downMatrix, hDecoder->internal_channel);
+Output.c (libfaad):    switch (CONV(channels,hDecoder->downMatrix))
+Output.c (libfaad):                real_t inp = get_sample(input, ch, i, hDecoder->downMatrix, hDecoder->internal_channel);
+Output.c (libfaad):                int32_t tmp = get_sample(input, ch, i, hDecoder->downMatrix, hDecoder->upMatrix,
+Output.c (libfaad):                int32_t tmp = get_sample(input, ch, i, hDecoder->downMatrix, hDecoder->upMatrix,
+Output.c (libfaad):                int32_t tmp = get_sample(input, ch, i, hDecoder->downMatrix, hDecoder->upMatrix,
+Output.c (libfaad):                real_t tmp = get_sample(input, ch, i, hDecoder->downMatrix, hDecoder->upMatrix,
+Structs.h (libfaad):    uint8_t downMatrix;
+QCDMp4.c (plugins\qcdmp4):            config->downMatrix = m_downmix;
+QCDMp4.c (plugins\qcdmp4):        config->downMatrix = m_downmix;
+---- 3samplerate Matches (1 in 1 files) ----
+Decoder.c (libfaad):		   printf("3samplerate=%d,hDecoder->sf_index=%d,adts.channel_configuration=%d\n",*samplerate,hDecoder->sf_index,adts.channel_configuration);
+---- fr_channels Matches (11 in 3 files) ----
+Decoder.c (libfaad):                uint8_t ch = hDecoder->fr_channels - hDecoder->has_lfe;
+Decoder.c (libfaad):                for (i = ch; i < hDecoder->fr_channels; i++)
+Decoder.c (libfaad):    channels = hDecoder->fr_channels;
+Structs.h (libfaad):    uint8_t fr_channels;
+Syntax.c (libfaad):    uint8_t channels = hDecoder->fr_channels;
+Syntax.c (libfaad):    hDecoder->fr_channels += hDecoder->element_output_channels[hDecoder->fr_ch_ele];
+Syntax.c (libfaad):    uint8_t channels = hDecoder->fr_channels;
+Syntax.c (libfaad):    hDecoder->fr_channels += 2;
+Syntax.c (libfaad):    hDecoder->fr_channels = 0;
+Syntax.c (libfaad):    uint8_t channels = hDecoder->fr_channels = 0;
+Syntax.c (libfaad):    hDecoder->fr_channels += hDecoder->element_output_channels[hDecoder->fr_ch_ele];
+---- element_output_channels Matches (19 in 3 files) ----
+Specrec.c (libfaad):    if (hDecoder->element_output_channels[hDecoder->fr_ch_ele] == 0)
+Specrec.c (libfaad):        /* element_output_channels not set yet */
+Specrec.c (libfaad):        hDecoder->element_output_channels[hDecoder->fr_ch_ele] = output_channels;
+Specrec.c (libfaad):    } else if (hDecoder->element_output_channels[hDecoder->fr_ch_ele] != output_channels) {
+Specrec.c (libfaad):        hDecoder->element_output_channels[hDecoder->fr_ch_ele] = output_channels;
+Specrec.c (libfaad):        (hDecoder->element_output_channels[hDecoder->fr_ch_ele] == 2))
+Structs.h (libfaad):    /* element_output_channels:
+Structs.h (libfaad):    uint8_t element_output_channels[MAX_SYNTAX_ELEMENTS];
+Syntax.c (libfaad):    /* for SCE hDecoder->element_output_channels[] is not set here because this
+Syntax.c (libfaad):    if (hDecoder->element_output_channels[hDecoder->fr_ch_ele] == 2)
+Syntax.c (libfaad):    hDecoder->fr_channels += hDecoder->element_output_channels[hDecoder->fr_ch_ele];
+Syntax.c (libfaad):    if (hDecoder->element_output_channels[hDecoder->fr_ch_ele] == 0)
+Syntax.c (libfaad):        /* element_output_channels not set yet */
+Syntax.c (libfaad):        hDecoder->element_output_channels[hDecoder->fr_ch_ele] = 2;
+Syntax.c (libfaad):    } else if (hDecoder->element_output_channels[hDecoder->fr_ch_ele] != 2) {
+Syntax.c (libfaad):        if (hDecoder->element_output_channels[hDecoder->fr_ch_ele] == 0)
+Syntax.c (libfaad):            hDecoder->element_output_channels[hDecoder->fr_ch_ele] = 2;
+Syntax.c (libfaad):    if (hDecoder->element_output_channels[hDecoder->fr_ch_ele] == 2)
+Syntax.c (libfaad):    hDecoder->fr_channels += hDecoder->element_output_channels[hDecoder->fr_ch_ele];

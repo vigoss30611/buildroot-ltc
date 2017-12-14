@@ -1,0 +1,103 @@
+#!/bin/bash
+#!/bin/bash
+. tools/qsdk.env
+help(){
+    echo -e "usage :  must run in qsdk root dir"
+    echo -e "\t app make uboot0 spi"
+    echo -e "\t app make uboot0 emmc"
+    echo -e "\t app make uboot1"
+    echo -e "\t app make install"
+    echo -e "\t app make clean"
+}
+uboot0_make(){
+    echo -e "\t make uboot0 ->"$1
+    case $1 in 
+        spi )
+            CONFIG_NOSOFTFLOAT=1 make -j5 -C ${WORKSPACE}/uboot/uboot0 CROSS_COMPILE="${CROSS_COMPILE}" ARCH=arm "MODE=SIMPLE ERASE_SPIFLASH=y" "BOARD_PLAT_ASIC=y" 
+            ;;
+        emmc )
+            CONFIG_NOSOFTFLOAT=1 make -j5 -C ${WORKSPACE}/uboot/uboot0 CROSS_COMPILE="${CROSS_COMPILE}" ARCH=arm "MODE=SIMPLE ERASE_SPIFLASH=n" "BOARD_PLAT_ASIC=y" 
+            ;;
+        * )
+            echo -e "not support current start device -> "$1
+            exit 1
+
+            ;;
+   esac
+
+}
+uboot1_make(){
+    cpu=`cat ${WORKSPACE}/uboot/board_cpu`
+    case $cpu in 
+        apollo )
+            VERSION=2.0.0.1
+            CONFIG_NOSOFTFLOAT=1 make -j5 -C ${WORKSPACE}/uboot/uboot1 CROSS_COMPILE="${CROSS_COMPILE}" ARCH=arm 
+			if [[ $? -ne 0 ]];then
+				exit -1
+			fi
+            ;;
+        apollo2 )
+            VERSION=2.0.0.1
+            CONFIG_NOSOFTFLOAT=1 make -j5 ${VERSION} -C ${WORKSPACE}/uboot/uboot1 CROSS_COMPILE="${CROSS_COMPILE}" ARCH=arm 
+            CONFIG_NOSOFTFLOAT=1 make -j5  -C ${WORKSPACE}/uboot/uboot1 CROSS_COMPILE="${CROSS_COMPILE}" ARCH=arm 
+			if [[ $? -ne 0 ]];then
+				exit -1
+			fi
+            ;;
+        apollo3 )
+            VERSION=2.0.0.1
+            CONFIG_NOSOFTFLOAT=1 make -j5 -C ${WORKSPACE}/uboot/uboot1 CROSS_COMPILE="${CROSS_COMPILE}" ARCH=arm 
+			if [[ $? -ne 0 ]];then
+				exit -1
+			fi
+            ;;
+        * )
+            echo -e "not support current cpu type -> "$cpu
+            exit 1
+
+            ;;
+   esac
+}
+uboot_make(){
+    echo -e "-->make uboot "$*
+    case $1 in 
+        uboot0 )
+            uboot0_make $2
+            ;;
+        uboot1 )
+            uboot1_make
+            ;;
+
+    esac
+}
+uboot_install(){
+    echo -e "-->install uboot0"
+    cp -rfv  ${WORKSPACE}/uboot/uboot0/out/uboot_lite.isi  ${WORKSPACE}/output/images/uboot0.isi
+    echo -e "-->install uboot1"
+    cp -rfv  ${WORKSPACE}/uboot/uboot1/uboot1.isi  ${WORKSPACE}/output/images/uboot1.isi
+}
+uboot_clean(){
+    echo -e "-->clean uboot"
+    CONFIG_NOSOFTFLOAT=1 make clean -C ${WORKSPACE}/uboot/uboot0 CROSS_COMPILE="${CROSS_COMPILE}" ARCH=arm "MODE=SIMPLE ERASE_SPIFLASH=n" "BOARD_PLAT_ASIC=y" 
+    CONFIG_NOSOFTFLOAT=1 make clean -C ${WORKSPACE}/uboot/uboot1 CROSS_COMPILE="${CROSS_COMPILE}" ARCH=arm "MODE=SIMPLE ERASE_SPIFLASH=n" "BOARD_PLAT_ASIC=y" 
+}
+if [[ ! -d tools ]];then
+    help
+    exit 1
+fi
+target_rootfs=`pwd`/$1
+
+case $1 in
+    make )
+        uboot_make $2 $3
+        ;;
+    install )
+        uboot_install 
+        ;;
+    clean )
+        uboot_clean
+        ;;
+    * )
+        help
+        ;;
+esac

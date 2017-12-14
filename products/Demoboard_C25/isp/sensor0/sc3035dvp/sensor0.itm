@@ -1,0 +1,20 @@
+sensor0.interface dvp
+sensor0.name sc3035dvp
+sensor0.mclk 27000000
+sensor0.imager 1
+sensor0.i2c chn.3.addr.96
+sensor0.mclk.src imap-camo
+sensor0.wraper.use 0
+sensor0.wraper.width 1920
+sensor0.wraper.height 1080
+sensor0.wraper.hdelay 114
+sensor0.wraper.vdelay 12
+
+sensor0.bootup.seq.0 mclk.gpio.40.2
+sensor0.bootup.seq.1 pwd.gpio.-23.0
+sensor0.bootup.seq.2 reset.gpio.44.1
+sensor0.bootup.seq.3 extra.gpio.120.0
+sensor0.bootup.seq.4 pmu.ldo3.1800000.0
+sensor0.bootup.seq.5 reset.gpio.-44.2
+sensor0.bootup.seq.6 reset.gpio.44.2
+

@@ -1,0 +1,34 @@
+#!/bin/sh
+#
+# Start mdev....
+#
+
+
+start_mdev()
+{
+    sleep 10
+	echo "Starting mdev new..."
+	echo /sbin/mdev >/proc/sys/kernel/hotplug
+
+	/sbin/mdev -s
+
+    echo 50 >/proc/sys/vm/dirty_writeback_centisecs
+    echo 50 >/proc/sys/vm/dirty_expire_centisecs 
+
+}
+
+case "$1" in
+  start)
+	#echo 1050000 > /sys/class/regulator/regulator.1/microvolts
+    start_mdev &
+    ;;
+  stop)
+	;;
+  restart|reload)
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?

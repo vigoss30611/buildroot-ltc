@@ -1,0 +1,16 @@
+#! /bin/sh
+
+case "$1" in
+	start|"")
+		audiobox &
+        abctrl play -d /usr/share/launcher/res/booting.wav -w 32 -s 48000 -n 2 &
+		;;
+	stop)
+		killall audiobox
+		;;
+	*)
+		echo "Usage: audiobox {start|stop}" >&2
+		exit 1
+		;;
+esac
+

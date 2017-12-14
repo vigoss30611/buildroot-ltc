@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+<!--     <LinearLayout
+          android:id="@+id/connect_top" 
+          android:layout_width="match_parent"
+          android:layout_height="50dip"
+          android:background="@color/blue_dark"
+          android:gravity="left|center_vertical">
+          <TextView 
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:background="@drawable/app_top_black"
+              android:layout_marginLeft="5dip"/>
+          <TextView 
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/device_connet_str"
+              android:textSize="24sp"
+              android:textColor="@color/gray"
+              android:layout_marginLeft="5dip"
+              android:clickable="true"/>
+    </LinearLayout> -->
+    <RelativeLayout
+        android:id="@+id/ui_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible" >
+
+        <TextView
+            android:id="@+id/help_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_default"
+            android:text="@string/help_text"
+            android:textColor="@color/setting_text"
+            android:textSize="20sp" 
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/mydivider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/help_view"
+            android:paddingLeft="@dimen/padding_default"
+            android:paddingRight="@dimen/padding_default"
+            android:src="@android:color/black"
+            android:visibility="gone" /> 
+         <ListView
+            android:id="@+id/list1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:divider="@color/gray"
+            android:dividerHeight="1.0dip"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_default" />
+         
+        <Button
+            android:id="@+id/button_refreshlist"
+            android:layout_width="match_parent"
+            android:layout_height="50dip"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="12dip"
+            android:layout_marginRight="12dip"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:paddingBottom="10dp"
+            android:gravity="center"
+            android:text="@string/refresh" 
+            android:textColor="@color/gray"
+            android:textSize="20sp"
+            android:background="@drawable/search_button_selector"
+            android:visibility="gone"/>
+
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/ui_wifi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ui_list"
+        android:visibility="visible" >
+
+        <TextView
+            android:id="@+id/help_wifi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/help_text_wifi"
+            android:textColor="@color/setting_text"
+            android:padding="@dimen/padding_default"
+            android:textSize="20sp" />
+        
+        <TextView
+            android:id="@+id/wifi_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/setting_text"
+            android:text="SSID"
+            android:textSize="30sp"
+            android:padding="@dimen/padding_default"
+            android:layout_below="@id/help_wifi"
+            android:gravity="center" />
+
+        <EditText
+            android:id="@+id/wifi_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/wifi_name"
+            android:padding="@dimen/padding_default"
+            android:textColor="@color/setting_text"
+            android:layout_marginTop="30dp" />
+
+        <Button
+            android:id="@+id/button_wificonfirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/send_password"
+            android:layout_below="@id/wifi_password"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="@dimen/padding_default"
+            android:layout_marginRight="@dimen/padding_default" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/ui_pin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ui_wifi"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@+id/help_pin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/help_text_pin"
+            android:padding="@dimen/padding_default"
+            android:textColor="@color/setting_text"
+            android:textSize="20sp" />
+        
+        <EditText
+            android:id="@+id/pin_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/help_pin"
+            android:textColor="@color/setting_text"
+            android:layout_marginTop="30dp" />
+
+        <Button
+            android:id="@+id/button_pinconfirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/send_pin"
+            android:layout_below="@id/pin_password"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="@dimen/padding_default"
+            android:layout_marginRight="@dimen/padding_default" />
+    </RelativeLayout>
+
+</RelativeLayout>

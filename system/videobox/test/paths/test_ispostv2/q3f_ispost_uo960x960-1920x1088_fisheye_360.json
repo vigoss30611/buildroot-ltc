@@ -1,0 +1,45 @@
+{
+       "dgframe":{
+                "ipu":"dg-frame",
+                "args":{
+			"frames":2,
+                        "data":"/root/.ispost/city_960x960.yuv"
+                },
+                "port":{
+                        "out":{
+                                "w":960,
+                                "h":960,
+                                "pixel":"nv12",
+                                "bind":{ "ispost":"in" }
+                        }
+                }
+        },
+
+	"ispost": {
+		"ipu": "ispostv2",
+		"args": {
+			"lc_grid_file_name1": "/root/.ispost/lc_v1_0-0-0-0_hermite32_960x960-1920x1088_fisheye_360.bin",
+			"lc_geometry_file_name1": "/root/.ispost/lc_v1_0-0-0-0_hermite32_960x960-1920x1088_geo_fisheye_360.bin",
+			"dn_enable": 1,
+			"rotate": 0
+		},
+		"port": {
+			"dn": {
+				"w": 1920,
+				"h": 1088,
+				"pixel": "nv12"
+			},
+			"uo": {
+				"w": 1920,
+				"h": 1088,
+				"pixel": "nv12",
+				"bind": {
+					"display": "osd0"
+				}
+			}
+		}
+	},
+
+	"display": { "ipu": "ids"}
+}
+

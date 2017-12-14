@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true" android:drawable="@drawable/detail_mode_icon_photo_accent" />
+    <item android:state_pressed="false" android:drawable="@drawable/detail_mode_icon_photo" />
+</selector>

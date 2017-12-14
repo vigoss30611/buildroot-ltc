@@ -1,0 +1,17 @@
+#! /bin/sh
+
+case "$1" in
+	start|"")
+		source /etc/profile.d/envsetup.sh
+        #echo -e "r\nc\nwhere\n" | gdb /usr/bin/launcher  &
+		launcher &
+		;;
+	stop)
+		killall -9 launcher
+		;;
+	*)
+		echo "Usage: libramain {start|stop}" >&2
+		exit 1
+		;;
+esac
+

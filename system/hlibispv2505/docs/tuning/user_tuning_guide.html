@@ -1,0 +1,583 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>User Tuning Guide &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="next" title="Capture Interface" href="../ci/ci_library.html" />
+    <link rel="prev" title="VisionLive and ISPC_tcp v1 (obsolete)" href="../test_tools/vision_live.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../ci/ci_library.html" title="Capture Interface"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="../test_tools/vision_live.html" title="VisionLive and ISPC_tcp v1 (obsolete)"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li><li>User Tuning Guide</li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="user-tuning-guide">
+<span id="isp-user-tuning-guide"></span><h1>User Tuning Guide<a class="headerlink" href="#user-tuning-guide" title="Permalink to this headline">¶</a></h1>
+<p>This section shows how to use the <a class="reference internal" href="../test_tools/vision_live_2.html#isp-visionlive-2-0"><span>VisionLive and ISPC_tcp</span></a> and
+<a class="reference internal" href="../test_tools/vision_tuning.html#isp-visiontuning"><span>VisionTuning</span></a> tools to tune the V2500 ISP.</p>
+<p>It is assumed that the reader is familiar with the VisionLive and VisionTuning
+tools.</p>
+<div class="section" id="tuning-work-flow">
+<span id="isp-utg-workflow"></span><h2>Tuning work-flow<a class="headerlink" href="#tuning-work-flow" title="Permalink to this headline">¶</a></h2>
+<p>The tuning work flow would be the following:</p>
+<ul class="simple">
+<li>Black level calibration</li>
+<li>AWB/CCM calibration</li>
+<li>LSH calibration</li>
+<li>LCA calibration</li>
+<li>Primary Denoiser tuning</li>
+<li>DPF tuning</li>
+<li>Secondary denoiser/Sharpening tuning</li>
+<li>Tonemapping tuning</li>
+<li>MIE (optional)</li>
+</ul>
+<p>It would be expected that the customer would perform a wide suite of
+objective/subjective tests that may require tweaks to the original
+settings, this is expected in the normal tuning flow for an ISP.</p>
+</div>
+<div class="section" id="sensor-blc-tuning">
+<span id="isp-utg-blc"></span><h2>Sensor BLC tuning<a class="headerlink" href="#sensor-blc-tuning" title="Permalink to this headline">¶</a></h2>
+<p>This method will be done by capturing a black frame from the image sensor.</p>
+<ol class="arabic">
+<li><p class="first">Ensure no light is getting into the sensor (cover with cloth or lens cap).</p>
+</li>
+<li><p class="first">Turn off AAA, LSH and ensure white balance gains are 1 then manually set the
+exposure time to 30ms/1x gain.</p>
+</li>
+<li><p class="first">Setup to take DE image CI_INOUT_FILTER_LINESTORE and set the format to
+match the sensor bit depth in the <a class="reference internal" href="../test_tools/vision_live_2.html#isp-vl2-moduleout"><span>Output tab</span></a></p>
+</li>
+<li><p class="first">In <a class="reference internal" href="../test_tools/vision_live_2.html#isp-vl2-moduleblc"><span>BLC tab</span></a> set <em>sensor black</em> and <em>system black</em>
+to 0.</p>
+</li>
+<li><p class="first">Apply all these settings and start to take images using Liveview, it
+should be a black image. View the histogram of the image, it should be a
+histogram which is a positive value. A histogram for each colour channel
+should be seen.</p>
+</li>
+<li><p class="first">Start by adjusting <em>sensor black</em>, the aim is to get all four &#8220;black
+histograms&#8221; centred on 0. When this is achieved <em>sensor black</em> has been
+set</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<blockquote>
+<div><p>It might be that different colour channels have different values
+for <em>sensor black</em>.</p>
+</div></blockquote>
+<div class="last admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Once tuned the <em>system black</em> should be set back to 64.</p>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="white-balance-correction-tuning">
+<span id="isp-utg-wbc"></span><h2>White Balance Correction Tuning<a class="headerlink" href="#white-balance-correction-tuning" title="Permalink to this headline">¶</a></h2>
+<p>The white balance and CCM correction is calibrated using the VisionTuning
+<a class="reference internal" href="../test_tools/vision_tuning.html#isp-visiontuning-ccm"><span>Colour correction matrix (CCM)</span></a> tool. This is the recommended process for taking
+CCM calibration image. The camera should be setup so that it is illuminated
+with the Macbeth chart, the white patch of the chart should be ~70-80% LSB.</p>
+<ol class="arabic simple">
+<li>Select Bayer extracted output mode at the CI_INOUT_BLACK_LEVEL point, the
+bitdepth should match the image sensor.</li>
+<li>Turn off AAA and LSH.</li>
+<li>Manually change gain to 1x.</li>
+<li>Select a colour temperature to calibrate for.</li>
+<li>Manually change exposure time until the middle of the image is ~70-80% LSB.</li>
+<li>Capture and save image.</li>
+<li>Change the colour temperature and repeat from the exposure step.</li>
+</ol>
+<p>The saved images can then be used with the VisionTuning tool.</p>
+</div>
+<div class="section" id="sensor-lens-shading-tuning">
+<span id="isp-utg-lsh"></span><h2>Sensor Lens Shading Tuning<a class="headerlink" href="#sensor-lens-shading-tuning" title="Permalink to this headline">¶</a></h2>
+<p>Tuning for the LSH is done using VisionTuning
+<a class="reference internal" href="../test_tools/vision_tuning.html#isp-visiontuning-lsh"><span>Lens shading (LSH)</span></a>. This is the recommended process for taking a LSH
+calibration image. The camera should be setup so that it is illuminated with a
+uniform light source (&gt;95% uniform).</p>
+<ol class="arabic simple">
+<li>Select Bayer extracted output mode at the CI_INOUT_BLACK_LEVEL point, the
+bitdepth should match the image sensor.</li>
+<li>Turn off AAA</li>
+<li>Manually change gain to 1x.</li>
+<li>Manually change exposure time until the middle of the image is ~70-80% LSB.</li>
+<li>Capture and save image.</li>
+</ol>
+<p>The saved image can then be used with VisionTuning to generate the deshading
+matrix.</p>
+</div>
+<div class="section" id="lateral-chromatic-aberration-tuning">
+<span id="isp-utg-lca"></span><h2>Lateral Chromatic Aberration Tuning<a class="headerlink" href="#lateral-chromatic-aberration-tuning" title="Permalink to this headline">¶</a></h2>
+<p>The LCA calibration is done using the VisionTuning
+<a class="reference internal" href="../test_tools/vision_tuning.html#isp-visiontuning-lca"><span>Lateral chromatic aberration (LCA)</span></a> tool. This is the recommended process for taking
+LCA calibration images. The camera should be setup so that it is illuminated
+by the TE-251 chart from image engineering, the white of the chart should
+be ~70-80% LSB.</p>
+<ol class="arabic simple">
+<li>Select Bayer extracted output mode at the CI_INOUT_BLACK_LEVEL point, the
+bitdepth should match the image sensor.</li>
+<li>Turn off AAA</li>
+<li>Manually change gain to 1x</li>
+<li>Manually change exposure time until the middle of the image is ~70-80% LSB.</li>
+<li>Capture and save image.</li>
+</ol>
+<p>The saved image can then be used in the VisionTuning tool.</p>
+</div>
+<div class="section" id="primary-denoiser-tuning">
+<span id="isp-utg-dns"></span><h2>Primary Denoiser Tuning<a class="headerlink" href="#primary-denoiser-tuning" title="Permalink to this headline">¶</a></h2>
+<p>The tuning for the denoiser can be done using the VisionLive
+<a class="reference internal" href="../test_tools/vision_live_2.html#isp-vl2-modulenoise"><span>Noise tab</span></a>.</p>
+<p>The <em>primary denoiser strength</em> is considered a preference parameter for the
+user to tune to their personal preference. This could be done using
+objective and subjective methods:</p>
+<ul class="simple">
+<li>Objective: Using a chart that can be used for SNR and detail (sharpness)
+and sweeping the value until the best compromise for both SNR and detail.</li>
+<li>Subjective: This would be taking a number of images in a range of real
+scenes with different strength values until the preferred value was obtained.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The secondary denoiser and sharpening modules are setup later in the
+process and information is available in the
+<a class="reference internal" href="#isp-utg-sha-dn2"><span>Sharpening and Secondary denoiser Tuning</span></a> section.</p>
+</div>
+</div>
+<div class="section" id="defective-pixels-tuning">
+<span id="isp-utg-dpf"></span><h2>Defective Pixels Tuning<a class="headerlink" href="#defective-pixels-tuning" title="Permalink to this headline">¶</a></h2>
+<p>The DPF tuning can be done using the VisionLive
+<a class="reference internal" href="../test_tools/vision_live_2.html#isp-vl2-moduledpf"><span>DPF tab</span></a>. The
+tuning is a multi-stage process. This section will focus on the live
+detection tuning, the process is similar for map creation.</p>
+<p>The calibration should be in the following order:</p>
+<ol class="arabic simple">
+<li>Dark calibration</li>
+<li>Mid-light calibration</li>
+<li>Lab validation</li>
+</ol>
+<div class="section" id="dark-calibration-stage-1">
+<span id="isp-utg-dpf-dark-calibration"></span><h3>Dark calibration (stage 1)<a class="headerlink" href="#dark-calibration-stage-1" title="Permalink to this headline">¶</a></h3>
+<p>This calibration stage is looking specifically for bright or hot pixels.</p>
+<ol class="arabic simple">
+<li>The camera should be covered using a lens cap or cloth (it is critical
+that no light reaches the sensor).</li>
+<li>Ensure that all AAA and Auto TNM are turned off</li>
+<li>Manually expose the image to the limit of the sensor mode (e.g. 30 or 60
+ms) and set the gain to max value.</li>
+<li>Turn on <em>HW detection</em>.</li>
+<li>Set <em>threshold</em> and <em>weight</em> both to 0 (this should now be correcting
+lots of defects, it should actually be over-correcting).</li>
+<li>Increase the threshold in steps of 1 to about 10 and determine the
+best value (checking image/number of pixels corrected).</li>
+<li>Increase the weight in steps of 0.5 to ~2 and determine the best value
+(checking image/number of pixels corrected).</li>
+</ol>
+</div>
+<div class="section" id="mid-light-calibration-stage-2">
+<span id="isp-utg-dpf-midlight-calibration"></span><h3>Mid-light calibration (stage 2)<a class="headerlink" href="#mid-light-calibration-stage-2" title="Permalink to this headline">¶</a></h3>
+<p>This calibration stage will check to see if any dark or cold pixels exist
+and determine if the tuning in stage 1 can resolve them.</p>
+<ol class="arabic simple">
+<li>The camera should be in a scene that is a flat field (similar setup
+used for lens shading).</li>
+<li>Ensure that all AAA and Auto TNM are turned off</li>
+<li>Manually expose the image to get ~70% limit of the output and keep the
+gain at 1x.</li>
+<li>Use settings from stage 1, if no dark cold/pixels seen then this stage is
+complete.</li>
+<li>If dark/pixels are seen then change weight and threshold to removed them.</li>
+</ol>
+</div>
+<div class="section" id="lab-validation-stage-3">
+<span id="isp-utg-dpf-lab-validation"></span><h3>Lab validation (stage 3)<a class="headerlink" href="#lab-validation-stage-3" title="Permalink to this headline">¶</a></h3>
+<p>This stage has AAA running and uses an image with fine detail
+(resolution chart/text from book) and checks that over correction does not occur.</p>
+<ol class="arabic simple">
+<li>The camera should be in a scene with a resolution chart or text.</li>
+<li>Turn AAA and Auto TNM on</li>
+<li>Use DPF settings from stage 2</li>
+<li>Check that fine detail/resolution chart does not show signs of
+over-correction (false correction).</li>
+<li>If it does then change DPF settings to remove it.</li>
+</ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Final validation would include running the settings in real life
+scenarios to ensure that satisfactory performance is achieved.</p>
+</div>
+</div>
+</div>
+<div class="section" id="sharpening-and-secondary-denoiser-tuning">
+<span id="isp-utg-sha-dn2"></span><h2>Sharpening and Secondary denoiser Tuning<a class="headerlink" href="#sharpening-and-secondary-denoiser-tuning" title="Permalink to this headline">¶</a></h2>
+<p>This section will detail how to setup the Sharpening and Secondary denoiser.
+The parameters are available in the VisionLive
+<a class="reference internal" href="../test_tools/vision_live_2.html#isp-vl2-modulenoise"><span>Noise tab</span></a>.</p>
+<div class="section" id="sharpening-tuning">
+<span id="isp-utg-sha"></span><h3>Sharpening tuning<a class="headerlink" href="#sharpening-tuning" title="Permalink to this headline">¶</a></h3>
+<p>The starting parameters for sharpening tuning would be:</p>
+<div class="highlight-python"><div class="highlight"><pre>SHA_DENOISE_BYPASS 0         # not in GUI - is default
+SHA_DETAIL 1.0               # in Sharpening
+SHA_DN_SIGMA_MULTIPLIER 0.1  # secondary denoiser strength
+SHA_DN_TAU_MULTIPLIER 1      # secondary denoiser edge avoidance
+SHA_EDGE_OFFSET 0            # not in GUI - is default
+SHA_EDGE_SCALE 0             # not in GUI - is default
+SHA_RADIUS 1.5               # in Sharpening
+SHA_STRENGTH 0.5             # in Sharpening
+SHA_THRESH 0                 # in Sharpening
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">For all sharpness tuning it is assumed that the lens has been optimally
+focussed.</p>
+</div>
+<ol class="arabic simple">
+<li>The scene for tuning sharpness would typically be a lab scene with
+charts and real objects. A chart like ISO12233 is a good choice and real
+objects like dolls, wool (items that have fine texture).</li>
+<li>Change the <em>sharpening radius</em> in 0.5 increments until it gets to 2.5 and
+determine optimal value.</li>
+<li>Change <em>sharpening strength</em> in 0.1 increment until reasonable results at
+edges are achieved.</li>
+<li>Change <em>sharpening details</em> in 0.1 decrement (if necessary) to reduce noise
+in flat regions of the image without removing the sharpening at edges.</li>
+</ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">After tuning these values it should be validated over a number of
+scenes/light levels to understand if further fine tuning is required.</p>
+</div>
+</div>
+<div class="section" id="secondary-denoiser-tuning">
+<span id="isp-utg-dn2"></span><h3>Secondary denoiser tuning<a class="headerlink" href="#secondary-denoiser-tuning" title="Permalink to this headline">¶</a></h3>
+<p>The secondary denoiser has got two controls and assuming that sharpening has
+been done before the process would be as below:</p>
+<ol class="arabic simple">
+<li>Increase the <em>secondary denoiser strengh</em> (Sigma multiplier) to increase
+noise reduction.</li>
+<li>Increase the <em>edge avoidance</em> (Tau multiplier) to perform more edge
+avoidance.</li>
+</ol>
+</div>
+</div>
+<div class="section" id="tone-mapping-tuning">
+<span id="isp-utg-tnm"></span><h2>Tone-mapping Tuning<a class="headerlink" href="#tone-mapping-tuning" title="Permalink to this headline">¶</a></h2>
+<p>This section illustrates how to tune the TNM block using the VisionLive
+<a class="reference internal" href="../test_tools/vision_live_2.html#isp-vl2-moduletnm"><span>TNM tab</span></a>. Information about the algorithm is
+available in the <a class="reference internal" href="../ispc/ispc_modules.html#isp-ispc-tnm-algorithm"><span>Algorithm overview</span></a> section and
+<a class="reference internal" href="../ispc/ispc_controls_tnmc.html#isp-icm-tnmc"><span>Automatic Tone Mapping Control (TNMC)</span></a> section.</p>
+<div class="section" id="local-tone-mapping">
+<span id="isp-utg-tnm-local"></span><h3>Local tone mapping<a class="headerlink" href="#local-tone-mapping" title="Permalink to this headline">¶</a></h3>
+<p>For illustration purposes we will explain how to setup the local tone
+mapping starting with an image with the local tone mapping settings at
+maximum strength. The Figure <a class="reference internal" href="#isp-utg-tnm-cmp-1-fig"><span>Global tone mapping only (LHS) vs Global + full strength tone mapping
+(RHS)</span></a> shows the pipeline
+output when applying just a global tone map and maximum local tone mapping
+strength.</p>
+<p>Setting the local tone mapping values at maximum strength will produce
+unpleasant looking pictures, enhanced noise, haloing and other artefacts. In
+the following subsections we will explain how to set it up so those
+undesired effects are avoided.</p>
+<div class="figure" id="id1">
+<span id="isp-utg-tnm-cmp-1-fig"></span><img alt="../_images/tnm_cmp_1.png" src="../_images/tnm_cmp_1.png" />
+<p class="caption"><span class="caption-text">Global tone mapping only (LHS) vs Global + full strength tone mapping
+(RHS)</span></p>
+</div>
+<p>The setup process is as follow:</p>
+<ol class="arabic">
+<li><p class="first">Have Tone Mapper and Auto Tone Mapper Curve items enabled.</p>
+</li>
+<li><p class="first">Put camera in a static scene (something like a test chart in light booth).</p>
+</li>
+<li><p class="first">Set Local Tone Mapper parameters to maximum values:</p>
+<div class="highlight-python"><div class="highlight"><pre>TNM_WEIGHT_LOCAL 0.999 # local mapping weight
+TNM_WEIGHT_LINE  0.999 # line update weight
+TNM_FLAT_FACTOR  0.999 # flattening
+TNM_FLAT_MIN     0.999 # flattening minimum
+</pre></div>
+</div>
+<p>The result should be similar to the Figure <a class="reference internal" href="#isp-utg-tnm-full-fig"><span>Full strength tone mapping</span></a>.</p>
+<div class="figure" id="id2">
+<span id="isp-utg-tnm-full-fig"></span><img alt="../_images/tnm_full.png" src="../_images/tnm_full.png" />
+<p class="caption"><span class="caption-text">Full strength tone mapping</span></p>
+</div>
+</li>
+<li><p class="first">Reduce the <em>line update weight</em> value until the problems caused by
+vertical abrupt changes in the image are smoothed. It is not necessary to
+make them disappear completely at this step as that will be done by tuning
+rest of the parameters.</p>
+<p>The Figure <a class="reference internal" href="#isp-utg-tnm-line-fig"><span>Line update reduced example (0.075)</span></a> shows an example.</p>
+<div class="figure" id="id3">
+<span id="isp-utg-tnm-line-fig"></span><img alt="../_images/tnm_line.png" src="../_images/tnm_line.png" />
+<p class="caption"><span class="caption-text">Line update reduced example (0.075)</span></p>
+</div>
+</li>
+<li><p class="first">Increase the amount of flattening in the image by reducing the
+<em>flattening minimum</em> value. With this parameter the minimum flattening is
+applied to the whole image regardless of the local statistics. This will
+reduce exaggerated local enhancement and also the artefacts caused by abrupt
+vertical changes in the image.</p>
+<p>The Figure <a class="reference internal" href="#isp-utg-tnm-flatmin-fig"><span>Flattening minimum reduced example (0.35)</span></a> shows an example.</p>
+<div class="figure" id="id4">
+<span id="isp-utg-tnm-flatmin-fig"></span><img alt="../_images/tnm_flatmin.png" src="../_images/tnm_flatmin.png" />
+<p class="caption"><span class="caption-text">Flattening minimum reduced example (0.35)</span></p>
+</div>
+</li>
+<li><p class="first">Reduce the <em>flattening</em> will address local contrast in the flatter
+regions of the image. Reducing this value also helps to avoid noise
+enhancement.</p>
+<p>The Figure <a class="reference internal" href="#isp-utg-tnm-flat-fig"><span>Flattening reduced (0.1).</span></a> shows a result of flattened image.
+Note that a small reduction in the local contrast enhancement in the grey
+background, the wooden board and some of the checkers is visible.</p>
+<div class="figure" id="id5">
+<span id="isp-utg-tnm-flat-fig"></span><img alt="../_images/tnm_flat.png" src="../_images/tnm_flat.png" />
+<p class="caption"><span class="caption-text">Flattening reduced (0.1).</span></p>
+</div>
+</li>
+<li><p class="first">The final step would be to get the desired blending value for the
+local and global mapping results using <em>local mapping weight</em>.</p>
+<p>The Figure <a class="reference internal" href="#isp-utg-tnm-weight-fig"><span>Final result with local mapping weight reduced (0.35)</span></a> shows a final result example.</p>
+<div class="figure" id="id6">
+<span id="isp-utg-tnm-weight-fig"></span><img alt="../_images/tnm_weight.png" src="../_images/tnm_weight.png" />
+<p class="caption"><span class="caption-text">Final result with local mapping weight reduced (0.35)</span></p>
+</div>
+</li>
+</ol>
+<p>At the end of the tuning for this particular image the settings are:</p>
+<div class="highlight-python"><div class="highlight"><pre>TNM_WEIGHT_LOCAL 0.35  # local mapping weight
+TNM_WEIGHT_LINE  0.075 # line update weight
+TNM_FLAT_FACTOR  0.1   # flattening
+TNM_FLAT_MIN     0.35  # flattening minimum
+</pre></div>
+</div>
+<p>Figure <a class="reference internal" href="#ips-utg-tnm-final-fig"><span>Final result showing improvements.</span></a> shows the improvements.</p>
+<div class="figure" id="id7">
+<span id="ips-utg-tnm-final-fig"></span><img alt="../_images/tnm_final.png" src="../_images/tnm_final.png" />
+<p class="caption"><span class="caption-text">Final result showing improvements.</span></p>
+</div>
+</div>
+<div class="section" id="colour">
+<h3>Colour<a class="headerlink" href="#colour" title="Permalink to this headline">¶</a></h3>
+<p>The setup process is detailed as an explanation in the algorithm section about
+the <a class="reference internal" href="../ispc/ispc_modules.html#isp-ispc-tnm-colour"><span>Colour saturation</span></a>.</p>
+<p>1. As an starting point for setup both <em>colour saturation</em> and
+<em>colour confidence</em> can be set to 1.0.</p>
+<ol class="arabic simple">
+<li>Assess if the output image is more/less saturated than the original
+(adjust <em>colour saturation</em> in accordance).</li>
+<li>Check if there are colour artefacts in very dark or light regions of the
+image (and adjust <em>colour confidence</em> to remove them).</li>
+</ol>
+</div>
+</div>
+<div class="section" id="image-enhancer-tuning">
+<span id="isp-utg-mie"></span><h2>Image Enhancer Tuning<a class="headerlink" href="#image-enhancer-tuning" title="Permalink to this headline">¶</a></h2>
+<p>The MIE module allows the configuration of some colours to be selected to
+stand out as explained in the <a class="reference internal" href="../ispc/ispc_modules.html#isp-ispc-mie-algorithm"><span>Algorithm overview</span></a>. This section
+will explain how to use the <a class="reference internal" href="../test_tools/vision_live_2.html#isp-vl2-modulemie"><span>MIE tab</span></a> to tune the
+memory colour.</p>
+<p>It is highly recommended to read the algorithm information before proceeding
+to the tuning steps.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This is an optional step of the tuning.</p>
+</div>
+<ol class="arabic simple">
+<li>Ensure MIE and TNM is turned off.</li>
+<li>When scene is set as required, ensure live view is on YUV and capture
+an image (or pause live view).</li>
+<li>Pick a pixel which is the colour to be changed, this should give three
+values in the bottom of the image preview.</li>
+<li>In the MIE tab select import value, this will put values into Luma slice
+min/max and Chroma centre Cb/Cr.</li>
+<li>Set all <em>luma gains</em> to 1</li>
+<li>Change the value of extent to a smaller value, suggest to start with
+0.1 (this may need to change further).</li>
+<li>Turn on selected colour and turn on relevant  MC. The user should now
+see selected pixels turn black.</li>
+<li>If less pixels are required then reduced extent or if more are required
+increase extent.</li>
+<li>Once happy then turn off selected colour and change the values in output
+HSBC.</li>
+<li>Repeat for other colours.</li>
+<li>When process is complete turn on TNM.</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">User Tuning Guide</a><ul>
+<li><a class="reference internal" href="#tuning-work-flow">Tuning work-flow</a></li>
+<li><a class="reference internal" href="#sensor-blc-tuning">Sensor BLC tuning</a></li>
+<li><a class="reference internal" href="#white-balance-correction-tuning">White Balance Correction Tuning</a></li>
+<li><a class="reference internal" href="#sensor-lens-shading-tuning">Sensor Lens Shading Tuning</a></li>
+<li><a class="reference internal" href="#lateral-chromatic-aberration-tuning">Lateral Chromatic Aberration Tuning</a></li>
+<li><a class="reference internal" href="#primary-denoiser-tuning">Primary Denoiser Tuning</a></li>
+<li><a class="reference internal" href="#defective-pixels-tuning">Defective Pixels Tuning</a><ul>
+<li><a class="reference internal" href="#dark-calibration-stage-1">Dark calibration (stage 1)</a></li>
+<li><a class="reference internal" href="#mid-light-calibration-stage-2">Mid-light calibration (stage 2)</a></li>
+<li><a class="reference internal" href="#lab-validation-stage-3">Lab validation (stage 3)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#sharpening-and-secondary-denoiser-tuning">Sharpening and Secondary denoiser Tuning</a><ul>
+<li><a class="reference internal" href="#sharpening-tuning">Sharpening tuning</a></li>
+<li><a class="reference internal" href="#secondary-denoiser-tuning">Secondary denoiser tuning</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tone-mapping-tuning">Tone-mapping Tuning</a><ul>
+<li><a class="reference internal" href="#local-tone-mapping">Local tone mapping</a></li>
+<li><a class="reference internal" href="#colour">Colour</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#image-enhancer-tuning">Image Enhancer Tuning</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../test_tools/vision_live.html"
+                        title="previous chapter">VisionLive and ISPC_tcp v1 (obsolete)</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../ci/ci_library.html"
+                        title="next chapter">Capture Interface</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

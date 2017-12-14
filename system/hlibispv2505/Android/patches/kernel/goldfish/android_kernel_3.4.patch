@@ -1,0 +1,659 @@
+diff --git a/drivers/gpu/ion/Kconfig b/drivers/gpu/ion/Kconfig
+index b5bfdb4..5207489 100644
+--- a/drivers/gpu/ion/Kconfig
++++ b/drivers/gpu/ion/Kconfig
+@@ -11,3 +11,8 @@ config ION_TEGRA
+ 	help
+ 	  Choose this option if you wish to use ion on an nVidia Tegra.
+ 
++config ION_IMGTEC
++	tristate "Ion for Imagination Technologies"
++	depends on ION
++	help
++	  Choose this option if you wish to use Imagination Technologies ION.
+diff --git a/drivers/gpu/ion/Makefile b/drivers/gpu/ion/Makefile
+index ce0f1ef..fbaa26b 100644
+--- a/drivers/gpu/ion/Makefile
++++ b/drivers/gpu/ion/Makefile
+@@ -1,3 +1,4 @@
+ obj-$(CONFIG_ION) +=	ion.o ion_heap.o ion_page_pool.o ion_system_heap.o \
+ 			ion_carveout_heap.o ion_chunk_heap.o ion_cma_heap.o
+ obj-$(CONFIG_ION_TEGRA) += tegra/
++obj-$(CONFIG_ION_IMGTEC) += imgtec/
+diff --git a/drivers/gpu/ion/imgtec/Makefile b/drivers/gpu/ion/imgtec/Makefile
+new file mode 100755
+index 0000000..c392a83
+--- /dev/null
++++ b/drivers/gpu/ion/imgtec/Makefile
+@@ -0,0 +1 @@
++obj-y += imgtec_ion.o
+diff --git a/drivers/gpu/ion/imgtec/imgtec_ion.c b/drivers/gpu/ion/imgtec/imgtec_ion.c
+new file mode 100755
+index 0000000..bbcf611
+--- /dev/null
++++ b/drivers/gpu/ion/imgtec/imgtec_ion.c
+@@ -0,0 +1,332 @@
++/******************************************************************************
++* Module Parameters
++*
++* enable_system_heap   - heap 2: allocate from host memory using vmalloc
++* enable_contig_heap   - heap 1: allocate from host memory using kmalloc
++* carveout_size        - heap 4: allocate using carveout from pci memory:
++*                        how many pages to carveout (0 to use pci bar size)
++* carveout_pci_vendor  - allocate using carveout from pci memory: PCI vendor id
++* carveout_pci_product - carveout PCI product id
++* carveout_pci_bar     - carveout PCI BAR
++* carveout_phys_start  - carveout starting physical address (0 to use pci
++*                        vendor/product
++* carveout_phys_offset - offset to be added to carveout_phys_start: useful
++*                        for sharing PCI memory with PALLOC
++******************************************************************************/
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/device.h>
++#include <linux/mm.h>
++#include <linux/string.h>
++#include <linux/kobject.h>
++#include <linux/fs.h>
++#include <asm/uaccess.h>
++#include <asm/page.h>
++#include <linux/slab.h>
++#include <linux/miscdevice.h>
++#include <linux/ion.h>
++#include <linux/pci.h>
++
++#include "../ion_priv.h"
++
++MODULE_LICENSE("GPL v2");
++MODULE_AUTHOR("img");
++
++int enable_system_heap = 1;
++module_param(enable_system_heap, int, 0444);
++MODULE_PARM_DESC(enable_system_heap, "heap 2: vmalloc");
++
++int enable_contig_heap = 1;
++module_param(enable_contig_heap, int, 0444);
++MODULE_PARM_DESC(enable_contig_heap, "heap 1: kmalloc");
++
++int carveout_size = 0;
++module_param(carveout_size, int, 0444);
++MODULE_PARM_DESC(carveout_size, "heap 4: how many pages to carveout (0 to use "
++        "pci bar size)");
++
++int carveout_phys_start = 0;
++module_param(carveout_phys_start, int, 0444);
++MODULE_PARM_DESC(carveout_phys_start, "carveout starting physical address (0 "
++        "to use pci vendor/product");
++
++int carveout_phys_offset = 0;
++module_param(carveout_phys_offset, int, 0444);
++MODULE_PARM_DESC(carveout_phys_offset, "offset to be added to "
++        "carveout_phys_start: useful for sharing PCI memory with PALLOC");
++
++int carveout_pci_vendor = 0;
++module_param(carveout_pci_vendor, int, 0444);
++MODULE_PARM_DESC(carveout_pci_vendor, "carveout PCI vendor id");
++
++int carveout_pci_product = 0;
++module_param(carveout_pci_product, int, 0444);
++MODULE_PARM_DESC(carveout_pci_product, "carveout PCI product id");
++
++int carveout_pci_bar = 0;
++module_param(carveout_pci_bar, int, 0444);
++MODULE_PARM_DESC(carveout_pci_bar, "carveout PCI BAR");
++
++static ssize_t img_write(struct file *filep, const char __user *buf,
++        size_t count, loff_t *ppos)
++{
++    int ret = count;
++    char * str = kmalloc(count, GFP_KERNEL);
++
++    printk("img_write %zd\n", count);
++
++    if (str == 0) {
++        printk(KERN_ERR "failed to malloc %zd\n", count);
++        return -EFAULT;
++    }
++
++    if (copy_from_user(str, buf, count)) {
++        kfree(str);
++        return -EFAULT;
++    }
++    kfree(str);
++    return ret;
++}
++
++static int img_open(struct inode *inode, struct file *filep)
++{
++    int minor = iminor(inode);
++    struct miscdevice * imgmisc = filep->private_data;  // recent kernels only!!
++
++    printk("img_open: minor:%d misc:%p\n", minor, imgmisc);
++
++    return nonseekable_open(inode, filep);
++}
++
++static int img_release(struct inode *inode, struct file *filep)
++{
++    printk("img_release\n");
++
++    return 0;
++}
++
++static ssize_t img_read(struct file *filep, char __user *buf, size_t count,
++        loff_t *ppos)
++{
++    int ret = 0;
++    char tmp[100];
++    printk("img_read count:%zd \n", count);
++    if (*ppos)
++        return 0;
++
++    snprintf(tmp, sizeof(tmp), "hello world\n");
++    ret = copy_to_user(buf, tmp, strlen(tmp)+1);
++    if (ret)
++        return ret;
++
++    count = strlen(tmp);
++    *ppos += count;
++    return count;
++}
++
++static int img_mmap(struct file * filep, struct vm_area_struct * vma)
++{
++    return -EINVAL;
++}
++
++#define IMG_IOCTL_MAGIC 'j'
++#define IMG_IOC_1 _IOW(IMG_IOCTL_MAGIC, 1, int*)
++#define IMG_IOC_MAX 1
++
++static long img_ioctl(struct file * file, unsigned int cmd, unsigned long arg)
++{
++    char __user * argp = (char __user*)arg;
++
++    if ((_IOC_TYPE(cmd) != IMG_IOCTL_MAGIC) || (_IOC_NR(cmd) > IMG_IOC_MAX))
++    {
++        return -ENOTTY;
++    }
++
++    switch(cmd) {
++    char buf[4];
++    case IMG_IOC_1:
++        if (copy_from_user(buf, argp, sizeof(buf)))
++            return -EFAULT;
++    default:
++        return -EINVAL;
++    }
++
++    return 0;
++}
++static const struct file_operations img_fops = {
++    .owner   = THIS_MODULE,
++    .open    = img_open,
++    .release = img_release,
++    .read    = img_read,
++    .write   = img_write,
++    .mmap    = img_mmap,
++    .llseek  = no_llseek,
++    .unlocked_ioctl = img_ioctl,
++};
++
++static struct miscdevice imgmisc = {
++    .name = "imgion",
++    .fops = &img_fops,
++    .minor = MISC_DYNAMIC_MINOR,
++};
++
++static struct ion_platform_heap img_ion_heaps[] = {
++	{
++		.type = ION_HEAP_TYPE_SYSTEM_CONTIG,
++		.name = "System contig",
++		.id = ION_HEAP_TYPE_SYSTEM_CONTIG,
++	},
++	{
++		.type = ION_HEAP_TYPE_SYSTEM,
++		.name = "System",
++		.id = ION_HEAP_TYPE_SYSTEM,
++	},
++	{
++		.type = ION_HEAP_TYPE_CARVEOUT,
++		.name = "Carveout",
++		.id = ION_HEAP_TYPE_CARVEOUT,
++		.base = 0,
++		.size = 0,
++	}
++};
++
++static struct ion_platform_data generic_config = {
++    .nr = 3,
++    .heaps = img_ion_heaps
++};
++
++static struct ion_device *ion_dev;
++struct ion_heap *ion_heaps[3];
++
++struct ion_device * imgtec_ion_get_device(void)
++{
++    if (!ion_dev)
++        printk(KERN_ERR "ION device not initialized but requested!\n");
++
++    return ion_dev;
++}
++EXPORT_SYMBOL(imgtec_ion_get_device);
++
++static int ion_init(void)
++{
++    int ret = 0;
++    int i;
++
++    printk(KERN_DEBUG "%s\n", __FUNCTION__);
++
++    ion_dev = ion_device_create(NULL);
++
++    if (IS_ERR_OR_NULL(ion_dev)) {
++        pr_err("ion_device_create failed\n");
++        return -ENOSPC;
++    }
++
++    /* Register all the heaps */
++    for (i = 0; i < generic_config.nr; i++)
++    {
++        struct ion_platform_heap *heap = &generic_config.heaps[i];
++
++        switch (heap->id) {
++        case ION_HEAP_TYPE_SYSTEM_CONTIG:
++            if (!enable_contig_heap) {
++                printk(KERN_ERR "ion_init: ION_HEAP_TYPE_SYSTEM_CONTIG "
++                        "requested but not enabled!\n");
++                continue;
++            }
++            break;
++        case ION_HEAP_TYPE_SYSTEM:
++            if (!enable_system_heap) {
++                printk(KERN_ERR "ion_init: ION_HEAP_TYPE_SYSTEM_CONTIG "
++                        "requested but not enabled!\n");
++                continue;
++            }
++            break;
++        case ION_HEAP_TYPE_CARVEOUT:
++            if (carveout_pci_vendor && carveout_pci_product) {
++                struct pci_dev * pcidev = pci_get_device(carveout_pci_vendor,
++                        carveout_pci_product, NULL);
++                if (pcidev == NULL)
++                    return -EINVAL;
++
++                carveout_phys_start = pci_resource_start(pcidev,
++                        carveout_pci_bar);
++
++                if (carveout_size == 0)
++                    carveout_size = pci_resource_len(pcidev, 0);
++                pci_dev_put(pcidev);
++            }
++            if (carveout_size < PAGE_SIZE) continue;
++            if (!carveout_phys_start) continue;
++
++            heap->base = carveout_phys_start + carveout_phys_offset;
++            heap->size = carveout_size;
++            printk("IMG %s creating heap %d, phys:%lx size %u\n", __func__, i,
++                    heap->base, heap->size);
++            break;
++        }
++
++        // Finally, create the heap.
++        ion_heaps[i] = ion_heap_create(heap);
++        printk(KERN_DEBUG "ion: heap \'%s\' created.\n", heap->name);
++
++        if (IS_ERR_OR_NULL(ion_heaps[i]))
++        {
++            pr_err("ion_heap_create failed\n");
++            ret = -ENOSPC;
++            goto error_ion_heap_create;
++        }
++        ion_device_add_heap(ion_dev, ion_heaps[i]);
++    }
++    return ret;
++
++error_ion_heap_create:
++
++    printk(KERN_ERR "Failed to initialize imgion!\n");
++
++    for (i = 0; i < generic_config.nr; i++) {
++        if (ion_heaps[i])
++            ion_heap_destroy(ion_heaps[i]);
++    }
++    return ret;
++}
++
++static void ion_deinit(void)
++{
++    int i;
++
++    printk(KERN_DEBUG "%s\n", __FUNCTION__);
++
++    for (i = 0; i < generic_config.nr; i++) {
++        if (ion_heaps[i])
++        {
++            ion_heap_destroy(ion_heaps[i]);
++        }
++    }
++    ion_device_destroy(ion_dev);
++}
++
++static int __init img_init(void)
++{
++    int ret = 0;
++
++    printk(KERN_DEBUG "%s\n", __FUNCTION__);
++
++    ret = misc_register(&imgmisc);
++
++    if (ret) {
++        pr_err("misc_register failed\n");
++    }
++    ion_init();
++    return ret;
++}
++
++static void __exit img_exit(void)
++{
++    printk(KERN_DEBUG "%s\n", __FUNCTION__);
++    ion_deinit();
++    misc_deregister(&imgmisc);
++}
++
++module_init(img_init);
++module_exit(img_exit);
++
+diff --git a/drivers/gpu/ion/ion.c b/drivers/gpu/ion/ion.c
+index fba19b4..1ee8a48 100644
+--- a/drivers/gpu/ion/ion.c
++++ b/drivers/gpu/ion/ion.c
+@@ -223,7 +223,7 @@ static struct ion_buffer *ion_buffer_create(struct ion_heap *heap,
+ 		for_each_sg(table->sgl, sg, table->nents, i) {
+ 			struct page *page = sg_page(sg);
+ 
+-			for (j = 0; j < sg_dma_len(sg) / PAGE_SIZE; j++)
++			for (j = 0; j < ion_dma_len(sg) / PAGE_SIZE; j++)
+ 				buffer->pages[k++] = page++;
+ 		}
+ 
+@@ -863,7 +863,7 @@ static void ion_buffer_sync_for_device(struct ion_buffer *buffer,
+ 		struct page *page = buffer->pages[i];
+ 
+ 		if (ion_buffer_page_is_dirty(page))
+-			__dma_page_cpu_to_dev(page, 0, PAGE_SIZE, dir);
++			dma_sync_sg_for_device(page, 0, PAGE_SIZE, dir);
+ 		ion_buffer_page_clean(buffer->pages + i);
+ 	}
+ 	list_for_each_entry(vma_list, &buffer->vmas, list) {
+diff --git a/drivers/gpu/ion/ion_carveout_heap.c b/drivers/gpu/ion/ion_carveout_heap.c
+index 86f3554..ffb4796 100644
+--- a/drivers/gpu/ion/ion_carveout_heap.c
++++ b/drivers/gpu/ion/ion_carveout_heap.c
+@@ -25,7 +25,9 @@
+ #include <linux/vmalloc.h>
+ #include "ion_priv.h"
+ 
++#ifdef CONFIG_ARM
+ #include <asm/mach/map.h>
++#endif
+ 
+ struct ion_carveout_heap {
+ 	struct ion_heap heap;
+@@ -112,6 +114,7 @@ void ion_carveout_heap_unmap_dma(struct ion_heap *heap,
+ void *ion_carveout_heap_map_kernel(struct ion_heap *heap,
+ 				   struct ion_buffer *buffer)
+ {
++#ifdef CONFIG_ARM
+ 	void *ret;
+ 	int mtype = MT_MEMORY_NONCACHED;
+ 
+@@ -124,12 +127,19 @@ void *ion_carveout_heap_map_kernel(struct ion_heap *heap,
+ 		return ERR_PTR(-ENOMEM);
+ 
+ 	return ret;
++#else
++	return ioremap(buffer->priv_phys, buffer->size);
++#endif
+ }
+ 
+ void ion_carveout_heap_unmap_kernel(struct ion_heap *heap,
+ 				    struct ion_buffer *buffer)
+ {
++#ifdef CONFIG_ARM
+ 	__arm_iounmap(buffer->vaddr);
++#else
++	iounmap(buffer->vaddr);
++#endif
+ 	buffer->vaddr = NULL;
+ 	return;
+ }
+diff --git a/drivers/gpu/ion/ion_chunk_heap.c b/drivers/gpu/ion/ion_chunk_heap.c
+index 1cb7fef..6aa197b 100644
+--- a/drivers/gpu/ion/ion_chunk_heap.c
++++ b/drivers/gpu/ion/ion_chunk_heap.c
+@@ -25,7 +25,9 @@
+ #include <linux/vmalloc.h>
+ #include "ion_priv.h"
+ 
++#ifdef CONFIG_ARM
+ #include <asm/mach/map.h>
++#endif
+ 
+ struct ion_chunk_heap {
+ 	struct ion_heap heap;
+@@ -84,7 +86,7 @@ err:
+ 	sg = table->sgl;
+ 	for (i -= 1; i >= 0; i--) {
+ 		gen_pool_free(chunk_heap->pool, page_to_phys(sg_page(sg)),
+-			      sg_dma_len(sg));
++			      ion_dma_len(sg));
+ 		sg = sg_next(sg);
+ 	}
+ 	sg_free_table(table);
+@@ -108,10 +110,10 @@ static void ion_chunk_heap_free(struct ion_buffer *buffer)
+ 
+ 	for_each_sg(table->sgl, sg, table->nents, i) {
+ 		if (ion_buffer_cached(buffer))
+-			__dma_page_cpu_to_dev(sg_page(sg), 0, sg_dma_len(sg),
++			dma_sync_sg_for_device(sg_page(sg), 0, ion_dma_len(sg),
+ 					      DMA_BIDIRECTIONAL);
+ 		gen_pool_free(chunk_heap->pool, page_to_phys(sg_page(sg)),
+-			      sg_dma_len(sg));
++			      ion_dma_len(sg));
+ 	}
+ 	chunk_heap->allocated -= allocated_size;
+ 	sg_free_table(table);
+@@ -180,7 +182,7 @@ struct ion_heap *ion_chunk_heap_create(struct ion_platform_heap *heap_data)
+ 	}
+ 	free_vm_area(vm_struct);
+ 
+-	__dma_page_cpu_to_dev(phys_to_page(heap_data->base), 0, heap_data->size,
++	dma_sync_sg_for_device(phys_to_page(heap_data->base), 0, heap_data->size,
+ 			      DMA_BIDIRECTIONAL);
+ 	gen_pool_add(chunk_heap->pool, chunk_heap->base, heap_data->size, -1);
+ 	chunk_heap->heap.ops = &chunk_heap_ops;
+diff --git a/drivers/gpu/ion/ion_cma_heap.c b/drivers/gpu/ion/ion_cma_heap.c
+index 1eaa8c1..59f5f17 100644
+--- a/drivers/gpu/ion/ion_cma_heap.c
++++ b/drivers/gpu/ion/ion_cma_heap.c
+@@ -151,6 +151,77 @@ void ion_cma_heap_unmap_dma(struct ion_heap *heap,
+ {
+ 	return;
+ }
++struct dma_coherent_mem {
++         void            *virt_base;
++         dma_addr_t      device_base;
++         phys_addr_t     pfn_base;
++         int             size;
++         int             flags;
++         unsigned long   *bitmap;
++};
++
++int dma_mmap_from_coherent(struct device *dev, struct vm_area_struct *vma,
++                            void *vaddr, size_t size, int *ret)
++{
++        struct dma_coherent_mem *mem = dev ? dev->dma_mem : NULL;
++
++        if (mem && vaddr >= mem->virt_base && vaddr + size <=
++                   (mem->virt_base + (mem->size << PAGE_SHIFT))) {
++                unsigned long off = vma->vm_pgoff;
++                int start = (vaddr - mem->virt_base) >> PAGE_SHIFT;
++                int user_count = (vma->vm_end - vma->vm_start) >> PAGE_SHIFT;
++                int count = size >> PAGE_SHIFT;
++
++                *ret = -ENXIO;
++                if (off < count && user_count <= count - off) {
++                        unsigned pfn = mem->pfn_base + start + off;
++                        *ret = remap_pfn_range(vma, vma->vm_start, pfn,
++                                               user_count << PAGE_SHIFT,
++                                               vma->vm_page_prot);
++                }
++                return 1;
++        }
++        return 0;
++}
++
++ int dma_common_mmap(struct device *dev, struct vm_area_struct *vma,
++                     void *cpu_addr, dma_addr_t dma_addr, size_t size)
++ {
++         int ret = -ENXIO;
++ #ifdef CONFIG_MMU
++         unsigned long user_count = (vma->vm_end - vma->vm_start) >> PAGE_SHIFT;
++         unsigned long count = PAGE_ALIGN(size) >> PAGE_SHIFT;
++         unsigned long pfn = page_to_pfn(virt_to_page(cpu_addr));
++         unsigned long off = vma->vm_pgoff;
++ 
++         vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
++ 
++         if (dma_mmap_from_coherent(dev, vma, cpu_addr, size, &ret))
++                 return ret;
++ 
++         if (off < count && user_count <= (count - off)) {
++                 ret = remap_pfn_range(vma, vma->vm_start,
++                                       pfn + off,
++                                       user_count << PAGE_SHIFT,
++                                       vma->vm_page_prot);
++         }
++ #endif  /* CONFIG_MMU */
++ 
++        return ret;
++}
++
++inline int
++ dma_mmap_attrs(struct device *dev, struct vm_area_struct *vma, void *cpu_addr,
++                dma_addr_t dma_addr, size_t size, struct dma_attrs *attrs)
++{
++        struct dma_map_ops *ops = get_dma_ops(dev);
++         BUG_ON(!ops);
++         if (ops->mmap)
++                 return ops->mmap(dev, vma, cpu_addr, dma_addr, size, attrs);
++        return dma_common_mmap(dev, vma, cpu_addr, dma_addr, size);
++}
++ 
++#define dma_mmap_coherent(d, v, c, h, s) dma_mmap_attrs(d, v, c, h, s, NULL)
+ 
+ static int ion_cma_mmap(struct ion_heap *mapper, struct ion_buffer *buffer,
+ 			struct vm_area_struct *vma)
+diff --git a/drivers/gpu/ion/ion_heap.c b/drivers/gpu/ion/ion_heap.c
+index 786302d..c486100 100644
+--- a/drivers/gpu/ion/ion_heap.c
++++ b/drivers/gpu/ion/ion_heap.c
+@@ -46,7 +46,7 @@ void *ion_heap_map_kernel(struct ion_heap *heap,
+ 		pgprot = pgprot_writecombine(PAGE_KERNEL);
+ 
+ 	for_each_sg(table->sgl, sg, table->nents, i) {
+-		int npages_this_entry = PAGE_ALIGN(sg_dma_len(sg)) / PAGE_SIZE;
++		int npages_this_entry = PAGE_ALIGN(ion_dma_len(sg)) / PAGE_SIZE;
+ 		struct page *page = sg_page(sg);
+ 		BUG_ON(i >= npages);
+ 		for (j = 0; j < npages_this_entry; j++) {
+@@ -80,14 +80,14 @@ int ion_heap_map_user(struct ion_heap *heap, struct ion_buffer *buffer,
+ 	for_each_sg(table->sgl, sg, table->nents, i) {
+ 		struct page *page = sg_page(sg);
+ 		unsigned long remainder = vma->vm_end - addr;
+-		unsigned long len = sg_dma_len(sg);
++		unsigned long len = ion_dma_len(sg);
+ 
+-		if (offset >= sg_dma_len(sg)) {
+-			offset -= sg_dma_len(sg);
++		if (offset >= ion_dma_len(sg)) {
++			offset -= ion_dma_len(sg);
+ 			continue;
+ 		} else if (offset) {
+ 			page += offset / PAGE_SIZE;
+-			len = sg_dma_len(sg) - offset;
++			len = ion_dma_len(sg) - offset;
+ 			offset = 0;
+ 		}
+ 		len = min(len, remainder);
+@@ -119,7 +119,7 @@ int ion_heap_buffer_zero(struct ion_buffer *buffer)
+ 
+ 	for_each_sg(table->sgl, sg, table->nents, i) {
+ 		struct page *page = sg_page(sg);
+-		unsigned long len = sg_dma_len(sg);
++		unsigned long len = ion_dma_len(sg);
+ 
+ 		for (j = 0; j < len / PAGE_SIZE; j++) {
+ 			struct page *sub_page = page + j;
+diff --git a/drivers/gpu/ion/ion_page_pool.c b/drivers/gpu/ion/ion_page_pool.c
+index 8708bbf..f967b25 100644
+--- a/drivers/gpu/ion/ion_page_pool.c
++++ b/drivers/gpu/ion/ion_page_pool.c
+@@ -37,7 +37,7 @@ static void *ion_page_pool_alloc_pages(struct ion_page_pool *pool)
+ 	/* this is only being used to flush the page for dma,
+ 	   this api is not really suitable for calling from a driver
+ 	   but no better way to flush a page for dma exist at this time */
+-	__dma_page_cpu_to_dev(page, 0, PAGE_SIZE << pool->order,
++	dma_sync_sg_for_device(page, 0, PAGE_SIZE << pool->order,
+ 			      DMA_BIDIRECTIONAL);
+ 	return page;
+ }
+diff --git a/drivers/gpu/ion/ion_priv.h b/drivers/gpu/ion/ion_priv.h
+index 32461e9..6a60940 100644
+--- a/drivers/gpu/ion/ion_priv.h
++++ b/drivers/gpu/ion/ion_priv.h
+@@ -26,6 +26,20 @@
+ #include <linux/shrinker.h>
+ #include <linux/types.h>
+ 
++/* IMG For some reason dma_length is 0 in x86, although it is defined.
++   So we use a new macro (ion_dma_len) instead of sg_dma_len. */
++#ifdef CONFIG_X86
++#define ion_dma_len(sg) ((sg)->length)
++#ifndef __phys_to_pfn
++#define __phys_to_pfn(paddr) ((paddr) >> PAGE_SHIFT)
++#endif
++#ifndef phys_to_page
++#define phys_to_page(phys) (pfn_to_page(phys >> PAGE_SHIFT))
++#endif
++#else
++#define ion_dma_len(sg) (sg_dma_len(sg))
++#endif
++
+ struct ion_buffer *ion_handle_buffer(struct ion_handle *handle);
+ 
+ /**
+diff --git a/drivers/gpu/ion/ion_system_heap.c b/drivers/gpu/ion/ion_system_heap.c
+index 390aee1..eb22a23 100644
+--- a/drivers/gpu/ion/ion_system_heap.c
++++ b/drivers/gpu/ion/ion_system_heap.c
+@@ -77,7 +77,7 @@ static struct page *alloc_buffer_page(struct ion_system_heap *heap,
+ 		page = ion_heap_alloc_pages(buffer, gfp_flags, order);
+ 		if (!page)
+ 			return 0;
+-		__dma_page_cpu_to_dev(page, 0, PAGE_SIZE << order,
++		dma_sync_sg_for_device(page, 0, PAGE_SIZE << order,
+ 				      DMA_BIDIRECTIONAL);
+ 	}
+ 	if (!page)
+@@ -209,7 +209,7 @@ void ion_system_heap_free(struct ion_buffer *buffer)
+ 
+ 	for_each_sg(table->sgl, sg, table->nents, i)
+ 		free_buffer_page(sys_heap, buffer, sg_page(sg),
+-				get_order(sg_dma_len(sg)));
++				get_order(ion_dma_len(sg)));
+ 	sg_free_table(table);
+ 	kfree(table);
+ }

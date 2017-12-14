@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ImageView</class>
+ <widget class="QMainWindow" name="ImageView">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>330</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Image</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="main_lay">
+    <item row="0" column="0">
+     <widget class="QTabWidget" name="splittedView">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="splittedViewPage1">
+       <attribute name="title">
+        <string>Image</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="imgtab_lay">
+        <item>
+         <widget class="QCheckBox" name="showDPF_cb">
+          <property name="text">
+           <string>Show defected pixels</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QtExtra::ScalableView" name="pView"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="infoLine">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="splittedViewPage2">
+       <attribute name="title">
+        <string>Statistics</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <widget class="QLabel" name="size_lbl">
+          <property name="text">
+           <string>Size</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QTabWidget" name="info_tabs">
+          <property name="currentIndex">
+           <number>-1</number>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="fmt_lbl">
+          <property name="text">
+           <string>Format</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>400</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionSave_FLX_file"/>
+    <addaction name="actionSave_YUV_file"/>
+    <addaction name="actionSave_displayed_image_as_JPG"/>
+    <addaction name="actionSave_Felix_Parameters_Args"/>
+    <addaction name="actionSave_DPF_Map"/>
+   </widget>
+   <addaction name="menuFile"/>
+  </widget>
+  <action name="actionSave_FLX_file">
+   <property name="text">
+    <string>Save FLX image</string>
+   </property>
+  </action>
+  <action name="actionSave_YUV_file">
+   <property name="text">
+    <string>Save YUV image</string>
+   </property>
+  </action>
+  <action name="actionSave_displayed_image_as_JPG">
+   <property name="text">
+    <string>Save image as JPG</string>
+   </property>
+  </action>
+  <action name="actionSave_Felix_Parameters_Args">
+   <property name="text">
+    <string>Save Felix Parameters Args</string>
+   </property>
+  </action>
+  <action name="actionSave_DPF_Map">
+   <property name="text">
+    <string>Save DPF Map</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QtExtra::ScalableView</class>
+   <extends>QGraphicsView</extends>
+   <header>QtExtra/scalableview.hpp</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

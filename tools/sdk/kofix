@@ -1,0 +1,27 @@
+#!/usr/bin/env python2.7
+import sys
+print "fix script -> " + sys.argv[1],
+fd = open(sys.argv[1], 'r')
+lines=fd.readlines()
+fd.close()
+new_lines = []
+modify_flag=False
+for line in lines :
+    if line.find("modprobe") >= 0 :
+        modify_flag=True
+        line = line.replace("modprobe", "insmod")
+        cmds = line.split()
+        for i in range(0, len(cmds)):
+            if cmds[i].find("insmod") >= 0:
+                cmds[i+1] = "/lib/modules/" + cmds[i+1] +".ko"
+        line = "\t\t"+" ".join(cmds) + "\n"
+    new_lines.append(line)
+if modify_flag == False :
+    print " ->no"
+    sys.exit(0)
+else:
+    print " ->yes"
+    fd = open(sys.argv[1], "w")
+    fd.writelines(new_lines)
+    fd.close()
+

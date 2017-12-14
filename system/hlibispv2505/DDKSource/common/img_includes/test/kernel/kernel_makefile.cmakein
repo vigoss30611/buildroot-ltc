@@ -1,0 +1,10 @@
+#
+# kernel makefile generate for module ${KO_MODULE_NAME}
+#
+
+obj-${KO_MODE} := ${KO_MODULE_NAME}.o
+
+ccflags-y += ${KO_CFLAGS}
+ccflags-y += ${KO_INCLUDES}
+
+${KO_MODULE_NAME}-objs := ${KO_SOURCES}

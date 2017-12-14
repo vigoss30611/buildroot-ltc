@@ -1,0 +1,6 @@
+config INFOTM_SWITCH
+    tristate "Infotm board configuration switch"
+    help
+      Say Y to enabled board configuration device. User layer
+      programs can access board items through this interface.
+

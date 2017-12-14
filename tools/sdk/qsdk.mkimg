@@ -1,0 +1,88 @@
+#!/bin/bash
+help(){
+    echo -e "usage :  must run in qsdk root dir"
+    echo -e "\t app system"
+    echo -e "\t\ttar system rootfs"
+    echo -e "\t app ramdisk"
+    echo -e "\t\ttar ramdisk rootfs"
+    echo -e "\t app custom_dir"
+    echo -e "\t\ttar custom rootfs"
+}
+if [[ ! -d tools ]];then
+    help
+    exit 1
+fi
+if [[ $# < 1 ]] ; then
+    help
+    exit 1
+fi
+. ./tools/qsdk.env
+ROOTFS_NAME=system
+ROOTFS_DIR=${SYSTEM_DIR}
+target_rootfs=`pwd`/$1
+
+prepare_rootfs(){
+    #do overlay
+    case $ROOTFS_NAME in
+        system )
+            cp -rf ${PRODUCT_DIR}/device_table.txt  ${BUILD_DIR}/device_table.txt
+            echo -e "\ndo system overlay"
+            cp -rf ${PRODUCT_DIR}/system/*    ${SYSTEM_DIR}/
+            cp -rf ${WORKSPACE}/private/*  ${SYSTEM_DIR}/lib/modules/
+
+            ;;
+
+        ramdisk )
+            cp -rf ${PRODUCT_DIR}/device_table.txt  ${BUILD_DIR}/device_table.txt
+            echo -e "\ndo ramdisk overlay"
+            cp -rf ${PRODUCT_DIR}/root/*    ${RAMDISK_DIR}/
+
+            ;;
+        * )
+            return
+            ;;
+    esac
+
+
+
+}
+tar_rootfs_images(){
+    export TOOLS_DIR=${WORKSPACE}/output/host/usr/bin
+    export WORKSPACE
+    export BUILD_DIR
+    export IMAGES_DIR
+    export ROOTFS_DIR
+    export ROOTFS_NAME
+    export PATH=${PATH}:${WORKSPACE}/output/host/usr/bin/:${WORKSPACE}/tools/host/bin/
+    fakeroot -- ${WORKSPACE}/tools/qsdk.fakeroot ${ROOTFS_DIR} ${ROOTFS_NAME} ${IMAGES_DIR}
+}
+
+
+case $1 in
+    system )
+        ROOTFS_NAME=system
+        ROOTFS_DIR=${SYSTEM_DIR}
+        prepare_rootfs  $2
+        tar_rootfs_images
+
+        ;;
+    ramdisk )
+        ROOTFS_NAME=ramdisk
+        ROOTFS_DIR=${RAMDISK_DIR}
+        prepare_rootfs  $2
+        tar_rootfs_images
+        lzop -9 -c ${IMAGES_DIR}/${ROOTFS_NAME}.cpio > ${IMAGES_DIR}/${ROOTFS_NAME}.cpio.lzo
+        ${HOST_BIN_DIR}/mkimage -A arm -T ramdisk \
+	-C none -d ${IMAGES_DIR}/${ROOTFS_NAME}.cpio.lzo ${IMAGES_DIR}/ramdisk.img
+        ;;
+    * )
+        if [[ -d $1 && -d $1/root && -d $d/etc ]];then
+            echo -e "tar custom define rootfs dir"
+            ROOTFS_NAME=custom
+            ROOTFS_DIR=`cd $1;pwd`
+            cd ${WORKSPACE}
+        else
+            help
+        fi
+        ;;
+esac

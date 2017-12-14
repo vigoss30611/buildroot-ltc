@@ -1,0 +1,32 @@
+menuconfig INFOTM_CPUFREQ
+       bool "Infotm cpu cpufreq support"
+       default y
+       help
+               Say Y to select the imapx cpufreq drivers if CPUFREQ is needed
+if INFOTM_CPUFREQ      
+
+config  CPU_FREQ_GOV_INFODEMAND
+        tristate "'infodemand' cpufreq policy governor"
+        depends on INFOTM_CPUFREQ
+        select CPU_FREQ_TABLE
+        default y
+        help
+        This Cpufreq governor is designed for infotm imapx800 series AP. It is based on ondemand 
+        interactive and cpu hotplugs. Y to seletced. diselect it means use perfomance as defaulted
+
+config INFOTM_VOL_FIT
+		tristate "infotm dynamic voltage scaling policy"
+		depends on INFOTM_CPUFREQ
+		default y
+		help
+		This driver is designed for infotm dynamic voltage scaling function.
+
+config INFOTM_CPU_FIT
+		tristate "infotm cpu hotplug policy"
+		depends on INFOTM_CPUFREQ
+		default y
+		help
+		This driver is designed for infotm cpu function.
+endif
+
+

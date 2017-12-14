@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/black" >
+
+
+    <RelativeLayout
+        android:id="@+id/layout_live_video_control_top"
+        android:layout_width="fill_parent"
+        android:layout_height="40.0dip"
+        android:layout_alignParentTop="true"
+        android:background="#aa000000" >
+
+        <ImageButton
+            android:id="@+id/btn_live_video_back"
+            android:layout_width="40.0dip"
+            android:layout_height="25.0dip"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20.0dip"
+            android:alpha="0.8"
+            android:background="@null"
+            android:scaleType="fitCenter"
+            android:src="@drawable/live_video_control_back_selector" />
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:fitsSystemWindows="false" >
+
+        <FrameLayout
+            android:id="@+id/player_surface_frame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:foregroundGravity="clip_vertical|clip_horizontal" >
+
+            <SurfaceView
+                android:id="@+id/player_surface"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" />
+
+            <com.danale.video.view.opengl.DanaleGlSurfaceView
+                android:id="@+id/player_gl_surface"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" />
+        </FrameLayout>
+
+       
+     
+    </FrameLayout>
+
+      <RelativeLayout
+          android:id="@+id/recordplay"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_alignParentBottom="true"
+          android:layout_alignParentLeft="true"
+          android:animateLayoutChanges="true"
+          android:padding="@dimen/padding_default" >
+
+          <ImageButton
+              android:id="@+id/btn_record_next"
+              android:layout_width="@dimen/height_shutter_btn"
+              android:layout_height="@dimen/height_shutter_btn"
+              android:layout_alignParentBottom="true"
+              android:layout_alignParentRight="true"
+              android:layout_marginRight="122dp"
+              android:background="@drawable/flight_control_right" />
+
+          <ImageButton
+              android:id="@+id/btn_record_pre"
+              android:layout_width="@dimen/height_shutter_btn"
+              android:layout_height="@dimen/height_shutter_btn"
+              android:layout_alignTop="@+id/btn_record_next"
+              android:layout_marginRight="14dp"
+              android:layout_toLeftOf="@+id/btn_record_next"
+              android:background="@drawable/flight_control_left" />
+
+          <ImageButton
+              android:id="@+id/btn_record_type"
+              android:layout_width="@dimen/height_shutter_btn"
+              android:layout_height="@dimen/height_shutter_btn"
+              android:layout_alignLeft="@+id/btn_record_next"
+              android:layout_alignTop="@+id/btn_record_next"
+              android:layout_marginLeft="64dp"
+              android:background="@drawable/record_folder" />
+
+          <ImageButton
+              android:id="@+id/btn_record_audio"
+              android:layout_width="@dimen/height_shutter_btn"
+              android:layout_height="@dimen/height_shutter_btn"
+              android:layout_alignBottom="@+id/btn_record_pre"
+              android:layout_marginRight="19dp"
+              android:layout_toLeftOf="@+id/btn_record_pre"
+              android:background="@null"
+              android:scaleType="fitCenter"
+              android:src="@drawable/live_video_control_audio_selector" />
+
+      </RelativeLayout>
+       <LinearLayout
+        android:id="@+id/layout_live_video_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:indeterminate="true"
+            android:indeterminateOnly="true" />
+
+        <TextView
+            android:id="@+id/tv_live_video_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/live_video_loading"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_16sp" />
+    </LinearLayout>
+
+</RelativeLayout>

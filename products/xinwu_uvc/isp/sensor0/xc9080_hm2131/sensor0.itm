@@ -1,0 +1,21 @@
+sensor0.interface mipi
+sensor0.name dual-bridge
+sensor0.mclk 24000000
+sensor0.imager 0
+sensor0.i2c chn.3.addr.54 ##0x36
+sensor0.csi lanes.4.freq.388
+#sensor0.mclk.src imap-clk1
+sensor0.mclk.src imap-camo
+#sensor0.bootup.seq.0 pmu.ldo8.1800000.0 ##iovdd
+#sensor0.bootup.seq.1 pmu.ldo3.1200000.0 ##dvdd
+#sensor0.bootup.seq.2 pmu.ldo6.2800000.0 ##corevdd
+#sensor0.bootup.seq.3 pmu.ldo7.1800000.0 ##padvdd
+sensor0.bootup.seq.4 mclk.gpio.40.0
+sensor0.bootup.seq.5 reset.gpio.-44.30
+
+sensor0.bridge.name xc9080
+sensor0.bridge.sensornum 2
+
+sensor0.bridge.sensor0.interface mipi
+sensor0.bridge.sensor0.name hm2131mipi
+sensor0.bridge.sensor0.i2c chn.3.addr.72 ##3.0x48

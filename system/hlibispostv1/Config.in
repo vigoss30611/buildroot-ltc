@@ -1,0 +1,7 @@
+config BR2_PACKAGE_ISPOST
+	bool "ispost"
+	help
+	  Fix me
+
+	  http://www.infotm.com/
+

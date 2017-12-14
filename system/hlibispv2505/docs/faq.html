@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Frequently Asked Questions &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="index.html" />
+    <link rel="next" title="Appendix: Errors troubleshooting" href="building_errors.html" />
+    <link rel="prev" title="Vision Libraries Usage Instructions" href="vision_libraries.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="index.html"><img src="_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="index.html">Documents</a></li>
+        <li><a href="index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="building_errors.html" title="Appendix: Errors troubleshooting"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="vision_libraries.html" title="Vision Libraries Usage Instructions"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Home</a> &raquo;</li><li>Frequently Asked Questions</li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="frequently-asked-questions">
+<span id="isp-faq"></span><h1>Frequently Asked Questions<a class="headerlink" href="#frequently-asked-questions" title="Permalink to this headline">¶</a></h1>
+<p>This section contains the frequently asked questions and has links to other
+parts of this documentation that solves them.</p>
+<dl class="docutils">
+<dt>How to read/write hardware registers for debug purposes:</dt>
+<dd><p class="first">This is covered by the low level driver (CI) documentation:
+<a class="reference internal" href="ci/ci_library.html#isp-ci-debug-registers"><span>Register access for debugging purposes</span></a>.</p>
+<p class="last">When using the high level library (ISPC) one can use or modify the
+<code class="docutils literal"><span class="pre">PrintGasketInfo()</span></code> and <code class="docutils literal"><span class="pre">PrintRTMInfo()</span></code> in <code class="docutils literal"><span class="pre">info_helper.cpp</span></code>.</p>
+</dd>
+<dt>Debugging an MMU page fault:</dt>
+<dd>See <a class="reference internal" href="ci/ci_appendix_mmufault.html#isp-ci-debugging-a-page-fault"><span>CI Appendix: Debugging a Page Fault</span></a>.</dd>
+<dt>Debugging a fail to aqcuire buffer (missed frame):</dt>
+<dd>See <a class="reference internal" href="ci/ci_appendix_mmufault.html#isp-ci-debugging-a-fail-frame"><span>CI Appendix: Debugging a Failed to acquire frame</span></a>.</dd>
+<dt>Allocating buffers with specific size requirements (stride, memory layout):</dt>
+<dd><p class="first">See CI documentation: <a class="reference internal" href="ci/ci_library.html#isp-ci-output-size"><span>CI: Output sizes</span></a> and
+<a class="reference internal" href="ci/ci_library.html#isp-ci-output-layout"><span>CI: Output layout</span></a>.</p>
+<p class="last">See ISPC documentation <a class="reference internal" href="ispc/ispc_library.html#isp-ispc-output-size"><span>ISPC: Output sizes</span></a> and
+<a class="reference internal" href="ispc/ispc_library.html#isp-ispc-output-layout"><span>ISPC: Output layout</span></a>.</p>
+</dd>
+<dt>Porting driver to a new platform:</dt>
+<dd><p class="first">This is covered by the platform integration guide and is usually done in
+two steps:</p>
+<ul class="last simple">
+<li>Integration of the device access and discovery (<a class="reference internal" href="integration/platform.html#isp-pi-device-access"><span>Device Access</span></a>)</li>
+<li>Integration of the memory access (<a class="reference internal" href="integration/platform.html#isp-pi-memory-management"><span>Memory management</span></a>)</li>
+</ul>
+</dd>
+<dt>Implementing a new sensor driver:</dt>
+<dd>This is covered by the platform integration guide (<a class="reference internal" href="integration/sensor.html#isp-pi-sensor-driver"><span>Sensor driver</span></a>).</dd>
+</dl>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="vision_libraries.html"
+                        title="previous chapter">Vision Libraries Usage Instructions</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="building_errors.html"
+                        title="next chapter">Appendix: Errors troubleshooting</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

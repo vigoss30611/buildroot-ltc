@@ -1,0 +1,9 @@
+Kernel Parameters =:
+enable_system_heap      "heap 2: allocate from host memory using vmalloc"
+enable_contig_heap      "heap 1: allocate from host memory using kmalloc"
+carveout_size           "heap 4: allocate using carveout from pci memory: how many pages to carveout (0 to use pci bar size)"
+carveout_pci_vendor     "allocate using carveout from pci memory: PCI vendor id"
+carveout_pci_product    "carveout PCI product id"
+carveout_pci_bar        "carveout PCI BAR"
+carveout_phys_start     "carveout starting physical address (0 to use pci vendor/product"
+carveout_phys_offset    "offset to be added to carveout_phys_start: useful for sharing PCI memory with PALLOC"

@@ -1,0 +1,67 @@
+diff --git a/testbench_hevc_dec/Makefile.am b/testbench_hevc_dec/Makefile.am
+index 5dfef9a..e0acfea 100644
+--- a/testbench_hevc_dec/Makefile.am
++++ b/testbench_hevc_dec/Makefile.am
+@@ -23,13 +23,13 @@ testbench_hevc_dec_CPPFLAGS= -g -std=c99 	\
+ 					-DENABLE_HEVC_SUPPORT -DDOWN_SCALER\
+ 					-I$(top_srcdir)  \
+ 					$(LIBFR_CFLAGS)   \
+-					$(LIBHW_VDEC_G2_CFLAGS) \
++					$(LIBH2V1_CFLAGS) \
+ 					-I$(top_srcdir)/common  \
+ 					-I$(top_srcdir)/hevc  \
+ 					-I$(top_srcdir)/common/swhw
+ 
+ 
+-testbench_hevc_dec_LDFLAGS= $(LIBFR_LIBS)  $(LIBHW_VDEC_G2_LIBS) -lrt -lm
++testbench_hevc_dec_LDFLAGS= $(LIBFR_LIBS)  $(LIBH2V1_LIBS) -lrt -lm
+ 
+ testbench_hevc_dec_SOURCES=$(lib_common_SOURCES)
+ 
+diff --git a/testbench_hevc_dec/configure.ac b/testbench_hevc_dec/configure.ac
+index 5954860..6da1556 100644
+--- a/testbench_hevc_dec/configure.ac
++++ b/testbench_hevc_dec/configure.ac
+@@ -18,7 +18,7 @@ AC_PROG_CXX
+ AC_PROG_MAKE_SET
+ 
+ PKG_CHECK_MODULES(LIBFR,fr >= 1.0.0)
+-PKG_CHECK_MODULES(LIBHW_VDEC_G2,hw_vdec_g2 >= 1.0.0)
++PKG_CHECK_MODULES(LIBH2V1, hlibh2v1 >= 1.0.0)
+ 
+ 
+ 
+diff --git a/testing/Config.in b/testing/Config.in
+index daaf712..442ed1c 100644
+--- a/testing/Config.in
++++ b/testing/Config.in
+@@ -12,6 +12,11 @@ menu "options"
+ 		default y
+ 		help
+ 	  		install shared library into target dir	
++	config  BR2_PACKAGE_TESTING_TESTBENCH_H2V1
++		bool "Testing testbench_h2v1"
++		default y
++		help
++	  		install shared library into target dir	
+ 	config  BR2_PACKAGE_TESTING_MORE_CUSTOM
+ 		bool "more testing, will add soon"
+ 		default y
+diff --git a/testing/Makefile.am b/testing/Makefile.am
+index f160daf..ab2361c 100644
+--- a/testing/Makefile.am
++++ b/testing/Makefile.am
+@@ -1 +1 @@
+-SUBDIRS = vbctrl
++SUBDIRS = vbctrl testbench_h2v1
+diff --git a/testing/configure.ac b/testing/configure.ac
+index de81ab4..a26b167 100644
+--- a/testing/configure.ac
++++ b/testing/configure.ac
+@@ -29,5 +29,5 @@ AC_FUNC_MALLOC
+ AC_CHECK_FUNCS([clock_gettime gettimeofday memset strerror strrchr strstr])
+ 
+ 
+-AC_CONFIG_FILES(Makefile vbctrl/Makefile)
++AC_CONFIG_FILES(Makefile vbctrl/Makefile testbench_h2v1/Makefile)
+ AC_OUTPUT

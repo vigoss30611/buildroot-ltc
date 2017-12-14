@@ -1,0 +1,57 @@
+# libdsp
+
+HLIBDSP_VERSION = 1.0.0
+HLIBDSP_SOURCE = 
+HLIBDSP_SITE  = 
+
+HLIBDSP_LICENSE = 
+HLIBDSP_LICENSE_FILES = README
+
+HLIBDSP_MAINTAINED = YES
+HLIBDSP_AUTORECONF = YES
+HLIBDSP_INSTALL_STAGING = YES
+HLIBDSP_DEPENDENCIES = host-pkgconf
+
+# install headers
+define HLIBDSP_POST_INSTALL_STAGING_HEADERS
+	mkdir -p $(STAGING_DIR)/usr/include/dsp
+	mkdir -p $(STAGING_DIR)/usr/lib/pkgconfig
+	cp -rfv $(@D)/include/ceva/*.h  $(STAGING_DIR)/usr/include/dsp
+	cp -rfv $(@D)/libdsp.pc  $(STAGING_DIR)/usr/lib/pkgconfig/
+endef
+
+HLIBDSP_POST_INSTALL_STAGING_HOOKS  += HLIBDSP_POST_INSTALL_STAGING_HEADERS
+
+HLIBDSP_IMAGE_INSTALLED := firmware
+ifeq ($(BR2_PACKAGE_HLIBDSP_CEVA_TL421),y)
+	HLIBDSP_IMAGE_INSTALLED := $(HLIBDSP_IMAGE_INSTALLED)/ceva_tl421_dsp_image
+else
+	#defualt
+	HLIBDSP_IMAGE_INSTALLED := $(HLIBDSP_IMAGE_INSTALLED)/ceva_tl421_dsp_image
+endif
+
+ifeq ($(BR2_PACKAGE_HLIBDSP_DDR_64MB),y)
+	HLIBDSP_IMAGE_INSTALLED := $(HLIBDSP_IMAGE_INSTALLED)/DDR_64MB
+else ifeq ($(BR2_PACKAGE_HLIBDSP_DDR_128MB),y)
+	HLIBDSP_IMAGE_INSTALLED := $(HLIBDSP_IMAGE_INSTALLED)/DDR_128MB
+else
+	#defualt
+	HLIBDSP_IMAGE_INSTALLED := $(HLIBDSP_IMAGE_INSTALLED)/DDR_64MB
+endif
+
+define HLIBDSP_POST_INSTALL_TARGET_SHARED
+		rm -rf $(TARGET_DIR)/dsp/firmware > /dev/null
+		mkdir -p $(TARGET_DIR)/dsp/firmware
+		( if [ "$(BR2_PACKAGE_HLIBDSP_AEC)" = "y" ]; then \
+			cp -rfv $(@D)/$(HLIBDSP_IMAGE_INSTALLED)/vcp?*.bin $(TARGET_DIR)/dsp/firmware; \
+		elif [ "$(BR2_PACKAGE_HLIBDSP_AAC_ENCODE)" = "y" ]; then \
+			cp -rfv $(@D)/$(HLIBDSP_IMAGE_INSTALLED)/AACENC?*.bin $(TARGET_DIR)/dsp/firmware; \
+		elif [ "$(BR2_PACKAGE_HLIBDSP_AAC_DECODE)" = "y" ]; then \
+			cp -rfv $(@D)/$(HLIBDSP_IMAGE_INSTALLED)/AACDEC?*.bin $(TARGET_DIR)/dsp/firmware; \
+		fi)
+endef
+HLIBDSP_POST_INSTALL_TARGET_HOOKS  += HLIBDSP_POST_INSTALL_TARGET_SHARED
+
+
+$(eval $(autotools-package))
+

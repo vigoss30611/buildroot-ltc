@@ -1,0 +1,14 @@
+menuconfig IMAPX910_HWMON
+	bool "Imapx9 hardware monitor support"
+	default y
+	select HWMON
+	help 
+	This is for imapx9 hardware monitor sensors
+if IMAPX910_HWMON
+config IMAPX910_TEMP
+	tristate "iMAPx9 cpu/gpu temp sensor driver"
+	default y
+	help
+	 keep this disselected while not sure
+endif
+

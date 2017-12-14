@@ -1,0 +1,25 @@
+#! /bin/sh
+
+case "$1" in
+	start|"")
+		modprobe ddk_sensor i2c_addr=0x6c mipi=1 lanes=4 freq=410
+#		modprobe ddk_sensor i2c_addr=0x30 mipi=0
+#		modprobe stk3855
+#		echo 0 > /sys/class/ddk_sensor_debug/enable
+#		echo 0 > /sys/class/stk3855-debug/enable
+		modprobe hx280enc_265
+		modprobe vdec_g1
+#		modprobe vdec_g2
+		modprobe Felix ui32ClkRate=380000000
+		modprobe hx280enc_h1  g_h1_clk=300
+		videoboxd
+		;;
+	stop)
+		killall videoboxd
+		;;
+	*)
+		echo "Usage: videobox {start|stop}" >&2
+		exit 1
+		;;
+esac
+

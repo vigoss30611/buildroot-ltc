@@ -1,0 +1,38 @@
+{
+	"v4l2": {
+		"ipu": "v4l2",
+		"args": {
+			"driver":"imapx_camif",
+			"model": "xc9080",
+			"pixfmt": "nv12"
+		},
+		"port": {
+			"out": {
+				"w": 2160,
+				"h": 1080,
+				"pixel": "nv12",
+                "bind": { 
+                    "encavc0": "frame",
+                    "encavc2": "frame",   
+                    "jpeg": "in",
+                    "jpegfull":"in"
+                }
+
+			}
+		}
+	},
+
+    "encavc0": { "ipu": "h1264", 
+        "args": {
+			"rotate":"90R",
+            "framebase": 1, 
+            "framerate": 30
+        }
+    },
+    "encavc2": { "ipu": "h1264", "args": {"rotate":"90R","framebase": 1, "framerate": 30}},
+    "jpeg": { "ipu": "h1jpeg", "args": { "mode": "trigger"}},
+    "jpegfull": { 
+        "ipu": "h1jpeg", 
+        "args": { "mode": "trigger"}
+    }
+}

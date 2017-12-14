@@ -1,0 +1,129 @@
+#!/bin/bash
+
+if [[ ! -d tools ]]; then
+    echo -e "please run me in qsdk root dir"
+    exit 1
+fi
+
+source tools/qsdk.env
+
+lib_cfg(){
+	for i in `ls libs`
+	do
+		if [[ $i != "Kconfig" ]]; then
+			I=`echo $i | tr '[a-z]' '[A-Z]'`
+			line=`cat .config | grep "^CONFIG_${I}=y"`
+			if [[ -e .config.tmp ]]; then
+				line_old=`cat .config.tmp | grep "^CONFIG_${I}=y"`
+			else
+				line_old="XX"
+			fi
+			if [[ "${line}" != "${line_old}" ]]; then
+				if [[ -z ${line} ]]; then
+					if [[ -e "libs/${i}/lib/pkgconfig" ]]; then
+						for j in `ls libs/${i}/lib/pkgconfig`
+						do
+							rm file_system/system/usr/lib/pkgconfig/${j}
+						done
+					fi
+
+					if [[ -e "libs/${i}/lib" ]]; then
+						for j in `ls libs/${i}/lib`
+						do
+							if [[ $j != "pkgconfig" ]]; then
+								rm file_system/system/usr/lib/${j}
+							fi
+						done
+					fi
+
+					if [[ -e "libs/${i}/include/qsdk" ]]; then
+						for j in `ls libs/${i}/include/qsdk`
+						do
+							rm -rf file_system/system/usr/include/qsdk/${j}
+						done
+					fi
+
+					if [[ -e "libs/${i}/include" ]]; then
+						for j in `ls libs/${i}/include`
+						do
+							if [[ $j != "qsdk" ]]; then
+								rm -rf file_system/system/usr/include/${j}
+							fi
+						done
+					fi
+
+					if [[ -e "libs/${i}/resource/bin" ]]; then
+						for j in `ls -A libs/${i}/resource/bin`
+						do
+							rm file_system/system/usr/bin/${j}
+						done
+					fi
+
+					if [[ -e "libs/${i}/resource/root" ]]; then
+						for j in `ls -A libs/${i}/resource/root`
+						do
+							rm -rf file_system/system/root/${j}
+						done
+					fi
+
+					if [[ -e "libs/${i}/resource/other" ]]; then
+						for j in `ls -A libs/${i}/resource/other`
+						do
+							if [[ $i = "app-d304-main" ]]; then
+								rm file_system/system/etc/init.d/${j}
+							elif [[ $i = "app-libra-dana" ]]; then
+								rm file_system/system/opt/${j}
+							else
+								rm -rf file_system/system/${j}
+							fi
+						done
+						if [[ $i = "app-libra-main" ]]; then
+							rm file_system/system/etc/init.d/S904spv_gui
+							rm -rf file_system/system/etc/profile.d
+						fi
+					fi
+				elif [[ ${line_old} != "XX" ]]; then
+					if [[ -e "libs/${i}/lib" ]]; then
+						cp -dprf libs/${i}/lib/* file_system/system/usr/lib/
+					fi
+
+					if [[ -e "libs/${i}/include" ]]; then
+						cp -dprf libs/${i}/include/* file_system/system/usr/include/
+					fi
+
+					if [[ -e "libs/${i}/resource/bin" ]]; then
+						cp -dp libs/${i}/resource/bin/* file_system/system/usr/bin/
+					fi
+
+					if [[ -e "libs/${i}/resource/root" ]]; then
+						cp -dprf libs/${i}/resource/root/. file_system/system/root/
+					fi
+
+					if [[ -e "libs/${i}/resource/other" ]]; then
+						if [[ $i = "app-d304-main" ]]; then
+							cp -dp libs/${i}/resource/other/* file_system/system/etc/init.d/
+						elif [[ $i = "app-libra-dana" ]]; then
+							cp -dp libs/${i}/resource/other/* file_system/system/opt
+						elif [[ $i = "app-libra-main" ]]; then
+							cp -dprf libs/${i}/resource/other/profile.d file_system/system/etc
+							cp -dprf libs/${i}/resource/other/S904spv_gui file_system/system/etc/init.d/
+						else
+							cp -dprf libs/${i}/resource/other/* file_system/system/
+						fi
+					fi
+				fi
+			fi
+		fi
+	done
+}
+
+lib_config(){
+    #echo -e "-->config library"
+	cd ${WORKSPACE}
+
+	if [[ -e .config ]]; then
+		lib_cfg
+	fi
+}
+
+lib_config

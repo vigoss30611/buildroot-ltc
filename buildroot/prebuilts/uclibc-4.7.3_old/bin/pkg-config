@@ -1,0 +1,2 @@
+#!/bin/sh
+PKG_CONFIG_LIBDIR=${PKG_CONFIG_LIBDIR:-/home/fengwu/b/work/sportDv_x15_6/output/host/usr/arm-buildroot-linux-uclibcgnueabihf/sysroot/usr/lib/pkgconfig:/home/fengwu/b/work/sportDv_x15_6/output/host/usr/arm-buildroot-linux-uclibcgnueabihf/sysroot/usr/share/pkgconfig} PKG_CONFIG_SYSROOT_DIR=${PKG_CONFIG_SYSROOT_DIR:-/home/fengwu/b/work/sportDv_x15_6/output/host/usr/arm-buildroot-linux-uclibcgnueabihf/sysroot} $(dirname $0)/pkgconf $@

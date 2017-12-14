@@ -1,0 +1,90 @@
+{
+	"embzframe": {
+		"ipu":"dg-frame",
+		"args": {
+			"frames":3,
+			"mode": "vacant"
+		},
+		"port": {
+			"out":{
+				"w":1920,
+				"h":1088,
+				"pixel":"nv12"
+			}
+		}
+	},
+
+	"dgframe0": {
+		"ipu":"dg-frame",
+		"args":{
+			"frames": 3,
+			"mode": "pictrue",
+			"data":"/nfs/FEIN_1088x1088_mode7_NV12.yuv"
+		},
+		"port": {
+			"out":{
+				"w":1088,
+				"h":1088,
+				"pixel":"nv12",
+				"bind":{ "ispost0":"in",  "ispost1":"in"}
+			}
+		}
+	},
+
+	"ispost0": {
+		"ipu": "ispostv2",
+		"args": {
+			"lc_grid_file_name1": "/nfs/lc_up_2p360_0-0_hermite32_1088x1088-1920x544_fisheyes_panorama_0.bin",
+			"lc_geometry_file_name1": "/root/.ispost/lc_v1_0-0-0-0_hermite32_1080x1080-1920x1088_geo_fisheye_360.bin",
+			"dn_enable": 1,
+			"rotate": 0
+		},
+		"port": {
+			"dn": {
+				"w": 1920,
+				"h": 544,
+				"pixel": "nv12"
+			},
+			"uo": {
+				"w": 1920,
+				"h": 1088,
+				"pip_x":0,
+				"pip_y":0,
+				"pip_w":1920,
+				"pip_h":544,
+				"pixel": "nv12",
+				"embezzle":{ "embzframe":"out" }
+			}
+		}
+	},
+
+	"ispost1": {
+		"ipu": "ispostv2",
+		"args": {
+			"lc_grid_file_name1": "/nfs/lc_up_2p360_0-0_hermite32_1088x1088-1920x544_fisheyes_panorama_1.bin",
+			"lc_geometry_file_name1": "/root/.ispost/lc_v1_0-0-0-0_hermite32_1080x1080-1920x1088_geo_fisheye_360.bin",
+			"dn_enable": 1,
+			"rotate": 0
+		},
+		"port": {
+			"dn": {
+				"w": 1920,
+				"h": 544,
+				"pixel": "nv12"
+			},
+			"uo": {
+				"w": 1920,
+				"h": 1088,
+				"pip_x":0,
+				"pip_y":544,
+				"pip_w":1920,
+				"pip_h":544,
+				"pixel": "nv12",
+				"embezzle":{ "ispost0":"uo" },
+				"bind": { "display": "osd0" }
+			}
+		}
+	},
+
+	"display": { "ipu": "ids"}
+}

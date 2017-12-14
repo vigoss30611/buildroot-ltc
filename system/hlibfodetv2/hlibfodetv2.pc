@@ -1,0 +1,15 @@
+prefix=/usr
+exec_prefix=/usr
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: fodetv2
+Description: fodetv2  infotm
+Version: 1.0.0
+Requires: 
+Libs: -L${libdir} -lfodetv2
+Libs.private: -lm -ldl -lpthread -lrt
+# -I${includedir}/alsa below is just for backward compatibility
+# (it was set so mistakely in the older version)
+
+Cflags:  -I${includedir}/hlibfodetv2

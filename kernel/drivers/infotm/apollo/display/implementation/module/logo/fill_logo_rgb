@@ -1,0 +1,12 @@
+#! /bin/sh
+# Fill logo with rgb data from bmp file
+# Will generate logo_rgb.h containing unsigned char logo_rgb[] for use in logo_bmp.c
+# Every time, after replacement of "kernel_logo.bmp", please run "fill_logo_rgb" script manually. And then make again.
+# Refer to README
+
+rm -f kernel_logo.h
+rm -f logo_bmp.o
+xxd -i $1 _kernel_logo.h
+cat _kernel_logo.h | sed 's/unsigned/const unsigned/' > kernel_logo.h
+
+

@@ -1,0 +1,19 @@
+#
+# Kconfig InfotmMedia venc 8270 driver.
+#
+# Copyright (c) 2009~2014 ShangHai Infotm Ltd all rights reserved.
+#
+#
+
+menuconfig INFOTM_MEDIA_VENC_8270_SUPPORT
+        bool "InfotmMedia ven 8270 driver support"
+        default y
+
+if INFOTM_MEDIA_VENC_8270_SUPPORT
+
+config VENC_DVFS_SUPPORT
+	bool "venc DVFS support"
+	depends on INFOTM_MEDIA_VENC_8270_SUPPORT
+	default y
+
+endif

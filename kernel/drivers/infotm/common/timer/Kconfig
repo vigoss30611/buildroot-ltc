@@ -1,0 +1,3 @@
+config INFOTM_CMN1_TIMER
+        bool "Infotm cmn timer 1 API support"
+        default y

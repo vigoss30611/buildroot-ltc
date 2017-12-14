@@ -1,0 +1,262 @@
+From 1111458280c02203a118f22df5512a801fd8d758 Mon Sep 17 00:00:00 2001
+From: Marcin Mielczarczyk <marcin.mielczarczyk@imgtec.com>
+Date: Mon, 27 Oct 2014 10:40:44 +0100
+Subject: [PATCH] ION: port to x86 and some kernel funcs exported
+
+---
+ drivers/gpu/ion/Kconfig             |    2 +-
+ drivers/gpu/ion/Makefile            |    3 ++-
+ drivers/gpu/ion/ion.c               |   12 ++++++++++--
+ drivers/gpu/ion/ion_carveout_heap.c |   17 ++++++++++++++++-
+ drivers/gpu/ion/ion_heap.c          |    7 +++++++
+ drivers/gpu/ion/ion_page_pool.c     |    4 ++++
+ drivers/gpu/ion/ion_system_heap.c   |    7 ++++++-
+ include/linux/completion.h          |    4 ++++
+ 8 files changed, 50 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/gpu/ion/Kconfig b/drivers/gpu/ion/Kconfig
+index c62f2cb..f4eeca9 100644
+--- a/drivers/gpu/ion/Kconfig
++++ b/drivers/gpu/ion/Kconfig
+@@ -1,6 +1,6 @@
+ menuconfig ION
+ 	tristate "Ion Memory Manager"
+-	depends on ARM
++	depends on ARM || X86
+ 	select GENERIC_ALLOCATOR
+ 	select DMA_SHARED_BUFFER
+ 	help
+diff --git a/drivers/gpu/ion/Makefile b/drivers/gpu/ion/Makefile
+index 306fff9..221339c 100644
+--- a/drivers/gpu/ion/Makefile
++++ b/drivers/gpu/ion/Makefile
+@@ -1,3 +1,4 @@
+ obj-$(CONFIG_ION) +=	ion.o ion_heap.o ion_page_pool.o ion_system_heap.o \
+-			ion_carveout_heap.o ion_chunk_heap.o
++			ion_carveout_heap.o
++obj-$(CONFIG_ARM) += ion_chunk_heap.o
+ obj-$(CONFIG_ION_TEGRA) += tegra/
+diff --git a/drivers/gpu/ion/ion.c b/drivers/gpu/ion/ion.c
+index 6c93365..4fbb0bf 100644
+--- a/drivers/gpu/ion/ion.c
++++ b/drivers/gpu/ion/ion.c
+@@ -212,8 +212,10 @@ static struct ion_buffer *ion_buffer_create(struct ion_heap *heap,
+ 	   allocation via dma_map_sg. The implicit contract here is that
+ 	   memory comming from the heaps is ready for dma, ie if it has a
+ 	   cached mapping that mapping has been invalidated */
+-	for_each_sg(buffer->sg_table->sgl, sg, buffer->sg_table->nents, i)
++	for_each_sg(buffer->sg_table->sgl, sg, buffer->sg_table->nents, i) {
+ 		sg_dma_address(sg) = sg_phys(sg);
++		sg_dma_len(sg) = sg->length;
++	}
+ 	mutex_lock(&dev->buffer_lock);
+ 	ion_buffer_add(dev, buffer);
+ 	mutex_unlock(&dev->buffer_lock);
+@@ -1358,15 +1360,19 @@ void ion_device_add_heap(struct ion_device *dev, struct ion_heap *heap)
+ #endif
+ 	up_write(&dev->lock);
+ }
++EXPORT_SYMBOL(ion_device_add_heap);
+ 
+ struct ion_device *ion_device_create(long (*custom_ioctl)
+ 				     (struct ion_client *client,
+ 				      unsigned int cmd,
+ 				      unsigned long arg))
+ {
+-	struct ion_device *idev;
++	static struct ion_device *idev;
+ 	int ret;
+ 
++	if(idev)
++		return idev;
++
+ 	idev = kzalloc(sizeof(struct ion_device), GFP_KERNEL);
+ 	if (!idev)
+ 		return ERR_PTR(-ENOMEM);
+@@ -1393,6 +1399,7 @@ struct ion_device *ion_device_create(long (*custom_ioctl)
+ 	idev->clients = RB_ROOT;
+ 	return idev;
+ }
++EXPORT_SYMBOL(ion_device_create);
+ 
+ void ion_device_destroy(struct ion_device *dev)
+ {
+@@ -1400,6 +1407,7 @@ void ion_device_destroy(struct ion_device *dev)
+ 	/* XXX need to free the heaps and clients ? */
+ 	kfree(dev);
+ }
++EXPORT_SYMBOL(ion_device_destroy);
+ 
+ void __init ion_reserve(struct ion_platform_data *data)
+ {
+diff --git a/drivers/gpu/ion/ion_carveout_heap.c b/drivers/gpu/ion/ion_carveout_heap.c
+index ce8d311..e4a3d30 100644
+--- a/drivers/gpu/ion/ion_carveout_heap.c
++++ b/drivers/gpu/ion/ion_carveout_heap.c
+@@ -24,8 +24,15 @@
+ #include <linux/slab.h>
+ #include <linux/vmalloc.h>
+ #include "ion_priv.h"
+-
++#ifdef CONFIG_ARM
+ #include <asm/mach/map.h>
++#endif
++#ifndef phys_to_page
++#define phys_to_page(phys) (pfn_to_page(phys >> PAGE_SHIFT))
++#endif
++#ifndef __phys_to_pfn
++#define __phys_to_pfn(paddr)    ((paddr) >> PAGE_SHIFT)
++#endif
+ 
+ struct ion_carveout_heap {
+ 	struct ion_heap heap;
+@@ -112,6 +119,7 @@ void ion_carveout_heap_unmap_dma(struct ion_heap *heap,
+ void *ion_carveout_heap_map_kernel(struct ion_heap *heap,
+ 				   struct ion_buffer *buffer)
+ {
++#ifdef CONFIG_ARM
+ 	int mtype = MT_MEMORY_NONCACHED;
+ 
+ 	if (buffer->flags & ION_FLAG_CACHED)
+@@ -119,12 +127,19 @@ void *ion_carveout_heap_map_kernel(struct ion_heap *heap,
+ 
+ 	return __arm_ioremap(buffer->priv_phys, buffer->size,
+ 			      mtype);
++#else
++	return ioremap(buffer->priv_phys, buffer->size);
++#endif
+ }
+ 
+ void ion_carveout_heap_unmap_kernel(struct ion_heap *heap,
+ 				    struct ion_buffer *buffer)
+ {
++#ifdef CONFIG_ARM
+ 	__arm_iounmap(buffer->vaddr);
++#else
++    iounmap(buffer->vaddr);
++#endif
+ 	buffer->vaddr = NULL;
+ 	return;
+ }
+diff --git a/drivers/gpu/ion/ion_heap.c b/drivers/gpu/ion/ion_heap.c
+index 4a16aa2..fd9bd90 100644
+--- a/drivers/gpu/ion/ion_heap.c
++++ b/drivers/gpu/ion/ion_heap.c
+@@ -14,6 +14,7 @@
+  *
+  */
+ 
++#include <linux/export.h>
+ #include <linux/err.h>
+ #include <linux/freezer.h>
+ #include <linux/ion.h>
+@@ -251,9 +252,11 @@ struct ion_heap *ion_heap_create(struct ion_platform_heap *heap_data)
+ 	case ION_HEAP_TYPE_CARVEOUT:
+ 		heap = ion_carveout_heap_create(heap_data);
+ 		break;
++#ifdef CONFIG_ARM
+ 	case ION_HEAP_TYPE_CHUNK:
+ 		heap = ion_chunk_heap_create(heap_data);
+ 		break;
++#endif
+ 	default:
+ 		pr_err("%s: Invalid heap type %d\n", __func__,
+ 		       heap_data->type);
+@@ -271,6 +274,7 @@ struct ion_heap *ion_heap_create(struct ion_platform_heap *heap_data)
+ 	heap->id = heap_data->id;
+ 	return heap;
+ }
++EXPORT_SYMBOL(ion_heap_create);
+ 
+ void ion_heap_destroy(struct ion_heap *heap)
+ {
+@@ -287,11 +291,14 @@ void ion_heap_destroy(struct ion_heap *heap)
+ 	case ION_HEAP_TYPE_CARVEOUT:
+ 		ion_carveout_heap_destroy(heap);
+ 		break;
++#ifdef CONFIG_ARM
+ 	case ION_HEAP_TYPE_CHUNK:
+ 		ion_chunk_heap_destroy(heap);
+ 		break;
++#endif
+ 	default:
+ 		pr_err("%s: Invalid heap type %d\n", __func__,
+ 		       heap->type);
+ 	}
+ }
++EXPORT_SYMBOL(ion_heap_destroy);
+diff --git a/drivers/gpu/ion/ion_page_pool.c b/drivers/gpu/ion/ion_page_pool.c
+index 7e00f51..1d070fa 100644
+--- a/drivers/gpu/ion/ion_page_pool.c
++++ b/drivers/gpu/ion/ion_page_pool.c
+@@ -34,6 +34,7 @@ static void *ion_page_pool_alloc_pages(struct ion_page_pool *pool)
+ 
+ 	if (!page)
+ 		return NULL;
++#if defined(CONFIG_ARM)
+ 	/* this is only being used to flush the page for dma,
+ 	   this api is not really suitable for calling from a driver
+ 	   but no better way to flush a page for dma exist at this time */
+@@ -41,6 +42,9 @@ static void *ion_page_pool_alloc_pages(struct ion_page_pool *pool)
+ 					   pfn_to_dma(NULL, page_to_pfn(page)),
+ 					   PAGE_SIZE << pool->order,
+ 					   DMA_BIDIRECTIONAL);
++#elif defined(CONFIG_X86)
++	wbinvd_on_all_cpus();
++#endif
+ 	return page;
+ }
+ 
+diff --git a/drivers/gpu/ion/ion_system_heap.c b/drivers/gpu/ion/ion_system_heap.c
+index e101db5..1627a21 100644
+--- a/drivers/gpu/ion/ion_system_heap.c
++++ b/drivers/gpu/ion/ion_system_heap.c
+@@ -24,6 +24,7 @@
+ #include <linux/seq_file.h>
+ #include <linux/slab.h>
+ #include <linux/vmalloc.h>
++#include <linux/pfn.h>
+ #include "ion_priv.h"
+ 
+ static unsigned int high_order_gfp_flags = (GFP_HIGHUSER | __GFP_ZERO |
+@@ -78,9 +79,13 @@ static struct page *alloc_buffer_page(struct ion_system_heap *heap,
+ 		page = alloc_pages(gfp_flags, order);
+ 		if (!page)
+ 			return 0;
++#if defined(CONFIG_ARM)
+ 		arm_dma_ops.sync_single_for_device(NULL,
+ 			pfn_to_dma(NULL, page_to_pfn(page)),
+ 			PAGE_SIZE << order, DMA_BIDIRECTIONAL);
++#elif defined(CONFIG_X86)
++		wbinvd_on_all_cpus();
++#endif
+ 	}
+ 	if (!page)
+ 		return 0;
+@@ -430,7 +435,7 @@ int ion_system_contig_heap_map_user(struct ion_heap *heap,
+ 				    struct ion_buffer *buffer,
+ 				    struct vm_area_struct *vma)
+ {
+-	unsigned long pfn = __phys_to_pfn(virt_to_phys(buffer->priv_virt));
++	unsigned long pfn = PFN_DOWN(virt_to_phys(buffer->priv_virt));
+ 	return remap_pfn_range(vma, vma->vm_start, pfn + vma->vm_pgoff,
+ 			       vma->vm_end - vma->vm_start,
+ 			       vma->vm_page_prot);
+diff --git a/include/linux/completion.h b/include/linux/completion.h
+index 33f0280..44e00dd 100644
+--- a/include/linux/completion.h
++++ b/include/linux/completion.h
+@@ -102,6 +102,10 @@ extern void complete_all(struct completion *);
+  * be reused. This is especially important after complete_all() is used.
+  */
+ #define INIT_COMPLETION(x)	((x).done = 0)
++static inline void reinit_completion(struct completion *x)
++{
++	x->done = 0;
++}
+ 
+ 
+ #endif
+-- 
+1.7.9.5
+

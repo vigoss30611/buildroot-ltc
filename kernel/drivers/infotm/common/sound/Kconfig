@@ -1,0 +1,15 @@
+menuconfig INFOTM_SOUND
+	bool "Infotm SoC Audio"
+	depends on SND_SOC
+	help
+	Say Y here, and a list of supported audio will be displayed.
+
+if INFOTM_SOUND
+config INFOTM_AUTO_ENABLE_SPK
+        bool "playback auto open and close speaker"
+  default n
+
+source "drivers/infotm/common/sound/codecs/Kconfig"
+source "drivers/infotm/common/sound/configuration/Kconfig"
+source "drivers/infotm/common/sound/imapx/Kconfig"
+endif

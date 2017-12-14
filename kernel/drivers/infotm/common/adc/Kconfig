@@ -1,0 +1,29 @@
+menuconfig INFOTM_ADC
+		bool "Infotm ADC support"
+		default n
+		help
+		This is the Infotm internal ADC driver
+if INFOTM_ADC
+config ADC_IMAPX
+		tristate "iMAPx ADC driver"
+        default n                 
+		help                       
+			ADC driver for iMAPx      
+config ADC_IP6303
+		tristate "IP6303 ADC driver"
+        default n                 
+		help                       
+			ADC driver for IP6303      
+config ADC_KEYS_IMAPX
+		tristate "iMapx ADC based KEYs driver implementation"
+		depends on ADC_IMAPX
+		help 
+		        Keys driver which base on adc sample driver
+config ADC_KEYS_IP6303
+		tristate "IP6303 ADC based KEYs driver implementation"
+		depends on ADC_IP6303
+		help 
+		        Keys driver which base on adc sample driver
+
+endif
+

@@ -1,0 +1,19 @@
+diff --git a/libpixelflinger/format.cpp b/libpixelflinger/format.cpp
+index 6546e8c..31cb0c1 100644
+--- a/libpixelflinger/format.cpp
++++ b/libpixelflinger/format.cpp
+@@ -24,8 +24,12 @@ static GGLFormat const gPixelFormatInfos[] =
+ {   //          Alpha    Red     Green   Blue
+     {  0,  0, {{ 0, 0,   0, 0,   0, 0,   0, 0 }},        0 },   // PIXEL_FORMAT_NONE
+     {  4, 32, {{32,24,   8, 0,  16, 8,  24,16 }}, GGL_RGBA },   // PIXEL_FORMAT_RGBA_8888
+-    {  4, 24, {{ 0, 0,   8, 0,  16, 8,  24,16 }}, GGL_RGB  },   // PIXEL_FORMAT_RGBX_8888
+-    {  3, 24, {{ 0, 0,   8, 0,  16, 8,  24,16 }}, GGL_RGB  },   // PIXEL_FORMAT_RGB_888
++    //{  4, 24, {{ 0, 0,   8, 0,  16, 8,  24,16 }}, GGL_RGB  },   // PIXEL_FORMAT_RGBX_8888
++    {  4, 24, {{ 0, 0,   24, 16,  16, 8,  8,0 }}, GGL_RGB  },   // PIXEL_FORMAT_RGBX_8888 reversed to BGRX
++    // This is workaround for Felix which RGB display output format is
++    // compliant with RGB24 and is defined as follows: R[23:16] G[15:8] B[7:0]
++    {  3, 24, {{ 0, 0,   24, 16,  16, 8,  8,0 }}, GGL_RGB  },   // PIXEL_FORMAT_RGB_888
++    //{  3, 24, {{ 0, 0,   8, 0,  16, 8,  24,16 }}, GGL_RGB  },   // PIXEL_FORMAT_RGB_888
+     {  2, 16, {{ 0, 0,  16,11,  11, 5,   5, 0 }}, GGL_RGB  },   // PIXEL_FORMAT_RGB_565
+     {  4, 32, {{32,24,  24,16,  16, 8,   8, 0 }}, GGL_RGBA },   // PIXEL_FORMAT_BGRA_8888
+     {  2, 16, {{ 1, 0,  16,11,  11, 6,   6, 1 }}, GGL_RGBA },   // PIXEL_FORMAT_RGBA_5551

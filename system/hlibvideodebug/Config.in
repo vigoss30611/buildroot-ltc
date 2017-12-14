@@ -1,0 +1,5 @@
+config BR2_PACKAGE_HLIBVIDEODEBUG
+	bool "hlibvideodebug"
+	help
+		video debug tools library
+

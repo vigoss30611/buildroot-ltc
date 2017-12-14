@@ -1,0 +1,79 @@
+config BR2_PACKAGE_TESTING
+	bool "Testing menu"
+
+	help
+		vbctrl
+		http://www.infotm.com/
+
+if BR2_PACKAGE_TESTING 
+	config  BR2_PACKAGE_TESTING_GPIO
+		bool "Testing gpio"
+		default y
+		help
+	  		install shared library into target dir
+	config  BR2_PACKAGE_TESTING_CCF
+		bool "Testing ccf"
+		default y
+		help
+	  		install shared library into target dir
+	config  BR2_PACKAGE_TESTING_AUTO_DELAYLINE_TEST
+		bool "Testing delayline"
+		default y
+		help
+	  		install shared library into target dir
+	config  BR2_PACKAGE_TESTING_VBCTRL
+		bool "Testing vbctrl"
+		default y
+		help
+	  		install shared library into target dir	
+	config  BR2_PACKAGE_TESTING_ABCTRL
+		bool "Testing abctrl"
+		default y
+		help
+	  		install shared library into target dir
+	config  BR2_PACKAGE_TESTING_TESTBENCH_H2V1
+		bool "Testing testbench_h2v1"
+		default n
+		help
+	  		install shared library into target dir	
+	config  BR2_PACKAGE_TESTING_TESTBENCH_G2V1
+		bool "Testing testbench_g2v1"
+		default n
+		help
+	  		install shared library into target dir	
+	config  BR2_PACKAGE_TESTING_TESTBENCH_H1V6
+		bool "Testing testbench_h1v6"
+		default n
+		help
+	  		install shared library into target dir
+	config  BR2_PACKAGE_TESTING_TESTBENCH_JENC
+		bool "Testing testbench_jenc"
+		default n
+		help
+	  		install shared library into target dir
+	config  BR2_PACKAGE_TESTING_TESTBENCH_G1V6
+		bool "Testing testbench_g1v6"
+		default n
+		help
+	  		install shared library into target dir
+	config  BR2_PACKAGE_TESTING_DISPLAY2
+		bool "Testing display2"
+		default y
+		help
+	  		install shared library into target dir
+	config  BR2_PACKAGE_TESTING_WATCHDOG
+		bool "Testing Watchdog Timer"
+		default y
+		help
+	  		install shared library into target dir
+	config  BR2_PACKAGE_TESTING_MMC
+		bool "Testing SD/MMC card"
+		default y
+	source "$BR2_EXTERNAL/testing/misc/Config.in"
+	config  BR2_PACKAGE_TESTING_MORE_CUSTOM
+		bool "more testing, will add soon"
+		default y
+		help
+	  		install shared library into target dir
+
+endif

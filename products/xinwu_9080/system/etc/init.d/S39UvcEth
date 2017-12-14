@@ -1,0 +1,64 @@
+#!/bin/sh
+#
+# debug        debug
+#
+
+uvc_enable()
+{
+    modprobe g_webcam 
+}
+
+usb_ethernet_enable()
+{
+	modprobe g_ether
+	ifconfig usb0 up
+	ifconfig usb0 172.3.0.2
+}
+
+case "$1" in
+  start)
+    #change to host mode
+    echo 1 > /sys/bus/platform/drivers/dwc_otg/is_host
+    echo "" >  /sys/devices/platform/dwc_otg/gadget/lun0/file
+    mount -t debugfs none /sys/kernel/debug
+    mkdir -p /dev/usb-ffs/fastboot
+    mount -t functionfs fastboot /dev/usb-ffs/fastboot
+    ;;
+  uvc-prepare)
+    echo 0 > /sys/class/infotm_usb/infotm0/enable
+    echo 0001 > /sys/class/infotm_usb/infotm0/idProduct
+    echo "uvc"  > /sys/class/infotm_usb/infotm0/functions
+    echo 1 > /sys/class/infotm_usb/infotm0/enable
+    ;;
+  enable)
+    #change to device mode
+    echo 0 > /sys/bus/platform/drivers/dwc_otg/is_host
+    usleep 2000
+    # software link connect/disconnect
+    echo 0 > /sys/kernel/debug/dwc_otg/link
+    echo 1 > /sys/kernel/debug/dwc_otg/link
+	;;
+  enable-fb)
+    #change to device mode
+    echo 0 > /sys/class/infotm_usb/infotm0/enable
+    echo 0004 > /sys/class/infotm_usb/infotm0/idProduct
+    echo "ffs"  > /sys/class/infotm_usb/infotm0/functions
+    echo 1 > /sys/class/infotm_usb/infotm0/enable
+    echo 0 > /sys/bus/platform/drivers/dwc_otg/is_host
+    usleep 2000
+    # software link connect/disconnect
+    echo 0 > /sys/kernel/debug/dwc_otg/link
+    echo 1 > /sys/kernel/debug/dwc_otg/link
+	;;
+
+  stop)
+	;;
+  restart|reload)
+	;;
+  *)
+	echo "Usage: $0 {start|enable|stop|restart}"
+	exit 1
+esac
+
+exit $?
+

@@ -1,0 +1,87 @@
+{
+    "isp": {
+        "ipu": "v2500",
+        "args": {
+            "mode": 0,
+            "flip": 2,
+            "name": "OV4689",
+            "config": "/root/.ispddk/config-normal.txt"
+        },
+        "port": {
+            "out": {
+                "w": 1920,
+                "h": 1088,
+                "pixel_format": "nv12",
+                "fps": 60,
+                "bind": { "ispost0": "in" }
+            }
+        }
+    },
+
+    "marker0": {
+        "ipu": "marker",
+        "args": {
+            "mode": "nv12"
+        },
+        "port": {
+            "out": {
+                "w": 960,
+                "h": 80,
+                "pixel_format": "nv12",
+                "bind": { "ispost0": "ol" }
+            }
+        }
+    },
+
+    "ispost0": {
+        "ipu": "ispost",
+        "args":{
+            "lc_grid_file_name1": "/root/.ispost/lc_v1_hermite32_1920x1088_scup_0~30.bin"
+        },
+        "port": {
+            "ol": {
+                "pip_x":600,
+                "pip_y":900
+            },
+            "ss0":{
+                "w":1920,
+                "h":1088,
+                "pixel_format":"nv12",
+                "bind":{ "encss0" : "frame"}
+            },
+            "ss1":{
+                "w":1920,
+                "h":1088,
+                "pixel_format":"nv12",
+                "bind":{ "jpeg": "in", "display": "osd0" }
+            }
+        }
+    },
+
+    "fs": {
+        "ipu": "filesource",
+        "port": {
+            "out": {
+                "bind": {"dec0": "stream"}
+            }
+        }
+    },
+
+    "dec0":{
+        "ipu":"g2",
+        "port":{
+            "frame":{
+                "w": 1920,
+                "h": 1088
+            }
+        }
+    },
+
+    "jpeg": { "ipu": "h1jpeg", "args": { "mode": "trigger"}},
+    "encss0": { "ipu": "vencoder",
+        "args": {
+            "encode_type": "h265"
+        }
+    },
+    "display": { "ipu": "ids", "args": { "no_osd1": 0 }}
+}

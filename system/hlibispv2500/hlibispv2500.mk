@@ -1,0 +1,85 @@
+################################################################################
+#
+# ispddk
+#
+################################################################################
+
+HLIBISPV2500_VERSION = 2.7.0
+HLIBISPV2500_SOURCE =
+HLIBISPV2500_SITE  =
+
+HLIBISPV2500_LICENSE =
+HLIBISPV2500_LICENSE_FILES = README
+
+HLIBISPV2500_MAINTAINED = NO
+HLIBISPV2500_MAINTAINED_CMAKE = YES
+HLIBISPV2500_AUTORECONF = NO
+HLIBISPV2500_INSTALL_STAGING = YES
+HLIBISPV2500_CONF_OPT = -DBUILD_DEMOS=ON
+HLIBISPV2500_DEPENDENCIES = host-pkgconf hlibcamsensor
+
+INTERFACE_INCLUDE_DIR = $(shell $(HOST_DIR)/usr/bin/pkg-config --cflags interface | sed -e 's/^..//')
+
+HLIBISPV2500_SUBDIR = DDKSource
+HLIBISPV2500_CONF_ENV =
+HLIBISPV2500_CONF_OPT = \
+    	-DINFOTM_LCD_ORIENTATION=$(BR2_PACKAGE_ISPDDK_LCD_ORIENTATION) \
+    	-DINFOTM_ISP_POST_ENABLE=$(BR2_PACKAGE_ISPDDK_ISP_POST_ENABLE) \
+    	-DINFOTM_ADAS_ENABLE=$(BR2_PACKAGE_ISPDDK_ADAS_ENABLE) \
+    	-DINFOTM_ADAS_RESULT_ON_ISP=$(BR2_PACKAGE_ISPDDK_ADAS_RESULT_ON_ISP) \
+    	-DINFOTM_RESOLUTION_SWITCH_MODULE=$(BR2_PACKAGE_ISPDDK_RESOLUTION_SWITCH_MODULE) \
+    	-DINTERFACE_INCLUDE_DIR=$(INTERFACE_INCLUDE_DIR) \
+    	-DINFOTM_BOARD_MODEL=$(BR2_PACKAGE_ISPDDK_BOARD_MODEL) \
+    	-DLINUX_KERNEL_BUILD_DIR=$(LINUX_BUILDDIR) \
+    	-DCMAKE_INSTALL_PREFIX=$(TARGET_DIR)/usr/bin \
+		-DCROSS_COMPILE=$(BR2_TOOLCHAIN_EXTERNAL_PATH)/bin/$(BR2_TOOLCHAIN_EXTERNAL_CUSTOM_PREFIX)-
+
+ifeq ($(BR2_PACKAGE_LIBISPV2500_MNEON),y)
+HLIBISPV2500_DEPENDENCIES += libmneon
+HLIBISPV2500_CONF_OPT += -DINFOTM_MNEON_SUPPORT=yes
+endif
+
+ifeq ($(BR2_PACKAGE_LIBISPV2500_Q360),y)
+	HLIBISPV2500_CONF_OPT += -DINFOTM_Q360_PROJECT=yes
+endif
+ifeq ($(BR2_PACKAGE_LIBISPV2500_LANCHOU),y)
+        HLIBISPV2500_CONF_OPT += -DINFOTM_LANCHOU_PROJECT=yes
+endif
+ifeq ($(BR2_PACKAGE_LIBISPV2505_LANCHOU),y)
+        HLIBISPV2500_CONF_OPT += -DINFOTM_LANCHOU_PROJECT=yes
+endif
+
+HLIBISPV2500_MAKE = make
+HLIBISPV2500_MAKE_ENV =
+HLIBISPV2500_MAKE_OPT =
+HLIBISPV2500_INSTALL_STAGING_OPT =
+HLIBISPV2500_INSTALL_TARGET_OPT =
+#install headers
+define HLIBISPV2500_POST_INSTALL_STAGING_HEADERS
+	@echo "++++++++++++install staging target: libaray and include---------"
+	mkdir -p $(STAGING_DIR)/usr/include/hlibispv2500
+	#cp -rfv $(@D)/DDKSource/out/lib/hlibispv2500.a $(STAGING_DIR)/usr/lib
+	cp -rfv $(@D)/DDKSource/out/lib/*.a $(STAGING_DIR)/usr/lib
+	cp -rfv $(@D)/$(HLIBISPV2500_SUBDIR)/ISP_Control/ISPC_lib/include/* $(STAGING_DIR)/usr/include/hlibispv2500
+	cp -rfv $(@D)/$(HLIBISPV2500_SUBDIR)/common/img_includes/* $(STAGING_DIR)/usr/include/hlibispv2500
+	cp -rfv $(@D)/$(HLIBISPV2500_SUBDIR)/CI/felix/felix_lib/user/include/* $(STAGING_DIR)/usr/include/hlibispv2500
+	cp -rfv $(@D)/$(HLIBISPV2500_SUBDIR)/common/felixcommon/include/* $(STAGING_DIR)/usr/include/hlibispv2500
+	cp -rfv $(@D)/$(HLIBISPV2500_SUBDIR)/CI/felix/regdefs/vhc_out/* $(STAGING_DIR)/usr/include/hlibispv2500
+	cp -rfv $(@D)/$(HLIBISPV2500_SUBDIR)/CI/felix/regdefs/include/* $(STAGING_DIR)/usr/include/hlibispv2500
+	cp -rfv $(@D)/$(HLIBISPV2500_SUBDIR)/sensorapi/include/* $(STAGING_DIR)/usr/include/hlibispv2500
+	cp -rfv $(@D)/$(HLIBISPV2500_SUBDIR)/common/dyncmd/include/* $(STAGING_DIR)/usr/include/hlibispv2500
+	cp -rfv $(shell pwd)/system/hlibispv2500/hlibispv2500.pc $(STAGING_DIR)/usr/lib/pkgconfig/
+	
+endef
+HLIBISPV2500_POST_INSTALL_STAGING_HOOKS  += HLIBISPV2500_POST_INSTALL_STAGING_HEADERS
+
+define HLIBISPV2500_POST_INSTALL_STAGING_MNEON_FIX
+	sed -i s/ADDMNEONLIB\=/ADDMNEONLIB\=\-lmneon/g $(STAGING_DIR)/usr/lib/pkgconfig/hlibispv2500.pc	
+endef
+
+ifeq ($(BR2_PACKAGE_LIBISPV2500_MNEON),y)
+HLIBISPV2500_POST_INSTALL_STAGING_HOOKS  += HLIBISPV2500_POST_INSTALL_STAGING_MNEON_FIX
+endif
+
+$(eval $(cmake-package))
+

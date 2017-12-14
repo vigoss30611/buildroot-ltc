@@ -1,0 +1,13 @@
+config BR2_PACKAGE_EVENTHUB
+	bool "eventhub"
+	help
+
+	  http://www.infotm.com/
+
+
+config BR2_PACKAGE_TESTING_EVENT
+	bool "event testing"
+	depends on BR2_PACKAGE_EVENTHUB
+	help
+
+	  http://www.infotm.com/

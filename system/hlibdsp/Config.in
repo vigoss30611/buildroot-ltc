@@ -1,0 +1,89 @@
+config BR2_PACKAGE_HLIBDSP
+	bool "hlibdsp"
+	default n
+	help 
+	  InfoTM dsp lib.
+
+if BR2_PACKAGE_HLIBDSP
+
+menu "options"
+
+	choice
+		prompt "DSP Type"
+		default BR2_PACKAGE_HLIBDSP_CEVA_TL421
+		help
+		  CEVA TL421 dsp.
+
+	config BR2_PACKAGE_HLIBDSP_CEVA_TL421
+		bool "ceva-tl421"
+		help
+		  CEVA TL421 dsp.
+	endchoice
+
+	choice
+		prompt "DDR Size"
+		default BR2_PACKAGE_HLIBDSP_DDR_64MB
+		help
+		  Select the DDR size your system using.
+
+	config BR2_PACKAGE_HLIBDSP_DDR_64MB
+		bool "64MB"
+		help
+		  DDR size of system is 64MB.
+
+	config BR2_PACKAGE_HLIBDSP_DDR_128MB
+		bool "128MB"
+		help
+		  DDR size of system is 128MB.
+	endchoice
+
+    choice
+        prompt "DSP Algorithm"
+        default BR2_PACKAGE_HLIBDSP_AEC
+        default n
+        help
+            Select dsp Algorithm on platform
+
+    config BR2_PACKAGE_HLIBDSP_AAC_ENCODE
+        bool "dsp AAC encode"
+        default n
+        help
+            Apply AAC Encode algorithm on dsp
+
+    config BR2_PACKAGE_HLIBDSP_AAC_DECODE
+        bool "dsp AAC decode(under develop;not recommand)"
+        default n
+        help
+            Apply AAC Decode algorithm on dsp
+
+    config BR2_PACKAGE_HLIBDSP_AEC
+        bool "dsp AEC"
+        default n
+        help
+            Apply dsp AEC algorithm on dsp
+	endchoice
+
+    choice
+        prompt "AEC Algorithm version choose"
+        depends on BR2_PACKAGE_HLIBDSP_AEC
+        default BR2_PACKAGE_HLIBDSP_AECV1
+        help
+            Select AEC Algorithm version on platform
+
+    config BR2_PACKAGE_HLIBDSP_AECV1
+        bool "AEC Algorithm version 1"
+        default n
+        help
+            Apply AEC Algorithm version1 on platform
+
+    config BR2_PACKAGE_HLIBDSP_AECV2
+        bool "AEC Algorithm version 2"
+        default n
+        help
+            Apply AEC Algorithm version2 on platform
+
+    endchoice
+
+endmenu
+
+endif

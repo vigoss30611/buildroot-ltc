@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/black" >
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:fitsSystemWindows="false" >
+
+        <FrameLayout
+            android:id="@+id/player_surface_frame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:foregroundGravity="clip_vertical|clip_horizontal" >
+
+            <SurfaceView
+                android:id="@+id/player_surface"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" />
+
+            <com.danale.video.view.opengl.DanaleGlSurfaceView
+                android:id="@+id/player_gl_surface"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" />
+        </FrameLayout>
+    </FrameLayout>
+
+    <ImageButton
+        android:id="@+id/btn_middle_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@null"
+        android:src="@drawable/ic_middle_play"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/layout_live_video_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:indeterminate="true"
+            android:indeterminateOnly="true" />
+
+        <TextView
+            android:id="@+id/tv_live_video_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/live_video_loading"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_16sp" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_live_video_control_top"
+        android:layout_width="fill_parent"
+        android:layout_height="40.0dip"
+        android:layout_alignParentTop="true"
+        android:background="#aa000000" >
+
+        <ImageButton
+            android:id="@+id/btn_live_video_back"
+            android:layout_width="40.0dip"
+            android:layout_height="25.0dip"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20.0dip"
+            android:alpha="0.8"
+            android:background="@null"
+            android:scaleType="fitCenter"
+            android:src="@drawable/live_video_control_back_selector" />
+
+        <TextView
+            android:id="@+id/btn_live_video_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20.0dip"
+            android:layout_marginRight="10.0dip"
+            android:layout_toLeftOf="@+id/layout_live_video_title_control_button"
+            android:layout_toRightOf="@id/btn_live_video_back"
+            android:singleLine="true"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_18sp" />
+
+        <LinearLayout
+            android:id="@+id/layout_live_video_title_control_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal" >
+
+            <Spinner
+                android:id="@+id/spinner_rate"
+                android:layout_width="35.0dip"
+                android:layout_height="25.0dip"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="25.0dip"
+                android:alpha="0.8"
+                android:background="@android:color/darker_gray"
+                android:popupBackground="@android:color/darker_gray"
+                android:spinnerMode="dropdown"
+                android:visibility="gone" />
+
+            <Spinner
+                android:id="@+id/spinner_channel"
+                android:layout_width="80.0dip"
+                android:layout_height="40.0dip"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="25.0dip"
+                android:alpha="0.8"
+                android:background="@null"
+                android:popupBackground="@android:color/darker_gray"
+                android:spinnerMode="dropdown"
+                android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/btn_record_take_photo"
+                android:layout_width="30.0dip"
+                android:layout_height="30.0dip"
+                android:layout_marginRight="25.0dip"
+                android:alpha="0.8"
+                android:background="@null"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_record_take_photo_selector"
+                android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/btn_record_take_record"
+                android:layout_width="30.0dip"
+                android:layout_height="30.0dip"
+                android:layout_marginRight="25.0dip"
+                android:alpha="0.8"
+                android:background="@null"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_record_take_record_selector"
+                android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/btn_record_control"
+                android:layout_width="30.0dip"
+                android:layout_height="30.0dip"
+                android:layout_marginRight="20.0dip"
+                android:alpha="0.8"
+                android:background="@null"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_record_pause_selector"
+                android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/btn_record_see_to_cloud"
+                android:layout_width="30.0dip"
+                android:layout_height="30.0dip"
+                android:layout_marginRight="25.0dip"
+                android:alpha="0.8"
+                android:background="@null"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_record_see_to_cloud_service"
+                android:visibility="gone" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_live_video_vertical_seekbar_sound"
+        android:layout_width="wrap_content"
+        android:layout_height="200.0dip"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="20.0dip"
+        android:background="@drawable/live_video_vertical_seekbar_bg"
+        android:paddingLeft="5.0dip"
+        android:paddingRight="5.0dip"
+        android:visibility="gone" >
+
+        <com.danale.video.view.VerticalSeekBar
+            android:id="@+id/vsb_live_video_vertical_seekbar_sound"
+            android:layout_width="32.0dip"
+            android:layout_height="fill_parent"
+            android:layout_above="@+id/iv_live_video_vertical_seekbar_sound"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10.0dip"
+             android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/iv_live_video_vertical_seekbar_sound"
+            android:layout_width="35.0dip"
+            android:layout_height="33.0dip"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="5.0dip"
+            android:alpha="0.8"
+            android:background="@null"
+            android:scaleType="fitCenter"
+            android:src="@drawable/live_video_vertical_seekbar_sound" 
+             android:visibility="gone"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_cloud_service_notify"
+        android:layout_width="180.0dip"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="30.0dip"
+        android:layout_marginTop="30.0dip"
+        android:visibility="gone" >
+
+        <ImageView
+            android:id="@+id/ic_cloud_service_arraw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@null"
+            android:src="@drawable/ic_record_see_to_cloud_arraw"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_cloud_service_notify"
+            android:layout_width="180.0dip"
+            android:layout_height="40.0dip"
+            android:layout_below="@id/ic_cloud_service_arraw"
+            android:background="@drawable/bg_record_cloud_service_alert"
+            android:gravity="center"
+            android:text="@string/cloud_service_not_open_and_hava_a_look"
+            android:textColor="#ffffffff"
+            android:textSize="13.0sp"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/imgview_cloud_not_open_cry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@null"
+        android:src="@drawable/ic_record_not_open_cry"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:id="@+id/layout_cloud_not_support"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" >
+
+        <ImageView
+            android:id="@+id/imgview_cloud_not_support"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@null"
+            android:src="@drawable/ic_device_not_support_cloud"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/txt_cloud_not_support"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imgview_cloud_not_support"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10.0dip"
+            android:text="@string/the_device_not_support_cloud_service"
+            android:textColor="@android:color/white" 
+            android:visibility="gone"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_live_video_control_bottom"
+        android:layout_width="fill_parent"
+        android:layout_height="100.0dip"
+        android:layout_alignParentBottom="true" >
+
+        <RelativeLayout
+            android:id="@+id/translate_lay"
+            android:layout_width="fill_parent"
+            android:layout_height="35.0dip" />
+
+        <RelativeLayout
+            android:id="@+id/black_lay"
+            android:layout_width="fill_parent"
+            android:layout_height="65.0dip"
+            android:layout_below="@id/translate_lay"
+            android:alpha="0.5"
+            android:background="#aa000000" />
+
+        <ImageButton
+            android:id="@+id/btn_date_pick"
+            android:layout_width="55.0dip"
+            android:layout_height="48.0dip"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="12.0dip"
+            android:layout_marginLeft="5.0dip"
+            android:layout_marginRight="5.0dip"
+            android:background="@null"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_record_date_pick_selector" />
+
+        <com.danale.video.record.view.TimeLineView
+            android:id="@+id/time_line"
+            android:layout_width="fill_parent"
+            android:layout_height="90.0dip"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="15.0dip"
+            android:layout_marginRight="5.0dip"
+            android:layout_toLeftOf="@id/btn_date_pick" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_live_video_vertical_seekbar_light"
+        android:layout_width="wrap_content"
+        android:layout_height="200.0dip"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20.0dip"
+        android:background="@drawable/live_video_vertical_seekbar_bg"
+        android:paddingLeft="5.0dip"
+        android:paddingRight="5.0dip"
+        android:visibility="gone" >
+
+        <com.danale.video.view.VerticalSeekBar
+            android:id="@+id/vsb_live_video_vertical_seekbar_light"
+            android:layout_width="32.0dip"
+            android:layout_height="fill_parent"
+            android:layout_above="@+id/iv_live_video_vertical_seekbar_light"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10.0dip"
+             android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/iv_live_video_vertical_seekbar_light"
+            android:layout_width="35.0dip"
+            android:layout_height="33.0dip"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="5.0dip"
+            android:alpha="0.8"
+            android:background="@null"
+            android:scaleType="fitCenter"
+            android:src="@drawable/live_video_vertical_seekbar_light"
+             android:visibility="gone" />
+    </RelativeLayout>
+
+</RelativeLayout>

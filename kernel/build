@@ -1,0 +1,163 @@
+#!/bin/bash
+
+#INFOTM_BOARD_MODEL="botai"
+
+function res_judge {
+	if [ $? != "0" ]; then
+		echo -e "\n\033[31m***************$1***************\033[0m\n"
+		rm $KBUILD_OUTPUT/arch/arm/boot/uImage
+		exit 1
+	fi
+}
+
+kernel_defconfig=imapx_cardv_"$INFOTM_BOARD_MODEL"_defconfig
+
+if [ ! -f "./arch/arm/configs/$kernel_defconfig" ]; then
+	echo -e "\n\033[31m$kernel_defconfig not found\033[0m"
+	exit 1
+ fi
+ 
+
+cd ./drivers/infotm/apollo/display/implementation/module/logo/
+./antaur_logo $INFOTM_LCD_WIDTH $INFOTM_LCD_HEIGHT
+res_judge "Failed to create kernel logo"
+chmod 777 antaur.h                                            
+cd -
+
+echo "kernel_defconfig is $kernel_defconfig"
+
+KBUILD_OUTPUT=../output/build/linux-local
+
+CROSS_COMPILE=`pwd`/../prebuilts/uclibc/bin/arm-buildroot-linux-uclibcgnueabihf-
+
+mkdir -p $KBUILD_OUTPUT
+mkdir -p ../output/images
+
+make CROSS_COMPILE=$CROSS_COMPILE mrproper
+
+make CROSS_COMPILE=$CROSS_COMPILE O=$KBUILD_OUTPUT distclean
+                                                   
+make CROSS_COMPILE=$CROSS_COMPILE O=$KBUILD_OUTPUT $kernel_defconfig 
+                                                   
+make CCACHE=`pwd`/../prebuilts/ccache CROSS_COMPILE=$CROSS_COMPILE O=$KBUILD_OUTPUT -j8
+
+ls -l $KBUILD_OUTPUT/arch/arm/boot/uImage
+res_judge "Build kernel failed!!!"
+cp $KBUILD_OUTPUT/arch/arm/boot/uImage arch/arm/boot/uImage
+cp $KBUILD_OUTPUT/arch/arm/boot/uImage ../output/images
+res_judge "Copy kernel image to output failed!"
+
+if [ "$INFOTM_CAMERA_MODEL" = "ov2710" ]; then
+	cp $KBUILD_OUTPUT/drivers/infotm/common/camera/sensors/ov2710_mipi.ko ../sportdv/image/ramdisk/root
+	#cp $KBUILD_OUTPUT/drivers/infotm/common/camera/sensors/ov2710_mipi.ko ../sportdv/image/patch_q3_nand/ko
+elif [ "$INFOTM_CAMERA_MODEL" = "ov4689" ] && [ "$INFOTM_CAMERA_INTERFACE" = "mipi" ]; then 
+	cp $KBUILD_OUTPUT/drivers/infotm/common/camera/sensors/ov4689_mipi.ko ../sportdv/image/ramdisk/root
+	#cp $KBUILD_OUTPUT/drivers/infotm/common/camera/sensors/ov4689_mipi.ko ../sportdv/image/patch_q3_nand/ko
+elif [ "$INFOTM_CAMERA_MODEL" = "ar0330" ] && [ "$INFOTM_CAMERA_INTERFACE" = "mipi" ]; then 
+	cp $KBUILD_OUTPUT/drivers/infotm/common/camera/sensors/ar0330_mipi.ko ../sportdv/image/ramdisk/root
+	#cp $KBUILD_OUTPUT/drivers/infotm/common/camera/sensors/ar0330_mipi.ko ../sportdv/image/patch_q3_nand/ko
+elif [ "$INFOTM_CAMERA_MODEL" = "ar0330" ] && [ "$INFOTM_CAMERA_INTERFACE" = "dvp" ]; then
+	cp $KBUILD_OUTPUT/drivers/infotm/common/camera/sensors/ar0330_dvp.ko ../sportdv/image/ramdisk/root
+	#cp $KBUILD_OUTPUT/drivers/infotm/common/camera/sensors/ar0330_dvp.ko ../sportdv/image/patch_q3_nand/ko
+elif [ "$INFOTM_CAMERA_MODEL" = "imx322" ] && [ "$INFOTM_CAMERA_INTERFACE" = "dvp" ]; then
+	cp $KBUILD_OUTPUT/drivers/infotm/common/camera/sensors/imx322_dvp.ko ../sportdv/image/ramdisk/root
+	cp $KBUILD_OUTPUT/drivers/infotm/common/camera/sensors/imx322_dvp.ko ../sportdv/image/patch_q3_nand/ko
+else
+	echo -e "\n\033[31m*****can't get the type of camera sensor*****\033[0m\n"
+	exit 1
+fi
+res_judge "Failed to cp camera sensor ko"
+
+#############################################################
+cp $KBUILD_OUTPUT/drivers/infotm/common/InfotmMedia/external/project/fpga_vdec_264_g1/vdec_g1.ko ../sportdv/image/patch_q3_nand/ko
+res_judge "Copy vdec_g1.ko to system failed"
+cp $KBUILD_OUTPUT/drivers/infotm/common/InfotmMedia/external/project/fpga_vdec_264_g1/vdec_g1.ko ../sportdv/image/ramdisk/root/
+res_judge "Copy vdec_g1.ko to ramdisk0 failed"
+cp $KBUILD_OUTPUT/drivers/infotm/common/InfotmMedia/external/project/fpga_vdec_265_g2/vdec_g2.ko ../sportdv/image/patch_q3_nand/ko
+res_judge "Copy vdec_g2.ko to system failed"
+cp $KBUILD_OUTPUT/drivers/infotm/common/InfotmMedia/external/project/fpga_venc_264_h1/hx280enc_h1.ko ../sportdv/image/patch_q3_nand/ko
+res_judge "Copy hx280enc_h1.ko to system failed"
+cp $KBUILD_OUTPUT/drivers/infotm/common/InfotmMedia/external/project/fpga_venc_265_h2/hx280enc_265.ko ../sportdv/image/patch_q3_nand/ko
+res_judge "Copy hx280enc_265.ko to system failed"
+
+#INFOTM_WIFI_MODEL="none"
+
+echo "INFOTM_WIFI_MODEL is $INFOTM_WIFI_MODEL"
+function del_net_ko {
+    rm -f ../sportdv/image/patch_q3_nand/ko/{act_gact.ko,8189es.ko,esp8089.ko,mac80211.ko,af_key.ko,af_packet.ko,arptable_filter.ko,cls_u32.ko,cfg80211.ko,arp_tables.ko,arpt_mangle.ko,hostap.ko,lib80211.ko,inet_diag.ko,libphy.ko,mii.ko,nf_defrag_ipv4.ko,tcp_diag.ko,tcp_bic.ko,tcp_cubic.ko,rfkill-regulator.ko,xt_mark.ko,xfrm_algo.ko,xfrm_ipcomp.ko,xfrm_user.ko,tcp_westwood.ko,xfrm4_mode_beet.ko,xfrm4_mode_transport.ko,xfrm4_mode_tunnel.ko,tcp_htcp.ko,tun.ko,bcmdhd.ko,ansi_cprng.ko}
+}
+
+function add_net_ko {
+    cp $KBUILD_OUTPUT/net/sched/act_gact.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/net/packet/af_packet.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/net/ipv4/netfilter/arptable_filter.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/net/key/af_key.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/net/sched/cls_u32.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/net/wireless/cfg80211.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/net/ipv4/netfilter/arp_tables.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/net/ipv4/netfilter/arpt_mangle.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/drivers/net/wireless/hostap/hostap.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/net/wireless/lib80211.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/net/ipv4/inet_diag.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/drivers/net/phy/libphy.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/drivers/net/mii.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/net/ipv4/netfilter/nf_defrag_ipv4.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/net/ipv4/tcp_diag.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/net/ipv4/tcp_bic.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/net/ipv4/tcp_cubic.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/net/rfkill/rfkill-regulator.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/net/netfilter/xt_mark.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/net/xfrm/xfrm_algo.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/net/xfrm/xfrm_ipcomp.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/net/xfrm/xfrm_user.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/net/ipv4/tcp_westwood.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/net/ipv4/xfrm4_mode_beet.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/net/ipv4/xfrm4_mode_transport.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/net/ipv4/xfrm4_mode_tunnel.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/net/ipv4/tcp_htcp.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/drivers/net/tun.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/crypto/ansi_cprng.ko ../sportdv/image/patch_q3_nand/ko/
+    cp $KBUILD_OUTPUT/net/mac80211/mac80211.ko ../sportdv/image/patch_q3_nand/ko/ 
+
+}
+
+del_net_ko
+rm -rf ../sportdv/image/patch_q3_nand/wifi/broadcom_ap6210
+rm -rf ../sportdv/image/patch_q3_nand/wifi/rtl8189es
+rm -rf ../sportdv/image/patch_q3_nand/wifi/esp8089 
+
+if [ $INFOTM_WIFI_ENABLE = "yes" ] && [ $INFOTM_WIFI_MODEL = "bcm6212" ];then
+	echo "wif model bcm6212"
+	cp $KBUILD_OUTPUT/drivers/infotm/common/net/bcmdhd6212/bcmdhd.ko ../sportdv/image/patch_q3_nand/ko/
+	res_judge "Copy bcmdhd.ko to system failed" 
+	add_net_ko
+	#res_judge "add_net_ko failed,please check the necessary ko of net"
+	cp -r ./drivers/infotm/common/net/bcmdhd6212/broadcom_ap6210 ../sportdv/image/patch_q3_nand/wifi/
+	res_judge "Copy broadcom_ap6210 to system wifi failed"
+elif [ $INFOTM_WIFI_ENABLE = "yes" ] && [ $INFOTM_WIFI_MODEL = "rtl8189es" ];then
+	echo "wif model rtl8189ertl8189ess"
+	cp $KBUILD_OUTPUT/drivers/infotm/common/net/rtl8189ES_wifi/8189es.ko ../sportdv/image/patch_q3_nand/ko/
+	res_judge "Copy 8189es.ko to system failed"
+	add_net_ko
+	cp -r ./drivers/infotm/common/net/rtl8189ES_wifi/rtl8189es ../sportdv/image/patch_q3_nand/wifi/	
+	res_judge "Copy rtl8189es to system failed"
+elif [ $INFOTM_WIFI_ENABLE = "yes" ] && [ $INFOTM_WIFI_MODEL = "esp8089" ];then
+	cp $KBUILD_OUTPUT/drivers/infotm/common/net/esp8089/linux_sdio/esp8089.ko ../sportdv/image/patch_q3_nand/ko/
+	res_judge "Copy esp8089.ko to system failed"
+	add_net_ko
+	rm -rf ../sportdv/image/patch_q3_nand/wifi/*
+	cp -r ./drivers/infotm/common/net/esp8089/esp8089 ../sportdv/image/patch_q3_nand/wifi/	
+	res_judge "Copy esp8089 to system failed"
+		
+elif [ $INFOTM_WIFI_ENABLE = "no" ];then 
+	del_net_ko
+else
+	cp $KBUILD_OUTPUT/drivers/infotm/common/net/bcmdhd6212/bcmdhd.ko ../sportdv/image/patch_q3_nand/ko/
+	res_judge "Copy bcmdhd.ko to system failed"
+	add_net_ko
+	cp -r ./drivers/infotm/common/net/bcmdhd6212/broadcom_ap6210 ../sportdv/image/patch_q3_nand/wifi/
+	res_judge "Copy broadcom_ap6210 to system failed"
+fi
+
+echo -e "\x89\xab\xcd\xef" >> ../output/images/uImage
+

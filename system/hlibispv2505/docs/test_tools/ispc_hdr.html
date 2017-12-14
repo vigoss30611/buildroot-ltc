@@ -1,0 +1,476 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ISP Control HDR: ISPC_hdr &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="up" title="Test Tools" href="test_tools.html" />
+    <link rel="next" title="Defective Pixel output converter: dpf_conv" href="dpf_conv.html" />
+    <link rel="prev" title="ISP Control video capture: ISPC_capture" href="ispc_capture.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="dpf_conv.html" title="Defective Pixel output converter: dpf_conv"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="ispc_capture.html" title="ISP Control video capture: ISPC_capture"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="test_tools.html" accesskey="U">Test Tools</a> &raquo;</li><li>ISP Control HDR: <code class="docutils literal"><span class="pre">ISPC_hdr</span></code></li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="isp-control-hdr-ispc-hdr">
+<span id="isp-ispc-hdr"></span><h1>ISP Control HDR: <code class="docutils literal"><span class="pre">ISPC_hdr</span></code><a class="headerlink" href="#isp-control-hdr-ispc-hdr" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal"><span class="pre">ISPC_hdr</span></code> is designed to provide an initial test platform for the sequential
+HDR algorithm. It uses a CPU version of the HDR merging, called HDRLibs, which
+is <strong>not</strong> provided to customers. However customers can implement their own
+merging function and use it in this application
+(see <a class="reference internal" href="#isp-ispc-hdr-implement"><span>Implement another HDR merge</span></a>).</p>
+<p>This tool can be used only with a real sensor and a HW that supports HDR
+extraction and insertion.</p>
+<p>The source code is available in <code class="docutils literal"><span class="pre">ISPControl/ISPC_hdr/</span></code> and is installed in
+<code class="docutils literal"><span class="pre">ISPC/</span></code> after make install.</p>
+<div class="section" id="parameters">
+<span id="isp-ispc-hdr-parameters"></span><h2>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h2>
+<p>The parameters can be given by command line or in a configuration file.</p>
+<p>The parameter types are:</p>
+<ul class="simple">
+<li><cite>Bool</cite>: a Boolean value of either 0 or 1</li>
+<li><cite>Int</cite>/<cite>UInt</cite>: an integer (signed or unsigned is parameter specific)</li>
+<li><cite>Cmd</cite>: command that act as a Boolean of value 1 if present, of value 0 if
+not found</li>
+<li><cite>Str</cite>: string or path</li>
+<li><cite>Float</cite>: floating point number</li>
+</ul>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-source</span></code>:</dt>
+<dd>Provide a file to parse for command line parameters. The latest given
+parameter is used as the value for the option.</dd>
+<dt><code class="docutils literal"><span class="pre">-h</span></code>:</dt>
+<dd>Display the help and exit.</dd>
+</dl>
+<div class="section" id="sensor-parameters">
+<span id="isp-ispc-hdr-sensor-parameters"></span><h3>Sensor Parameters<a class="headerlink" href="#sensor-parameters" title="Permalink to this headline">¶</a></h3>
+<p>These parameters affect the selection of the sensor mode and initial state.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-sensor</span></code>: Str</dt>
+<dd><p class="first">Sensor to use. Available sensors are:</p>
+<ul class="simple">
+<li>AR330</li>
+<li>P401</li>
+<li>OV4688</li>
+</ul>
+<p class="last">Obviously this needs the actual sensor to be present. The
+<a class="reference internal" href="../integration/platform.html#isp-platform-integration-guide"><span>Platform Integration Guide</span></a> has more details about adding
+support for more sensors.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-sensorMode</span></code>: UInt</dt>
+<dd>[optional] The mode to run for the selected sensor. Each sensor can have
+several modes (e.g. to have different resolution or speed). Refer to the
+Sensor API documentation for more details.</dd>
+<dt><code class="docutils literal"><span class="pre">-sensorFlip</span></code>: Bool [x2]</dt>
+<dd>[optional] Flip the sensor horizontally and vertically. Not all sensor
+and modes support flipping.</dd>
+<dt><code class="docutils literal"><span class="pre">-sensorFocus</span></code>: UInt</dt>
+<dd>[optional] Initial focus position of the sensor in <code class="docutils literal"><span class="pre">mm</span></code>. May not work
+on all sensors. Will change if Auto Focus (AF) is enabled.</dd>
+</dl>
+</div>
+<div class="section" id="capture-parameters">
+<span id="isp-ispc-hdr-capture-parameters"></span><h3>Capture parameters<a class="headerlink" href="#capture-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-HDR0_exposure</span></code>: UInt</dt>
+<dd><p class="first">Value in µs for 1st frame.</p>
+<p>[optional] If using AE as offset of computed exposure.</p>
+<p class="last">[mandatory] If not using AE actual exposure value.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-HDR0_gain</span></code>: Float</dt>
+<dd><p class="first">[optional] Gain values for the captures.</p>
+<p>If using AE overrides the computed gain.</p>
+<p class="last">If not using AE initial gain for the capture.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-HDR1_ratio</span></code>: Int</dt>
+<dd>Ratio divider to compute exposure of the second frame such as <span class="math">\(E1
+= \frac{E0}{ratio}\)</span>.</dd>
+<dt><code class="docutils literal"><span class="pre">-setupFile</span></code>: String</dt>
+<dd>FelixSetupArgs file to use to configure the Pipeline.</dd>
+<dt><code class="docutils literal"><span class="pre">-saveIntermediates</span></code>: Bool</dt>
+<dd><p class="first">If enable will save the intermediate images during the processing:</p>
+<ul class="last simple">
+<li>HDR extraction 1st frame as frame0_`exposure`_x`gain`.flx</li>
+<li>HDR extraction 2nd frame as frame1_`exposure`_x`gain`.flx</li>
+<li>result of the frame merging in hdr_input.flx</li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="algorithm-parameters">
+<span id="isp-ispc-hdr-algorithm-parameters"></span><h3>Algorithm parameters<a class="headerlink" href="#algorithm-parameters" title="Permalink to this headline">¶</a></h3>
+<p>These parameters affects which algorithms are used before the capture of the
+HDR extraction images.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-AE</span></code>: Bool</dt>
+<dd>[optional] Enable the Auto Exposure (AE) algorithm. Can be ignored if
+<code class="docutils literal"><span class="pre">-HDR0_exposure</span></code> is provided.</dd>
+<dt><code class="docutils literal"><span class="pre">-AWB</span></code>: Bool</dt>
+<dd>[optional] Enable Auto White Balance (AWB) algorithm. Can be ignored if
+provided setup file contains correct CCM or <code class="docutils literal"><span class="pre">-AWB_temperature</span></code> is
+provided instead.</dd>
+<dt><code class="docutils literal"><span class="pre">-AWB_temperature</span></code>: Float</dt>
+<dd>[optional] if AWB is not enabled loads the correction for specified
+temperature into the CCM and WBC modules.</dd>
+<dt><code class="docutils literal"><span class="pre">-AF</span></code>: Bool</dt>
+<dd>[optional] Enable Auto Focus (AF) algorithm if the sensor supports it. Can
+be ignored if <code class="docutils literal"><span class="pre">-sensorFocus</span></code> is provided.</dd>
+<dt><code class="docutils literal"><span class="pre">-settleFrames</span></code>: UInt</dt>
+<dd>[optional] Number of frames for the AE, AWB and AF to settle before the
+capture is done. Used only if one of the algorithm is enabled. Default is
+30.</dd>
+<dt><code class="docutils literal"><span class="pre">-nShots</span></code>: UInt</dt>
+<dd>[optional] Number of shots to capture for each frame. Should be at least
+1, may need to be more to allow exposure/gain to settle.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="behaviour">
+<span id="isp-ispc-hdr-behaviour"></span><h2>Behaviour<a class="headerlink" href="#behaviour" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">ISPC_hdr</span></code> application goes through several stages:</p>
+<ul class="simple">
+<li>running the algorithms if any are enabled (optional).</li>
+<li>running the capture of the 2 HDR extraction</li>
+<li>merging the 2 HDR images together</li>
+<li>running the merged image as HDR input</li>
+</ul>
+<div class="section" id="running-the-algorithms">
+<span id="isp-ispc-hdr-algorithms"></span><h3>Running the algorithms<a class="headerlink" href="#running-the-algorithms" title="Permalink to this headline">¶</a></h3>
+<p>It is possible to run the algorithms before the capture of HDR images to
+simulate the preview a user would normally do before pressing the trigger.
+However it is possible to skip this step by providing the correct information
+for each algorithm:</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">Auto</span> <span class="pre">Exposure</span></code>:</dt>
+<dd>Provide an initial exposure and gain to avoid using auto-exposure</dd>
+<dt><code class="docutils literal"><span class="pre">Auto</span> <span class="pre">White</span> <span class="pre">Balance</span></code>:</dt>
+<dd><p class="first">Either provide a configuration file with the desired values for the CCM/WBC
+modules</p>
+<p class="last">or provide a setup file with multiple CCM and provide a temperature to
+extract the correction from them.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">Auto</span> <span class="pre">Focus</span></code>:</dt>
+<dd>Provide the desired focus position.</dd>
+<dt><code class="docutils literal"><span class="pre">Auto</span> <span class="pre">Tone</span> <span class="pre">Mapper</span></code>:</dt>
+<dd>Is not run during the initial capture but the result of the auto tone
+mapper can be provided as part of a setup file</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">It is a valid test scenario to run the <code class="docutils literal"><span class="pre">ISPC_loop</span></code> or
+<code class="docutils literal"><span class="pre">ISPC_tcp/VisionLive</span></code> as a first step to gather the algorithms values
+before running the <code class="docutils literal"><span class="pre">ISPC_hdr</span></code>. Be sure to provide an output setup file
+(for example save an image with <code class="docutils literal"><span class="pre">ISPC_loop</span></code>).</p>
+</div>
+</div>
+<div class="section" id="running-the-capture">
+<span id="isp-ispc-hdr-capture"></span><h3>Running the capture<a class="headerlink" href="#running-the-capture" title="Permalink to this headline">¶</a></h3>
+<p>The capture of the 2 HDR extraction frames is done over several frames because
+the exposure and gain may take several frames to apply on the sensor. Refine
+the given number to match what the selected sensor implementation provides.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">A bigger number may increase the ghosts on the image (i.e. moving elements).</p>
+</div>
+</div>
+<div class="section" id="merging-images">
+<span id="isp-ispc-hdr-merging"></span><h3>Merging images<a class="headerlink" href="#merging-images" title="Permalink to this headline">¶</a></h3>
+<p>The mering of the 2 frames is done with HDR libraries if available. Those
+libraries are not provided to customers as they are internal research libraries
+used to specify the GPU merging algorithms. The customer can however implement
+a merging algorithm to be able to use the <code class="docutils literal"><span class="pre">ISPC_hdr</span></code> tool.</p>
+<div class="section" id="implement-another-hdr-merge">
+<span id="isp-ispc-hdr-implement"></span><h4>Implement another HDR merge<a class="headerlink" href="#implement-another-hdr-merge" title="Permalink to this headline">¶</a></h4>
+<p>The provided HDR frame merge is available in the <code class="docutils literal"><span class="pre">ispc2test</span></code> library. The
+default one is a simple average merge (does average of 2 frames).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">It is important to understand the HW formats to be able to do an efficient
+HDR merge. Check the HW TRM for packed details of the formats.</p>
+</div>
+<p>It is possible for the customer to implement another function to merge two
+frames following the scheme of the one provided, here is a pseudo-code version</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">IMG_RESULT</span> <span class="nf">AverageHDRMerge</span><span class="p">(</span><span class="k">const</span> <span class="n">ISPC</span><span class="o">::</span><span class="n">Buffer</span> <span class="o">&amp;</span><span class="n">frame0</span><span class="p">,</span>
+<span class="k">const</span> <span class="n">ISPC</span><span class="o">::</span><span class="n">Buffer</span> <span class="o">&amp;</span><span class="n">frame1</span><span class="p">,</span> <span class="n">CI_BUFFER</span> <span class="o">*</span><span class="n">pHDRBuffer</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="kt">unsigned</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="n">inStride</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">outStride</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="c1">// insertion buffer bitdepth = 16b - HDR output is 10b</span>
+    <span class="c1">// merging the two frame0 and frame1 needs a rescaling of the values</span>
+    <span class="k">const</span> <span class="kt">int</span> <span class="n">input_pixel_bit</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">int</span> <span class="n">input_mask</span> <span class="o">=</span> <span class="mh">0x3FF</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">int</span> <span class="n">r</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">g</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// channel order</span>
+    <span class="k">const</span> <span class="kt">int</span> <span class="n">shift</span> <span class="o">=</span> <span class="mi">16</span> <span class="o">-</span> <span class="n">input_pixel_bit</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">int</span> <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">shift</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+
+    <span class="c1">// do verifications here, correct sizes and correct formats</span>
+
+    <span class="n">outStride</span> <span class="o">=</span> <span class="n">sizeInfo</span><span class="p">.</span><span class="n">ui32Stride</span> <span class="o">/</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">IMG_UINT16</span><span class="p">);</span>
+    <span class="n">inStride</span> <span class="o">=</span> <span class="n">frame0</span><span class="p">.</span><span class="n">stride</span><span class="o">/</span><span class="k">sizeof</span><span class="p">(</span><span class="n">IMG_UINT32</span><span class="p">);</span>
+
+    <span class="k">const</span> <span class="n">IMG_UINT32</span> <span class="o">*</span><span class="n">pFrame0</span> <span class="o">=</span> <span class="p">(</span><span class="n">IMG_UINT32</span><span class="o">*</span><span class="p">)</span><span class="n">frame0</span><span class="p">.</span><span class="n">data</span><span class="p">;</span>
+    <span class="k">const</span> <span class="n">IMG_UINT32</span> <span class="o">*</span><span class="n">pFrame1</span> <span class="o">=</span> <span class="p">(</span><span class="n">IMG_UINT32</span><span class="o">*</span><span class="p">)</span><span class="n">frame1</span><span class="p">.</span><span class="n">data</span><span class="p">;</span>
+    <span class="k">const</span> <span class="n">IMG_UINT32</span> <span class="n">maxPix</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">16</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">frame0</span><span class="p">.</span><span class="n">height</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">frame0</span><span class="p">.</span><span class="n">width</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="kt">int</span> <span class="n">out</span> <span class="o">=</span> <span class="n">j</span><span class="o">*</span><span class="n">outStride</span> <span class="o">+</span> <span class="n">i</span><span class="o">*</span><span class="mi">4</span><span class="p">,</span>
+                <span class="n">in</span> <span class="o">=</span> <span class="n">j</span><span class="o">*</span><span class="n">inStride</span> <span class="o">+</span> <span class="n">i</span><span class="p">;</span>
+
+            <span class="c1">// low exposure</span>
+            <span class="kt">int</span> <span class="n">r0</span> <span class="o">=</span> <span class="p">(</span><span class="n">pFrame0</span><span class="p">[</span><span class="n">in</span><span class="p">]</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">r</span><span class="o">*</span><span class="n">input_pixel_bit</span><span class="p">))</span><span class="o">&amp;</span><span class="n">input_mask</span><span class="p">,</span>
+                <span class="n">g0</span> <span class="o">=</span> <span class="p">(</span><span class="n">pFrame0</span><span class="p">[</span><span class="n">in</span><span class="p">]</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">g</span><span class="o">*</span><span class="n">input_pixel_bit</span><span class="p">))</span><span class="o">&amp;</span><span class="n">input_mask</span><span class="p">,</span>
+                <span class="n">b0</span> <span class="o">=</span> <span class="p">(</span><span class="n">pFrame0</span><span class="p">[</span><span class="n">in</span><span class="p">]</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">b</span><span class="o">*</span><span class="n">input_pixel_bit</span><span class="p">))</span><span class="o">&amp;</span><span class="n">input_mask</span><span class="p">;</span>
+
+            <span class="c1">// high exposure</span>
+            <span class="kt">int</span> <span class="n">r1</span> <span class="o">=</span> <span class="p">(</span><span class="n">pFrame1</span><span class="p">[</span><span class="n">in</span><span class="p">]</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">r</span><span class="o">*</span><span class="n">input_pixel_bit</span><span class="p">))</span><span class="o">&amp;</span><span class="n">input_mask</span><span class="p">,</span>
+                <span class="n">g1</span> <span class="o">=</span> <span class="p">(</span><span class="n">pFrame1</span><span class="p">[</span><span class="n">in</span><span class="p">]</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">g</span><span class="o">*</span><span class="n">input_pixel_bit</span><span class="p">))</span><span class="o">&amp;</span><span class="n">input_mask</span><span class="p">,</span>
+                <span class="n">b1</span> <span class="o">=</span> <span class="p">(</span><span class="n">pFrame1</span><span class="p">[</span><span class="n">in</span><span class="p">]</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">b</span><span class="o">*</span><span class="n">input_pixel_bit</span><span class="p">))</span><span class="o">&amp;</span><span class="n">input_mask</span><span class="p">;</span>
+
+            <span class="c1">// red</span>
+            <span class="n">IMG_UINT32</span> <span class="n">pix</span> <span class="o">=</span> <span class="p">(</span><span class="n">r0</span><span class="o">+</span><span class="n">r1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>
+            <span class="n">pix</span> <span class="o">=</span> <span class="n">pix</span><span class="o">&lt;&lt;</span><span class="n">shift</span> <span class="o">|</span>
+                <span class="p">(</span><span class="n">pix</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">input_pixel_bit</span> <span class="o">-</span> <span class="n">shift</span><span class="p">))</span><span class="o">&amp;</span><span class="n">mask</span><span class="p">;</span>
+            <span class="n">pBuffData</span><span class="p">[</span><span class="n">out</span> <span class="o">+</span> <span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">IMG_MIN_INT</span><span class="p">(</span><span class="n">pix</span><span class="p">,</span> <span class="n">maxPix</span><span class="p">);</span>
+
+            <span class="c1">// green</span>
+            <span class="n">pix</span> <span class="o">=</span> <span class="p">(</span><span class="n">g0</span><span class="o">+</span><span class="n">g1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>
+            <span class="n">pix</span> <span class="o">=</span> <span class="n">pix</span><span class="o">&lt;&lt;</span><span class="n">shift</span> <span class="o">|</span>
+                <span class="p">(</span><span class="n">pix</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">input_pixel_bit</span> <span class="o">-</span> <span class="n">shift</span><span class="p">))</span><span class="o">&amp;</span><span class="n">mask</span><span class="p">;</span>
+            <span class="n">pBuffData</span><span class="p">[</span><span class="n">out</span> <span class="o">+</span> <span class="n">g</span><span class="p">]</span> <span class="o">=</span> <span class="n">IMG_MIN_INT</span><span class="p">(</span><span class="n">pix</span><span class="p">,</span> <span class="n">maxPix</span><span class="p">);</span>
+
+            <span class="c1">// blue</span>
+            <span class="n">pix</span> <span class="o">=</span> <span class="p">(</span><span class="n">b0</span><span class="o">+</span><span class="n">b1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>
+            <span class="n">pix</span> <span class="o">=</span> <span class="n">pix</span><span class="o">&lt;&lt;</span><span class="n">shift</span> <span class="o">|</span>
+                <span class="p">(</span><span class="n">pix</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">input_pixel_bit</span> <span class="o">-</span> <span class="n">shift</span><span class="p">))</span><span class="o">&amp;</span><span class="n">mask</span><span class="p">;</span>
+            <span class="n">pBuffData</span><span class="p">[</span><span class="n">out</span> <span class="o">+</span> <span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="n">IMG_MIN_INT</span><span class="p">(</span><span class="n">pix</span><span class="p">,</span> <span class="n">maxPix</span><span class="p">);</span>
+
+            <span class="n">pBuffData</span><span class="p">[</span><span class="n">out</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// blank space</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="inserting-the-merged-result">
+<span id="isp-ispc-hdr-insertion"></span><h3>Inserting the merged result<a class="headerlink" href="#inserting-the-merged-result" title="Permalink to this headline">¶</a></h3>
+<p>Once merged the result is inserted in the pipeline again. The same setup
+file is used to program the Pipeline as the one that was given for the
+extraction of frames.</p>
+</div>
+</div>
+<div class="section" id="parameter-example">
+<span id="isp-ispc-hdr-example"></span><h2>Parameter Example<a class="headerlink" href="#parameter-example" title="Permalink to this headline">¶</a></h2>
+<p>For example here is how to run with the <code class="docutils literal"><span class="pre">AR330</span></code> sensor and
+<span class="math">\(\frac{1}{8}\)</span> exposure ratio, the application will display similar
+information as the one presented here:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>./ISPC_hdr -sensor AR330 -AE <span class="m">1</span> -HDR1_ratio <span class="m">8</span> <span class="se">\</span>
+-setupFile ~/configs/ISPC2_AR330_outputs.txt
+<span class="o">(</span>...<span class="o">)</span>
+INFO <span class="o">[</span>ISPC_hdr<span class="o">]</span>: runExtraction<span class="o">()</span> Running algorithms <span class="k">for</span> <span class="m">30</span> frames
+INFO <span class="o">[</span>ISPC_hdr<span class="o">]</span>: runExtraction<span class="o">()</span> AE provided 53616us x2.696173
+INFO <span class="o">[</span>ISPC_hdr<span class="o">]</span>: runExtraction<span class="o">()</span> Frame0: 53616us x2.696173 - Frame1
+6702us 2.696173 <span class="o">(</span><span class="nv">ratio</span><span class="o">=</span>1/8<span class="o">)</span> - <span class="m">3</span> shots each
+</pre></div>
+</div>
+<p>As <cite>-saveIntermediates</cite> does not specify the output format configured in
+the file given <cite>-setupFile</cite> will be present:
+<cite>hdr_encoder0_1280x720_NV21_align1.yuv</cite></p>
+</div>
+<div class="section" id="expected-output">
+<span id="isp-ispc-hdr-output"></span><h2>Expected Output<a class="headerlink" href="#expected-output" title="Permalink to this headline">¶</a></h2>
+<p>Any output format after the HDF block that is enabled in the given
+<cite>-setupFile</cite> will produce an output file in the last run. The acquisition
+step will not produce any output files.</p>
+<ul class="simple">
+<li>hdr_display.flx if display output is enabled</li>
+<li>hdr_encoder0_WxH_F_alignA.yuv if the encoder output is
+enabled (Width, Height, Format, Alignment in bytes).</li>
+</ul>
+<p>Any other enabled output is disabled at configuration time and tiling is not
+available.</p>
+<p>If <cite>-saveIntermediates</cite> is enabled then additional files will be present so
+that the merging can be done by another program or the HDR input reproduced:</p>
+<ul class="simple">
+<li>frameX_Eus_xG.flx as the extracted HDR images (X frame, Exposure in
+µs, Gain multiplier)</li>
+<li>hdr_input.flx as the result of the merge</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">ISP Control HDR: <code class="docutils literal"><span class="pre">ISPC_hdr</span></code></a><ul>
+<li><a class="reference internal" href="#parameters">Parameters</a><ul>
+<li><a class="reference internal" href="#sensor-parameters">Sensor Parameters</a></li>
+<li><a class="reference internal" href="#capture-parameters">Capture parameters</a></li>
+<li><a class="reference internal" href="#algorithm-parameters">Algorithm parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#behaviour">Behaviour</a><ul>
+<li><a class="reference internal" href="#running-the-algorithms">Running the algorithms</a></li>
+<li><a class="reference internal" href="#running-the-capture">Running the capture</a></li>
+<li><a class="reference internal" href="#merging-images">Merging images</a><ul>
+<li><a class="reference internal" href="#implement-another-hdr-merge">Implement another HDR merge</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#inserting-the-merged-result">Inserting the merged result</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#parameter-example">Parameter Example</a></li>
+<li><a class="reference internal" href="#expected-output">Expected Output</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="ispc_capture.html"
+                        title="previous chapter">ISP Control video capture: <code class="docutils literal"><span class="pre">ISPC_capture</span></code></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="dpf_conv.html"
+                        title="next chapter">Defective Pixel output converter: <code class="docutils literal"><span class="pre">dpf_conv</span></code></a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

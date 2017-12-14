@@ -1,0 +1,34 @@
+menuconfig INFOTM_MFD
+  bool "Infotm mfd driver support"
+  help
+    Infotm multi func device driver support
+
+if INFOTM_MFD
+
+config Q3F_MFD_EC610
+ bool "EC610 driver support"
+ help
+   EC610 used
+
+config Q3F_MFD_IP6203
+ bool "IP6203 driver support"
+ help
+   IP6203 used
+
+config Q3F_MFD_IP620x
+ bool "IP620x driver support"
+ help
+   IP620x used
+
+config Q3F_MFD_IP6303
+ bool "IP6303 driver support"
+ help
+   IP6303 used
+
+config PMIC_DEBUG_IF
+ bool "PMIC register debug interface"
+ depends on INFOTM_MFD
+ default n
+ help
+   debug function for PMICs 
+endif

@@ -1,0 +1,11 @@
+prefix=/usr
+exec_prefix=/usr
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name:  libgridtools
+Description: libgridtools  infotm
+Version: 1.0.0
+Requires:
+Libs: -L${libdir} -lgridtools -lmneon
+Cflags:  -I${includedir}/qsdk

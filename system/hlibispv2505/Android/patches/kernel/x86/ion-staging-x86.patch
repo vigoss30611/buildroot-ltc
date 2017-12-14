@@ -1,0 +1,85 @@
+diff --git a/kernel/common/drivers/staging/android/ion/ion.c b/kernel/common/drivers/staging/android/ion/ion.c
+index 48774e3..f4a4a66 100644
+--- a/kernel/common/drivers/staging/android/ion/ion.c
++++ b/kernel/common/drivers/staging/android/ion/ion.c
+@@ -1541,6 +1541,7 @@ void ion_device_add_heap(struct ion_device *dev, struct ion_heap *heap)
+ #endif
+ 	up_write(&dev->lock);
+ }
++EXPORT_SYMBOL(ion_device_add_heap);
+ 
+ struct ion_device *ion_device_create(long (*custom_ioctl)
+ 				     (struct ion_client *client,
+@@ -1589,6 +1590,7 @@ debugfs_done:
+ 	idev->clients = RB_ROOT;
+ 	return idev;
+ }
++EXPORT_SYMBOL(ion_device_create);
+ 
+ void ion_device_destroy(struct ion_device *dev)
+ {
+@@ -1597,6 +1599,7 @@ void ion_device_destroy(struct ion_device *dev)
+ 	/* XXX need to free the heaps and clients ? */
+ 	kfree(dev);
+ }
++EXPORT_SYMBOL(ion_device_destroy);
+ 
+ void __init ion_reserve(struct ion_platform_data *data)
+ {
+diff --git a/kernel/common/drivers/staging/android/ion/ion_heap.c b/kernel/common/drivers/staging/android/ion/ion_heap.c
+index 750b76a..5ff1432 100644
+--- a/kernel/common/drivers/staging/android/ion/ion_heap.c
++++ b/kernel/common/drivers/staging/android/ion/ion_heap.c
+@@ -340,6 +340,7 @@ struct ion_heap *ion_heap_create(struct ion_platform_heap *heap_data)
+ 	heap->id = heap_data->id;
+ 	return heap;
+ }
++EXPORT_SYMBOL(ion_heap_create);
+ 
+ void ion_heap_destroy(struct ion_heap *heap)
+ {
+@@ -367,3 +368,4 @@ void ion_heap_destroy(struct ion_heap *heap)
+ 		       heap->type);
+ 	}
+ }
++EXPORT_SYMBOL(ion_heap_destroy);
+diff --git a/kernel/common/drivers/staging/android/ion/ion.c b/kernel/common/drivers/staging/android/ion/ion.c
+index 48774e3..5b3ac42 100644
+--- a/kernel/common/drivers/staging/android/ion/ion.c
++++ b/kernel/common/drivers/staging/android/ion/ion.c
+@@ -1081,6 +1081,26 @@ static void ion_dma_buf_end_cpu_access(struct dma_buf *dmabuf, size_t start,
+ 	mutex_unlock(&buffer->lock);
+ }
+ 
++static void *ion_dma_buf_vmap(struct dma_buf *dmabuf)
++{
++	struct ion_buffer *buffer = dmabuf->priv;
++
++	void *vaddr;
++	mutex_lock(&buffer->lock);
++	vaddr = ion_buffer_kmap_get(buffer);
++	mutex_unlock(&buffer->lock);
++	return vaddr;
++}
++
++static void ion_dma_buf_vunmap(struct dma_buf *dmabuf, void *vaddr)
++{
++	struct ion_buffer *buffer = dmabuf->priv;
++
++	mutex_lock(&buffer->lock);
++	ion_buffer_kmap_put(buffer);
++	mutex_unlock(&buffer->lock);
++}
++
+ static struct dma_buf_ops dma_buf_ops = {
+ 	.map_dma_buf = ion_map_dma_buf,
+ 	.unmap_dma_buf = ion_unmap_dma_buf,
+@@ -1092,6 +1112,8 @@ static struct dma_buf_ops dma_buf_ops = {
+ 	.kunmap_atomic = ion_dma_buf_kunmap,
+ 	.kmap = ion_dma_buf_kmap,
+ 	.kunmap = ion_dma_buf_kunmap,
++	.vmap = ion_dma_buf_vmap,
++	.vunmap = ion_dma_buf_vunmap,
+ };
+ 
+ struct dma_buf *ion_share_dma_buf(struct ion_client *client,

@@ -1,0 +1,116 @@
+################################################################################
+#
+# static busybox
+#
+################################################################################
+
+SBUSYBOX_VERSION = 1.21.1
+SBUSYBOX_SITE = http://www.busybox.net/downloads
+SBUSYBOX_SOURCE = busybox-$(SBUSYBOX_VERSION).tar.bz2
+SBUSYBOX_LICENSE = GPLv2
+SBUSYBOX_LICENSE_FILES = LICENSE
+
+SBUSYBOX_CFLAGS = \
+	$(TARGET_CFLAGS) --static
+
+SBUSYBOX_LDFLAGS = \
+	$(TARGET_LDFLAGS) --static
+
+SBUSYBOX_CONFIG_FILE = buildroot/package/sbusybox/busybox-1.21.x.config
+SBUSYBOX_BUILD_CONFIG = $(SBUSYBOX_DIR)/.config
+# Allows the build system to tweak CFLAGS
+SBUSYBOX_MAKE_ENV = \
+	$(TARGET_MAKE_ENV) \
+	CFLAGS="$(SBUSYBOX_CFLAGS)" \
+	CFLAGS_busybox="$(SBUSYBOX_CFLAGS_busybox)"
+SBUSYBOX_MAKE_OPTS = \
+	CC="$(TARGET_CC)" \
+	ARCH=$(KERNEL_ARCH) \
+	PREFIX="$(TARGET_INITRD_DIR)" \
+	EXTRA_LDFLAGS="$(SBUSYBOX_LDFLAGS)" \
+	CROSS_COMPILE="$(TARGET_CROSS)" \
+	CONFIG_PREFIX="$(TARGET_INITRD_DIR)" \
+
+define SBUSYBOX_PERMISSIONS
+/bin/busybox			 f 0755	0 0 - - - - -
+endef
+
+ifeq ($(BR2_USE_MMU),y)
+define SBUSYBOX_SET_MMU
+	$(call KCONFIG_DISABLE_OPT,CONFIG_NOMMU,$(SBUSYBOX_BUILD_CONFIG))
+endef
+else
+define SBUSYBOX_SET_MMU
+	$(call KCONFIG_ENABLE_OPT,CONFIG_NOMMU,$(SBUSYBOX_BUILD_CONFIG))
+	$(call KCONFIG_DISABLE_OPT,CONFIG_SWAPONOFF,$(SBUSYBOX_BUILD_CONFIG))
+	$(call KCONFIG_DISABLE_OPT,CONFIG_ASH,$(SBUSYBOX_BUILD_CONFIG))
+	$(call KCONFIG_ENABLE_OPT,CONFIG_HUSH,$(SBUSYBOX_BUILD_CONFIG))
+endef
+endif
+
+ifeq ($(BR2_LARGEFILE),y)
+define SBUSYBOX_SET_LARGEFILE
+	$(call KCONFIG_ENABLE_OPT,CONFIG_LFS,$(SBUSYBOX_BUILD_CONFIG))
+	$(call KCONFIG_ENABLE_OPT,CONFIG_FDISK_SUPPORT_LARGE_DISKS,$(SBUSYBOX_BUILD_CONFIG))
+endef
+else
+define SBUSYBOX_SET_LARGEFILE
+	$(call KCONFIG_DISABLE_OPT,CONFIG_LFS,$(SBUSYBOX_BUILD_CONFIG))
+	$(call KCONFIG_DISABLE_OPT,CONFIG_FDISK_SUPPORT_LARGE_DISKS,$(SBUSYBOX_BUILD_CONFIG))
+endef
+endif
+
+# If IPv6 is enabled then enable basic ifupdown support for it
+ifeq ($(BR2_INET_IPV6),y)
+define SBUSYBOX_SET_IPV6
+	$(call KCONFIG_ENABLE_OPT,CONFIG_FEATURE_IPV6,$(SBUSYBOX_BUILD_CONFIG))
+	$(call KCONFIG_ENABLE_OPT,CONFIG_FEATURE_IFUPDOWN_IPV6,$(SBUSYBOX_BUILD_CONFIG))
+endef
+else
+define SBUSYBOX_SET_IPV6
+	$(call KCONFIG_DISABLE_OPT,CONFIG_FEATURE_IPV6,$(SBUSYBOX_BUILD_CONFIG))
+	$(call KCONFIG_DISABLE_OPT,CONFIG_FEATURE_IFUPDOWN_IPV6,$(SBUSYBOX_BUILD_CONFIG))
+endef
+endif
+
+# We're using static libs
+define SBUSYBOX_PREFER_STATIC
+	$(call KCONFIG_ENABLE_OPT,CONFIG_STATIC,$(SBUSYBOX_BUILD_CONFIG))
+endef
+
+define SBUSYBOX_COPY_CONFIG
+	cp -f $(SBUSYBOX_CONFIG_FILE) $(SBUSYBOX_BUILD_CONFIG)
+endef
+
+# We do this here to avoid busting a modified .config in configure
+SBUSYBOX_POST_EXTRACT_HOOKS += SBUSYBOX_COPY_CONFIG
+
+define SBUSYBOX_CONFIGURE_CMDS
+	$(SBUSYBOX_SET_MMU)
+	$(SBUSYBOX_SET_LARGEFILE)
+	$(SBUSYBOX_SET_IPV6)
+	$(SBUSYBOX_PREFER_STATIC)
+	@yes "" | $(MAKE) ARCH=$(KERNEL_ARCH) CROSS_COMPILE="$(TARGET_CROSS)" \
+		-C $(@D) oldconfig
+endef
+
+define SBUSYBOX_BUILD_CMDS
+	$(SBUSYBOX_MAKE_ENV) $(MAKE) $(SBUSYBOX_MAKE_OPTS) -C $(@D)
+endef
+
+define SBUSYBOX_INSTALL_TARGET_CMDS
+	$(TARGET_STRIP) -s $(@D)/busybox
+	$(SBUSYBOX_MAKE_ENV) $(MAKE) $(SBUSYBOX_MAKE_OPTS) -C $(@D) install
+	cp -f $(@D)/busybox $(TARGET_DIR)/bin/
+endef
+
+$(eval $(generic-package))
+
+sbusybox-menuconfig sbusybox-xconfig sbusybox-gconfig: sbusybox-patch
+	$(SBUSYBOX_MAKE_ENV) $(MAKE) $(SBUSYBOX_MAKE_OPTS) -C $(SBUSYBOX_DIR) \
+		$(subst sbusybox-,,$@)
+	rm -f $(SBUSYBOX_DIR)/.stamp_built
+	rm -f $(SBUSYBOX_DIR)/.stamp_target_installed
+
+sbusybox-update-config: sbusybox-configure
+	cp -f $(SBUSYBOX_BUILD_CONFIG) $(SBUSYBOX_CONFIG_FILE)

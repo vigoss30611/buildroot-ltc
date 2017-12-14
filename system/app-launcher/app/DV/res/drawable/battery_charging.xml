@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list android:oneshot="false"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:duration="750" android:drawable="@drawable/icon_batt_01" />
+    <item android:duration="750" android:drawable="@drawable/icon_batt_02" />
+    <item android:duration="750" android:drawable="@drawable/icon_batt_03" />
+</animation-list>

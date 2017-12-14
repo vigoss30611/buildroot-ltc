@@ -1,0 +1,88 @@
+items.start
+board.hwid    Q3FEVB
+board.cpu     apollo2
+board.arch    q3fpv10
+board.case    0
+board.disk	flash
+board.string.product Q3X38_Q3420F
+board.string.device Q3X38_Q3420F
+board.string.model Q3X38_Q3420F
+board.string.label Q3X38_Q3420F
+# CPU  -516:516 MHz; -450 :564 MHz
+soc.cpu.freq -482
+soc.cpu.dvfs 1
+soc.gpu.freq 444
+soc.gpu.dvfs 1
+soc.vpu.dvfs 1
+soc.usb.otg 1
+soc.usb.host 1
+config.ui tablet
+config.phase final
+config.preload preboot
+config.root 1
+config.trace 0
+config.media.pmm 0
+config.media.out rgb565
+config.uboot.logo 0
+config.otg.nluns 2
+config.otg.extraid pads.113
+config.otg.drvbus pads.124
+config.policy.power 1
+config.wdt 0
+
+soc.usb.host 1
+wifi.model usb.8188eu
+wifi.power pads.119
+eth.model   rtl8201f		#"rtl8201f"/"ip101"
+eth.reset   109
+eth.clk		1				#1:sys provide the clk  0:Crystal oscillator provide the clk
+
+cpu.power pmu.sw1
+cpu.io33.power pmu.sw2
+dram.count 1
+dram.power pmu.swio
+dram.freq  400
+dram.type DDR2
+dram.width 16
+dram.capacity 128
+memory.cl  6
+memory.rtt 0
+memory.driver 0
+
+part0					uboot.48.boot
+part1					item.16.boot
+#part2					ramdisk.4096.boot
+part3					kernel.2560.boot
+#part4					kernel.2560.boot
+part5					system.8000.normal
+part7					config.512.fs.fat
+
+ispost.freq 150
+
+led0.pwm red.1
+led0.polarity 0
+led0.dft_state nocare
+
+codec.model es8323
+#codec.power pmu.ldo9
+#codec.power pmu.ldo7
+codec.data i2s.0
+codec.ctrl i2c.1
+sound.speaker pads.121
+
+pmu.model ip6303
+pmu.ctrl i2c.0
+power.full pads.130
+power.dcdetect pads.139
+power.curve.charge      4169.4150.4130.4101.4067.4013.3950.3916.3857.3784.3720.3666
+power.curve.discharge   4000.3902.3785.3725.3681.3615.3554.3496.3441.3373.3323.3300
+initi2c.0 i2c.0.40.99
+
+app.evbboard.ver one
+app.mmc.device /dev/mmcblk0p1
+#enable gui's log info
+#debug.enable
+#enable auto play next video in playback
+video.autoplay.enable
+
+items.end

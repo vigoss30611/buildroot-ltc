@@ -1,0 +1,26 @@
+config BR2_PACKAGE_HLIBH2V1
+	bool "libh2v1"
+
+	help
+		libh2v1, do not select me directly ,will auto select by videobox
+		http://www.infotm.com/
+
+if BR2_PACKAGE_HLIBH2V1
+menu "Options"
+	config  BR2_PACKAGE_HLIBH2V1_GDBDEBUG
+		bool "h2 gdb debug"
+		default n
+		help
+	  		gdb debug support
+	config  BR2_PACKAGE_HLIBH2V1_TESTBENCH
+		bool "h2 testbench"
+		default n
+		help
+	  		enable h2v4 testbench
+	config  BR2_PACKAGE_HLIBH2V1_POLL
+		bool "h2 ewl polling mode"
+		default n
+		help
+	  		enable h2 ewl poll mode
+endmenu
+endif

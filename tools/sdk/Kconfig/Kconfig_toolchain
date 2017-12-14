@@ -1,0 +1,12 @@
+config TOOLCHAIN_EXTERNAL_CUSTOM
+	bool "Custom toolchain"
+	help
+	  Use this option to use a custom toolchain pre-installed on
+	  your system.
+if TOOLCHAIN_EXTERNAL_CUSTOM
+config TOOLCHAIN_EXTERNAL_PATH
+	string "Toolchain path"
+	default "/path/to/toolchain/usr"
+	help
+	  Path to where the external toolchain is installed.
+endif

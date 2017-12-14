@@ -1,0 +1,125 @@
+{
+	"isp": {
+		"ipu": "v2500",
+        "args": {
+            "nbuffers": 3, 
+            "flip": 0  
+        },
+        "port": {
+            "out": {
+                "w": 1536,
+                "h": 1536,
+                "pixel": "nv12",
+                "fps":25,
+				"bind": {"bufsync": "in"}
+			},
+			"his": {
+				"bind": { "vam": "in" }
+			}
+		}
+    },
+    "bufsync": {
+        "ipu": "bufsync",
+        "args": {
+            "nbuffers": 3
+        },
+        "port": {
+            "out1": {
+                "w": 1536,
+                "h": 1536,
+                "pixel": "nv12",
+                "bind": {
+                    "ispost":"in"
+                }
+            },
+            "out0": {
+                "w": 1536,
+                "h": 1536,
+                "pixel": "nv12",
+                "bind": { "ispost1":"in"}
+            }
+        }
+    },
+    "ispost": {
+        "ipu": "ispostv2",
+        "args": {
+            "dn_enable": 1,
+            "dn_target_index": 11,
+            "lc_grid_file_name1":"/root/.ispost/lc_v1_0-0-0-0_hermite32_1536x1536-1920x1080_fisheye_Panorama.bin", 
+            "lc_geometry_file_name1": "/root/.ispost/lc_v1_0-0-0-0_hermite32_1536x1536-1920x1080_geo_Panorama.bin",
+            "fcefile":"/root/.ispost/fcefile.json",
+            "fisheye" : 1,
+            "buffers" : 3
+
+        },
+        "port": {
+            "dn": {
+                "w": 1920,
+                "h": 1080,
+                "pixel": "nv12"
+            },
+            "uo": {
+                "w": 1920,
+                "h": 1080,
+                "pixel": "nv12",
+                "bind": { "enc1080p": "frame" }
+            },
+            "ss0": {
+                "w": 1280,
+                "h": 720,
+                "pixel": "nv12",
+                "bind": { "enc720p": "frame" }
+            }
+        }
+    },
+    "ispost1": {
+        "ipu": "ispostv2",
+        "args": {
+            "dn_enable": 1,
+            "dn_target_index": 11,
+            "lc_grid_file_name1":"/root/.ispost/lc_v1_0-0-0-0_hermite32_1536x1536-1920x1080_fisheye_Panorama.bin", 
+            "lc_geometry_file_name1": "/root/.ispost/lc_v1_0-0-0-0_hermite32_1536x1536-1920x1080_geo_Panorama.bin",
+            "fisheye" : 1,
+            "buffers" : 3
+        },
+        "port": {
+            "dn": {
+                "w": 1920,
+                "h": 1080,
+                "pixel": "nv12"
+            },
+            "uo":{
+                "w": 1920,
+                "h": 1080,
+                "pixel": "nv12",
+                "bind": { "encraw": "frame", "jpeg":"in"}
+            }
+        }
+    },
+    "jpeg": {
+        "ipu":"h1jpeg",
+		"args": {
+			"mode": "trigger",
+			"buffer_size": 100000
+		}
+	},
+	"encraw": {
+		"ipu": "h1264",
+		"args":{
+			"buffer_size": 3024728
+		}
+	},
+	"enc1080p": {
+		"ipu": "h1264",
+		"args":{
+			"buffer_size": 3024728
+		}
+	},
+	"enc720p": {
+		"ipu": "h1264",
+		"args":{
+			"buffer_size": 2048728
+		}
+	},
+    "vam": { "ipu": "vamovement"}
+}

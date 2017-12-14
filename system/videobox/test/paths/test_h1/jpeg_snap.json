@@ -1,0 +1,42 @@
+{
+	"isp": {
+		"ipu": "v2500",
+		"args": {
+			"mode": 5,
+			"name": "AR330MIPI",
+			"config": "/root/.ispddk/config-normal.txt"
+		},
+		"port": {
+			"out": {
+				"w": 1920,
+				"h": 1088,
+				"pixel": "nv12",
+				"bind": { "display": "osd0", "pp0": "in" }
+			},
+			"his": {
+				"bind": { "vam": "in" }
+			}
+		}
+	},
+
+	"pp0": {
+		"ipu": "pp",
+		"port": {
+			"out": {
+				"w": 1280,
+				"h": 720,
+				"pixel": "nv12",
+				"bind": { "jpeg": "in", "enc720p": "frame" }
+			}
+		}
+	},
+
+	"jpeg": { "ipu": "h1jpeg", "args": { "mode": "trigger"}},
+	"enc720p": { "ipu": "vencoder",
+				"args": {
+					"encode_type": "h265"
+				}
+	},
+	"display": { "ipu": "ids"},
+	"vam": { "ipu": "vamovement"}
+}

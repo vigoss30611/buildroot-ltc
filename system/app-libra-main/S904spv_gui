@@ -1,0 +1,16 @@
+#! /bin/sh
+
+case "$1" in
+	start|"")
+		source /etc/profile.d/envsetup.sh
+		libramain &
+		;;
+	stop)
+		killall libramain
+		;;
+	*)
+		echo "Usage: libramain {start|stop}" >&2
+		exit 1
+		;;
+esac
+

@@ -1,0 +1,6 @@
+config APOLLO2_PD_DEBUG
+  bool "Apollo2 PowerDomain debug support"
+  default n
+  help
+    Apollo2 Power Domain debug support
+

@@ -1,0 +1,124 @@
+
+menuconfig INFOTM_CAMERA_SENSOR
+		bool "Infotm camera sensor List"
+		default y
+		help
+		 you should select_on all of them
+
+if INFOTM_CAMERA_SENSOR
+
+if !MEDIA_SUBDRV_AUTOSELECT
+config VIDEO_GC0308
+	tristate "Glalory core  GC0308 sensor for demo"
+	depends on I2C && VIDEO_V4L2 && VIDEO_V4L2_SUBDEV_API && INFOTM_CAMERA_SENSOR
+	---help---
+		This is a V4L2 sensor-level driver for the Gcore
+		GC0308_DEMO  camera sensors.
+
+config VIDEO_GC2035
+	tristate "Glalory core  GC2035 sensor for demo"
+	depends on I2C && VIDEO_V4L2 && VIDEO_V4L2_SUBDEV_API && INFOTM_CAMERA_SENSOR
+	---help---
+	This is a V4L2 sensor-level driver for the Gcore
+	GC2035_DEMO  camera sensors.  
+
+config VIDEO_GC0329
+	tristate "Glalory core  GC0329 sensor for demo"
+	depends on I2C && VIDEO_V4L2 && VIDEO_V4L2_SUBDEV_API && INFOTM_CAMERA_SENSOR
+	---help---
+	This is a V4L2 sensor-level driver for the Gcore
+	GC0329_DEMO  camera sensors.  
+
+config VIDEO_AR330
+	tristate "AR330 sensor for demo"
+	depends on I2C && VIDEO_V4L2 && VIDEO_V4L2_SUBDEV_API && INFOTM_CAMERA_SENSOR
+	---help---
+	This is a V4L2 sensor-level driver for the Gcore
+	AR330 sensor camera sensors.
+endif
+
+config DDK_SENSOR
+	tristate "sensor driver for ddk2.7.0"
+	default m
+
+config XC9080
+	bool "sensor driver for XC9080"
+	default n
+
+if XC9080
+
+choice XC9080_DEVICE_TYPE
+	bool "choice type of xc9080 driver"
+	default XC9080_DEVICE_TYPE_ISP
+
+	comment "must one option selected"
+
+config XC9080_DEVICE_TYPE_ISP
+	bool "xc9080 driver for ISP"
+	depends on I2C
+	help
+	  xc9080 driver compatible with ISP.
+
+config XC9080_DEVICE_TYPE_V4L2
+	bool "xc9080 driver for camif V4L2"
+	depends on I2C && VIDEO_V4L2 && VIDEO_V4L2_SUBDEV_API && INFOTM_CAMERA_SENSOR && INFOTM_CAMIF
+	select XC9080_V4L2
+	help
+	  xc9080 driver compatible with V4L2.
+
+endchoice
+
+if XC9080_DEVICE_TYPE_ISP
+config XC9080_ISP
+	tristate "xc9080 driver for ISP"
+	depends on I2C
+	default n
+	help
+	  xc9080 driver for ISP.
+endif
+
+if XC9080_DEVICE_TYPE_V4L2
+config XC9080_V4L2
+	bool "xc9080 driver for V4L2"
+	depends on I2C && VIDEO_V4L2 && VIDEO_V4L2_SUBDEV_API && INFOTM_CAMERA_SENSOR && INFOTM_CAMIF
+	default n
+	help
+	  xc9080 driver for V4L2.
+endif
+
+config UVC_NO_PMU
+	bool "set UVC NO PMU"
+	default n
+	help
+	  Select this option if xc9080 need PMU to offer power.
+endif
+
+config USE_PCM_CLK
+	bool "sensor clock used PCM clock"
+	depends on DDK_SENSOR || XC9080
+
+config INFOTM_LANCHOU_CAMERA
+	bool " lanchou sensor "
+	depends on DDK_SENSOR || XC9080
+
+config VIDEO_STK3855
+	tristate "STK3855 sensor birgde ic"
+	depends on DVP_CAMERA_SENSOR && I2C && INFOTM_CAMERA_SENSOR
+	---help---
+	This is a i2c sensor-level driver for the
+	STK3855 DVP camera sensors brigde ic.
+
+config SENSOR_POWER_UP
+	bool "power up  for sensor"
+	default y
+
+config SENSOR_ITEM_UTILS
+	bool "item utils for sensor"
+	default y
+
+config SENSOR_DVP_WRAPPER
+	bool "dvp wrapper for sensor"
+	default y
+
+endif
+

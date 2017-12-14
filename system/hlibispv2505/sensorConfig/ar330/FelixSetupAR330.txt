@@ -1,0 +1,211 @@
+// Black Level
+BLC_SENSOR_BLACK             23 23 23 22 
+BLC_SYS_BLACK                64 
+
+// Colour Correction
+CCM_MATRIX                   1.248 -0.041 -0.208 -0.063 0.896 0.168 -0.05 -0.289 1.339 
+CCM_OFFSETS                  -108 -114 -118 
+
+// Display Gammut Mapper
+DGM_CLIP_MAX                 1 
+DGM_CLIP_MIN                 -0.5 
+DGM_COEFF                    0 0 0 0 0 0 
+DGM_SLOPE                    1 1 0 
+DGM_SRC_NORM                 1 
+
+// Denoiser
+DNS_COMBINE_ENABLE           1 
+DNS_DEAD_SPACE               0.2 
+DNS_ISO_GAIN                 1 
+DNS_PIXEL_SIZE               2.2 
+DNS_READ_NOISE               5 
+DNS_SENSOR_BITDEPTH          10 
+DNS_STRENGTH                 2 
+DNS_WELL_DEPTH               8000 
+
+// Defective Pixel Fixing
+DPF_DETECT_ENABLE            0 
+DPF_READ_MAP_ENABLE          0 
+DPF_THRESHOLD                16 
+DPF_WEIGHT                   2 
+DPF_WRITE_MAP_ENABLE         0 
+DPF_WRITE_MAP_NEG_THR        0 
+DPF_WRITE_MAP_POS_THR        0 
+
+// Display scaler
+DSC_ADJUST_CUTOFF_FREQ       0 
+DSC_BYPASS                   0 
+DSC_PITCH                    1 1 
+DSC_RECT                     0 0 0 0 
+DSC_RECT_TYPE                croprect 
+
+// Encoder scaler
+ESC_420_MODE                 auto 
+ESC_ADJUST_CUTOFF_FREQ       0 
+ESC_BYPASS                   0 
+ESC_CHROMA_MODE              inter 
+ESC_PITCH                    1 1 
+ESC_RECT                     0 0 0 0 
+ESC_RECT_TYPE                croprect 
+
+// Exposure clipping statistics
+EXS_GLOBAL_ENABLE            1 
+EXS_GRID_START_COORDS        0 0 
+EXS_GRID_TILE_DIMENSIONS     182 102 
+EXS_PIXEL_MAX                1024 
+EXS_REGIONAL_ENABLE          1 
+
+// Flicker Detection
+FLD_COEF_DIFF_TH             50 
+FLD_ENABLE                   0 
+FLD_FRAME_RATE               30 
+FLD_MIN_PN                   4 
+FLD_NF_TH                    1500 
+FLD_PN                       4 
+FLD_RESET                    0 
+FLD_RSHIFT                   10 
+FLD_SCENE_CHANGE_TH          300000 
+FLD_VTOT                     525 
+
+// Focus statistics
+FOS_GRID_ENABLE              1 
+FOS_GRID_START_COORDS        3 3 
+FOS_GRID_TILE_SIZE           182 102 
+FOS_ROI_ENABLE               1 
+FOS_ROI_END_COORDS           700 500 
+FOS_ROI_START_COORDS         3 3 
+
+// Gama Correction
+GMA_BYPASS                   0 
+
+// global and local histograms
+HIS_GLOBAL_ENABLE            1 
+HIS_GRID_START_COORDS        0 0 
+HIS_GRID_TILE_DIMENSIONS     50 50 
+HIS_INPUT_OFFSET             256 
+HIS_INPUT_SCALE              32767 
+HIS_REGIONAL_ENABLE          1 
+
+// Imager Interface
+//IIF_BAYER_FORMAT             GRBG 
+//IIF_CAP_RECT_BR              1279 479 //1278 719 
+//IIF_CAP_RECT_TL              640 0 
+//IIF_DECIMATION               1 1 
+
+// Lateral Chromatic Aberration
+LCA_BLUEPOLY_X               -0.7 0 0 
+LCA_BLUEPOLY_Y               -0.7 0 0 
+LCA_BLUE_CENTER              320 180 
+LCA_DEC                      0 0 
+LCA_REDPOLY_X                0.7 0 0 
+LCA_REDPOLY_Y                0.5 0 0 
+LCA_RED_CENTER               320 180 
+LCA_SHIFT                    0 0 
+
+// Lens Shading
+LSH_GRADIENTX                0 0 0 0 
+LSH_GRADIENTY                0 0 0 0 
+LSH_MATRIX_ENABLE            0 
+LSH_WBCLIP                   0.8358 0.8358 0.8358 0.8358
+LSH_WBGAIN                   1.149 0.848 0.8358 1.3135
+
+// LSH_CTRL_TEMPERATURE_0      2800
+// LSH_CTRL_TEMPERATURE_1      3200
+// LSH_CTRL_TEMPERATURE_2      5000
+// LSH_CTRL_TEMPERATURE_3      5500
+// LSH_CTRL_TEMPERATURE_4      6500
+// LSH_CTRL_TEMPERATURE_5      7500
+//
+// LSH_CTRL_MATRIX_0           lsh_matrix_2800.lsh
+// LSH_CTRL_MATRIX_1           lsh_matrix_3200.lsh
+// LSH_CTRL_MATRIX_2           lsh_matrix_5000.lsh
+// LSH_CTRL_MATRIX_3           lsh_matrix_5500.lsh
+// LSH_CTRL_MATRIX_4           lsh_matrix_6500.lsh
+// LSH_CTRL_MATRIX_5           lsh_matrix_7500.lsh
+
+// MGM_
+MGM_CLIP_MAX                 1 
+MGM_CLIP_MIN                 -0.5 
+MGM_COEFF                    0 0 0 0 0 0 
+MGM_SLOPE                    1 1 0 
+MGM_SRC_NORM                 1 
+
+// Image Enhancer
+MIE_BLACK_LEVEL              0.0625 
+MIE_MC_BRIGHTNESS            0 0 0 
+MIE_MC_CASPECT               0 0 0 
+MIE_MC_CB0                   0 0 0 
+MIE_MC_CEXTENT_1             0.5 0.5 0.5 
+MIE_MC_CEXTENT_2             0.5 0.5 0.5 
+MIE_MC_CEXTENT_3             0.5 0.5 0.5 
+MIE_MC_CEXTENT_4             0.5 0.5 0.5 
+MIE_MC_CONTRAST              1 1 1 
+MIE_MC_CONTRAST_MID          0.5 0.5 0.5 
+MIE_MC_CR0                   0 0 0 
+MIE_MC_CROTATION             0 0 0 
+MIE_MC_HUE                   0 0 0 
+MIE_MC_ON                    0 
+MIE_MC_SATURATION            1 1 1 
+MIE_MC_YGAIN_1               0 0 0 
+MIE_MC_YGAIN_2               0 0 0 
+MIE_MC_YGAIN_3               0 0 0 
+MIE_MC_YGAIN_4               0 0 0 
+MIE_MC_YMAX                  1 1 1 
+MIE_MC_YMIN                  0 0 0 
+MIE_VIB_ON                   0 
+MIE_VIB_SCPOINT_IN           0.5 
+MIE_VIB_SCPOINT_IN2          0.5 
+MIE_VIB_SCPOINT_OUT          0.5 
+MIE_VIB_SCPOINT_OUT2         1 
+
+// Global output parameters
+OUT_DE                       NONE 
+OUT_DE_POINT                 1 
+OUT_DISP                     RGB888_32 
+OUT_ENC                      420PL12YUV8 
+
+// RGB to YCC
+R2Y_BRIGHTNESS               0.0007 
+R2Y_CONTRAST                 1 
+R2Y_HUE                      0 
+R2Y_MATRIX                   BT709 
+R2Y_RANGE_MUL                1 1 1 
+R2Y_SATURATION               1.5 
+
+// Sharpening
+SHA_DENOISE_BYPASS           1 
+SHA_DETAIL                   0.39 
+SHA_DN_SIGMA_MULTIPLIER      1.472 
+SHA_DN_TAU_MULTIPLIER        2.481 
+SHA_EDGE_OFFSET              0 
+SHA_EDGE_SCALE               1 
+SHA_RADIUS                   3.7 
+SHA_STRENGTH                 0.2 
+SHA_THRESH                   0.21 
+
+// Tone Mapper
+TNM_BYPASS                   0 
+TNM_COLOUR_CONFIDENCE        10 
+TNM_COLOUR_SATURATION        1.2 
+TNM_CURVE                    0.0156 0.0313 0.0469 0.0625 0.0781 0.0938 0.1094 0.125 0.1406 0.1563 0.1719 0.1875 0.2031 0.2188 0.2344 0.25 0.2656 0.2813 0.2969 0.3125 0.3281 0.3438 0.3594 0.375 0.3906 0.4063 0.4219 0.4375 0.4531 0.4688 0.4844 0.5 0.5156 0.5313 0.5469 0.5625 0.5781 0.5938 0.6094 0.625 0.6406 0.6563 0.6719 0.6875 0.7031 0.7188 0.7344 0.75 0.7656 0.7813 0.7969 0.8125 0.8281 0.8438 0.8594 0.875 0.8906 0.9063 0.9219 0.9375 0.9531 0.9688 0.9844 
+TNM_FLAT_FACTOR              0.05 
+TNM_FLAT_MIN                 0.1 
+TNM_IN_Y                     -64 64 
+TNM_WEIGHT_LINE              0.05 
+TNM_WEIGHT_LOCAL             0 
+
+// White Balance statistics
+WBS_RMAX_TH                  0.3 0.15 
+WBS_ROI_ENABLE               2 
+WBS_ROI_END_COORDS           1279 719 1279 719 
+WBS_ROI_START_COORDS         0 0 0 0 
+WBS_YHLW_TH                  0.6 0 
+
+// RGB to YCC
+Y2R_BRIGHTNESS               0 
+Y2R_CONTRAST                 1 
+Y2R_HUE                      0 
+Y2R_MATRIX                   BT709 
+Y2R_RANGE_MUL                1 1 1 
+Y2R_SATURATION               1 
+

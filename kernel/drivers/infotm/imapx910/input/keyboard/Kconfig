@@ -1,0 +1,21 @@
+menuconfig IMAPX910_KEYBOARD
+	bool "iMAPx910 Keyboards and keypads"
+if IMAPX910_KEYBOARD
+	config IMAPX910_GPIO_KEY
+	tristate "iMAPX910 GPIO Keys"                             
+	default y                                                 
+	help                                                      
+	Say Y here if you want to use the GPIO keys of iMAPx910.
+
+config IMAPX910_PWRKEY_RICOH618
+	tristate "Power Key Ricoh R5T618 input driver support"
+	help
+	  Say Y here if you want to enable the power key ricoh
+	  driver accessible at /dev/ricoh618-pwrkey. This driver
+	  can be used for receiving notifications when client
+	  power key combinations are pressed.To compile this
+	  driver as a module, choose M here: the module will
+	  be called keychord.
+endif
+
+

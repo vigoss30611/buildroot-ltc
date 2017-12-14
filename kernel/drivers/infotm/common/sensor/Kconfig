@@ -1,0 +1,35 @@
+menuconfig INFOTM_GSENSOR
+        bool "Infotm G-sensor Support"
+	default n
+        help
+        Say Y here, and a list of support G-sensors will be displayed.
+
+if INFOTM_GSENSOR
+
+
+config SENSOR_MMA7660
+	tristate "Freescale MMA7660 acceleration sensor susport"
+	depends on I2C=y
+	default n
+	help
+	If you say yes here you get support for Freescale's
+	acceleration sensors MMA7660.
+
+config SENSOR_STK8312
+	tristate "Freescale STK8312 acceleration sensor susport"
+	depends on I2C=y
+	default n
+	help
+	If you say yes here you get support for Freescale's
+	acceleration sensors STK8312.
+
+config SENSOR_MIR3DA
+	tristate "Freescale BMA280 acceleration sensor susport"
+	depends on I2C=y
+	default n
+	help
+	If you say yes here you get support for Freescale's
+	acceleration sensors BMA280.
+
+endif
+

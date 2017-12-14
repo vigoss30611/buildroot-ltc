@@ -1,0 +1,16 @@
+#
+# ADC configuration
+#
+menuconfig INFOTM_ADC
+	bool "InfoTM adc driver support"
+	default n
+	help
+		InfoTM adr driver support
+
+if INFOTM_ADC
+config IMAPX15_ADC
+	bool "iMAPx15 adc driver support"
+	default n
+	help
+		InfoTM iMAPx15 adc driver support
+endif

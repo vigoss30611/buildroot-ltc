@@ -1,0 +1,17 @@
+#! /bin/sh
+
+case "$1" in
+	start|"")
+        echo "--------->start eventhub<----------"
+		eventhub &
+		cepd &
+		;;
+	stop)
+		killall eventhub
+		;;
+	*)
+		echo "Usage: eventhub {start|stop}" >&2
+		exit 1
+		;;
+esac
+

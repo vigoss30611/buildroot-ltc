@@ -1,0 +1,21 @@
+ menuconfig INFOTM_DRV_Q3F
+     bool "Infotm Q3F Series Support"
+     depends on ARCH_Q3F && INFOTM_SPECIAL
+     help
+         Infotm Q3F Series support
+
+if INFOTM_DRV_Q3F
+source "drivers/infotm/q3f/clk/Kconfig"
+source "drivers/infotm/q3f/gpio/Kconfig"
+source "drivers/infotm/q3f/input/Kconfig"
+source "drivers/infotm/q3f/display/Kconfig"
+source "drivers/infotm/q3f/dpmu/Kconfig"
+source "drivers/infotm/q3f/emif/Kconfig"
+source "drivers/infotm/q3f/mfd/Kconfig"
+source "drivers/infotm/q3f/regulator/Kconfig"
+source "drivers/infotm/q3f/char/Kconfig"
+source "drivers/infotm/q3f/ispost/Kconfig"
+source "drivers/infotm/q3f/fodet/Kconfig"
+source "drivers/infotm/q3f/power_domain/Kconfig"
+endif
+

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- com.gopro.smarty.view.ModeSelectorView -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/padding_camera_mode_popup"
+    android:paddingLeft="40.0dip"
+    android:paddingRight="40.0dip"
+    android:orientation="vertical"
+    android:paddingTop="40.0dip" >
+
+    <LinearLayout
+        android:id="@+id/wrapper_mode_groups"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/padding_camera_mode_popup_delta" >
+
+        <com.infotm.dv.view.CheckableImageView
+            android:id="@+id/btn_video"
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:src="@drawable/bg_toggle_mode_video" />
+        
+        <com.infotm.dv.view.CheckableImageView
+            android:id="@+id/btn_car"
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:src="@drawable/bg_toggle_mode_car" />
+
+        <com.infotm.dv.view.CheckableImageView
+            android:id="@+id/btn_photo"
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:src="@drawable/bg_toggle_mode_photo" />
+
+        
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1.0dip"
+        android:layout_marginBottom="@dimen/padding_camera_mode_popup_delta_half"
+        android:background="@color/gray_border_control_dialog" />
+
+    <ListView
+        android:id="@+id/list_mode"
+        android:layout_width="fill_parent"
+        android:layout_height="0.0dip"
+        android:layout_weight="1.0"
+        android:divider="@null"
+        android:dividerHeight="0.0dip"
+        android:overScrollMode="never"
+        android:requiresFadingEdge="none"
+        android:scrollbars="none" />
+
+</LinearLayout>

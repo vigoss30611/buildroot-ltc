@@ -1,0 +1,86 @@
+diff --git a/init/do_mounts.c b/init/do_mounts.c
+index a2b49f2..89bbcc6 100644
+--- a/init/do_mounts.c
++++ b/init/do_mounts.c
+@@ -499,8 +499,17 @@ void __init change_floppy(char *fmt, ...)
+ }
+ #endif
+ 
++static int __getms(void)
++{
++	ktime_t a;
++	a = ktime_get_boottime();
++	do_div(a.tv64, 1000000);
++	return (int)a.tv64;
++}
++
+ void __init mount_root(void)
+ {
++	int t, _t;
+ #ifdef CONFIG_ROOT_NFS
+ 	if (ROOT_DEV == Root_NFS) {
+ 		if (mount_nfs_root())
+@@ -523,8 +532,12 @@ void __init mount_root(void)
+ 	}
+ #endif
+ #ifdef CONFIG_BLOCK
++	_t = __getms();
+ 	create_dev("/dev/root", ROOT_DEV);
+ 	mount_block_root("/dev/root", root_mountflags);
++	if((t = __getms() - _t) > 0)
++		printk(KERN_ALERT "mount root: %dms\n", t);
++	console_loglevel = 7;
+ #endif
+ }
+ 
+diff --git a/init/main.c b/init/main.c
+index 9484f4b..4f058c5 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -736,10 +736,19 @@ static char *initcall_level_names[] __initdata = {
+ 	"late",
+ };
+ 
++static int __getms(void)
++{
++	ktime_t a;
++	a = ktime_get_boottime();
++	do_div(a.tv64, 1000000);
++	return (int)a.tv64;
++}
++
+ static void __init do_initcall_level(int level)
+ {
+ 	extern const struct kernel_param __start___param[], __stop___param[];
+ 	initcall_t *fn;
++	int t, _t;
+ 
+ 	strcpy(static_command_line, saved_command_line);
+ 	parse_args(initcall_level_names[level],
+@@ -748,8 +757,12 @@ static void __init do_initcall_level(int level)
+ 		   level, level,
+ 		   &repair_env_string);
+ 
+-	for (fn = initcall_levels[level]; fn < initcall_levels[level+1]; fn++)
++	for (fn = initcall_levels[level]; fn < initcall_levels[level+1]; fn++) {
++		_t = __getms();
+ 		do_one_initcall(*fn);
++		if((t = __getms() - _t) > 0)
++			printk(KERN_ALERT "%pf: %dms\n", *fn, t);
++	}
+ }
+ 
+ static void __init do_initcalls(void)
+diff --git a/kernel/printk.c b/kernel/printk.c
+index 509ace8..8434061 100644
+--- a/kernel/printk.c
++++ b/kernel/printk.c
+@@ -60,7 +60,7 @@ extern void printascii(char *);
+ 
+ /* We show everything that is MORE important than this.. */
+ #define MINIMUM_CONSOLE_LOGLEVEL 1 /* Minimum loglevel we let people use */
+-#define DEFAULT_CONSOLE_LOGLEVEL 7 /* anything MORE serious than KERN_DEBUG */
++#define DEFAULT_CONSOLE_LOGLEVEL 3 /* anything MORE serious than KERN_DEBUG */
+ 
+ int console_printk[4] = {
+ 	DEFAULT_CONSOLE_LOGLEVEL,	/* console_loglevel */

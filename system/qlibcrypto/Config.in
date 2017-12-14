@@ -1,0 +1,6 @@
+config BR2_PACKAGE_QLIBCRYPTO
+	bool "qlibcrypto"
+	help
+	  qcrypto lib
+
+	  http://www.infotm.com/

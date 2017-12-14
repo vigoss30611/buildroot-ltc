@@ -1,0 +1,5 @@
+config BR2_PACKAGE_LIBH264BITSTREAM
+	bool "h264bitstream"
+    default n
+	help
+		h264 bit stream file ,can parse and gen h264 nalu

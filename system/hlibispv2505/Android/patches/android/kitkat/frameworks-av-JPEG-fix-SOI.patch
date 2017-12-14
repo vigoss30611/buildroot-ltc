@@ -1,0 +1,30 @@
+From a7a4c8219e4c73c110ca27d3ba3b62c39d6d25d3 Mon Sep 17 00:00:00 2001
+From: Marcin Mielczarczyk <marcin.mielczarczyk@imgtec.com>
+Date: Fri, 5 Dec 2014 11:06:57 +0100
+Subject: [PATCH] frameworks/av: fix for SOI marker for software JPEG encoder
+
+SOI marker doesn't carry length field in case of software JPEG encoder.
+---
+ .../api1/client2/JpegProcessor.cpp                 |    6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/services/camera/libcameraservice/api1/client2/JpegProcessor.cpp b/services/camera/libcameraservice/api1/client2/JpegProcessor.cpp
+index ec81456..cd9f02c 100644
+--- a/services/camera/libcameraservice/api1/client2/JpegProcessor.cpp
++++ b/services/camera/libcameraservice/api1/client2/JpegProcessor.cpp
+@@ -360,6 +360,12 @@ size_t JpegProcessor::findJpegSize(uint8_t* jpegBuffer, size_t maxSize) {
+             ALOGV("JPEG stream found beginning at offset %d", size);
+             break;
+         }
++		// SOI is not followed by length field.
++		if (type == SOI) {
++			ALOGV("JPEG start segment found at %#x", size);
++			size += MARKER_LENGTH;
++			continue;
++		}
+         if (type == EOI || size > maxSize - sizeof(segment_t)) {
+             ALOGE("Got premature End before JPEG data, offset %d", size);
+             return 0;
+-- 
+1.7.9.5
+

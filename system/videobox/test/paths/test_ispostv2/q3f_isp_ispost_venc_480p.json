@@ -1,0 +1,64 @@
+{
+	"isp": {
+		"ipu": "v2500",
+		"args": {
+			"mode": 5,
+			"name": "AR330MIPI",
+			"config": "/root/.ispddk/config-normal.txt"
+		},
+		"port": {
+			"out": {
+				"w": 640,
+				"h": 480,
+				"pixel": "nv12",
+				"fps":15,
+				"bind": { "ispost0": "in" }
+			}
+		}
+	},
+	
+	"ispost0": {
+		"ipu": "ispostv2",
+		"args": { 
+			"dn_enable":1,
+			"dn_target_index":0,
+					"lc_grid_file_name1": "/root/.ispost/lc_v1_0-0-0-0_hermite32_640x480-640x480.bin",
+					"lc_geometry_file_name1": "/root/.ispost/lc_v1_0-0-0-0_hermite32_640x480-640x480_geo.bin"
+		},
+		"port": {
+			"dn": {
+				"w": 640,
+				"h": 480,
+				"pixel": "nv12"
+			},
+			"uo":{
+				"w":640,
+				"h":480,
+				"pixel":"nv12",
+				"bind": { "enc1080p": "frame", "display":"osd0" }
+			}
+		}
+	},
+
+	"enc1080p": {
+		"ipu": "vencoder",
+		"args": {
+			"encode_type": "h264"
+		},
+		"port": {
+			"stream":{
+				"bind":{ "filesink":"in" }
+			}
+		}
+	},
+
+	"filesink":{
+		"ipu":"filesink",
+		"args":{
+			"data_path":"/tmp/test.h264"
+		}
+	},
+
+	"display": { "ipu":"ids" }
+}
+

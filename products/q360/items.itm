@@ -1,0 +1,142 @@
+items.start
+config.vol.regulator pwm.0
+board.cpu     apollo
+board.case              1
+board.disk          flash
+board.string.product    LIBRA
+board.string.device    LIBRA
+soc.cpu.freq    -300
+soc.cpu.dvfs    1
+soc.gpu.freq    444
+soc.gpu.dvfs    1
+soc.vpu.dvfs    1
+soc.usb.otg    1
+soc.usb.host    1
+config.ui    tablet
+config.phase    final
+config.preload    preboot
+config.root    1
+config.trace    0
+config.media.pmm   0 
+config.media.out    rgb565
+config.uboot.logo       0
+config.otg.nluns    2
+config.otg.extraid    pads.138
+config.policy.power    1
+config.wdt              0
+board.arch              a5pv10  #q3pv10
+cpu.power                   pmu.sw1
+cpu.io33.power          pmu.sw2
+dram.count              1       # 2 or 4 0r 8
+dram.power              pmu.swio
+dram.freq               380     #
+dram.type               LPDDR2S4    # q3 support DDR3 or LPDDR2S4
+dram.width              32      # 8 16 or 32
+dram.capacity           128     #
+memory.cl               6       # 2 ~ 8
+memory.rtt              4       # DIV_4 DIV_2 DIV_6 only for DDR3
+memory.driver           6       # DIV_6 DIV_7 only for DDR3 
+memory.tras             15      # default memory tras: 15
+memory.trfc             64      # default memory trfc: 64
+part0			uboot.48.boot
+part1			item.16.boot
+part2			ramdisk.0.boot
+part3			kernel.3000.boot
+part5			system.11500.normal
+part6			config.500.fs.fat
+sensor.grivaty.model mir3da
+sensor.grivaty.ctrl i2c.2
+sensor.grivaty.int pads.137
+sensor.grivaty.orientation yxz
+ids.pixformat       888
+ids.default         lcd
+ids.acm             60
+lcd.model           GM05004001Q_800_480 
+lcd.port            ids.0
+lcd.cable           888
+lcd.rgb             rgb
+prescaler.vic           2001
+lcd.vic 2000
+lcd.interface 1
+dss.implementation.product.type                 mid
+dss.implementation.board.type                   i80
+dss.implementation.framebuffer.vic              2000
+dss.implementation.lcdpanel.name				ST7567_132_65
+dss.implementation.lcdpanel.rgbseq              0
+dss.implementation.lcdpanel.rgbbpp 32
+dss.implementation.lcdpanel.master.polarity     1
+dss.implementation.lcdpanel.bl.gpio                     113
+dss.implementation.lcdpanel.bl.polarity         1
+dss.implementation.lcdpanel.ids0.rgbseq         6
+dss.implementation.lcdpanel.ids1.rgbseq         6 
+dss.implementation.i80.reset	153
+dss.implementation.i80.wr.polarity	0
+dss.implementation.i80.manual.sync	1
+hdmi.scale      1
+led0.gpio       led_work.151
+led0.polarity   0
+led0.dft_state  on
+#led1.gpio       led_battery.150
+#led1.polarity   0
+#led1.dft_state  nocare
+led2.gpio       led_wifi.146
+led2.polarity   0
+led2.dft_state  off
+bl.ctrl            pwm.0
+bl.periodns		99000
+bl.max_brightness	200
+bl.min_brightness	20
+bl.dft_brightness	120
+bl.polarity		1
+codec.model               9624tqlp
+codec.power               pmu.ldo4
+codec.data                i2s.0
+codec.hp_highlevel_en    0
+sound.speaker            pads.126
+sound.spkon_delay        200
+soc.usb.host    1
+soc.usb.otg     1
+ts.model                gt9147
+ts.ctrl                 i2c.2
+ts.orientation          xy
+keys.down						adc.9.5
+keys.ok                       adc.9.0 
+keys.up                       adc.9.10 
+keyboard.model          ht82b40xv150
+wifi.model sdio.8189es
+wifi.power pads.165
+pmu.model            ec610
+pmu.ctrl            i2c.0 
+power.full pads.143
+power.dcdetect pads.149
+power.curve.capacity    3800.3700.3600.3550 #means High-100 Middle-80 Low-50 Empty-20(Shutdown voltage)
+initi2c.0               i2c.0.40.99
+virtualvolkey      1
+eth.model gmac
+app.product.type    q3_sportdv
+app.sensor.type         mipi
+app.sensor.name         IMX179MIPI # AR330MIPI, AR330DVP, OV4689
+app.sensor.mode			30.3264.2448
+app.sensor.lane         4 #just for mipi, no use for dvp
+app.sensor.setupfile    /etc/IMX179_MIPI.txt	# [AR0330:/etc/AR330.txt] [OV4689:/etc/FelixSetupOV4689.txt]
+app.sensor.buffersize   5 #
+app.sensor.awbmode      4 #
+app.sensor.csi_freq     410
+app.sensor.isp_freq     252000000 #75000000
+sensor.frametimeout     200 #ms
+sensor.mclk.pads        112
+sensor.reset.pads       61
+sensor.pwdn.pads        145
+sensor.iovdd.ldo ldo5
+sensor.iovdd.vol 1800000
+sensor.dvdd.ldo ldo2
+sensor.dvdd.vol 1200000
+sensor.corevdd.ldo ldo1
+sensor.corevdd.vol 2800000
+sensor.direct    2 # SENSOR_FLIP_NONE = 0, SENSOR_FLIP_HORIZONTAL = 1, SENSOR_FLIP_VERTICAL = 2, SENSOR_FLIP_BOTH = 3
+app.evbboard.ver one
+app.mmc.device /dev/mmcblk0p1
+video.autoplay.enable
+power.ctrl adc.10.2000 # bus = adc, channel = 10(XADC_INAUX1), resistance_divider_ratio = 2 * 1000 = 2000
+items.end
+

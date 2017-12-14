@@ -1,0 +1,10 @@
+ #
+ #  Fodet device configuration
+ #
+ #
+config INFOTM_FODET
+        tristate "Infotm Fodet driver"
+        default n
+        help
+               Infotm fodet device driver support
+

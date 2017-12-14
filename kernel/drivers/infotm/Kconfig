@@ -1,0 +1,19 @@
+menuconfig INFOTM_SPECIAL
+	bool "InfoTM special files and drivers"
+	default y
+	select GENERIC_ALLOCATOR
+	help
+	  InfoTM special files and drivers support
+
+if INFOTM_SPECIAL
+
+source "drivers/infotm/imapx910/Kconfig"
+source "drivers/infotm/imapx15/Kconfig"
+source "drivers/infotm/apollo/Kconfig"
+source "drivers/infotm/apollo3/Kconfig"
+source "drivers/infotm/coronampw/Kconfig"
+source "drivers/infotm/q3f/Kconfig"
+source "drivers/infotm/common/Kconfig"
+
+endif
+

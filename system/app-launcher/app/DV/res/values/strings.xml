@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">InfotmDV</string>
+         <string name="app_title">行车记录仪</string>
+    <string name="action_settings">Settings</string>
+    <string name="camerasetting">Camera Settings</string>
+<string name="home_activity">Sports DV</string>
+    <string name="default_on_text">ON</string>
+    <string name="default_off_text">OFF</string>
+    <string name="connect_setting_activity">Connect to your SportsDV</string>
+    
+
+    <string name="no_media_found">No media found in DV !</string>
+    
+<!--     <string name="help_text">Please set the SportsDV to APP mode.\nSetting-WIFI-app mode.\nPlease select the SportsDV. </string> -->
+<!--     <string name="help_text">1、Set SportsDV to app mode:Settings-WIFI-app.\n2、Then select your SportsDV in the list below.\n </string> -->
+	<string name="help_text">Select your device wifi in the list below:\n </string>
+    <string name="help_text_wifi">Step 2：\n1、Enter password to Connect to your SportsDV\n</string>
+    <string name="help_text_pin">Step 3：\n1、Enter the pin showed on SportsDV screen,then click the "Send Pin" button\n</string>
+    <string name="refresh">refresh</string>
+    <string name="send_password">Connect</string>
+    <string name="send_pin">Send Pin</string>
+    <string name="wifi_fail_to_scan">scan failed</string>
+    
+    <string name="delete_all_files_from_sd_card">Delete all Files from SD Card</string>
+    <string name="delete_last_file">Delete Last File</string>
+    <string name="experience_cam_found">CONNECT &amp; CONTROL</string>
+    <string name="experience_cam_missing">CONNECT YOUR CAMERA</string>
+    <string name="experience_cam_searching">SEARCHING FOR A DV</string>
+    <string name="photo_on_card">Photos On Card</string>
+    <string name="photo_remain">Photos Remaining</string>
+    <string name="video_time_remain">Video Time Remaining</string>
+    <string name="videos_on_card">Videos On Card</string>
+    <string name="reconnecting">Reconnecting</string>
+    <string name="reconnecting_msg">Attempting to reconnect to %s</string>
+    <string name="setting_section_video">Video Settings</string>
+    <string name="setting_reverseimage">reverse image</string>
+    <string name="setting_section_capture">Capture Settings</string>
+    <string name="setting_section_car">Car</string>
+    <string name="setting_section_setup">Setup</string>
+    
+	<string name="recording">Recording…</string>
+    <string name="glyph_check">✔</string>
+    <string name="glyph_cross">✘</string>
+    
+    <string name="setting_video_mode">Record Mode</string>
+    <string name="setting_video_preview">Video Preview Mode</string>
+    <string name="setting_video_interval">Video Inteval</string>
+    <string name="setting_video_res">Video Reslution</string>
+    <string name="setting_video_fps">Video fps</string>
+    <string name="setting_video_lowlight">Video lowloght</string>
+    <string name="setting_video_adv">Video advanced</string>
+    <string name="setting_video_wb">whitebalance</string>
+    <string name="setting_video_color">color</string>
+    <string name="setting_video_iso">isolimit</string>
+    <string name="setting_video_sharpness">sharpness</string>
+    <string name="setting_video_ev">ev</string>
+
+	<string name="setting_video_looprecording">looprecording</string>
+	<string name="setting_video_timelapsedimage">Video Timelapsed Image</string>
+	<string name="setting_video_highspeed">Video High Speed</string>
+	<string name="setting_video_rearcamera">rearcamera</string>
+	<string name="setting_video_pip">pip</string>
+	<string name="setting_video_frontbig">frontbig</string>
+	<string name="setting_video_wdr">wdr</string>
+	<string name="setting_video_recordaudio">recordaudio</string>
+	<string name="setting_video_datestamp">datestamp</string>
+	<string name="setting_video_gsensor">gsensor</string>
+	<string name="setting_video_platestamp">platestamp</string>
+    
+    <string name="setting_car_mode">Car Mode</string>
+    <string name="setting_car_res">Car Resolution</string>
+    <string name="setting_car_fps">Car fps</string>
+    <string name="setting_car_lowlight">Car lowloght</string>
+    <string name="setting_car_adv">Car advanced</string>
+    <string name="setting_car_wb">whitebalance</string>
+    <string name="setting_car_color">color</string>
+    <string name="setting_car_iso">isolimit</string>
+    <string name="setting_car_sharpness">sharpness</string>
+    <string name="setting_car_ev">ev</string>
+    
+    <string name="setting_photo_mode">Photo Mode</string>
+    <string name="setting_photo_preview">Photo Preview Mode</string>
+    <string name="setting_photo_interval">Photo interval</string>
+    <string name="setting_photo_shutter">Photo shutter</string>
+    <string name="setting_photo_timer">Photo timer</string>
+    <string name="setting_photo_modeauto">Loop Capture</string>
+    <string name="setting_photo_modesequence">Capture Sequence</string>
+    <string name="setting_photo_mega">Photo megapixels</string>
+    <string name="setting_photo_lowlight">Photo lowlight</string>
+    <string name="setting_photo_adv">Photo advanced</string>
+    <string name="setting_photo_wb">whitebalance</string>
+    <string name="setting_photo_color">color</string>
+    <string name="setting_photo_iso">isolimit</string>
+    <string name="setting_photo_sharpness">sharpness</string>
+    <string name="setting_photo_ev">ev</string>
+
+	<string name="setting_photo_capturemode">capturemode</string>
+	<string name="setting_photo_resolution">resolution</string>
+	<string name="setting_photo_sequence">sequence</string>
+	<string name="setting_photo_quality">quality</string>
+	<string name="setting_photo_antishaking">antishaking</string>
+	<string name="setting_photo_datestamp">datestamp</string>
+
+
+    
+    <string name="setting_setup_wireless">Shutdown Wifi</string>
+    <string name="setting_setup_ledfreq">Led Frequency</string>
+    <string name="setting_setup_led">Led</string>
+    <string name="setting_setup_cardvmode">Cardv Mode</string>
+    <string name="setting_setup_dis_sleep">display.sleep</string>
+    <string name="setting_setup_dis_bright">display.bright</string>
+    <string name="setting_setup_ori">orientation</string>
+    <string name="setting_setup_watermark">whatermark</string>
+    <string name="setting_setup_language">language</string>
+    <string name="setting_setup_defaultmode">defaultmode</string>
+    <string name="setting_setup_beeps">beeps</string>
+    <string name="setting_setup_autooff">autooff</string>
+    <string name="setting_setup_delayedshutdown">delayed shutdown</string>
+    
+    <string name="setting_setup_date">Set Date And Time</string>
+    <string name="setting_setup_battery">Battery Status</string>
+    <string name="setting_setup_sdcard">SDCard capacity</string>
+    <string name="setting_setup_changewifi">Change Wifi Name</string>
+    <string name="setting_setup_locate">Locate Camera</string>
+
+	<string name="setting_setup_time_syncgps">time syncgps</string>
+	<string name="setting_setup_keytone">keytone</string>
+	<string name="setting_setup_tvmode">tvmode</string>
+	<string name="setting_setup_parkingguard">parkingguard</string>
+	<string name="setting_setup_irled">irled</string>
+	<string name="setting_setup_imagerotation">imagerotation</string>
+	<string name="setting_setup_volume">Volume</string>
+	<string name="setting_setup_platenumber">platenumber</string>
+	<string name="setting_setup_ap">ap</string>
+
+    <string name="setting_adv_reset">Reset to Default</string>
+     <string name="setting_adv_format">Format</string>
+    <string name="dialog_wifi_off">Set Wifi Off</string>
+    
+    <string name="video_quality_smooth">Smooth</string>
+    <string name="video_quality_origin">Origin</string>
+    <string name="video_quality_rear">Rear</string>
+    <string name="search_result">find </string>
+    <string name="search_count"> device</string>
+    <string name="search_noresult">not find device :</string>
+    <string name="get_record_result">today have </string>
+    <string name="get_record_count"> record</string>
+    <string name="live_video_connect">Connecting…</string>
+    <string name="live_video_loading">Loading…</string>
+    <string name="live_video_close">Closing…</string>
+    <string name="live_video_capture_success">Snapshot successfully</string>
+    <string name="device_type_not_support_cloud_service">This type of device does not support the opening of cloud services</string>
+    <string name="the_device_not_support_cloud_service">Sorry, this device does not support the opening of cloud services</string>
+    <string name="cloud_service_not_open_and_hava_a_look">Without cloud service,have a look</string>
+    <string name="cloud_service_will_expired_and_hava_a_look">Cloud service is about to expire,have a look</string>
+    <string name="cloud_service_expired_and_hava_a_look">Cloud service has expired,have a look</string>
+    <string name="wait">Please wait a moment…</string>
+    <string name="sd_record_loading">Record loading…</string>
+    <string name="set_rate">Set rate</string>
+    <string name="sd_record_records_none">No video record today</string>
+    <string name="sd_record_records_num">There are %1$d of record today</string>
+    <string name="device_search">device searching</string>
+    <string name="device_refresh">refresh</string>
+    <string name="device_usb_config">please insert device and open usb share</string>
+    <string name="select_channel_type">choose channel type</string>
+        <string name="xingchejilu_str">行车记录</string>
+    <string name="yijiandaohang_str">一键导航</string>
+    <string name="luxingguiji_str">路行轨迹</string>
+    <string name="weizhangchaxun_str">违章查询</string>
+    <string name="weizhidingwei_str">位置定位</string>
+    <string name="gpscesu_str">GPS测速</string>
+    <string name="zhinanzhen_str">指南针</string>
+    <string name="quanjingtu_str">全景图</string>
+    <string name="telephone_media_str">本地媒体库</string>
+    <string name="wodeditu_str">我的地图</string>
+    <string name="device_connet_str">设备连接</string>
+    <string name="setting_str">设置</string>
+    <string name="device_param_setting_str">参数设置</string>
+    <string name="device_playback_media_str">设备媒体库</string>
+    <string name="phone_playback_media_str">手机媒体库</string>
+    <string name="video">视  频</string>
+    <string name="photo">照  片</string>
+    <string name="video_locked">加锁视频</string>
+    <string name="device_connect_mode_str">设备连接方式</string>
+    <string name="device_operate_script_str">操作说明</string>
+    <string name="device_ssid_set_str">设备SSID设置</string>
+    <string name="device_version_str">版本信息</string>
+    <string name="device_connect_modeconnect_mode_forward_str">正向</string>
+    <string name="device_connect_modeconnect_mode_convert_str">反向</string>
+    <string name="device_connect_modeconnect_mode_p2p_str">公网</string>
+    <string name="device_connect_modeconnect_mode_direct_str">直连</string>
+    <string name="device_operate_script1">1,点击“设置” ，进入设置功能界面</string>
+    <string name="device_operate_script2">2,选择设备连接方式 ，默认为“正向” \n “正向” 是指手机端连设备端Wifi热点   \n “反向” 是指设备端连手机端Wifi热点</string>
+    <string name="device_operate_script3">3,返回主界面 ，点击“行车记录”，进入设备连接</string>
+    <string name="device_operate_script4">4,搜索到设备，点击您要连接的设备进行连接</string>
+    <string name="device_operate_script5">5,设备连接中，请稍后...</string>
+    <string name="device_operate_script6">6,设备连接成功后，进入预览界面</string>
+    <string name="device_operate_script6_camera">控制设备拍照</string>
+    <string name="device_operate_script6_vedio">控制设备录像</string>
+    <string name="device_operate_script6_setting">弹出设置对话框,对设备进行操作</string>
+    <string name="device_operate_script7">7,点击对话框中的“回放媒体库”，可以浏览，查看，播放设备上的视频和照片</string>
+    <string name="device_operate_script8">8,点击对话框中的“参数设置”，可以设置摄像头设备的各项参数</string>
+    <string name="device_setting_success">参数设置 成功！</string>
+    <string name="device_setting_fail">参数设置失败！</string>
+    <string name="device_connect_fail">连接失败,请重试！</string>
+    <string name="file_delete_success">文件删除成功！</string>
+    <string name="file_delete_fail">文件删除失败！</string>
+    <string name="rear_camera_not_insert_str">后摄像头没有插入！</string>
+     <string name="upgrade_ok">升级成功,开始重连相机</string>
+    <string name="upgrade_fail">升级失败</string>
+    <string name="upgrade_check_verion">正在获取相机版本</string>
+    <string name="upgrade_check_version_fail">获取相机版本失败</string>
+    <string name="upgrade_newest">已是相机最新版本</string>
+    <string name="upgrade_downloading">正在下载镜像</string>
+    <string name="upgrade_download_fail">下载镜像失败</string>
+    <string name="upgrade_uploading">正在上传镜像到相机</string>
+    <string name="upgrade_upload_fail">上传镜像到相机失败</string>
+    <string name="upgrade_processing">相机升级中，请勿重启</string>
+    <string name="upgrade_image_URL_fail">获取镜像URL失败</string>
+    <string name="upgrade_image_verion">正在获取镜像版本</string>
+    <string name="upgrade_image_fail_connet_http">获取镜像版本失败,请配置手机连到镜像服务器：</string>
+    <string name="upgrade_upload_fail_connet_camera">上传镜像失败,请配置手机连到相机wifi</string>
+</resources>

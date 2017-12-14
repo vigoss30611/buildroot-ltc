@@ -1,0 +1,29 @@
+#
+# Multimedia device configuration
+#
+
+menuconfig INFOTM_MEDIA_SUPPORT
+	bool "Infotm Media driver support"
+	default y
+	help
+		InfotmMedia driver support
+
+if INFOTM_MEDIA_SUPPORT
+
+# dmmu_drv
+source "drivers/infotm/common/InfotmMedia/external/project/dmmu_drv/Kconfig"
+
+# vdec_drv_g1
+source "drivers/infotm/common/InfotmMedia/external/project/vdec_drv_g1/Kconfig"
+
+# venc_drv_8270
+source "drivers/infotm/common/InfotmMedia/external/project/venc_drv_8270/Kconfig"
+source "drivers/infotm/common/InfotmMedia/external/project/fpga_venc_264_h1/Kconfig"
+source "drivers/infotm/common/InfotmMedia/external/project/fpga_vdec_264_g1/Kconfig"
+source "drivers/infotm/common/InfotmMedia/external/project/fpga_venc_265_h2/Kconfig"
+source "drivers/infotm/common/InfotmMedia/external/project/fpga_vdec_265_g2/Kconfig"
+source "drivers/infotm/common/InfotmMedia/external/project/jenc/Kconfig"
+source "drivers/infotm/common/InfotmMedia/external/project/venc_h265_v4/Kconfig"
+
+endif # INFOTM_MEDIA_SUPPORT
+

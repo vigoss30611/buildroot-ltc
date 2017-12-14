@@ -1,0 +1,15 @@
+#! /bin/sh
+
+case "$1" in
+	start|"")
+		libra_dana &
+		;;
+	stop)
+		killall libra_dana
+		;;
+	*)
+		echo "Usage: libra_dana {start|stop}" >&2
+		exit 1
+		;;
+esac
+

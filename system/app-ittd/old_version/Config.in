@@ -1,0 +1,4 @@
+config BR2_PACKAGE_APP_ITTD
+	bool "IQ Test device app"
+	help
+	  IQ Test device app

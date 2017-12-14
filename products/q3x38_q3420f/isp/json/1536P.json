@@ -1,0 +1,196 @@
+{
+	"isp": {
+		"ipu": "v2500",
+		"port": {
+			"out": {
+				"w": 1536,
+				"h": 1536,
+				"fps":15,
+                "pixel": "nv12",
+				"bind": {"ispost": "in"}
+			},
+			"his": {
+				"bind": { "vam": "in" }
+			}
+		}
+	},
+
+	"marker0": {
+                "ipu": "marker",
+                "args": {
+                        "mode": "nv12"
+                },
+                "port": {
+                        "out": {
+                                "w": 800,
+                                "h": 64,
+                                "pixel": "nv12",
+                                "bind": { "ispost": "ov0" }
+                        }
+                }
+        },
+
+	"marker1": {
+                "ipu": "marker",
+                "args": {
+                        "mode": "bit2"
+                },
+                "port": {
+                        "out": {
+                                "w": 800,
+                                "h": 64,
+                                "pixel": "bpp2",
+                                "bind": { "ispost": "ov1" }
+                        }
+                }
+        },
+	"marker2": {
+                "ipu": "marker",
+                "args": {
+                        "mode": "bit2"
+                },
+                "port": {
+                        "out": {
+                                "w": 800,
+                                "h": 64,
+                                "pixel": "bpp2",
+                                "bind": { "ispost": "ov2" }
+                        }
+                }
+        },
+	"marker3": {
+                "ipu": "marker",
+                "args": {
+                        "mode": "bit2"
+                },
+                "port": {
+                        "out": {
+                                "w": 800,
+                                "h": 64,
+                                "pixel": "bpp2",
+                                "bind": { "ispost": "ov3" }
+                        }
+                }
+        },
+	"marker4": {
+                "ipu": "marker",
+                "args": {
+                        "mode": "bit2"
+                },
+                "port": {
+                        "out": {
+                                "w": 800,
+                                "h": 64,
+                                "pixel": "bpp2",
+                                "bind": { "ispost": "ov4" }
+                        }
+                }
+        },
+	"marker5": {
+                "ipu": "marker",
+                "args": {
+                        "mode": "bit2"
+                },
+                "port": {
+                        "out": {
+                                "w": 800,
+                                "h": 64,
+                                "pixel": "bpp2",
+                                "bind": { "ispost": "ov5" }
+                        }
+                }
+        },
+	"marker6": {
+                "ipu": "marker",
+                "args": {
+                        "mode": "bit2"
+                },
+                "port": {
+                        "out": {
+                                "w": 800,
+                                "h": 64,
+                                "pixel": "bpp2",
+                                "bind": { "ispost": "ov6" }
+                        }
+                }
+        },
+
+	"ispost": {
+		"ipu": "ispostv2",
+        "args": {
+            "dn_enable": 1,
+            "dn_target_index": 11,
+            "lc_grid_file_name1":"/root/.ispost/lc_v1_0-0-0-0_hermite32_1536x1536-1536x1536.bin", 
+            "lc_geometry_file_name1": "/root/.ispost/lc_v1_0-0-0-0_hermite32_1536x1536-1536x1536_geo.bin",
+            "buffers" : 2
+
+        },
+        "port": {
+		"ov0":{
+				"pip_x": 560,
+				"pip_y": 952
+			},
+			"ov1":{
+				"pip_x": 560,
+				"pip_y": 62
+			},
+			"ov2":{
+				"pip_x": 560,
+				"pip_y": 176
+			},
+			"ov3":{
+				"pip_x": 560,
+				"pip_y": 276
+			},
+			"ov4":{
+				"pip_x": 560,
+				"pip_y": 276
+			},
+			"ov5":{
+				"pip_x": 560,
+				"pip_y": 276
+			},
+			"ov6":{
+				"pip_x": 560,
+				"pip_y": 276
+			},
+            "dn": {
+                "w": 1536,
+                "h": 1536,
+                "pixel": "nv12"
+            },
+            "uo": {
+                "w": 1536,
+                "h": 1536,
+                "pixel": "nv12",
+                "bind": { "enc1080p": "frame","jpeg": "in"}
+            },
+            "ss0":{
+                "w": 480,
+                "h": 480,
+                "pixel": "nv12",
+				"bind": { "encvga": "frame" }
+			}
+		}
+	},
+	"jpeg": {
+		"ipu":"h1jpeg",
+		"args": {
+			"mode": "trigger",
+			"buffer_size": 622080
+		}
+	},
+	"enc1080p": {
+		"ipu": "h1264",
+		"args":{
+			"buffer_size": 4096728
+		}
+	},
+	"encvga": {
+		"ipu": "h1264",
+		"args":{
+			"buffer_size":524288
+		}
+	},
+	"vam": { "ipu": "vamovement"}
+}

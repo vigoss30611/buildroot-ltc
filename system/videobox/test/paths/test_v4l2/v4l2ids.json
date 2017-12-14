@@ -1,0 +1,33 @@
+{
+	"v4l2": {
+		"ipu": "v4l2",
+		"args": {
+			"driver":"uvcvideo",
+			"model": "USB2.0 Camera",
+			"pixfmt": "yuyv422"
+		},
+		"port": {
+			"out": {
+				"w": 640,
+				"h": 480,
+				"pixel": "yuyv422",
+				"bind": { "pp0": "in" }
+			}
+		}
+	},
+
+	"pp0": {
+		"ipu": "pp",
+		"port": {
+			"out": {
+				"w": 640,
+				"h": 480,
+				"pixel": "nv12",
+				"bind": { "display": "osd0"}
+				}
+			}
+		},
+
+	"display": { "ipu": "ids"}
+}
+

@@ -1,0 +1,12 @@
+#
+# Kconfig InfotmMedia jenc apollo3 driver.
+#
+# Copyright (c) 2009~2014 ShangHai Infotm Ltd all rights reserved.
+#
+#
+
+config INFOTM_MEDIA_JENC_SUPPORT
+        tristate "InfotmMedia jenc driver support"
+        default n
+        help
+                InfotmMedia jpeg encoder support

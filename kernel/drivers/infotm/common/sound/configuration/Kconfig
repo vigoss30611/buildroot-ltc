@@ -1,0 +1,90 @@
+#menu "SoC Audio for the INFOTM SOC"
+config SND_IMAPX_SOC
+	tristate "SoC Audio for the Infotm Imapx chips"
+	depends on SND_SOC
+	select SND_PCM
+	help
+		Say Y or M if you want to add support for codecs attached to
+		the AC97, I2S interface. You will also need
+		to select the audio interfaces to support below.
+
+if SND_IMAPX_SOC
+
+config SND_IMAPX_SOC_ES8328
+    tristate "SoC Audio support for IMAPX - ES8328"
+	depends on SND_IMAPX_SOC
+	select SND_SOC_ES8328
+	help
+		Say Y if you want to add support for SoC audio on imapx
+		or imapx with the es8328.
+
+config SND_IMAPX_SOC_ES8323
+	tristate "SoC Audio support for IMAPX - ES8323"
+	depends on SND_IMAPX_SOC
+	select SND_SOC_ES8323
+	help
+		Say Y if you want to add support for SoC audio on imapx
+		or imapx with the es8323.
+
+config SND_IMAPX_SOC_FR1023
+	tristate "SoC Audio support for IMAPX - FR1023"
+	depends on SND_IMAPX_SOC
+	select SND_SOC_FR1023
+	help
+		Say Y if you want to add support for SoC audio on imapx
+		or imapx with the fr1023.
+config SND_IMAPX_SOC_ALC5631
+    tristate "SoC Audio support for IMAPX - ALC5631"
+    depends on SND_IMAPX_SOC
+    select SND_SOC_ALC5631
+    help
+        Say Y if you want to add support for SoC audio on imapx
+        or imapx with the alc5631.
+
+config SND_IMAPX_SOC_TQLP9624
+	tristate "SoC Audio support for IMAPX - Acodec"
+	depends on SND_IMAPX_SOC
+	select SND_SOC_TQLP9624
+	help
+		Say Y if you want to add support for SoC audio on imapx
+		or imapx with the acodec.
+config SND_IMAPX_SOC_FR1023
+	tristate "SoC Audio support for IMAPX - Fr1023"
+	depends on SND_IMAPX_SOC
+	select SND_SOC_FR1023
+	help
+		Say Y if you want to add support for SoC audio on imapx
+		or imapx with the acodec.
+
+config SND_IMAPX_SOC_IP6205
+	tristate "Soc Audio support for IMAPX - IP620x"
+	depends on SND_IMAPX_SOC
+	select SND_SOC_IP6205
+	help
+		Say Y if you want to add support for Soc audio on imapx
+		or imapx with the acodec.
+
+config SND_IMAPX_SOC_IP2906
+	tristate "Soc Audio support for IMAPX - IP2906"
+	depends on SND_IMAPX_SOC
+	select SND_SOC_IP2906
+	help
+		Say Y if you want to add support for Soc audio on imapx
+		or imapx with the acodec.
+
+config SND_IMAPX_SOC_SPDIF
+    tristate "SoC Audio support for IMAPX - Spdif"
+    depends on SND_IMAPX_SOC
+    help
+        This is option for support spdif interface
+
+config SND_IMAPX_SOC_VIRTUAL
+	tristate "SoC Audio support for IMAPX - Virtual"
+	depends on SND_IMAPX_SOC
+	select SND_SOC_VIRTUAL
+	help
+		Say Y if you want to add support for SoC audio on imapx
+		or imapx with the vitual.
+
+endif
+

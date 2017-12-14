@@ -1,0 +1,5 @@
+<resources>
+	<!-- 1800 seconds for default screen timeout -->
+	<integer name="def_screen_off_timeout">1800000</integer>
+	<bool name="def_wifi_on">true</bool>
+</resources>

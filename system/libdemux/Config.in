@@ -1,0 +1,7 @@
+config BR2_PACKAGE_LIBDEMUX
+	bool "libdemux"
+	help
+	  demux lib
+
+	  http://www.infotm.com/
+

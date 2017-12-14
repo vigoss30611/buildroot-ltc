@@ -1,0 +1,18 @@
+#
+# GPIO system
+#
+#
+
+menuconfig INFOTM_GPIO
+  bool "Infotm gpio driver support"
+  help
+    Infotm gpio driver support
+
+if INFOTM_GPIO
+
+config GPIO_IMAPX910
+ bool "iMAPx910 gpio driver support"
+ help
+   iMAPx910 gpio driver support
+
+endif

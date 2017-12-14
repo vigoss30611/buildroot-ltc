@@ -1,0 +1,52 @@
+{
+    "isp": {
+        "ipu": "v2500",
+        "args": {
+            "skipframe": 1,
+            "nbuffers": 3
+        },
+        "port": {
+            "out": {
+                "w": 1920,
+                "h": 1088,
+                "pixel_format": "nv12",
+                "bind": { "ispost0": "in" }
+            }
+        }
+    },
+
+    "ispost0": {
+        "ipu": "ispost",
+        "args": {
+            "dn_enable":1,
+            "dn_target_index":0,
+            "lc_grid_file_name1":"/root/.ispost/lc_v1_hermite32_1920x1088_scup_0~30.bin"
+        },
+        "port": {
+            "ss0": {
+                "w": 320,
+                "h": 240,
+                "pixel_format": "nv12",
+                "bind": { "encss0": "frame" }
+            },
+            "dn": {
+                "w": 1920,
+                "h": 1088,
+                "pixel_format": "nv12",
+                "bind": { "enc1080p": "frame", "display": "osd0" }
+            }
+        }
+    },
+
+    "enc1080p": { "ipu": "vencoder",
+				"args": {
+					"encode_type": "h265"
+				}
+	},
+    "encss0": { "ipu": "vencoder",
+				"args": {
+					"encode_type": "h265"
+				}
+	},
+    "display": { "ipu": "ids", "args": { "no_osd1": 1 }}
+}

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+    
+    <LinearLayout android:id="@+id/ui_level0"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
+        
+                 <!--第一行  -->
+        <LinearLayout 
+          android:layout_width="match_parent"
+          android:layout_weight="1"
+          android:layout_height="match_parent"
+          android:background="@color/white"
+          android:orientation="horizontal">
+          		         <!--第一列 -->
+        	<LinearLayout
+        	    android:id="@+id/video_folder" 
+          		android:layout_width="match_parent"
+          		android:layout_weight="1"
+          		android:layout_height="match_parent"
+          		android:orientation="vertical"
+          		android:gravity="center"
+          		android:clickable="true"
+          		android:onClick="onFolderSelect"
+          		android:background="@drawable/funciont_botton_selector">
+					<TextView 
+					       android:layout_width="wrap_content"
+          		           android:layout_height="wrap_content"
+          		           android:background="@drawable/img_record"/>
+          			<TextView
+          			       android:id="@+id/video_name" 
+					       android:layout_width="wrap_content"
+          		           android:layout_height="wrap_content"
+          		           android:text="@string/video"
+          		           android:textSize="@dimen/function_text_size"
+          		           android:layout_marginTop="5dip"
+          		           android:textColor="@color/black"/>
+		          	<TextView android:id="@+id/video_count"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:layout_toRightOf="@id/video_name"
+			            android:textSize="18sp"
+			            android:textColor="@color/black"
+			            android:visibility="gone"/>
+            
+          </LinearLayout>
+          		         <!--第二列  -->
+        	<LinearLayout 
+        	    android:id="@+id/video_lock_folder"
+          		android:layout_width="match_parent"
+          		android:layout_weight="1"
+          		android:layout_height="match_parent"
+          		android:orientation="vertical"
+          		android:gravity="center"
+          		android:clickable="true"
+          		android:onClick="onFolderSelect"
+          		android:background="@drawable/funciont_botton_selector">
+					<TextView 
+					       android:layout_width="wrap_content"
+          		           android:layout_height="wrap_content"
+          		           android:background="@drawable/img_record_media_lock"/>
+          			<TextView
+          			       android:id="@+id/video_lock_name" 
+					       android:layout_width="wrap_content"
+          		           android:layout_height="wrap_content"
+          		           android:text="@string/video_locked"
+          		           android:textSize="@dimen/function_text_size"
+          		           android:layout_marginTop="5dip"
+          		           android:textColor="@color/black"/>
+            	        <TextView android:id="@+id/video_lock_count"
+				            android:layout_width="wrap_content"
+				            android:layout_height="wrap_content"
+				            android:layout_toRightOf="@id/video_lock_name"
+				            android:layout_marginBottom="7dp"
+				            android:textSize="18sp"
+				            android:textColor="@color/black"
+				            android:visibility="gone"/>
+          </LinearLayout>
+          		         <!--第三列   -->
+        	<LinearLayout
+        	    android:id="@+id/photo_folder" 
+          		android:layout_width="match_parent"
+          		android:layout_weight="1"
+          		android:layout_height="match_parent"
+          		android:orientation="vertical"
+          		android:gravity="center"
+          		android:clickable="true"
+          		android:onClick="onFolderSelect"
+          		android:background="@drawable/funciont_botton_selector">
+					<TextView 
+					       android:layout_width="wrap_content"
+          		           android:layout_height="wrap_content"
+          		           android:background="@drawable/img_photo"/>
+          			<TextView
+          			       android:id="@+id/photo_name" 
+					       android:layout_width="wrap_content"
+          		           android:layout_height="wrap_content"
+          		           android:text="@string/photo"
+          		           android:textColor="@color/black"
+          		           android:textSize="@dimen/function_text_size"
+          		           android:layout_marginTop="5dip"/>
+            	        <TextView android:id="@+id/photo_count"
+				            android:layout_width="wrap_content"
+				            android:layout_height="wrap_content"
+				            android:layout_toRightOf="@id/photo_name"
+				            android:layout_marginBottom="7dp"
+				            android:textSize="18sp"
+				            android:textColor="@color/black"
+				            android:visibility="gone"/>
+          </LinearLayout>            
+          </LinearLayout>
+        
+        
+	    <TextView android:id="@+id/no_media_found_tips" 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="10dp"
+	        android:layout_gravity="center"
+	        android:textAppearance="@android:style/TextAppearance.Holo.Large"
+	        android:text="@string/no_media_found"
+	        android:visibility="gone"/>
+    </LinearLayout>
+    
+    <ListView android:id="@+id/file_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:divider="@color/gray"
+        android:dividerHeight="1.0dip"
+        android:animateLayoutChanges="true">
+    </ListView>    
+<!--     <GridView android:layout_width="match_parent" -->
+<!--         android:layout_height="match_parent" -->
+<!--         android:numColumns="auto_fit" -->
+<!--         android:columnWidth="90dp" -->
+<!--         android:stretchMode="columnWidth" -->
+<!--         android:verticalSpacing="10dp" -->
+<!--         android:horizontalSpacing="10dp" -->
+<!--         android:layout_gravity="1" > -->
+<!--         </GridView> -->
+
+</RelativeLayout>

@@ -1,0 +1,19 @@
+#!/bin/sh
+base=`pwd`
+
+# test writable
+touch _test
+if ! test -f _test
+then
+	echo "Current directory is not writable!"
+	exit 0;
+fi
+
+LMBASE=/usr/share/lmbench
+LMRESULT=$base
+export LMBASE LMRESULT
+
+set -e
+
+/usr/share/lmbench/scripts/config-run
+/usr/share/lmbench/scripts/results

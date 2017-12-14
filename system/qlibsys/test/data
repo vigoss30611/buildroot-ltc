@@ -1,0 +1,12 @@
+tutk ssid string ifnotmic
+tutk ss78 string whatever
+videobox front int 55
+tutk passwd int 686696
+rubik final string RUUR'U'RUUL'UR'U'L
+videobox 666 string youareabadpeople
+tutk ssid -
+videobox all --
+ota url string http://google.com.jp/infotm/image.tgz
+tutk mac string 55:82:ac:d9:76:0e
+tutk freetime double 3.1415926535898
+

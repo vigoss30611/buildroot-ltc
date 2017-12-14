@@ -1,0 +1,48 @@
+{
+	"isp": {
+		"ipu": "v2500",
+		"args": {
+			"mode": 6,
+			"name": "AR330MIPI",
+			"config": "/root/.ispddk/config-normal.txt"
+		},
+		"port": {
+			"out": {
+				"w": 1920,
+				"h": 1088,
+				"pixel": "nv12"
+			}
+		}
+	},
+	
+	"dgframe":{
+		"ipu":"dg-frame",
+		"port":{
+			"out":{
+				"w":640,
+				"h":480,
+				"pixel":"nv12",
+				"bind":{"pp0":"in"}
+			}
+		}
+	},	
+
+	"pp0": {
+		"ipu": "pp",
+		"port": {
+			"out": {
+				"pip_x":1248,
+				"pip_y":576,
+				"pip_w":640,
+				"pip_h":480,
+				"w": 1920,
+				"h": 1088,
+				"pixel": "nv12",
+				"bind": { "display": "osd0" },
+				"embezzle":{"isp":"out"}
+			}
+		}
+	},
+
+	"display": { "ipu": "ids"}
+}

@@ -1,0 +1,5 @@
+/dev/pvrsrvkm             0666   system     system
+/dev/pvr_sync             0666   system     system
+/dev/dbgdrv               0666   system     system
+/dev/ion                  0666   system     system
+/dev/imgsysbrg_vdec0      0666   system     system

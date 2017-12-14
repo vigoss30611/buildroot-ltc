@@ -1,0 +1,11 @@
+#name q3evb ota.ixl, these file can add or delete by customers
+
+#images:
+i run 0x08000200 0x08000000 ../../output/images/uboot0.isi
+r flash 0x0	 ../../output/images/uboot0.isi
+r flash 0x1	 ../../output/images/items.itm
+r flash 0x2	 ../../output/images/ramdisk.img
+r flash 0x3  	 ../../output/images/uImage
+r flash 0x4   ../../output/images/uImage
+r flash 0x5  ../../output/images/rootfs.squashfs
+r flash	0x6   ../../output/images/ramdisk.img

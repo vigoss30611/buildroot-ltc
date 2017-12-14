@@ -1,0 +1,7 @@
+export CXX=arm-hismall-linux-g++
+export CC=arm-hismall-linux-gcc
+export AR=arm-hismall-linux-ar
+export RANLIB=arm-hismall-linux-ranlib
+./Configure --openssldir=/home/onb/local linux-elf  no-asm no-shared
+
+

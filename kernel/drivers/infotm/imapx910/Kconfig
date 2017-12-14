@@ -1,0 +1,18 @@
+menuconfig INFOTM_DRV_IMAPX910
+	bool "Infotm iMAPx910 drivers support"
+	depends on ARCH_IMAPX910 && INFOTM_SPECIAL
+	help
+		Infotm iMAPx910 drivers support
+
+if INFOTM_DRV_IMAPX910
+	
+source "drivers/infotm/imapx910/mfd/Kconfig"
+source "drivers/infotm/imapx910/regulator/Kconfig"
+source "drivers/infotm/imapx910/power/Kconfig"
+source "drivers/infotm/imapx910/input/Kconfig"
+source "drivers/infotm/imapx910/clk/Kconfig"
+source "drivers/infotm/imapx910/gpio/Kconfig"
+source "drivers/infotm/imapx910/mtd/Kconfig"
+source "drivers/infotm/imapx910/hwmon/Kconfig"
+
+endif

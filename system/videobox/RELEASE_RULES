@@ -1,0 +1,15 @@
+
+header:
+lib/include/qsdk/*.h  usr/include/qsdk
+
+shared:
+*.so usr/lib
+static:
+
+binary:
+videoboxd usr/bin
+
+resource:
+pkgconfig:
+module:
+

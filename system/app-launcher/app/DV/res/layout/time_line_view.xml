@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView android:textColor="@android:color/white" android:id="@+id/time" android:background="@android:color/black" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerHorizontal="true" android:alpha="0.5" />
+    <com.danale.video.record.view.CustomerScrollView android:id="@+id/scrollview" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_marginTop="10.0dip" android:layout_below="@id/time" />
+    <View android:id="@+id/time_select_line" android:background="@drawable/ic_time_select_line" android:layout_width="9.0px" android:layout_height="fill_parent" android:layout_marginBottom="35.0px" android:layout_below="@id/time" android:layout_centerHorizontal="true" />
+</RelativeLayout>

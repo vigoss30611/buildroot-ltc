@@ -1,0 +1,60 @@
+{
+    "isp": {
+        "ipu": "v2500",
+        "args": {
+            "flip": 2,
+            "nbuffers": 5
+        },
+        "port": {
+            "out": {
+                "w": 1920,
+                "h": 960,
+                "pixel_format": "nv12",
+                "bind": {
+                    "encavc0": "frame",
+                    "encavc2": "frame",
+                    "jpeg": "in"
+                }
+            },
+            "cap": {
+                "w": 3040,
+                "h": 1520,
+                "pip_x": 0,
+                "pip_y": 0,
+                "pip_w": 3040,
+                "pip_h": 1520,
+                "lock_ratio": 1,
+                "bind": {"jpegfull":"in"}
+            }
+        }
+
+    },
+
+    "encavc0": { "ipu": "vencoder",
+        "args": {
+            "encode_type": "h264",
+            "framebase": 1,
+            "framerate": 30
+        }
+    },
+    "encavc2": { "ipu": "vencoder",
+        "args": {
+            "encode_type": "h264",
+            "framebase": 1,
+            "framerate": 30
+        }
+    },
+    "jpeg": { "ipu": "h1jpeg", "args": { "mode": "trigger"}},
+    "jpegfull": {
+        "ipu": "h1jpeg",
+        "args": { "mode": "trigger"},
+        "port": {
+            "in": {
+                "pip_x": 0,
+                "pip_y": 0,
+                "pip_w": 3040,
+                "pip_h": 1520
+            }
+        }
+    }
+}

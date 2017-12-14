@@ -1,0 +1,82 @@
+//CCM calibration info
+//CCM BLC_SENSOR_BLACK used  20 20 20 20  
+//CCM BLC_SYS_BLACK used     64 
+//CCM TEMPERATURE            2800 
+//CCM input image            /user/tsr/FLX/D28transparency.flx 
+
+//LCA calibration info
+//LCA input image            /user/tsr/FLX/AR330_lca.flx 
+
+//LSH calibration info
+//LSH BLC_SENSOR_BLACK used  20 20 20 20  
+//LSH input image            /user/tsr/FLX/AR330_lsh.flx 
+
+// WB Calibration info
+//WB BLC_SENSOR_BLACK_0      20 20 20 20  
+//WB BLC_SENSOR_BLACK_1      20 20 20 20  
+//WB BLC_SENSOR_BLACK_2      20 20 20 20  
+//WB BLC_SENSOR_BLACK_3      20 20 20 20  
+//WB BLC_SYS_BLACK_0         64 
+//WB BLC_SYS_BLACK_1         64 
+//WB BLC_SYS_BLACK_2         64 
+//WB BLC_SYS_BLACK_3         64 
+//WB input image_0           /user/tsr/FLX/D28transparency.flx 
+//WB input image_1           /user/tsr/FLX/D40transparency.flx 
+//WB input image_2           /user/tsr/FLX/D50transparency.flx 
+//WB input image_3           /user/tsr/FLX/D65transparency.flx 
+
+// Black Level
+BLC_SENSOR_BLACK             20 20 20 20 
+BLC_SYS_BLACK                64 
+
+// Colour Correction
+CCM_MATRIX                   1.37709 -0.293957 -0.169877 -0.223872 1.20071 -0.0372984 0.0325365 -0.623472 1.5267
+CCM_OFFSETS                  -114.535 -119.009 -120.471  
+
+//Light Based Controls
+LBC_BRIGHTNESS_0             0 
+LBC_BRIGHTNESS_1             0 
+LBC_CONFIGURATIONS           2 
+LBC_CONTRAST_0               1 
+LBC_CONTRAST_1               1 
+LBC_LIGHT_LEVEL_0            0.15 
+LBC_LIGHT_LEVEL_1            0.06 
+LBC_SATURATION_0             1 
+LBC_SATURATION_1             1 
+LBC_SHARPNESS_0              0.4 
+LBC_SHARPNESS_1              0.6 
+
+// Lateral Chromatic Aberration
+LCA_BLUEPOLY_X               -0.527014 -0.991567 0.792473  
+LCA_BLUEPOLY_Y               0.218613 -6.5584 15.99  
+LCA_BLUE_CENTER              320 180 
+LCA_REDPOLY_X                0.109307 5.25843 -6.95268  
+LCA_REDPOLY_Y                -0.253748 2.03779 -0.65584  
+LCA_RED_CENTER               320 180 
+LCA_SHIFT                    0 0 
+
+// Lens Shading and White balance
+LSH_MATRIX_ENABLE            1 
+LSH_MATRIX_FILE              ar330_telescope_16.lsh 
+LSH_WBCLIP                   1 1 1 1  
+LSH_WBGAIN                   1.37681 1.01851 1 1.56963
+
+// WB white balance multiple CCM
+WB_CCM_0                     1.21608 -0.167904 -0.121764 -0.344081 1.22943 0.0566549 -0.0931845 -0.959877 1.97174  
+WB_CCM_1                     1.10996 0.0314755 -0.200742 -0.274872 1.2174 0.00396572 -0.0570737 -0.999909 1.98  
+WB_CCM_2                     1.1649 0.0184908 -0.261484 -0.253803 1.21442 -0.018207 0.0052362 -0.669198 1.59743  
+WB_CCM_3                     1.37709 -0.293957 -0.169877 -0.223872 1.20071 -0.0372984 0.0325365 -0.623472 1.5267  
+WB_CORRECTIONS               4 
+WB_GAINS_0                   1 1.21281 1.19773 3.22652  
+WB_GAINS_1                   1.27305 1.0137 1 3.05598  
+WB_GAINS_2                   1.21437 1.01567 1 1.8848  
+WB_GAINS_3                   1.37681 1.01851 1 1.56963  
+WB_OFFSETS_0                 -116.775 -119.378 -118.754  
+WB_OFFSETS_1                 -118.742 -119.556 -120.094  
+WB_OFFSETS_2                 -116.665 -119.243 -119.297  
+WB_OFFSETS_3                 -114.535 -119.009 -120.471  
+WB_TEMPERATURE_0             2800 
+WB_TEMPERATURE_1             4000 
+WB_TEMPERATURE_2             5000 
+WB_TEMPERATURE_3             6500 
+

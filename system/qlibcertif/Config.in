@@ -1,0 +1,17 @@
+config BR2_PACKAGE_QLIBCERTIF
+	bool "qlibcertif"
+	default n
+	help
+	  algorithm certificate lib
+
+	  http://www.infotm.com/
+if BR2_PACKAGE_QLIBCERTIF
+menu "options"
+	config  BR2_PACKAGE_QLIBCERTIF_ENABLE_TEST
+		bool "Install certif_test"
+		default n
+		help
+	  		install certif_test into target dir	
+endmenu
+
+endif

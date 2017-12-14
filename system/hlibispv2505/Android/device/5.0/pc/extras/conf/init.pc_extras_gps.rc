@@ -1,0 +1,3 @@
+# Our gps emulation
+service local_gps /system/bin/local_gps
+	class core

@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:titlebar="http://schemas.android.com/apk/res/com.danale.life"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical" >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" 
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/dev_ip_type_rl"
+                android:layout_width="match_parent"
+                android:layout_height="80dp">
+
+                <TextView
+                    android:id="@+id/dev_ip_type_tv"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:text="ip配置类型" />
+
+                <TextView
+                    android:id="@+id/dev_ip_type_content_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/dev_ip_type_tv"
+                    android:singleLine="true"
+                    android:text="手动配置DNS"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/dev_ip_type_arrow_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/dev_setting_next_arrow"
+                    android:visibility="invisible" />
+
+                <View
+                   	android:layout_width="match_parent"
+                   	android:layout_height="1dp"
+                    android:layout_alignParentBottom="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/dev_ip_address_rl"
+                android:layout_width="match_parent"
+                android:layout_height="80dp">
+
+                <TextView
+                    android:id="@+id/dev_ip_address_tv"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:text="ip地址" />
+
+                <EditText
+                    android:id="@+id/dev_ip_address_content_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/dev_ip_address_tv"
+                    android:background="@null"
+                    android:digits="0123456789."
+                    android:inputType="number"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/dev_ip_address_arrow_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/dev_setting_next_arrow"
+                    android:visibility="invisible" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/dev_subnet_mask_rl"
+                android:layout_width="match_parent"
+                android:layout_height="80dp" >
+
+                <TextView
+                    android:id="@+id/dev_subnet_mask_tv"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:text="子网掩码" />
+
+                <EditText
+                    android:id="@+id/dev_subnet_mask_content_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/dev_subnet_mask_tv"
+                    android:background="@null"
+                    android:digits="0123456789."
+                    android:inputType="number"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/dev_subnet_mask_arrow_img"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/dev_setting_next_arrow"
+                    android:visibility="invisible" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/dev_gateway_rl"
+                android:layout_width="match_parent"
+                android:layout_height="80dp" >
+
+                <TextView
+                    android:id="@+id/dev_gateway_tv"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:text="网关" />
+
+                <EditText
+                    android:id="@+id/dev_gateway_content_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/dev_gateway_tv"
+                    android:background="@null"
+                    android:digits="0123456789."
+                    android:inputType="number"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/dev_gateway_arrow_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/dev_setting_next_arrow"
+                    android:visibility="invisible" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/dev_dns_type_rl"
+                android:layout_width="match_parent"
+                android:layout_height="80dp" >
+
+                <TextView
+                    android:id="@+id/dev_dns_type_tv"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:text="Dns配置类型" />
+
+                <TextView
+                    android:id="@+id/dev_dns_type_content_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/dev_dns_type_tv"
+                    android:singleLine="true"
+                    android:text="手动配置DNS"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/dev_dns_type_arrow_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/dev_setting_next_arrow"
+                    android:visibility="invisible" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/dev_first_dns_rl"
+                android:layout_width="match_parent"
+                android:layout_height="80dp" >
+
+                <TextView
+                    android:id="@+id/dev_first_dns_tv"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:text="首选DNS" />
+
+                <EditText
+                    android:id="@+id/dev_first_dns_contet_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_toRightOf="@id/dev_first_dns_tv"
+                    android:background="@null"
+                    android:digits="0123456789."
+                    android:inputType="number"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/dev_first_dns_arrow_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/dev_setting_next_arrow"
+                    android:visibility="invisible" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/dev_sec_dns_rl"
+                android:layout_width="match_parent"
+                android:layout_height="80dp" >
+
+                <TextView
+                    android:id="@+id/dev_sec_dns_tv"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:text="备选DNS" />
+
+                <EditText
+                    android:id="@+id/dev_sec_dns_content_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/dev_sec_dns_tv"
+                    android:background="@null"
+                    android:digits="0123456789."
+                    android:inputType="number"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/dev_sec_dns_arrow_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/dev_setting_next_arrow"
+                    android:visibility="invisible" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/dev_http_port_rl"
+                android:layout_width="match_parent"
+                android:layout_height="80dp" >
+
+                <TextView
+                    android:id="@+id/dev_http_port_tv"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:text="HTTP端口号" />
+
+                <EditText
+                    android:id="@+id/dev_http_port_content_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="20dp"
+                    android:layout_toRightOf="@id/dev_http_port_tv"
+                    android:background="@null"
+                    android:inputType="number"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/dev_http_port_arrow_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/dev_setting_next_arrow"
+                    android:visibility="invisible" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true" />
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/btn_ok"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@android:string/ok"
+                android:layout_marginBottom="10dp" />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

@@ -1,0 +1,25 @@
+config MTD_SPINAND_MX35
+	tristate "SPINAND Device Support for Macronix"
+	depends on MTD_NAND && SPI && !MTD_M25P80
+	help
+	  This enables support for accessing Macronix SPI NAND flash
+	  devices. Becareful that SPI NAND cannot be used to m25p80
+	  driver, so you may should disable the MTD m25p80 first.
+	  If you have Macronix SPI NAND chip say yes.
+
+	  If unsure, say no here.
+
+config MTD_SPINAND_ONDIEECC
+	bool "Use SPINAND internal ECC"
+	depends on MTD_SPINAND_MT29F || MTD_SPINAND_MX35
+	help
+	  Internel ECC.
+	  Enables Hardware ECC support for SPI NAND.
+
+config MTD_SPINAND_QIO
+	bool "Use Quad IO Read/Write Command"
+	depends on MTD_SPINAND_MX35
+	help
+	  Quad IO Read/Write.
+	  Enables Hardware Quad IO Read/Write support for Macronix
+	  SPI NAND.

@@ -1,0 +1,37 @@
+# 2008.3.8 c42025
+# define all global environment for all samples
+#define cross compiler
+
+CHIP_ARCH=Q3
+
+ifeq ($(CHIP_ARCH),Q3)
+export SDK_PATH= $(TOPDIR)/../../../
+export SDK_INC_PATH= $(SDK_PATH)/output/host/usr/arm-buildroot-linux-uclibcgnueabihf/sysroot/usr/include
+export SDK_LIB_PATH= $(SDK_PATH)/output/host/usr/arm-buildroot-linux-uclibcgnueabihf/sysroot/usr/lib
+endif
+
+export CROSS:=$(SDK_PATH)/output/host/usr/bin/arm-buildroot-linux-uclibcgnueabihf-
+export CC:=$(CROSS)gcc
+export AR:=$(CROSS)ar
+export STRIP:=$(CROSS)strip
+export GXX:=$(CROSS)g++
+
+export BASE_PATH = $(TOPDIR)
+LIBINC_PATH = $(BASE_PATH)/libinc
+LIBS_PATH = $(BASE_PATH)/libs
+IPC_PATH = $(BASE_PATH)/ipc
+
+CFLAGS_BASE = -DTL_Q3_PLATFORM
+
+CFLAGS_PPCS_P2P = y
+CFLAGS_RTSP_SERVER = y
+CFLAGS_NET_SERVER = y
+
+CFLAGS_THTTPD_SERVER = y
+
+CFLAGS_PROTO_ONVIF = y
+CFLAGS_PROTO_HIK = y
+CFLAGS_PROTO_XMAI = y
+CFLAGS_PROTO_ZHINUO = y
+CFLAGS_PROTO_JUAN = n
+

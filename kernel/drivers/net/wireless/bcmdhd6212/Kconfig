@@ -1,0 +1,47 @@
+config BCMDHD_6212
+	tristate "Broadcom 6212 FullMAC wireless cards support"
+	---help---
+	  This module adds support for wireless adapters based on
+	  Broadcom FullMAC chipset.
+
+config BCMDHD_FW_PATH
+	depends on BCMDHD_6212
+	string "Firmware path"
+	default "/etc/firmware/fw_bcmdhd.bin"
+	---help---
+	  Path to the firmware file.
+
+config BCMDHD_NVRAM_PATH
+	depends on BCMDHD_6212
+	string "NVRAM path"
+	default "/etc/firmware/nvram.txt"
+	---help---
+	  Path to the calibration file.
+
+config BCMDHD_CONFIG_PATH
+	depends on BCMDHD_6212
+	string "Config path"
+	default "/etc/firmware/config.txt"
+	---help---
+	  Path to the driver configuration file.
+
+config BCMDHD_WEXT
+	bool "Enable WEXT support"
+	depends on BCMDHD_6212 && CFG80211 = n
+	select WIRELESS_EXT
+	select WEXT_PRIV
+	help
+	  Enables WEXT support
+
+choice
+	depends on BCMDHD_6212
+	prompt "Interrupt type"
+	---help---
+	  Interrupt type
+config BCMDHD_SDIO_IRQ
+	depends on BCMDHD_6212
+	bool "In-Band Interrupt"
+	---help---
+	  Interrupt from SDIO DAT[1]
+endchoice
+

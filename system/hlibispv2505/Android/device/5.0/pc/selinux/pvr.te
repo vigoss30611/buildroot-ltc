@@ -1,0 +1,19 @@
+# This are example rules. Please make sure you are using rules for your
+# security requirements!
+
+# pvrsrvctl configuration
+type pvrsrvctl, domain, mlstrustedsubject;
+type pvrsrvctl_exec, exec_type, file_type;
+init_daemon_domain(pvrsrvctl)
+allow pvrsrvctl self:capability { sys_module };
+
+# create pvr_sync device type and allow everybody to rw it
+type pvr_sync_device, dev_type, mlstrustedobject;
+allow domain pvr_sync_device:chr_file rw_file_perms;
+
+# create sw_sync device type and allow surfaceflinger to rw it (display syncs)
+type sw_sync_device, dev_type, mlstrustedobject;
+allow surfaceflinger sw_sync_device:chr_file rw_file_perms;
+
+# allow /mnt/shell/emulated to be used for mount
+allow sdcardd sdcard_internal:dir mounton;

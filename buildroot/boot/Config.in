@@ -1,0 +1,17 @@
+menu "Bootloaders"
+
+source "buildroot/boot/at91bootstrap/Config.in"
+source "buildroot/boot/at91bootstrap3/Config.in"
+source "buildroot/boot/at91dataflashboot/Config.in"
+source "buildroot/boot/barebox/Config.in"
+source "buildroot/boot/boot-wrapper-aarch64/Config.in"
+source "buildroot/boot/grub/Config.in"
+source "buildroot/boot/lpc32xxcdl/Config.in"
+source "buildroot/boot/mxs-bootlets/Config.in"
+source "buildroot/boot/syslinux/Config.in"
+source "buildroot/boot/uboot/Config.in"
+source "buildroot/boot/uboot1/Config.in"
+source "buildroot/boot/xloader/Config.in"
+
+endmenu
+

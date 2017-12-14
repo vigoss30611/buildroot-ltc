@@ -1,0 +1,68 @@
+#
+#    arch/arm/mach-imapx15/Kconfig
+#		
+#     Copyright (c) 2009~2014 ShangHai Infotm Ltd all rights reserved.
+#	  Use of Infotm's code is governed by terms and conditions
+#	  stated in the accompanying licensing statement. 
+#	  Author:
+#          ALex Zhang   <tao_zhang@infotm.com>
+#	  Revision History: 
+#		   ----------------
+#		   1.1  16/09/2009  Alex Zhang   
+
+ menu "APOLLO Machines"
+
+ config MACH_APOLLO
+    bool "APOLLO"
+    select CPU_APOLLO
+	select ARM_GIC
+    help
+      Say Y here if you are using the APOLLO
+
+endmenu
+
+config CPU_APOLLO
+    bool
+    depends on ARCH_APOLLO
+    help
+      Support for APOLLO Infotm Mobile CPU based systems.
+
+
+config APOLLO_FPGA_PLATFORM
+    bool "apollo fpga test"
+    depends on ARCH_APOLLO
+    default n
+    help
+       If you are operating on the FPGA platform, set Y here!
+
+config FPGA_CPU_CLK
+    int "FPGA cpu clock configure"
+    depends on APOLLO_FPGA_PLATFORM
+    default "40000000"
+
+config FPGA_EXTEND_CLK
+    int "FPGA externel clock configure"
+    depends on APOLLO_FPGA_PLATFORM
+    default "40000000"
+
+config FPGA_UART_CLK
+	int "FPGA uart clock configure"
+	depends on APOLLO_FPGA_PLATFORM
+	default "40000000"
+
+config APOLLO_DMA
+    bool
+    depends on ARCH_APOLLO
+    select PL330
+    default y
+    help
+    apollo dma enable
+
+config  FAKE_PM
+        bool "Support for fake power manage"
+        depends on ARCH_APOLLO
+        default n
+
+
+
+

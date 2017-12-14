@@ -1,0 +1,50 @@
+{
+
+       	"dgframe0": {
+		"ipu":"dg-frame",
+		"args":{
+			"frames": 3,
+                        "mode":"picture",
+			"data":"./FEIN_1088x1088_mode7_NV12.yuv"
+		},
+		"port": {
+			"out":{
+				"w":1088,
+				"h":1088,
+                                "minfps": 30,
+                                "maxfps": 30,
+				"pixel_format":"nv12",
+				"bind":{ "ispost":"in"}
+			}
+		}
+	},
+
+	"ispost": {
+		"ipu": "ispostv2",
+		"args": {
+			"lc_grid_file_name1": "./lc_Barrel_0-0_hermite32_1088x1088-1920x1080_fisheyes_mercator_0.bin",
+			"dn_enable": 1
+		},
+		"port": {
+			"dn": {
+				"w": 1920,
+				"h": 1080,
+				"pixel_format": "nv12"
+			},
+                        "uo": {
+                                "w": 1920, 
+                                "h": 1080,
+                                "pixel_format": "nv12"
+                        },
+
+			"ss0": {
+				"w": 640,
+				"h": 480,
+				"pixel_format": "nv12",
+                                "bind": { "display": "osd0" }
+			}
+		}
+	},
+
+        "display": { "ipu": "ids"}
+}

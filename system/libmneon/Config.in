@@ -1,0 +1,17 @@
+config BR2_PACKAGE_LIBMNEON
+	bool "libmneon"
+
+	help
+		libmneon library
+		http://www.infotm.com/
+
+if BR2_PACKAGE_LIBMNEON
+menu "options"
+	config  BR2_PACKAGE_LIBMNEON_INSTALL_SHARED
+		bool "Install Shared"
+		default y
+		help
+	  		install shared library into target dir
+endmenu
+
+endif

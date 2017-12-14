@@ -1,0 +1,1 @@
+obj-$(CONFIG_INFOTM_MEDIA_JENC_SUPPORT) += jenc.o

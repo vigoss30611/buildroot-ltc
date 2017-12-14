@@ -1,0 +1,78 @@
+External Release 2.7.0
+
+DDK:
+- HDR ins CI/ISPC (test tool in ISPC)
+- HDR Libraries integration (internal only)
+- CI with IMG video allocator (import tested with ION may REQUIRES update from IMGVideo)
+- 2.4.0 HW support
+- LSH grid driver workaround (check for grid size) & check grid limitations
+- New AR330 mode (1929x1088)
+- implement interrupt handling with top/bottom half
+- CI allows allocation/free of buffers while running
+- CI import and allocate can specify the size of allocation and trigger can specify an offset
+- CI reset gaskets when enabling gasket
+- CI can get RTM info from kernel module
+- i2c read (ar330, ov4688, p401)
+- CROSS_COMPILE support when generating kernel module
+- install kernel module in ./km instead of ./CI/km/
+
+Android:
+- HAL added support for Lollipop HAL v3.2 HDRLibs integration
+- switched to C++11
+
+tuning:
+- GUI tool use Qt5
+- Tuning doc
+- ISPC_tcp on Android
+- VisionLive DPF read/write map handling
+- LSH tuning tool check for grid size
+- Tuning tools v2
+- support more output formats (10b and swapping YUV)
+
+Documentation
+- Contain tuning guide and descriptions of modules
+
+Known outstanding issues (to be added/fixed in patch 2.7.1):
+- AWB statistics issues
+- Failure to capture frames on 2.4 hardware version
+- Support of DMA_BUF outstanding
+
+
+Contents
+========
+
+Android
+Android.mk
+ddkcompatible.txt
+DDKSource
+docs
+FelixDefines.mk
+releasenotes.txt
+sensorConfig
+releasenotes.txt
+
+Documentation
+=============
+
+android_appendix.html
+android_build_instructions.html
+android_camera_hal.html
+capture_interface_appendix.html
+capture_interface_extension.html
+capture_interface.html
+dictionary.html
+doxygen
+getting_started.html
+_images
+index.html
+ispc
+objects.inv
+_pdf
+platform_integration.html
+search.html
+searchindex.js
+_static
+test_tools
+test_tools.html
+tuning
+vision_libraries.html

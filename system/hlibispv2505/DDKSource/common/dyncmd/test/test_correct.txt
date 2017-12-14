@@ -1,0 +1,30 @@
+# line with a valid comment
+   # line with a valid comment with spaces in front
+# next line is max length (254 character)
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+command
+command2 # comment
+ command3
+	command4 # with a tabular!
+name super
+ super2     name2
+test	values # another
+# only 1st and 2nd should be taken
+first second  third fourth	fith sixth seventh eigth
+
+# previous line is empty
+# now follow the param types tests
+negint -1
+posint 2
+nullint 0
+uint 3
+nulluint 0
+posfloat 1.5
+negfloat -1.5
+superfloat .5
+supernegfloat -.5
+true 1
+false 0
+int_array_size 3
+int_array 1 -2 3
+float_array 0.1 -0.2 .3 -.4

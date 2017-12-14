@@ -1,0 +1,4 @@
+config BR2_PACKAGE_CEP
+	bool "common event provider"
+	help
+	  all event realized

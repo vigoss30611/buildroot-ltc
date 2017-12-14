@@ -1,0 +1,6 @@
+#!/bin/sh
+event_umount="umount"
+sync
+umount -l /mnt/sd*
+eventsend $event_umount
+rm -rf /mnt/sd*

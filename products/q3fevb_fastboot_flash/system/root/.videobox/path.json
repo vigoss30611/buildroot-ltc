@@ -1,0 +1,29 @@
+{
+    "isp": {
+        "ipu": "v2500",
+        "args": {
+            "mode": 5,
+            "name": "AR330MIPI",
+            "config": "/root/.ispddk/config-normal.txt"
+        },
+        "port": {
+            "out": {
+                "w": 1920,
+                "h": 1088,
+                "pixel_format": "nv12",
+                "maxfps": 15,
+                "minfps": 15,
+                "bind": { "encrecord": "frame" }
+            }
+        }
+    },
+
+    "encrecord": {
+        "ipu": "vencoder",
+        "args":{
+            "encode_type": "h264",
+            "buffer_size":524288
+        }
+    }
+}
+

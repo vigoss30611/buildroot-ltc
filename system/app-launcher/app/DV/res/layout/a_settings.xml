@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:clipToPadding="false"
+        android:divider="@color/gray"
+        android:dividerHeight="1.0dip"
+        android:orientation="vertical"
+        android:background="@color/white"
+        android:padding="@dimen/padding_default" />
+    
+<!--     <TextView 
+        android:id="@+id/cling"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/recording"
+        android:textColor="#ffffffff"
+        android:textSize="40sp"
+        android:gravity="center"
+        android:focusableInTouchMode="true"
+        android:clickable="true"
+        android:background="#bb000000"
+        android:visibility="gone"/> -->
+
+</FrameLayout>

@@ -1,0 +1,7 @@
+# Gstreamer 1.x & Plugins
+source "buildroot/package/gstreamer1/gstreamer1/Config.in"
+source "buildroot/package/gstreamer1/gst1-plugins-base/Config.in"
+source "buildroot/package/gstreamer1/gst1-plugins-good/Config.in"
+source "buildroot/package/gstreamer1/gst1-plugins-bad/Config.in"
+source "buildroot/package/gstreamer1/gst1-plugins-ugly/Config.in"
+source "buildroot/package/gstreamer1/gst1-libav/Config.in"

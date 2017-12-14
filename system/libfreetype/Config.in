@@ -1,0 +1,7 @@
+config BR2_PACKAGE_LIBFREETYPE
+	bool "libfreetype"
+	depends on BR2_ENABLE_FREETYPE
+	help
+	  a free, high-quality and portable font engine.
+
+	  http://www.freetype.org/

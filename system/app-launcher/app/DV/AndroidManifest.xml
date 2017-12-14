@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.infotm.dv"
+    android:versionCode="3"
+    android:versionName="1.0.0" >
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- <uses-permission android:name="android.permission.INSTALL_PACKAGES" /> -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="com.tutk.P2PCamLive.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+       <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="19" />
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:name="com.infotm.dv.App"
+        android:label="@string/app_name"
+        android:configChanges="screenSize|orientation|keyboard|keyboardHidden"
+        android:theme="@style/AppTheme" >
+          <meta-data android:name="app_key" android:value="rmSVmcLM8TXHtljDk+1t/P383DTvsPYsCHJEFNKHNU4="/>
+          <meta-data android:name="com.baidu.lbsapi.API_KEY" android:value="pVYvDk5LNT4wsjieQmpSMElyx8r483gi" />  
+        		<!-- 必须要注册以下DanaleService，否则SDK将无法正常工作 -->
+        <service android:name="com.infotm.dv.DanaleService" />
+          <activity
+            android:name="com.infotm.dv.WelcomeActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen" 
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+          <activity
+            android:name="com.infotm.dv.FunctionActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar"
+			android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name="com.infotm.dv.OperateDescriptionActivity"
+            android:theme="@style/SmartyTheme.StandardBg"
+            android:label="@string/device_operate_script_str"
+			android:screenOrientation="portrait">
+        </activity>   
+        <activity
+            android:name="com.infotm.dv.ConnectActivity"
+            android:theme="@style/SmartyTheme.StandardBg"
+            android:label="@string/device_connet_str"
+            android:screenOrientation="portrait" >
+        </activity>
+        
+            <activity
+            android:name="com.infotm.dv.UsbTetherSettings"
+            android:theme="@style/SmartyTheme.StandardBg"
+            android:label="@string/device_connet_str"
+            android:screenOrientation="portrait" >
+        </activity>
+        
+         <activity
+            android:name="com.infotm.dv.SSIDSettingActivity"
+            android:theme="@style/SmartyTheme.StandardBg"
+            android:label="@string/device_ssid_set_str"
+            android:screenOrientation="portrait" >
+        </activity>
+                <activity
+            android:name="com.infotm.dv.SSIDSettingDialogActivity"
+            android:theme="@android:style/Theme.DeviceDefault.Dialog.NoActionBar"
+            android:label="@string/device_ssid_set_str"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.infotm.dv.PassworldInputDialogActivity"
+            android:theme="@android:style/Theme.DeviceDefault.Dialog.NoActionBar"
+            android:label="@string/device_ssid_set_str"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.infotm.dv.FunctionSettingActivity"
+            android:theme="@style/SmartyTheme.StandardBg"
+            android:label="@string/setting_str"
+            android:screenOrientation="portrait" >
+        </activity>        
+        
+                <activity
+            android:name="com.infotm.dv.CompassActivity"
+            android:theme="@style/SmartyTheme.StandardBg"
+            android:label="@string/zhinanzhen_str"
+            android:screenOrientation="portrait" >
+        </activity>       
+        
+         <activity
+            android:name="com.infotm.dv.GPSSpeedActivity"
+            android:theme="@style/SmartyTheme.StandardBg"
+            android:label="@string/gpscesu_str"
+            android:screenOrientation="portrait" >
+        </activity> 
+         <activity
+            android:name="com.infotm.dv.RoadTrackActivity"
+            android:theme="@style/SmartyTheme.StandardBg"
+            android:label="@string/luxingguiji_str"
+            android:screenOrientation="portrait" >
+        </activity> 
+               <activity
+            android:name="com.infotm.dv.FunctionLocalMediaActivity"
+            android:theme="@style/SmartyTheme.StandardBg"
+            android:label="@string/telephone_media_str"
+            android:screenOrientation="portrait" >
+        </activity> 
+       <activity
+            android:name="com.infotm.dv.LocalMediaDeviceActivity"
+            android:theme="@style/SmartyTheme.StandardBg"
+            android:screenOrientation="portrait" >
+        </activity> 
+        
+              <activity
+            android:name="com.infotm.dv.LocalMediaFileActivity"
+            android:theme="@style/SmartyTheme.StandardBg"
+            android:screenOrientation="portrait" >
+        </activity> 
+        
+        <activity 
+            android:name="com.infotm.dv.MainActivity"
+           	android:configChanges="keyboardHidden|orientation|screenSize"
+           	android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen" 
+            android:label="@string/app_name"
+            android:screenOrientation="landscape"
+            android:launchMode="singleTask" >
+         	
+        </activity>
+        
+             <activity 
+            android:name="com.infotm.dv.PreviewActivity"
+           	android:configChanges="keyboardHidden|orientation|screenSize"
+           	android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen" 
+            android:label="@string/app_name"
+            android:screenOrientation="landscape"
+            android:launchMode="singleTask" >
+         	
+        </activity>
+        
+        <activity android:theme="@*android:style/Theme.Holo.Light.NoActionBar.Fullscreen" 
+            android:name="com.infotm.dv.RecordVideoActivity" 
+            android:screenOrientation="sensorLandscape" 
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        
+         <activity  android:theme="@*android:style/Theme.Holo.Light.NoActionBar.Fullscreen"
+            android:name="com.infotm.dv.RecordActivity" 
+            android:screenOrientation="sensorLandscape" 
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        
+         <activity 
+            android:name="com.infotm.dv.HomeActivity"
+            android:label="@string/app_name" >
+           <!--  <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>-->
+        </activity>
+        
+<activity
+            android:name=".DeviceListLocalActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait">
+           
+ </activity>
+        
+        <activity
+            android:name="com.infotm.dv.CameraSettingsActivity"
+            android:theme="@style/SmartyTheme.StandardBg"
+            android:label="@string/device_param_setting_str"
+            android:screenOrientation="landscape"><!--android:theme="@android:style/Theme.Holo.Light"  -->
+           <!-- <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>-->
+        </activity>
+    
+		<activity
+            android:name="com.infotm.dv.FolderBrowserActivity"
+            android:theme="@style/SmartyTheme.StandardBg"
+            android:label="@string/device_playback_media_str"
+            android:screenOrientation="landscape" />
+            
+		 <activity
+            android:name="com.infotm.dv.PhoneLocalMediaDeviceActivity"
+            android:theme="@style/SmartyTheme.StandardBg"
+            android:label="@string/phone_playback_media_str"
+            android:screenOrientation="landscape" />
+		 <activity
+            android:name="com.infotm.dv.PhoneLocalMediaFileActivity"
+            android:theme="@style/SmartyTheme.StandardBg"
+            android:label="@string/phone_playback_media_str"
+            android:screenOrientation="landscape" />
+        
+		<activity android:theme="@*android:style/Theme.Holo.Light.NoActionBar.Fullscreen" 
+            android:name="com.infotm.dv.PlaybackActivity" 
+            android:screenOrientation="sensorLandscape" 
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+		
+	  <activity android:theme="@*android:style/Theme.Holo.Light.NoActionBar.Fullscreen" 
+            android:name="com.infotm.dv.ShowDevicePictureActivity" 
+            android:screenOrientation="sensorLandscape" 
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        
+		<activity
+            android:name="com.infotm.dv.FileListActivity"
+            android:theme="@style/SmartyTheme.StandardBg"
+            android:label="@string/playback" 
+            android:configChanges="keyboardHidden|orientation|screenSize" >
+          <!--   <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter> -->
+        </activity>		
+        
+		   <activity
+            android:name=".LoginActivity"
+            android:label="@string/app_name"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="sensorPortrait" >
+        </activity>
+        <activity
+            android:name=".RegistActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="sensorPortrait" />
+        <activity
+            android:name=".FindActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="sensorPortrait" />
+        <activity
+            android:name=".AddDeviceActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="sensorPortrait" />
+
+
+        <activity
+            android:name=".DeviceListOnlineActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="sensorPortrait" />
+  
+        <activity 
+            android:name=".MsgActivity"
+            android:screenOrientation="sensorPortrait"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            />
+        
+		 <activity 
+            android:name=".UpgradeActivity"
+            android:screenOrientation="sensorPortrait"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            />
+		 
+        <service android:name="com.infotm.dv.connect.CommandService" >
+            <intent-filter>
+                <action android:name="com.infotm.dv.connect.CommandService" />
+            </intent-filter>
+        </service>
+        
+        <service android:name="com.infotm.dv.connect.NetService" >
+            <intent-filter>
+                <action android:name="com.infotm.dv.connect.NetService" />
+            </intent-filter>
+        </service>
+        
+         <activity
+            android:name="com.infotm.dv.DanaleVideoActivity"
+         
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
+         
+          <service
+                android:name="com.baidu.location.f"
+                android:enabled="true"
+                android:process=":remote" >
+        </service>
+        
+</application>
+
+</manifest>

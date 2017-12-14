@@ -1,0 +1,14 @@
+#!/bin/sh
+point=null
+while [ ! $point = "AACDEC_data_ext_p19.bin" ]
+do
+if [ -d /sys/devices/platform/cevadsp.0/firmware ]
+then
+	point=`ls /sys/devices/platform/cevadsp.0/firmware` && echo 1 > /sys/class/firmware/$point/loading && cat /dsp/firmware/$point > /sys/class/firmware/$point/data && echo 0 > /sys/class/firmware/$point/loading
+	#echo 1 > /sys/class/firmware/$point/loading
+	#cat /dsp/firmware/$point > /sys/class/firmware/$point/data
+	#echo 0 > /sys/class/firmware/$point/loading
+fi
+done
+ps -ef | grep dsp | grep -v grep | cut -c 3-5 | xargs kill -s 9
+exit 0

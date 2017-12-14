@@ -1,0 +1,34 @@
+{
+       "isp": {
+           "ipu": "v2500",
+           "args": {
+               "skipframe": 1,
+               "nbuffers": 3
+           },
+           "port": {
+               "out": {
+                   "w": 1920,
+                   "h": 1080,
+                   "pixel": "nv12",
+                   "bind": { "h1264": "frame" }
+               }
+           }
+       },
+       "h1264":{
+           "ipu": "vencoder",
+		"args": {
+			"encode_type": "h264"
+		},
+           "port":{
+               "stream":{
+               "bind":{ "filesink":"in" }
+               }
+           }
+       },
+       "filesink":{
+           "ipu":"filesink",
+           "args":{
+               "data_path":"/tmp/sample.h264"
+           }
+       }
+}

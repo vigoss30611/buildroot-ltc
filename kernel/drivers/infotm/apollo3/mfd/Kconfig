@@ -1,0 +1,24 @@
+menuconfig INFOTM_MFD
+  bool "Infotm mfd driver support"
+  help
+    Infotm multi func device driver support
+
+if INFOTM_MFD
+
+config APOLLO3_MFD_IP6313
+ bool "IP6313 driver support"
+ help
+   IP6313 used
+
+config APOLLO3_MFD_IP6303
+ bool "IP6303 driver support"
+ help
+   IP6303 supported
+
+config PMIC_DEBUG_IF
+ bool "PMIC register debug interface"
+ depends on INFOTM_MFD
+ default n
+ help
+   debug function for PMICs 
+endif

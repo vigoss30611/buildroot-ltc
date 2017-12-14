@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+
+<!--     com.gopro.android.view.CheckableImageView -->
+    <com.infotm.dv.view.CheckableImageView
+        android:id="@+id/btn_mode"
+        android:layout_width="@dimen/mode_switcher_list_icon_size"
+        android:layout_height="@dimen/mode_switcher_list_icon_size"
+        android:layout_gravity="center|top"
+        android:paddingRight="@dimen/padding_camera_mode_popup_delta"
+        android:src="@drawable/detail_mode_icon_photo" />
+
+    <CheckedTextView
+        android:id="@+id/txt_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:gravity="left"
+        android:textColor="@drawable/color_mode_text"
+        android:textSize="@dimen/textsize_mode_popup" />
+
+</LinearLayout>

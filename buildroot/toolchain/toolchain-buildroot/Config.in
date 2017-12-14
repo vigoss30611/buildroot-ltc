@@ -1,0 +1,77 @@
+# Config entries for internal toolchain backend
+
+if BR2_TOOLCHAIN_BUILDROOT
+source "buildroot/package/linux-headers/Config.in.host"
+
+choice
+	prompt "C library"
+	default BR2_TOOLCHAIN_BUILDROOT_EGLIBC if BR2_mips64 || BR2_mips64el
+
+config BR2_TOOLCHAIN_BUILDROOT_UCLIBC
+	bool "uClibc"
+	select BR2_TOOLCHAIN_USES_UCLIBC
+	depends on BR2_arcle   || BR2_arceb  || BR2_arm    || BR2_armeb    || \
+		   BR2_avr32   || BR2_bfin   || BR2_i386   || BR2_m68k     || \
+		   BR2_mips    || BR2_mipsel || BR2_mips64 || BR2_mips64el || \
+		   BR2_powerpc || BR2_sh     || BR2_sparc  || BR2_xtensa   || \
+		   BR2_x86_64
+	help
+	  This option selects uClibc as the C library for the
+	  cross-compilation toolchain.
+
+	  http://uclibc.org
+
+config BR2_TOOLCHAIN_BUILDROOT_EGLIBC
+	bool "eglibc"
+	depends on BR2_arm    || BR2_armeb    || BR2_aarch64 || \
+		   BR2_i386   || BR2_mips     || BR2_mipsel  || \
+		   BR2_mips64 || BR2_mips64el || BR2_powerpc || \
+		   BR2_sh     || BR2_sh64     || BR2_sparc   || \
+		   BR2_x86_64 || BR2_microblaze
+	depends on BR2_USE_MMU
+	depends on !BR2_PREFER_STATIC_LIB
+	select BR2_TOOLCHAIN_USES_GLIBC
+	# our eglibc.mk enables RPC support
+	select BR2_TOOLCHAIN_HAS_NATIVE_RPC
+	help
+	  This option selects eglibc as the C library for the
+	  cross-compilation toolchain.
+
+	  http://eglibc.org
+
+config BR2_TOOLCHAIN_BUILDROOT_GLIBC
+	bool "glibc"
+	depends on BR2_arm    || BR2_armeb    || BR2_aarch64 || \
+		   BR2_i386   || BR2_mips     || BR2_mipsel  || \
+		   BR2_mips64 || BR2_mips64el || BR2_powerpc || \
+		   BR2_sh     || BR2_sh64     || BR2_sparc   || \
+		   BR2_x86_64 || BR2_microblaze
+	select BR2_TOOLCHAIN_USES_GLIBC
+	depends on !BR2_PREFER_STATIC_LIB
+	# our glibc.mk enables RPC support
+	select BR2_TOOLCHAIN_HAS_NATIVE_RPC
+	help
+	  This option selects glibc as the C library for the
+	  cross-compilation toolchain.
+
+	  http://www.gnu.org/software/libc/
+
+comment "(e)glibc only available with shared lib support"
+	depends on BR2_PREFER_STATIC_LIB
+
+endchoice
+
+config BR2_TOOLCHAIN_BUILDROOT_LIBC
+	string
+	default "uclibc" if BR2_TOOLCHAIN_BUILDROOT_UCLIBC
+	# Both glibc and eglibc are handled by the package called
+	# 'glibc'
+	default "glibc"  if BR2_TOOLCHAIN_BUILDROOT_EGLIBC
+	default "glibc"  if BR2_TOOLCHAIN_BUILDROOT_GLIBC
+
+source "buildroot/package/uclibc/Config.in"
+
+source "buildroot/package/binutils/Config.in.host"
+source "buildroot/package/gcc/Config.in.host"
+source "buildroot/package/elf2flt/Config.in.host"
+endif

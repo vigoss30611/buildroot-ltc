@@ -1,0 +1,68 @@
+{
+    "isp": {
+        "ipu": "v2500",
+        "args": {
+            "mode": 5,
+            "name": "AR330MIPI",
+            "config": "/root/.ispddk/config-normal.txt"
+        },
+        "port": {
+            "out": {
+                "w": 1920,
+                "h": 1088,
+                "pixel_format": "nv12",
+                "bind": { "ispost0": "in" }
+            }
+        }
+    },
+
+    "ispost0": {
+        "ipu": "ispostv2",
+        "args": {
+            "dn_enable":1,
+            "dn_target_index":0,
+            "lc_grid_file_name1": "/root/.ispost/lc_v1_0-0-0-0_hermite32_1920x1088-1920x1088.bin",
+            "lc_geometry_file_name1": "/root/.ispost/lc_v1_0-0-0-0_hermite32_1920x1088-1920x1088_geo.bin"
+        },
+        "port": {
+            "dn": {
+                "w": 1920,
+                "h": 1088,
+                "pixel_format": "nv12"
+            },
+            "ss0": {
+                "w": 360,
+                "h": 240,
+                "pixel_format": "nv12",
+                "bind": { "fodet": "in", "display":"osd0" }
+            }
+        }
+    },
+
+    "fodet": {
+        "ipu": "fodetv2",
+        "args": {
+            "src_img_wd": 360,
+            "src_img_ht": 240,
+            "src_img_st": 360,
+            "crop_x_ost": 0,
+            "crop_y_ost": 0,
+            "crop_wd": 360,
+            "crop_ht": 240,
+            "fd_db_file_name1": "/root/.fodet/fodet_db_haar.bin",
+            "idx_start": 4,
+            "idx_end": 18,
+            "scan_win_wd": 20,
+            "scan_win_ht": 20,
+            "frame_idt":3
+        },
+        "port": {
+            "ORout": {
+                "w": 8,
+                "h": 200
+            }
+        }
+    },
+
+    "display": { "ipu":"ids" }
+}

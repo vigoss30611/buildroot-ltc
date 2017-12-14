@@ -1,0 +1,1 @@
+nv_by_chip=2 0xa9a6 0 nvram_ap6214.txt 0xa9a6 1 nvram_ap6214a.txt

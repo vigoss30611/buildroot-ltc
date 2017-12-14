@@ -1,0 +1,27 @@
+#!/bin/sh
+#mount -t vfat /dev/mmcblk1p1 /mnt
+result=`ls /dev/mmcblk0p*`
+var=0
+event_mount="mount"
+event_insert="insert"
+eventsend $event_insert  /dev/mmcblk0
+#for point in $result 
+#do 
+	mkdir /mnt/sd$var
+    point="/dev/mmcblk0p1"
+	mount  $point  /mnt/sd$var
+    #we only care the /mnt/sd0
+    if [ "$?" = "0" ]; then
+	    eventsend $event_mount $point
+    else
+        mkfs.vfat $point
+        mount $point /mnt/sd$var
+        if [ "$?" = "0" ]; then
+            eventsend $event_mount $point
+        fi
+
+    fi
+	let var+=1
+#done
+
+exit 0

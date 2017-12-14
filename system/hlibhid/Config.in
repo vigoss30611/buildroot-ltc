@@ -1,0 +1,5 @@
+config BR2_PACKAGE_HLIBHID
+	bool "hlibhid"
+	help 
+	  hid(gadget hid) device-side hid library
+

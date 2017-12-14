@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item android:drawable="@drawable/bg_empty"/>
+    <item
+        android:bottom="@dimen/padding_mode_popup_bg"
+        android:left="@dimen/padding_mode_popup_bg"
+        android:right="@dimen/padding_mode_popup_bg"
+        android:top="@dimen/padding_mode_popup_bg">
+        <shape
+            android:shape="rectangle"
+            android:useLevel="false" >
+            <stroke
+                android:width="@dimen/width_border_control_dialog"
+                android:color="@color/gray_border_control_dialog" />
+
+            <solid android:color="@color/dark_gray_shadow" />
+        </shape>
+    </item>
+
+</layer-list>

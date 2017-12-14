@@ -1,0 +1,13 @@
+#
+# Kconfig InfotmMedia venc 8270 driver.
+#
+# Copyright (c) 2009~2014 ShangHai Infotm Ltd all rights reserved.
+#
+#
+
+config INFOTM_MEDIA_VENC_H2_SUPPORT
+        tristate "InfotmMedia venc h2 driver support"
+        default n
+        help
+            InfotmMedia venc h2 driver support
+

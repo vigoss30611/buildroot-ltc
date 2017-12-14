@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/padding_camera_mode_popup"
+    android:paddingLeft="40.0dip"
+    android:paddingRight="@dimen/padding_camera_mode_popup"
+    android:paddingTop="@dimen/padding_camera_mode_popup" >
+
+    <ListView
+        android:id="@+id/list_mode"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:divider="@null"
+        android:dividerHeight="0.0dip"
+        android:fadingEdgeLength="8.0dip"
+        android:requiresFadingEdge="vertical" />
+
+</FrameLayout>
+    

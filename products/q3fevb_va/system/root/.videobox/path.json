@@ -1,0 +1,96 @@
+{
+    "isp": {
+        "ipu": "v2500",
+        "args": {
+            "skipframe": 1,
+            "nbuffers": 3
+        },
+
+        "port": {
+            "out": {
+                "w": 1920,
+                "h": 1088,
+                "pixel_format": "nv12",
+                "bind": { "ispost": "in" }
+            },
+            "cap": {
+                "w": 1920,
+                "h": 1088,
+                "bind": {"jpeg":"in"}
+            }
+        }
+    },
+
+    "marker0": {
+        "ipu": "marker",
+        "args": {
+            "mode": "nv12"
+        },
+        "port": {
+            "out": {
+                "w": 800,
+                "h": 64,
+                "pixel_format": "nv12",
+                "bind": { "ispost": "ov0" }
+            }
+        }
+    },
+
+    "ispost": {
+        "ipu": "ispostv2",
+        "args": {
+            "lc_grid_file_name1": "/root/.ispost/lc_v1_0-0-0-0_hermite32_1920x1080-1920x1080.bin",
+            "lc_geometry_file_name1": "/root/.ispost/lc_v1_0-0-0-0_hermite32_1920x1080-1920x1080_geo.bin",
+            "dn_enable": 1
+        },
+        "port": {
+            "ov0":{
+                "pip_x":576,
+                "pip_y":960
+            },
+
+            "dn": {
+                "w": 1920,
+                "h": 1080,
+                "pixel_format": "nv12"
+            },
+            "ss0": {
+                "w": 640,
+                "h": 480,
+                "pixel_format": "nv12",
+                "bind": {
+                    "display": "osd0", "h1264":"frame"
+                }
+            }
+        }
+    },
+
+    "h1264":{
+        "ipu": "vencoder",
+        "args": {
+            "encode_type": "h264"
+        },
+        "port":{
+            "stream":{
+                "bind":{ "filesink":"in" }
+            }
+        }
+    },
+
+    "filesink":{
+        "ipu":"filesink",
+        "args":{
+            "data_path":"/mnt/sd0/h264Test.h264"
+        }
+    },
+
+    "jpeg": {
+        "ipu": "h1jpeg",
+        "args": {
+            "mode": "trigger"
+        }
+    },
+
+    "display": { "ipu": "ids"}
+}
+

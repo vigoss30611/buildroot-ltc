@@ -1,0 +1,50 @@
+
+menuconfig Q3F_DSP_CEVA_TL421
+	tristate "ceva tl421 dsp"
+	default n
+	help
+	  Say Y here if dsp is ceva tl421.
+
+if Q3F_DSP_CEVA_TL421
+
+config Q3F_DSP_SUPPORT_ENCODE
+	bool "Q3F dsp support Encode function"
+	default n
+	help
+	  Say Y here if encode function is needed.
+
+config Q3F_DSP_SUPPORT_DECODE
+	bool "Q3F dsp support Decode function"
+	default n
+	help
+	  Say Y here if decode function is needed.
+
+config Q3F_DSP_SUPPORT_AEC
+	bool "Q3F dsp support AEC function"
+	default n
+	help
+	  Say Y here if AEC function is needed.
+
+if Q3F_DSP_SUPPORT_AEC
+choice 
+    prompt "AEC Algorithm version choose"
+    depends on Q3F_DSP_SUPPORT_AEC
+    default SND_USE_AECV1
+    help
+         Select AEC Algorithm version on platform
+
+    config SND_USE_AECV1
+        bool "AEC Algorithm version 1"
+        default n
+        help
+            Apply AEC Algorithm version1 on platform
+
+    config SND_USE_AECV2
+        bool "AEC Algorithm version 2"
+        default n
+        help
+            Apply AEC Algorithm version2 on platform
+endchoice
+endif
+
+endif

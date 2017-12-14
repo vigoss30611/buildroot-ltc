@@ -1,0 +1,83 @@
+{
+    "isp": {
+        "ipu": "v2500",
+        "args": {
+            "mode": 5,
+            "name": "AR330MIPI",
+            "config": "/root/.ispddk/config-normal.txt"
+        },
+        "port": {
+            "out": {
+                "w": 1920,
+                "h": 1088,
+                "pixel_format": "nv12",
+                "maxfps":15,
+		"minfps":15,
+                "bind": { "ispost": "in" }
+            }
+        }
+    },
+
+    "marker0": {
+        "ipu": "marker",
+        "args": {
+            "mode": "nv12"
+        },
+        "port": {
+            "out": {
+                "w": 800,
+                "h": 64,
+                "pixel_format": "nv12",
+                "bind": { "ispost": "ov0" }
+            }
+        }
+    },
+
+    "ispost": {
+        "ipu": "ispostv2",
+        "args": {
+            "lc_grid_file_name1": "/root/.ispost/lc_v1_0-0-0-0_hermite32_1920x1080-1920x1080.bin",
+            "lc_geometry_file_name1": "/root/.ispost/lc_v1_0-0-0-0_hermite32_1920x1080-1920x1080_geo.bin",
+            "dn_enable": 1
+        },
+        "port": {
+            "ov0":{
+                "pip_x":576,
+                "pip_y":960
+            },
+            "dn": {
+                "w":1920,
+                "h": 1080,
+                "pixel_format": "nv12"
+            },
+
+            "uo": {
+                "w": 1920,
+                "h": 1080,
+                "pixel_format": "nv12",
+                "bind": { "enc720p":"frame" }
+            },
+
+            "ss0": {
+                "w": 640,
+                "h": 480,
+                "pixel_format": "nv12",
+                "bind": { "encrecord":"frame" }
+            }
+        }
+    },
+
+    "enc720p": { "ipu": "vencoder",
+        "args":{
+            "encode_type": "h264",
+            "buffer_size":1572864
+        }
+    },
+    "encrecord": { "ipu": "vencoder",
+        "args":{
+            "encode_type": "h264",
+            "buffer_size":524288
+        }
+    }
+}
+

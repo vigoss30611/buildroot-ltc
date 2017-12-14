@@ -1,0 +1,7 @@
+
+config IMAP_TPS65910
+        tristate "tps65910"
+	select MFD_CORE
+        help
+         tps65910 driver 
+

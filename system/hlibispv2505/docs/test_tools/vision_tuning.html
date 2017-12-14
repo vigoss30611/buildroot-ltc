@@ -1,0 +1,493 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>VisionTuning &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="up" title="Test Tools" href="test_tools.html" />
+    <link rel="next" title="VisionLive and ISPC_tcp v1 (obsolete)" href="vision_live.html" />
+    <link rel="prev" title="VisionLive and ISPC_tcp" href="vision_live_2.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="vision_live.html" title="VisionLive and ISPC_tcp v1 (obsolete)"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="vision_live_2.html" title="VisionLive and ISPC_tcp"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="test_tools.html" accesskey="U">Test Tools</a> &raquo;</li><li>VisionTuning</li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="visiontuning">
+<span id="isp-visiontuning"></span><h1>VisionTuning<a class="headerlink" href="#visiontuning" title="Permalink to this headline">¶</a></h1>
+<p>The VisionTuning tool is used for offline calibration of the ISP for
+a given lens/sensor. It uses images of standard calibration charts,
+in the FLX format. The tool analyses the captures to determine the
+colour, lens shading and lateral chromatic aberration
+characteristics of the lens/sensor and calculates the required
+corrections. These are output in a format which can then be used by
+the <a class="reference internal" href="vision_live.html#isp-visionlive"><span>VisionLive and ISPC_tcp v1 (obsolete)</span></a> tool (see
+<a class="reference internal" href="../ispc/ispc_library.html#isp-ispcl-high-level-parameters"><span>High level parameters</span></a> document for details about
+this format).</p>
+<div class="section" id="running-the-tool">
+<span id="isp-vt-running-tool"></span><h2>Running the tool<a class="headerlink" href="#running-the-tool" title="Permalink to this headline">¶</a></h2>
+<p>The application requires no command line parameters. VisionTuning is
+composed of a window containing 4 tabs as below when starting. The
+File/ menu can be used to save the overall configuration. The View/
+menu will allow the user to hide/show additional windows. The
+Action/ menu will allow you to perform actions on the opened tabs
+(e.g. add more CCM Tuning tabs). The Help/ About Vision Tuning
+option will let a user know the particular version of the tool.</p>
+<div class="figure align-center" id="id2">
+<span id="isp-vt-general-parameter-tab-fig"></span><a class="reference internal image-reference" href="../_images/VT_general_parameters_tab.PNG"><img alt="../_images/VT_general_parameters_tab.PNG" src="../_images/VT_general_parameters_tab.PNG" style="width: 609.6px; height: 382.8px;" /></a>
+<p class="caption"><span class="caption-text">General Parameters Tab</span></p>
+</div>
+</div>
+<div class="section" id="running-steps">
+<span id="isp-gt-vt-running-steps"></span><h2>Running steps<a class="headerlink" href="#running-steps" title="Permalink to this headline">¶</a></h2>
+<p>This section describes steps to run the calibration process. To run
+the basic calibration it is expected to have:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Information about the sensor black level per channel</li>
+<li>The desired system black level of the system (unified black level
+after correction of the sensor one)</li>
+<li>1 FLX image per Colour Correction Matrix needed to be generated
+(Bayer image from sensor). It is possible to use multiple CCM.</li>
+<li>1 FLX image per deshading matrix needed to be generated (Bayer
+image from sensor). This has to be a flat field illuminated as
+constantly as possible. It is expected to have only 1 LSH matrix
+generated per sensor.</li>
+<li>1 FLX image to calibrate the Lateral Chromatic Aberration
+(Bayer image from sensor). This should contain detectable patterns
+(such as crosses).</li>
+<li>Measurement of desired light level parameters</li>
+</ul>
+</div></blockquote>
+<div class="section" id="black-level-blc">
+<span id="isp-visiontuning-blc"></span><h3>Black level (BLC)<a class="headerlink" href="#black-level-blc" title="Permalink to this headline">¶</a></h3>
+<p>The first step will be to setup a sensor and system black level in
+the General Parameters tab (see
+<a class="reference internal" href="#isp-vt-general-parameter-tab-fig"><span>General Parameters Tab</span></a>). The 4 sensor black levels are
+in CFA order.</p>
+</div>
+<div class="section" id="colour-correction-matrix-ccm">
+<span id="isp-visiontuning-ccm"></span><h3>Colour correction matrix (CCM)<a class="headerlink" href="#colour-correction-matrix-ccm" title="Permalink to this headline">¶</a></h3>
+<p>The next step is the CCM Tuning. In the CCM Tuning tab click the
+<code class="docutils literal"><span class="pre">Setup</span></code> button and you will be given a dialog box like the one in
+<a class="reference internal" href="#isp-vt-ccm-configuration-default-fig"><span>CCM Configuration setup dialog (default)</span></a>. Note that it is
+possible to add several CCM tabs using the Action menu or the <code class="docutils literal"><span class="pre">add</span>
+<span class="pre">CCM</span></code> button. It is recommended to have at least 3 different
+temperatures but many is possible.</p>
+<div class="figure align-center" id="id3">
+<span id="isp-vt-ccm-configuration-default-fig"></span><a class="reference internal image-reference" href="../_images/VT_CCM_configuration_default.PNG"><img alt="../_images/VT_CCM_configuration_default.PNG" src="../_images/VT_CCM_configuration_default.PNG" style="width: 489.6px; height: 310.8px;" /></a>
+<p class="caption"><span class="caption-text">CCM Configuration setup dialog (default)</span></p>
+</div>
+<p>Use the Browse button to select the FLX file for the desired colour
+temperature (it should contain a standard colour checker chart). The
+<code class="docutils literal"><span class="pre">temperature</span></code> value can be set after computation as it is not used
+for the computation.</p>
+<p>The customer is expected to take the calibration images for the
+selected sensor following the <a class="reference internal" href="../tuning/user_tuning_guide.html#isp-utg-wbc"><span>White Balance Correction Tuning</span></a> section.</p>
+<p>Use the right panel to define the behaviour of the mouse on the
+image preview to try to match the displayed squares with the
+selected chart. Values can be typed in but in such a case the grid
+will only update when the button is clicked. The easiest way to
+match the checker is to play with the “capture as top-left” and
+“capture as bottom-right” to try to match the grid (adjusting the
+patch size may be needed). See a desired result in
+<a class="reference internal" href="#isp-vt-ccm-configuration-selected-fig"><span>CCM Configuration setup dialog (after selection)</span></a>.</p>
+<p>Once Start is pressed the computation will begin. After  computation
+has finished CCM Tuning will be completed (see
+<a class="reference internal" href="#isp-vt-ccm-tuning-tab-fig"><span>CCM Tuning Tab</span></a>).</p>
+<p>The output tab will then show the corrected images, the CCM Matrix
+will have tabs to view the CIE94 Error for each colour patch. The
+algorithm attempt to minimise the average colour error.</p>
+<p>The algorithm is a modified version of iterative refinement
+algorithm. This means the same parameters may produce different
+results. One can re-run the algorithm if the error seems too high or
+run it with longer iterations from the advance setups. It is not
+guaranteed that changing the advance setup will produce a better
+result.</p>
+<p>The output preview also allows the viewing of results at different
+steps of the correction (only with white balance applied in the WBC
+output or only with the black correction in BLC output).</p>
+<p>It is possible to choose to save just these parameters, or you can
+wait until you have setup other modules and save all at once.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Modifying the BLC after calibration CCM will invalidate the
+computed CCMs.</p>
+</div>
+<div class="figure align-center" id="id4">
+<span id="isp-vt-ccm-configuration-selected-fig"></span><a class="reference internal image-reference" href="../_images/VT_CCM_configuration_selected.PNG"><img alt="../_images/VT_CCM_configuration_selected.PNG" src="../_images/VT_CCM_configuration_selected.PNG" style="width: 489.6px; height: 310.8px;" /></a>
+<p class="caption"><span class="caption-text">CCM Configuration setup dialog (after selection)</span></p>
+</div>
+<div class="figure align-center" id="id5">
+<span id="isp-vt-ccm-tuning-tab-fig"></span><a class="reference internal image-reference" href="../_images/VT_CCM_tab.PNG"><img alt="../_images/VT_CCM_tab.PNG" src="../_images/VT_CCM_tab.PNG" style="width: 631.8px; height: 382.8px;" /></a>
+<p class="caption"><span class="caption-text">CCM Tuning Tab</span></p>
+</div>
+<div class="section" id="advanced-settings">
+<h4>Advanced settings<a class="headerlink" href="#advanced-settings" title="Permalink to this headline">¶</a></h4>
+<p>Here are some of the advanced settings:</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">Nb</span> <span class="pre">iterations</span></code></dt>
+<dd>Number of iterations to run the algorithm for.</dd>
+<dt><code class="docutils literal"><span class="pre">Nb</span> <span class="pre">warm</span> <span class="pre">iterations</span></code></dt>
+<dd>Number of iterations at the beginning where the algorithm allows
+large changes. May impact the output a lot as these iterations
+produce CCM that can be very different from the best found.</dd>
+<dt><code class="docutils literal"><span class="pre">Verbose</span> <span class="pre">logging</span></code></dt>
+<dd>Logging messages. No impact on image quality.</dd>
+<dt><code class="docutils literal"><span class="pre">Display</span> <span class="pre">error</span> <span class="pre">curve</span></code></dt>
+<dd>Shows progress on improving accuracy, default settings will give
+low error. This means that more iterations won’t help.</dd>
+<dt><code class="docutils literal"><span class="pre">Normalise</span> <span class="pre">to</span> <span class="pre">1</span></code></dt>
+<dd>CCM matrix normalised to 1.</dd>
+<dt><code class="docutils literal"><span class="pre">Use</span> <span class="pre">CI94</span> <span class="pre">error</span> <span class="pre">metric</span></code></dt>
+<dd>If un-ticked will use the direct different with target as a metric.</dd>
+<dt><code class="docutils literal"><span class="pre">Apply</span> <span class="pre">gamma</span> <span class="pre">correction</span> <span class="pre">to</span> <span class="pre">the</span> <span class="pre">displayed</span> <span class="pre">images</span></code></dt>
+<dd>No impact on the generated but affects the displayed image.</dd>
+<dt><code class="docutils literal"><span class="pre">Temperature</span> <span class="pre">strength</span></code></dt>
+<dd>Strength of the changes between iterations.</dd>
+<dt><code class="docutils literal"><span class="pre">Change</span> <span class="pre">probability</span></code></dt>
+<dd>Change the probability of modifying the best CCM to produce the
+next one.</dd>
+</dl>
+<p>The <code class="docutils literal"><span class="pre">WBC</span> <span class="pre">limits</span></code> tab limits gains applied to white balance and
+CCM, would only be used in extreme situations where trading off
+colour balance for high gain.</p>
+<p>The <code class="docutils literal"><span class="pre">Target</span> <span class="pre">patches</span></code> allow the user to modify the information
+about the chart used and the value for each patch. The weights can
+be used to give more importance to some patches.</p>
+</div>
+</div>
+<div class="section" id="lens-shading-lsh">
+<span id="isp-visiontuning-lsh"></span><h3>Lens shading (LSH)<a class="headerlink" href="#lens-shading-lsh" title="Permalink to this headline">¶</a></h3>
+<p>The Lens Shading calibration has a setup dialog which, like the CCM
+tab, will ask for a source FLX files. Click on the <code class="docutils literal"><span class="pre">Setup</span></code> button
+to show it. Clicking on the setup button will replace the current
+calibration.</p>
+<p>It is expected that the customer will produce their own calibration
+images following the <a class="reference internal" href="../tuning/user_tuning_guide.html#isp-utg-lsh"><span>Sensor Lens Shading Tuning</span></a> section.</p>
+<p>The setup window is shown in Figure
+<a class="reference internal" href="#isp-vt-lsh-configuration-fig"><span>LSH Configuration setup dialog</span></a>. The user is expected to first
+select an input images and then configure the other parameters:</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">Add</span> <span class="pre">Files</span></code></dt>
+<dd>Adds input FLX files for tuning LSH grids.</dd>
+<dt><code class="docutils literal"><span class="pre">Add</span> <span class="pre">Temps.</span></code></dt>
+<dd>Adds input temperatures for tuning LSG grids for which FLX files
+where not provided. For those temps. grids are going to be
+interpolated based on provided FLX files.</dd>
+<dt><code class="docutils literal"><span class="pre">Output</span> <span class="pre">filename</span> <span class="pre">prefix</span></code></dt>
+<dd><p class="first">Prefix that output file names.</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">File names of created grids are going to be generated
+automaticaly.</p>
+</div>
+</dd>
+<dt><code class="docutils literal"><span class="pre">Tile</span> <span class="pre">size</span></code></dt>
+<dd><p class="first">This is the size of tile (or points between interpolation) used
+by LSH algorithm. The default value is 8 CFA which is the most
+accurate, but will provide the largest file to be saved into
+memory. This can be changed to 128 CFA which is least accurate,
+but gives smallest file.</p>
+<div class="last admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This cannot be changed once processed. To generate another
+file the process has to be done another time.</p>
+</div>
+</dd>
+<dt><code class="docutils literal"><span class="pre">Algorithm</span></code></dt>
+<dd><p class="first">Can be fitting or direct curve, a fitting curve will have been
+smoothed. Whilst the direct curve will not.</p>
+<p class="last">It is recommended to use fitting curve algorithm.</p>
+</dd>
+</dl>
+<p>When all parameters have been provided the application will
+analyse the image and produce a lens shading configuration to
+flatten the image. The result tab should display slices of the
+computed grid per channel (see <a class="reference internal" href="#isp-vt-lsh-tab-fig"><span>LSH Tuning Tab</span></a>).</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Changing the BLC will invalidate the computed LSH grid.</p>
+</div>
+<p>Use the Save As button to save only the computed grid and its
+associated setup file. (This option is not active when LSH
+configuration is accessed from VisionLive.</p>
+<div class="figure align-center" id="id6">
+<span id="isp-vt-lsh-configuration-fig"></span><a class="reference internal image-reference" href="../_images/VT_LSH_configuration.PNG"><img alt="../_images/VT_LSH_configuration.PNG" src="../_images/VT_LSH_configuration.PNG" style="width: 489.6px; height: 310.8px;" /></a>
+<p class="caption"><span class="caption-text">LSH Configuration setup dialog</span></p>
+</div>
+<div class="figure align-center" id="id7">
+<span id="isp-vt-lsh-tab-fig"></span><a class="reference internal image-reference" href="../_images/VT_LSH_tab.PNG"><img alt="../_images/VT_LSH_tab.PNG" src="../_images/VT_LSH_tab.PNG" style="width: 421.2px; height: 298.4px;" /></a>
+<p class="caption"><span class="caption-text">LSH Tuning Tab</span></p>
+</div>
+<div class="section" id="isp-visiontuning-lsh-advanced">
+<span id="id1"></span><h4>Advanced settings<a class="headerlink" href="#isp-visiontuning-lsh-advanced" title="Permalink to this headline">¶</a></h4>
+<p>The LSH grid is generated in floating point format. The HW uses a
+differential encoding on fixed point values to load the matrix and
+it is the responsibility of the driver to convert the grid the tool
+generate to the HW format. However the HW has several limitations
+that the tool should take into account when generating a grid as
+exposed in the advanced setting:</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">Margins</span></code></dt>
+<dd><p class="first">A margin per side of the image can be used to remove black
+pixels. The margin will reduce the size of the image used by the
+algorithm as a result the output grid may cover a smaller
+resolution.</p>
+<p>The margin can be specified for Left, Top, Right and Bottom
+sides separately.</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The preview image can be used to see the cropped image (the
+colour of the rectangle can be changed) but it is expected
+that the customer will know how many black pixels are
+configured in their calibration image.</p>
+</div>
+</dd>
+<dt><code class="docutils literal"><span class="pre">Input</span> <span class="pre">smoothing</span></code></dt>
+<dd>This is a smoothing factor that can be used to remove noise from
+the input image.</dd>
+<dt><code class="docutils literal"><span class="pre">Maximum</span> <span class="pre">gain</span></code></dt>
+<dd><p class="first">The HW has a maximum gain that can be use at any point in the
+matrix. The default value should be the appropriate number of
+the HW 2.</p>
+<p class="last"><strong>This value should not be modified and the box should be left
+enabled.</strong></p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">Maximum</span> <span class="pre">line</span> <span class="pre">size</span></code></dt>
+<dd><p class="first">This can be used to limit the maximum size in Bytes a line of
+the grid can fit in (encoded in the HW differential format).</p>
+<p><strong>This value cannot be modified and the box should be left
+enabled.</strong></p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This limitation <strong>could</strong> be turned off in some HW versions
+if the LSH matrix limitation is not present.</p>
+</div>
+<div class="last admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This is an estimate of the size following the same steps the
+driver will to convert the grid to the HW format.</p>
+</div>
+</dd>
+<dt><code class="docutils literal"><span class="pre">Enforce</span> <span class="pre">max</span> <span class="pre">bits</span> <span class="pre">in</span> <span class="pre">HW</span> <span class="pre">format</span></code></dt>
+<dd><p class="first">This can be used to limit the maximum number of bits (unsigned)
+that the differential encoding will use.</p>
+<div class="last admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This is an estimate of the size following the same steps the
+driver will to convert the grid to the HW format.</p>
+</div>
+</dd>
+</dl>
+<div class="figure align-center" id="id8">
+<span id="isp-vt-lsh-advanced-fig"></span><a class="reference internal image-reference" href="../_images/VT_LSH_advanced.PNG"><img alt="../_images/VT_LSH_advanced.PNG" src="../_images/VT_LSH_advanced.PNG" style="width: 510.6px; height: 457.8px;" /></a>
+<p class="caption"><span class="caption-text">LSH Advanced Parameters dialog</span></p>
+</div>
+</div>
+</div>
+<div class="section" id="lateral-chromatic-aberration-lca">
+<span id="isp-visiontuning-lca"></span><h3>Lateral chromatic aberration (LCA)<a class="headerlink" href="#lateral-chromatic-aberration-lca" title="Permalink to this headline">¶</a></h3>
+<p>The LCA tab requires an input image for Lateral Chromatic Aberration
+auto-calibration. It is expected that the customer will take such image
+following the <a class="reference internal" href="../tuning/user_tuning_guide.html#isp-utg-lca"><span>Lateral Chromatic Aberration Tuning</span></a> section.</p>
+<p>Clicking the <code class="docutils literal"><span class="pre">setup</span></code> button will display the menu to configure the
+algorithm as shown in Figure <a class="reference internal" href="#isp-vt-lca-configuration-fig"><span>LCA Configuration setup dialog</span></a>.</p>
+<p>Select an appropriate image and validate. The setup dialog will
+automatically locate the crosses in the image provided for LCA
+calibration. The feature size option can help to detect the features
+that may not have been found. The tool requires at least 20 features
+to be discovered to proceed.</p>
+<p>The centre of the lens (in CFA) should also be selected at this
+stage. By default it is the centre of the image.</p>
+<p>Use the start button to generate the LCA correction. The preview tab
+will display the detected aberration per channel in comparison with
+one of the Green channels. Use the display amplifier value to
+increase/decrease the size of the displayed arrows.</p>
+<p>The user can save just the LCA polynomial use the <code class="docutils literal"><span class="pre">Save</span> <span class="pre">As</span></code> button.</p>
+<div class="figure align-center" id="id9">
+<span id="isp-vt-lca-configuration-fig"></span><a class="reference internal image-reference" href="../_images/VT_LCA_configuration.PNG"><img alt="../_images/VT_LCA_configuration.PNG" src="../_images/VT_LCA_configuration.PNG" style="width: 489.6px; height: 310.8px;" /></a>
+<p class="caption"><span class="caption-text">LCA Configuration setup dialog</span></p>
+</div>
+<div class="figure align-center" id="id10">
+<span id="isp-vt-lca-tab-fig"></span><a class="reference internal image-reference" href="../_images/VT_LCA_tab.PNG"><img alt="../_images/VT_LCA_tab.PNG" src="../_images/VT_LCA_tab.PNG" style="width: 631.8px; height: 447.6px;" /></a>
+<p class="caption"><span class="caption-text">LCA Tuning Tab</span></p>
+</div>
+</div>
+</div>
+<div class="section" id="saving-results">
+<span id="isp-vt-saving"></span><h2>Saving results<a class="headerlink" href="#saving-results" title="Permalink to this headline">¶</a></h2>
+<p>Use the File/Save All to save the result as a single Felix Setup
+Args file (and potentially an LSH grid if applicable) that can be
+used by other tools (e.g. <a class="reference internal" href="vision_live.html#isp-visionlive"><span>VisionLive and ISPC_tcp v1 (obsolete)</span></a> or
+<a class="reference internal" href="ispc_test.html#isp-ispc-test"><span>ISP Control test: ISPC_test</span></a>).</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">VisionTuning</a><ul>
+<li><a class="reference internal" href="#running-the-tool">Running the tool</a></li>
+<li><a class="reference internal" href="#running-steps">Running steps</a><ul>
+<li><a class="reference internal" href="#black-level-blc">Black level (BLC)</a></li>
+<li><a class="reference internal" href="#colour-correction-matrix-ccm">Colour correction matrix (CCM)</a><ul>
+<li><a class="reference internal" href="#advanced-settings">Advanced settings</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#lens-shading-lsh">Lens shading (LSH)</a><ul>
+<li><a class="reference internal" href="#isp-visiontuning-lsh-advanced">Advanced settings</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#lateral-chromatic-aberration-lca">Lateral chromatic aberration (LCA)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#saving-results">Saving results</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="vision_live_2.html"
+                        title="previous chapter">VisionLive and ISPC_tcp</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="vision_live.html"
+                        title="next chapter">VisionLive and ISPC_tcp v1 (obsolete)</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

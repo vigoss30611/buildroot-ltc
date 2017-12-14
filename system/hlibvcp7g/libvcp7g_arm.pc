@@ -1,0 +1,12 @@
+prefix=/usr
+exec_prefix=/usr
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: vcp7g
+Description: libvcp7g  infotm
+Version: 1.0.0
+Requires: 
+Libs: -L${libdir} -lvcp7g -lvcp -lcodecs
+Libs.private: -lvcp -lcodec
+Cflags:  -I${includedir}/qsdk

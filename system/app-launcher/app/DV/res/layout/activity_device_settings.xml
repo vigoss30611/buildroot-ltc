@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/dev_alias_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp" >
+
+        <TextView
+            android:id="@+id/dev_alias_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="名称:" />
+
+        <TextView
+            android:id="@+id/dev_alias_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/dev_alias_title" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/edit_dev_alias_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="修改设备名称" />
+
+            <Button
+                android:id="@+id/push_msg_open_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="消息通知开关" />
+
+            <Button
+                android:id="@+id/safe_setting_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="安全设置" />
+
+            <Button
+                android:id="@+id/net_setting_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="网络设置" />
+            
+            <Button
+                android:id="@+id/time_setting_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="时间设置" />
+
+            <Button
+                android:id="@+id/power_setting_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="电源频率设置" />
+
+            <Button
+                android:id="@+id/reboot_dev_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="重启设备" />
+
+            <Button
+                android:id="@+id/format_sd_card_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="格式化SD卡" />
+
+            <Button
+                android:id="@+id/recover_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="恢复出厂设置" />
+
+            <Button
+                android:id="@+id/sd_plan_manager_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="添加Sd卡计划管理" />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

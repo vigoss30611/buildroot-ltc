@@ -1,0 +1,9 @@
+service wpa_supplicant /system/bin/wpa_supplicant -ieth0 -Dwired -c/data/misc/wifi/wpa_supplicant.conf -e/data/misc/wifi/entropy.bin -g@android:wpa_eth0
+	class main
+	socket wpa_eth0 dgram 660 wifi wifi
+	disabled
+	oneshot
+
+service wifi-setup /wifi-setup.sh
+	oneshot
+	class very-first

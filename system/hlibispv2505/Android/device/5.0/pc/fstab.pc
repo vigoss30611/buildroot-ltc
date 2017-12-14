@@ -1,0 +1,2 @@
+# <src>                   <mnt_point>  <type>  <mnt_flags and options>                              <fs_mgr_flags>
+/dev/dummy	/dummy		vfat	ro						recoveryonly

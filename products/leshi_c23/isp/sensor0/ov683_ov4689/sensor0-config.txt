@@ -1,0 +1,6 @@
+sensor,ov683,
+i2c_mode,0,
+i2c_bits,8,
+parallel,0,
+mipi_lanes,4,
+

@@ -1,0 +1,26 @@
+#
+# Kconfig InfotmMedia vdec G1 driver.
+#
+# Copyright (c) 2009~2014 ShangHai Infotm Ltd all rights reserved.
+#
+#
+
+menuconfig INFOTM_MEDIA_VDEC_G1V0_SUPPORT
+        bool "InfotmMedia vdec G1 driver support(OLD)"
+        default n
+        ---help---
+        	vdec-G1 driver
+
+if INFOTM_MEDIA_VDEC_G1V0_SUPPORT
+
+config VDEC_POLL_MODE
+	bool "use poll system call to inform decode lib a frame finished"
+	depends on INFOTM_MEDIA_VDEC_G1V0_SUPPORT 
+	default y
+
+config VDEC_DVFS_SUPPORT
+	bool "vdec DVFS support"
+	depends on INFOTM_MEDIA_VDEC_G1V0_SUPPORT
+	default n
+
+endif   #INFOTM_MEDIA_VDEC_G1V0_SUPPORT

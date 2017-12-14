@@ -1,0 +1,56 @@
+menuconfig INFOTM_DISPLAY
+        bool "Infotm display support"
+        default y
+	select FB_CFB_FILLRECT
+        select FB_CFB_COPYAREA
+        select FB_CFB_IMAGEBLIT
+	select FB_SYS_FILLRECT
+        select FB_SYS_COPYAREA
+        select FB_SYS_IMAGEBLIT
+	select FB_SYS_FOPS
+        help
+          This enables support for the Infotm display driver.
+
+if INFOTM_DISPLAY
+
+config DISPLAY_IMAPX
+       bool "iMAPx display driver fdasffsdfasd"
+           default y
+       help
+         This enables support for the iMAPx series display driver.
+
+
+choice LCD_MODULE_SUPPORT
+    bool "LCD module support"
+    default LCD_SPI_ILI8961
+
+    comment "must one lcd selected"
+    config LCD_SPI_OTA5182A
+        tristate "ota5182 lcd driver(LCD module TXDT200LER)"
+        depends on LCD_SPI 
+      #  default y
+       help
+          This enables support ota5182a lcd driver
+
+    config LCD_SPI_ILI8961
+        tristate "ili8961 lcd driver support" 
+        depends on LCD_SPI 
+       # default n
+       help
+          This enables support ota5182a lcd driver
+
+	config LCD_SPI_ILI9806S
+        tristate "ili9806s lcd driver support" 
+        depends on LCD_SPI 
+       # default n
+       help
+          This enables support ota5182a lcd driver
+
+    config LCD_I2C_GM0500400
+        tristate "GM0500400 lcd module support" 
+      #  default y
+       help
+          This enables support GM0500400 lcd module
+
+endchoice
+endif

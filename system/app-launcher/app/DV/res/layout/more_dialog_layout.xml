@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+	android:background="@color/white">
+    <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="更多"
+        android:textSize="20sp"
+        android:padding="6dp"
+        android:textColor="@color/gray"
+        android:background="@color/blue_dark"/>
+        <!--第一行  -->
+    <RelativeLayout
+        android:id="@+id/more_audio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="声音开关"
+        android:gravity="bottom"
+        android:textSize="21sp"
+        android:layout_alignParentLeft="true"
+        android:textColor="@color/setting_text"
+        android:padding="@dimen/padding_default"
+        android:layout_marginLeft="10dip"/>
+    
+    <com.infotm.dv.view.SwitchButton
+        android:id="@+id/audio_switch"
+        android:layout_width="80dip"
+        android:layout_height="30dip"
+        android:layout_alignParentRight="true"
+        android:clickable="true"
+        android:layout_marginTop="11dip"/>
+</RelativeLayout>
+    <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
+        android:background="@color/gray"/>
+    <!--第二行  -->
+    <RelativeLayout
+        android:id="@+id/more_quality"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/select_channel_type"
+        android:gravity="bottom"
+        android:textSize="21sp"
+        android:layout_alignParentLeft="true"
+        android:textColor="@color/setting_text"
+        android:padding="@dimen/padding_default"
+        android:layout_marginLeft="10dip"/>
+    
+     <TextView 
+        android:id="@+id/video_quality_rear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/video_quality_rear"
+        android:gravity="bottom"
+        android:textSize="16sp"
+        android:layout_alignParentRight="true"
+        android:textColor="@color/white"
+        android:padding="4dip"
+        android:layout_marginRight="20dip"
+        android:layout_marginTop="8dip"
+        android:background="@drawable/more_function_selector"
+        android:clickable="true"/>
+     <TextView 
+        android:id="@+id/video_quality_origin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/video_quality_origin"
+        android:gravity="bottom"
+        android:textSize="16sp"
+        android:layout_toLeftOf="@id/video_quality_rear"
+        android:textColor="@color/white"
+        android:padding="4dip"
+        android:layout_marginRight="10dip"
+        android:layout_marginTop="8dip"
+        android:background="@drawable/more_function_selector"
+        android:clickable="true"/>
+      <TextView 
+        android:id="@+id/video_quality_smooth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/video_quality_smooth"
+        android:gravity="bottom"
+        android:textSize="16sp"
+        android:layout_toLeftOf="@id/video_quality_origin"
+        android:textColor="@color/white"
+        android:padding="4dip"
+        android:layout_marginRight="10dip"
+        android:layout_marginTop="8dip"
+        android:background="@drawable/quality_press"
+        android:clickable="true"/>
+</RelativeLayout>
+
+        <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
+        android:background="@color/gray"/>
+    <!--第三行  -->
+    <RelativeLayout
+        android:id="@+id/more_media"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:background="@drawable/funciont_botton_selector" >
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="设备媒体库"
+        android:gravity="bottom"
+        android:textSize="21sp"
+        android:layout_alignParentLeft="true"
+        android:textColor="@color/setting_text"
+        android:padding="@dimen/padding_default"
+        android:layout_marginLeft="10dip"/>
+</RelativeLayout>
+    <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
+        android:background="@color/gray"/>
+    
+        <!--第三行  -->
+    <RelativeLayout
+        android:id="@+id/phone_media"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:background="@drawable/funciont_botton_selector" >
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="手机媒体库"
+        android:gravity="bottom"
+        android:textSize="21sp"
+        android:layout_alignParentLeft="true"
+        android:textColor="@color/setting_text"
+        android:padding="@dimen/padding_default"
+        android:layout_marginLeft="10dip"/>
+</RelativeLayout>
+    <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
+        android:background="@color/gray"/>
+    <!--第四行  -->
+    <RelativeLayout
+        android:id="@+id/more_setting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:background="@drawable/funciont_botton_selector" >
+    
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="参数设置"
+        android:gravity="bottom"
+        android:textSize="21sp"
+        android:layout_alignParentLeft="true"
+        android:textColor="@color/setting_text"
+        android:padding="@dimen/padding_default"
+        android:layout_marginLeft="10dip"/>
+</RelativeLayout>
+    <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
+        android:background="@color/gray"/>
+    
+        <!--第五行  -->
+    <RelativeLayout
+        android:id="@+id/more_upgrade"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:background="@drawable/funciont_botton_selector" >
+    
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="相机升级"
+        android:gravity="bottom"
+        android:textSize="21sp"
+        android:layout_alignParentLeft="true"
+        android:textColor="@color/setting_text"
+        android:padding="@dimen/padding_default"
+        android:layout_marginLeft="10dip"/>
+</RelativeLayout>
+    <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
+        android:background="@color/gray"/>
+    
+    <!--第六行  -->
+    <RelativeLayout
+        android:id="@+id/more_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:gravity="center"
+        android:background="@drawable/funciont_botton_selector" >
+    
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="关  闭"
+        android:gravity="bottom"
+        android:textSize="21sp"
+        android:textColor="@color/setting_text"
+        android:padding="@dimen/padding_default"/>
+</RelativeLayout>
+
+</LinearLayout>

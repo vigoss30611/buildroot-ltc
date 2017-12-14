@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/tv_video"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/tv_audio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btn_video_raw"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="接受视频裸流" />
+
+        <Button
+            android:id="@+id/btn_video_rtsp"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="开启视频(RTSP)" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btn_audio_raw"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="接收音频裸流" />
+
+        <Button
+            android:id="@+id/btn_audio_pcm"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="开启音频(PCM)" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_talk"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="开启对讲" />
+
+    <Button
+        android:id="@+id/btn_quality"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="视频质量" />
+
+    <Button
+        android:id="@+id/btn_orientation"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="画面翻转" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/btn_ptz_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="云台控制 上" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/btn_ptz_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="云台控制 左" />
+
+            <Button
+                android:id="@+id/btn_ptz_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="云台控制 右" />
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/btn_ptz_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="云台控制 下" />
+    </LinearLayout>
+
+</LinearLayout>

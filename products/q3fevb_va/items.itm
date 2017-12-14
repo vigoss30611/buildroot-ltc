@@ -1,0 +1,216 @@
+items.start
+board.hwid    Q3FEVB
+board.cpu     apollo2
+board.arch    q3fpv10
+board.case    0
+board.disk	flash
+board.string.product Q3FEVB
+board.string.device Q3FEVB
+board.string.model Q3FEVB
+board.string.label Q3FEVB
+# CPU  -516:516 MHz; -450 :564 MHz
+soc.cpu.freq -482
+soc.cpu.dvfs 1
+soc.gpu.freq 444
+soc.gpu.dvfs 1
+soc.vpu.dvfs 1
+soc.usb.otg 1
+soc.usb.host 1
+config.ui tablet
+config.phase final
+config.preload preboot
+config.root 1
+config.trace 0
+config.media.pmm 0
+config.media.out rgb565
+config.uboot.logo 0
+config.otg.nluns 2
+config.otg.extraid pads.113
+config.otg.drvbus pads.124
+config.policy.power 1
+config.wdt 0
+
+bt.model bcm6212
+#bt.enable 80
+bt.reset 117
+wifi.model sdio.bcmdhd6212
+wifi.power pads.122
+
+#sd1.delayline R.16.W.64
+#sd2.delayline W.64.R.16
+
+cpu.power pmu.sw1
+cpu.io33.power pmu.sw2
+dram.count 1
+dram.power pmu.swio
+dram.freq  400
+dram.type DDR2
+dram.width 16
+dram.capacity 64
+memory.cl  6
+memory.rtt 0
+memory.driver 0
+#memory.tras 15
+#memory.trfc 64
+part0					uboot.48.boot
+part1					item.16.boot
+part2					ramdisk.4096.boot
+part3					kernel.4096.boot
+#part4					kernel.2560.boot
+part5					system.19968.fs
+part6					id.512.fs
+part7					config.512.fs
+
+ispost.freq 150
+
+#camera.front.interface    camif     #modify for apollo
+#camera.front.model        gc0308_demo
+#camera.front.orientation  270
+#camera.front.align	  low8_align
+#camera.front.ctrl         i2c.3     #modify for apollo
+#camera.front.power.iovdd  pmu.ldo8
+#camera.front.power.dvdd   pmu.ldo7
+#camera.front.power.down   pads.28
+#camera.front.reset	  pads.44
+
+#camera.rear.interface    camif      #modify for apollo
+#camera.rear.model        gc2035_demo
+#camera.rear.orientation  90
+#camera.rear.align	 low8_align
+#camera.rear.ctrl         i2c.3      #modify for apollo
+#camera.rear.power.iovdd  pmu.ldo3
+#camera.rear.power.dvdd   pmu.ldo4
+#camera.rear.power.down   pads.108
+#camera.rear.reset	 pads.44
+
+# ids item list
+#for rgb
+#lcd.vic 2000
+#lcd.interface 1
+#dss.osd0.rbexg 1
+#dss.osd1.rbexg 1
+#dss.lcdpanel.name GM05004001Q_800_480
+#dss.lcdpanel.master.gpio 121
+#dss.lcdpanel.master.polarity 1
+#dss.lcdpanel.bl.gpio 64
+#dss.lcdpanel.bl.polarity 1
+#dss.lcdpanel.bl.pwm 107
+
+#for srgb
+lcd.vic 2000
+lcd.interface 6
+dss.dev.name ili8961
+dss.lcdpanel.name ILI8961_360_240
+dss.lcdpanel.bl.gpio 52
+dss.lcdpanel.bl.polarity 1
+dss.lcdpanel.master.pmu pmu.ldo2
+
+# for bt656
+#lcd.vic 18
+#lcd.interface 2
+#dss.osd0.rbexg 1
+#dss.osd1.rbexg 1
+#dss.lcdpanel.name OTA5180A_PAL
+#dss.lcdpanel.master.gpio 116
+#dss.lcdpanel.master.polarity 1
+#dss.lcdpanel.bl.gpio 52
+#dss.lcdpanel.bl.polarity 1
+
+# ids item end
+
+# display2 begin
+ids0.peripheral.default lcd_panel
+
+ids0.peripheral0 lcd_panel
+#ids0.lcd_panel.name GM05004001Q_RGB_800_480
+ids0.lcd_panel.name ILI8961_SerialRGBDummy_360_240
+#ids0.lcd_panel.name ILI8961_BT656NTSC_720_480
+#ids0.lcd_panel.name ILI8961_BT656PAL_720_576
+#ids0.lcd_panel.name ILI8961_BT601_720_480
+ids0.lcd_panel.pwrseq.0 gpio52.1.5
+ids0.lcd_panel.pwrseq.1 ldo2.3300000.5
+
+ids0.peripheral1 chip
+ids0.chip.name CVBS_IP2906
+ids0.chip.i2cbus 1
+ids0.chip.irq 123
+# display2 end
+
+led0.ctrl pads.161
+led0.polarity 0
+led1.ctrl pads.147
+led1.polarity 1
+
+bl.ctrl pwm.0
+bl.periodns 99000
+bl.max_brightness 200
+bl.min_brightness 20
+bl.dft_brightness 120
+bl.polarity 1
+codec.model ip6205
+codec.power pmu.ldo9
+codec.data i2s.0
+#codec.ctrl i2c.0
+#codec.model ip2906
+#codec.power pmu.ldo3
+#codec.clk imap-clk1
+#codec.data i2s.0
+#codec.ctrl i2c.1
+sound.speaker pads.120
+soc.usb.host 0
+soc.usb.otg 0
+ts.model gt9147
+ts.ctrl i2c.2
+ts.orientation xy
+sensor.grivaty.model mir3da
+sensor.grivaty.ctrl i2c.1
+sensor.grivaty.int pads.141
+sensor.grivaty.orientation yxz
+#keys.menu adc.10.5
+#keys.up adc.10.0
+#keys.down adc.10.23
+#keys.ok adc.10.15
+#keys.lock adc.10.10
+#keys.mode adc.10.20
+keys.down adc.10.5
+keys.up adc.10.0
+keys.ok adc.10.23
+keys.menu adc.10.15
+keys.mode adc.10.10
+keys.lock adc.10.20
+keyboard.model ht82b40xv150
+pmu.model ip6208
+pmu.ctrl i2c.0
+power.full pads.130
+power.dcdetect pads.139
+power.curve.charge      4169.4150.4130.4101.4067.4013.3950.3916.3857.3784.3720.3666
+power.curve.discharge   4000.3902.3785.3725.3681.3615.3554.3496.3441.3373.3323.3300
+initi2c.0 i2c.0.40.99
+virtualvolkey 1
+
+app.evbboard.ver one
+app.mmc.device /dev/mmcblk0p1
+#enable gui's log info
+#debug.enable
+#enable auto play next video in playback
+video.autoplay.enable
+
+#ddk.items.start
+sensor0.interface mipi
+sensor0.name ar330mipi
+sensor0.mclk 24000000
+sensor0.imager 0
+sensor0.i2c chn.3.addr.32
+sensor0.csi lanes.2.freq.384
+sensor0.mclk.src imap-clk1
+sensor0.wraper.use 0
+sensor0.wraper.width 1920
+sensor0.wraper.height 1080
+sensor0.wraper.hdelay 114
+sensor0.wraper.vdelay 12
+sensor0.bootup.seq.0 pmu.ldo7.2800000.0
+sensor0.bootup.seq.1 pmu.ldo8.1800000.0
+sensor0.bootup.seq.2 mclk.gpio.114.0
+sensor0.bootup.seq.3 reset.gpio.44.20
+#ddk.items.end
+items.end

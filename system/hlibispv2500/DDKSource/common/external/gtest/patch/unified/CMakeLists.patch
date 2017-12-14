@@ -1,0 +1,10 @@
+--- CMakeLists.txt	2011-04-15 20:49:11.000000000 +0100
++++ CMakeLists.txt.new	2013-02-15 17:17:04.627703404 +0000
+@@ -238,3 +238,7 @@
+   cxx_executable(gtest_xml_output_unittest_ test gtest)
+   py_test(gtest_xml_output_unittest)
+ endif()
++
++add_definitions(-g) # enable dbg
++install(TARGETS gtest gtest_main DESTINATION lib) 
++install(DIRECTORY ${gtest_SOURCE_DIR}/include DESTINATION .)

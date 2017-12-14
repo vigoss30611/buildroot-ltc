@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="author" content="Krzysztof Domanski" />
+<meta name="description" content="VisionLive TestFramework help page" />
+
+<title>VL_TF_HELP</title>
+</head>
+
+<body>
+	<h1> VisionLive TestFramework Help </h1>
+	<h2> Key words </h2>
+	<b> LOG </b> <i> text </i> - will add "Message" type log with description <i> text </i> to Log. </br>
+	Example: LOG some_text </br>
+	Warning: <i> text </i> must not contain spaces. </br>
+	<b> STOP </b> - will end the test. </br>
+	Example: IF BLC_sensorBlack0 != BLC_sensorBlack0_sb THEN STOP </br>
+	<b> CLICK </b> <i> object </i> - will emit click signal of <i> object </i>. </br>
+	Example: CLICK Exposure_auto_cb </br>
+	Warning: CLICK applies to QPushButton, QRadioButton, QCheckBox, QAction object types. </br>
+	<b> OBJEXIST </b> <i> object </i> - checks if <i> object </i> exists. Usefull for checking if some dynamically created objects has been created. </br>
+	Example: OBJEXIST Exposure_auto_cb </br>
+	<b> FILEEXIST </b> <i> path </i> - checks if specyfied file exists. Usefull for checking if files were created after using exportObjectList() or saveConfiguration(). </br>
+	Example: FILEEXIST C:\Work\234.jpg </br>
+	<b> WAIT </b> <i> time </i> - pauses test for <i> time </i> miliseconds. </br>
+	Example: WAIT 5000 </br>
+	<b> SET </b> <i> object </i>, <i> param </i> - sets <i> object </i> value to param. <i> param </i> can be another object. </br>
+	Example: SET BLC_sensorBlackLevel0_sb 22 </br>
+	Example: SET BLC_sensorBlackLevel0_sb BLC_sensorBlackLevel1_sb </br>
+	Warning: Value type hold by object and param must be the same (int, double, string). </br>
+	<b> CALL </b> <i> functionName() </i> <i> param1 </i> <i> param2 </i>(if required) - request execution of specyfied function with provided parameters. </br>
+	Example: CALL compareParameters() </br>
+	Example: CALL saveLog() C:/log.txt </br>
+	<i> param1 </i> <b> <, >, <=, >=, ==, != </b> <i> param2 </i> - compares <i> param1 </i> and <i> param2 </i> using provided operator. </br>
+	Example: BLC_sensorBlackLevel0_sb == 22 </br>
+	Example: BLC_sensorBlackLevel0_sb <= BLC_sensorBlackLevel0 </br>
+	Warning: Value types of <i> param1 </i> and <i> param2 </i> must be the same (int, double, string). </br>
+	<b> IF, THEN, ELSE </b> - provides conditional execution of described above commands. </br>
+	Example: If BLC_sensorBlackLevel0_sb == 22 THEN SET BLC_sensorBlackLevel0_sb 23 ELSE STOP </br>
+	Warning: Stacing of "IF", "THEN" ane "ELSE" statements is not supported. </br>
+	</br>
+	<h2> Supported functions </h2>
+	<b> exportObjectList() </b> <i> path </i> - saves object list to xml file. </br>
+	<b> saveLog() </b> <i> path </i> - saves logs to txt file. </br>
+	<b> compareParameters() </b> - requests parameter list from ISP and compares it with VisinLive parameter list. If comparison failes test ends. </br>
+	Info: Function goes through all parameters from VisionLive parameter list and if the parameter also exist on ISP parameter list then values of parameters are compared. </br>
+	<b> connect() </b> <i> port </i> - starts connection on port <i> port </i>. </br>
+	<b> disconnect() </b> - stops connection. </br>
+	<b> isDisconnect() </b> - Checks if VL is connected to ISPC_tcp. Usefull to test if some actions don't cause ISPC_tcp to terminate (which may be the cause of connection lost). </br>
+	Example: IF CALL isDisconnect() THEN STOP </br>
+	<b> applyConfiguration() </b> - applyies parameters configuration to ISP. </br>
+	<b> loadConfiguration() </b> <i> path </i> - loads parameters configuration from .txt file. </br>
+	<b> saveConfiguration() </b> <i> path </i> - saves current parameters configuration to .txt file. </br>
+	<b> triggerAction() </b> <i> action </i> - emits trigger signal on specyfied QAction object (equivalent to <b> CLICK </b>). </br>
+	<b> record() </b> <i> captureName </i> <i> numFrames </i> - requests recording of <i> numFrames </i> frames under <i> captureName </i> name. </br>
+	Info: After succesfull execution new object (of name <i> captureName </i>_thumbnail) will be created. </br>
+	<b> saveCaptureAsFLX() </b> <i> thumbnail </i> <i> file </i> - requests saving capture accessed by <i> thumbnail </i> object into <i> file </i> file. </br>
+	Warning: When saving as FLX file extension must be ".yuv" (for YUV image) or ".flx" (for others). </br>
+	<b> saveCaptureAsJPEG() </b> <i> thumbnail </i> <i> file </i> - requests saving capture accessed by <i> thumbnail </i> object into <i> file </i> file. </br>
+	Warning: When saving as JPEG file extension must be ".jpg". </br>
+</body>
+</html>

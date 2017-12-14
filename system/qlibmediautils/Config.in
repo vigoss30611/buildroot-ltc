@@ -1,0 +1,44 @@
+config BR2_PACKAGE_QLIBMEDIAUTILS
+	bool "qlibmediautils"
+    default n
+	help
+	  qlibmediautils deal with QSDK media issues.
+
+if BR2_PACKAGE_QLIBMEDIAUTILS
+    menu "Options"
+        config CONFIG_QLIBMEDIAUTILS_CALIBRATION
+            bool "jpeg calibration"
+            default n
+            select BR2_PACKAGE_LIBEXIF
+            help
+                support jpeg calibration by exif standard.
+
+        config CONFIG_QLIBMEDIAUTILS_SWSCALE
+            bool "sw scale"
+            default n
+            select BR2_PACKAGE_LIBFFMPEG
+            select BR2_PACKAGE_LIBFFMPEG_AVFILTER
+            select BR2_PACKAGE_LIBFFMPEG_AVFILTER_SCALE
+            select BR2_PACKAGE_LIBFFMPEG_SWSCALE
+            help
+                support software scale.
+
+        config CONFIG_QLIBMEDIAUTILS_SWCROP
+            bool "sw crop"
+            default n
+            select BR2_PACKAGE_LIBFFMPEG
+            select BR2_PACKAGE_LIBFFMPEG_AVFILTER
+            select BR2_PACKAGE_LIBFFMPEG_AVFILTER_CROP
+            help
+                support software filter crop.
+
+        config CONFIG_QLIBMEDIAUTILS_TESTING
+            bool "install testing script"
+            depends on CONFIG_QLIBMEDIAUTILS_CALIBRATION
+            depends on CONFIG_QLIBMEDIAUTILS_SWSCALE
+            depends on CONFIG_QLIBMEDIAUTILS_SWCROP
+            default n
+            help
+                build & install test tools
+    endmenu
+endif

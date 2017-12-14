@@ -1,0 +1,13 @@
+#! /bin/sh
+
+case "$1" in
+	start|"")
+		syncbins &
+		;;
+	stop)
+		;;
+	*)
+		echo "Usage: debug {start|stop}" >&2
+		exit 1
+		;;
+esac

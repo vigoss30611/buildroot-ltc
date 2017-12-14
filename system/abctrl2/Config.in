@@ -1,0 +1,6 @@
+config BR2_PACKAGE_ABCTRL_2
+	bool "Abctrl_2"
+	default n
+	help
+	  Abctrl2 module is to verify Audiobox2 functionality
+

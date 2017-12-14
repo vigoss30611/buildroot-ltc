@@ -1,0 +1,5 @@
+config ESP8089_PREALLOC
+	 bool "ESP8089_PREALLOC"
+    default y
+    help
+      ESP8089_PREALLOC

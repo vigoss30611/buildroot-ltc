@@ -1,0 +1,36 @@
+From ba8423be8de062aff55b3b03b54c73a0bea28b8e Mon Sep 17 00:00:00 2001
+From: Marcin Mielczarczyk <marcin.mielczarczyk@imgtec.com>
+Date: Wed, 11 Jun 2014 13:18:49 +0200
+Subject: [PATCH] system_core: IMG specific video formats added.
+
+Added IMG specific video formats.
+---
+ include/system/graphics.h |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/include/system/graphics.h b/include/system/graphics.h
+index be86ae4..467199f 100644
+--- a/include/system/graphics.h
++++ b/include/system/graphics.h
+@@ -54,6 +54,8 @@ enum {
+     HAL_PIXEL_FORMAT_RGB_888            = 3,
+     HAL_PIXEL_FORMAT_RGB_565            = 4,
+     HAL_PIXEL_FORMAT_BGRA_8888          = 5,
++    HAL_PIXEL_FORMAT_RGBX_101010        = 6,
++    HAL_PIXEL_FORMAT_RGBX_888           = 7,
+ 
+     /*
+      * sRGB color pixel formats:
+@@ -87,7 +89,8 @@ enum {
+      * gralloc buffer of one of these formats must be supported for use with the
+      * GL_OES_EGL_image_external OpenGL ES extension.
+      */
+-
++    HAL_IMG_FormatYUV420PP = 0x100,
++    HAL_IMG_FormatYUV420SP = 0x101,
+     /*
+      * Android YUV format:
+      *
+-- 
+1.7.9.5
+

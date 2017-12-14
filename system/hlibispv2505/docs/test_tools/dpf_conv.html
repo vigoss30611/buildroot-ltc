@@ -1,0 +1,341 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Defective Pixel output converter: dpf_conv &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="up" title="Test Tools" href="test_tools.html" />
+    <link rel="next" title="Sensor Test application sensor_test" href="other_tools.html" />
+    <link rel="prev" title="ISP Control HDR: ISPC_hdr" href="ispc_hdr.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="other_tools.html" title="Sensor Test application sensor_test"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="ispc_hdr.html" title="ISP Control HDR: ISPC_hdr"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="test_tools.html" accesskey="U">Test Tools</a> &raquo;</li><li>Defective Pixel output converter: <code class="docutils literal"><span class="pre">dpf_conv</span></code></li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="defective-pixel-output-converter-dpf-conv">
+<span id="isp-dpf-conv"></span><h1>Defective Pixel output converter: <code class="docutils literal"><span class="pre">dpf_conv</span></code><a class="headerlink" href="#defective-pixel-output-converter-dpf-conv" title="Permalink to this headline">¶</a></h1>
+<p>The DPF converter application can be used to extract some information of DPF
+write map (HW format) to a DPF read map (HW format). Both HW formats are
+described in the TRM and are loaded or written as binary.</p>
+<p>The sources are located into <code class="docutils literal"><span class="pre">CI/felix_lib/utils</span></code> and the binary should be
+installed in <code class="docutils literal"><span class="pre">utils/</span></code>.</p>
+<p>To run the tool a DPF write map should be generated using either the
+<a class="reference internal" href="driver_test.html#isp-driver-test"><span>Capture Interface test: driver_test</span></a> or the <a class="reference internal" href="ispc_test.html#isp-ispc-test"><span>ISP Control test: ISPC_test</span></a> applications.</p>
+<div class="section" id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h2>
+<p>The parameters can be given by command line or in a configuration file.</p>
+<p>The parameter types are:</p>
+<ul class="simple">
+<li><cite>Bool</cite>: a Boolean value of either 0 or 1</li>
+<li><cite>Int</cite>/<cite>UInt</cite>: an integer (signed or unsigned is parameter specific)</li>
+<li><cite>Cmd</cite>: command that act as a Boolean of value 1 if present, of value 0 if
+not found</li>
+<li><cite>Str</cite>: string or path</li>
+<li><cite>Float</cite>: floating point number</li>
+</ul>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-source</span></code>:</dt>
+<dd>Provide a file to parse for command line parameters. The latest given
+parameter is used as the value for the option.</dd>
+<dt><code class="docutils literal"><span class="pre">-h</span></code>:</dt>
+<dd>Display the help and exit.</dd>
+<dt><code class="docutils literal"><span class="pre">-input</span></code>: Str</dt>
+<dd>Input DPF map (write map HW format).</dd>
+<dt><code class="docutils literal"><span class="pre">-output</span></code>: Str</dt>
+<dd>Output DPF map (read map HW format). If no output is given a file name
+<code class="docutils literal"><span class="pre">dpf_read_N.dat</span></code>. The number of corrected elements is always appended
+at the end (_N.dat).</dd>
+<dt><code class="docutils literal"><span class="pre">-falsePositive</span></code>: Bool</dt>
+<dd>If false no false positive are used in the output map.</dd>
+<dt><code class="docutils literal"><span class="pre">-falseNegative</span></code>: Bool</dt>
+<dd>If false no false negative are used in the output map.</dd>
+<dt><code class="docutils literal"><span class="pre">-confidence</span></code>: UInt [x2]</dt>
+<dd>The minimum and maximum confidence to use in the output map (allows
+filtering of the result).</dd>
+<dt><code class="docutils literal"><span class="pre">-analyse</span></code>: UInt [x2]</dt>
+<dd><p class="first">Prints analyses of the generated output map (DPF read format). Needs
+the imager height (1st parameter) and the Felix Parallelism (2nd
+parameter).</p>
+<p class="last">If no parallelism is given 1 is assumed.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-info</span></code>: Cmd</dt>
+<dd>Information about the DPF formats.</dd>
+<dt><code class="docutils literal"><span class="pre">-v</span></code>: Cmd</dt>
+<dd>Verbose information about the dropped values (when filtering false
+positive/negative or by confidence).</dd>
+</dl>
+</div>
+<div class="section" id="generating-dpf-write-map">
+<h2>Generating DPF write map<a class="headerlink" href="#generating-dpf-write-map" title="Permalink to this headline">¶</a></h2>
+<p>The HW generates a DPF write map according to the defective pixels found.
+The threshold available in the setup control determines whether a pixel
+is defective or not (register <code class="docutils literal"><span class="pre">DPF_SENSITIVITY</span></code> or setup parameter <code class="docutils literal"><span class="pre">DPF_THRESHOLD</span></code>
+and <code class="docutils literal"><span class="pre">DPF_WEIGHT</span></code>).</p>
+<div class="section" id="using-driver-test">
+<h3>Using <code class="docutils literal"><span class="pre">driver_test</span></code><a class="headerlink" href="#using-driver-test" title="Permalink to this headline">¶</a></h3>
+<p>Using the information provided in the <a class="reference internal" href="driver_test.html#isp-driver-test-parameters"><span>driver_test parameters section</span></a> we can create a configuration file to run
+DPF extraction</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>./driver_test -source driver_params.txt
+</pre></div>
+</div>
+<p><strong>driver_params.txt</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre>#------------------------------------
+# Pipeline
+#------------------------------------
+-CT0_nBuffers 1 # allocates 1 buffers
+-CT0_nFrames 1  # run for 1 frames
+-CT0_imager 0   # using DG0
+-CT0_DPF 2   # 0=disabled, 1=detect, 2=write
+
+#------------------------------------
+# data generators
+#------------------------------------
+-DG0_inputFLX DE_A_rggb.flx # taken with AR330 camera
+</pre></div>
+</div>
+<p>The <code class="docutils literal"><span class="pre">driver_test</span></code> application does not have any way to set the thresholds
+but the default should be set to the maximum. At the time of writing, running the
+test generates a DPF write file containing more than 9000 defects.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The DE_A_rggb.flx file should be provided in the CSIM evaluation package
+examples.</p>
+<p class="last">If using a different file the number of defects may vary.</p>
+</div>
+</div>
+<div class="section" id="using-ispc-test">
+<h3>Using <code class="docutils literal"><span class="pre">ISPC_test</span></code><a class="headerlink" href="#using-ispc-test" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">ISPC_test</span></code> application is closer to reality. To enable the DPF map
+the Setup file should only contain the following parameter:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>./ISPC_test -source ispc_params.txt
+</pre></div>
+</div>
+<p><strong>FelixSetupArgs.txt</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre>// all DPF parameters
+DPF_DETECT_ENABLE            0 // will be forced on if DPF_WRITE_MAP_ENABLE is on
+DPF_READ_MAP_ENABLE          0 // enable loading a DPF read map
+DPF_WRITE_MAP_ENABLE         1 // will force DPF_DETECT_ENABLE to on if on
+//DPF_READ_MAP_FILE // provide an input DPF read file
+DPF_THRESHOLD                0
+DPF_WEIGHT                   16
+</pre></div>
+</div>
+<p><strong>ispc_params.txt</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre>-CT0_setupFile FelixSetupArgs.txt # or use FelixSetupArgs_full.txt
+-CT0_nBuffers 1
+-CT0_nFrames 1
+-CT0_imager 0
+
+-DG0_inputFLX DE_A_rggb.flx # taken with AR330 camera
+</pre></div>
+</div>
+<p>At the time of writing running with these parameters generates more than 9000
+defects (as the threshold/weight parameters are not configured correctly).</p>
+<p>Note that the Setup file described here does not output anything else other than the
+DPF write map, add the correct output parameters to generate more output if
+needed.</p>
+</div>
+</div>
+<div class="section" id="using-the-tool">
+<h2>Using the tool<a class="headerlink" href="#using-the-tool" title="Permalink to this headline">¶</a></h2>
+<p>This section assumes a DPF write map has been generated using the one test
+application. In order to use it as a Read-map for another run the DPF
+Converter can be used. But the Thresholds for the DPF module were badly
+configured and the generated map has several thousand entries.</p>
+<p>First run the tool to get information about the map:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>./dpf_conv -input ctx0_dpf_write_0.dat
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>INFO: -output not specified - default used
+Convert DPF Write format to DPF read format (confidence 0-255, false
+negative 1, false positive 1)
+Input: dpf_write0-0.dat
+Output: dpf_read
+Reading done: 0 corrections dropped - 9095 kept - 9095 found
+Confidence (excluding drops): min 1, max 146, avg 3.94
+Status (excluding drops): 0 false positive - 9095 false negative
+conversion written to dpf_read_09095.dat
+</pre></div>
+</div>
+<p>The confidence value in the map is between 1 and 146 and the average is
+pretty low (as expected because the thresholds were not setup correctly).
+Therefore we choose to only take the upper half of the values:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>./dpf_conv -input ctx0_dpf_write_0.dat -confidence <span class="m">73</span> 146
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>INFO: -output not specified - default used
+Convert DPF Write format to DPF read format (confidence 73-146,
+false negative 1, false positive 1)
+Input: dpf_write0-0.dat
+Output: dpf_read
+Reading done: 9087 corrections dropped - 8 kept - 9095 found
+Confidence (excluding drops): min 79, max 146, avg 103.13
+Status (excluding drops): 0 false positive - 8 false negative
+conversion written to dpf_read_00008.dat
+</pre></div>
+</div>
+<p>We successfully managed to reduce the output map to a more realistic number
+of defects.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Defective Pixel output converter: <code class="docutils literal"><span class="pre">dpf_conv</span></code></a><ul>
+<li><a class="reference internal" href="#parameters">Parameters</a></li>
+<li><a class="reference internal" href="#generating-dpf-write-map">Generating DPF write map</a><ul>
+<li><a class="reference internal" href="#using-driver-test">Using <code class="docutils literal"><span class="pre">driver_test</span></code></a></li>
+<li><a class="reference internal" href="#using-ispc-test">Using <code class="docutils literal"><span class="pre">ISPC_test</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#using-the-tool">Using the tool</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="ispc_hdr.html"
+                        title="previous chapter">ISP Control HDR: <code class="docutils literal"><span class="pre">ISPC_hdr</span></code></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="other_tools.html"
+                        title="next chapter">Sensor Test application <code class="docutils literal"><span class="pre">sensor_test</span></code></a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

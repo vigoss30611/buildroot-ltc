@@ -1,0 +1,4 @@
+# <src>                   <mnt_point>  <type>  <mnt_flags and options>                              <fs_mgr_flags>
+/dev/block/Android        /sdcard      ext4    defaults                                             wait,check
+/mnt/android/cache.img    /cache       ramdisk loop=/dev/block/loop1,noatime,nosuid,nodev,barrier=1 wait,check
+/mnt/android/misc.img     /misc        emmc    defaults                                             wait

@@ -1,0 +1,25 @@
+
+#uboot0				@2m
+#uboot1				@8m
+#.itm				@16m
+#kernel.logo		@24m
+#ramdisk.img		@32m
+#flags				@40m
+#resv				@48m
+#uimage				@56m
+#uimage				@72m
+#recovery_rd.img	@88m <--> 112m
+
+#commands:
+# 0x30: reboot
+# 0x31: boot
+# 0x32: boot_recovery
+#
+#special images:
+# system
+# misc
+#
+
+
+i mmc0 0x0200000 uboot0.isi
+i mmc0 0x0800000 uboot1.isi

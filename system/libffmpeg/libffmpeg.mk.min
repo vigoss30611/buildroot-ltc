@@ -1,0 +1,98 @@
+
+################################################################################
+#
+# libffmpeg
+#
+################################################################################
+
+LIBFFMPEG_VERSION = 0.8.15
+LIBFFMPEG_SOURCE = 
+LIBFFMPEG_SITE  = 
+
+LIBFFMPEG_LICENSE = 
+LIBFFMPEG_LICENSE_FILES = README
+
+LIBFFMPEG_MAINTAINED = YES
+LIBFFMPEG_AUTORECONF = NO
+LIBFFMPEG_INSTALL_STAGING = YES
+LIBFFMPEG_DEPENDENCIES = host-pkgconf  
+
+define LIBFFMPEG_AUTORECONF_CMDS
+	echo "autoreconfig"
+endef
+define LIBFFMPEG_CONFIGURE_CMDS
+	(cd $(@D) && rm -rf config.cache &&\
+	$(TARGET_CONFIGURE_OPTS) \
+	$(TARGET_CONFIGURE_ARGS) \
+	$(LIBFFMPEG_CONF_ENV) \
+		./configure  --enable-cross-compile --target-os=linux \
+		--arch=$(BR2_ARCH) \
+		--extra-cflags="-fPIC -march=armv7-a -mtune=cortex-a5  -mcpu=cortex-a5" \
+		--enable-neon\
+		--cross-prefix=$(TARGET_CROSS) \
+		--sysroot=$(STAGING_DIR) \
+		--host-cc="$(HOSTCC)" \
+		--enable-nonfree \
+		--disable-decoders  \
+		--disable-encoders \
+		--disable-filters \
+		--disable-avfilter \
+		--disable-indevs  \
+		--disable-outdevs  \
+		--disable-logging \
+		--disable-swscale \
+		--disable-avdevice \
+		--disable-swresample \
+		--disable-filters \
+		--disable-bsfs \
+		--disable-parsers  \
+		--disable-hwaccels  \
+		--disable-avdevice \
+		--disable-muxers \
+		--disable-demuxers \
+		--disable-devices \
+		--disable-doc \
+		--enable-lzo \
+    	--enable-demuxer=mov \
+    	--enable-muxer=mov \
+    	--enable-demuxer=m4v \
+    	--enable-muxer=mp4 \
+		--enable-demuxer=matroska \
+    	--enable-muxer=matroska \
+		--disable-programs \
+    	--disable-ffserver \
+    	--disable-network \
+    	--disable-indevs \
+    	--disable-debug \
+    	--enable-asm \
+    	--enable-thumb \
+    	--disable-static \
+    	--enable-shared )
+endef
+
+#install headers
+define LIBFFMPEG_POST_INSTALL_STAGING_HEADERS
+
+	@echo "+++++++++++++++++install staging header++++++++++++++++++++++"
+#	mkdir -p $(STAGING_DIR)/usr/include/ffmpeg
+#	mkdir -p $(STAGING_DIR)/usr/include/ffmpeg/libavformat
+#	mkdir -p $(STAGING_DIR)/usr/include/ffmpeg/libavutil
+#	mkdir -p $(STAGING_DIR)/usr/include/ffmpeg/libavcodec
+#	cp -rfv $(@D)/*.h  $(STAGING_DIR)/usr/include/ffmpeg
+	#cp -rfv $(@D)/libavformat/*.pc  $(STAGING_DIR)/usr/lib/pkgconfig
+	#cp -rfv $(@D)/libavutil/*.pc  $(STAGING_DIR)/usr/lib/pkgconfig/
+	#cp -rfv $(@D)/libavcodec/*.pc  $(STAGING_DIR)/usr/lib/pkgconfig/
+	#cp -rfv $(@D)/libswscale/*.pc  $(STAGING_DIR)/usr/lib/pkgconfig/
+	#cp -rfv $(@D)/libswresample/*.pc  $(STAGING_DIR)/usr/lib/pkgconfig/
+endef
+LIBFFMPEG_POST_INSTALL_STAGING_HOOKS  += LIBFFMPEG_POST_INSTALL_STAGING_HEADERS
+
+define LIBFFMPEG_POST_INSTALL_TARGET_SHARED
+	@echo "++++++++++++++++install target +++++++++++++++++++++++"
+	#cp -rfv $(TARGET_DIR)/usr/local/lib/*  $(TARGET_DIR)/usr/lib/
+	-rm -rf $(TARGET_DIR)/usr/local/include
+	-rm -rf $(TARGET_DIR)/usr/local/lib/pkgconfig
+endef
+LIBFFMPEG_POST_INSTALL_TARGET_HOOKS  += LIBFFMPEG_POST_INSTALL_TARGET_SHARED
+$(eval $(autotools-package))
+

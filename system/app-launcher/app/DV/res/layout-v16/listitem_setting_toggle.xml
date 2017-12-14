@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:paddingBottom="10.0dip"
+    android:paddingLeft="8.0dip"
+    android:paddingRight="2.0dip"
+    android:paddingTop="10.0dip" >
+
+    <TextView
+        android:id="@+id/txt_setting_label"
+        style="@style/SmartySettingRow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:gravity="center_vertical"
+		android:textSize="@dimen/param_set_text_size"/>
+
+    <com.infotm.dv.view.SwitchButton
+        android:id="@+id/toggle_setting_value"
+        android:layout_width="60dip"
+        android:layout_height="30dip"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="@dimen/settings_toggle_margin"
+        android:layout_marginTop="@dimen/settings_toggle_margin"
+        android:gravity="center_vertical"
+        android:padding="@dimen/settings_toggle_margin"/>
+
+</RelativeLayout>

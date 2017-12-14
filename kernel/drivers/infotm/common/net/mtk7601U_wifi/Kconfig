@@ -1,0 +1,7 @@
+config MTK7601U_WIFI
+	tristate "MediaTek 7601 USB WIFI"
+	depends on USB && m
+	select INFOTM_SWITCH
+	---help---
+	  Help message of MTK7601U
+

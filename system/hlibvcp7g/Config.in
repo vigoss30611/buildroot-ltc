@@ -1,0 +1,24 @@
+config BR2_PACKAGE_HLIBVCP7G
+	bool "hlibvcp7g"
+	default y
+	help
+	  hlibvcp7g 
+
+	  http://www.infotm.com/
+
+if BR2_PACKAGE_HLIBVCP7G
+menu "Options"
+	config BR2_PACKAGE_HLIBVCP7G_DSP_SUPPORT
+		bool "enable dsp-lib support"
+		depends on BR2_PACKAGE_HLIBDSP && BR2_PACKAGE_HLIBDSP_AEC
+		default n
+		help
+			say y if you want to use DSP library for AEC
+
+	config BR2_PACKAGE_HLIBVCP7G_ARM_SUPPORT
+		bool "enable arm-lib support(not recommanded)"
+		default n
+		help
+			say y if you want to use ARM library for AEC
+endmenu
+endif

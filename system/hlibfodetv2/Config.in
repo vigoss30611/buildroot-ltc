@@ -1,0 +1,8 @@
+config BR2_PACKAGE_HLIBFODETV2
+	bool "hlibfodetv2"
+        default n
+	help
+	  Fix me
+
+	  http://www.infotm.com/
+

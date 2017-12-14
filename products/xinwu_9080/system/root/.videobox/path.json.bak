@@ -1,0 +1,33 @@
+{
+	"v4l2": {
+		"ipu": "v4l2",
+		"args": {
+			"driver":"imapx_camif",
+			"model": "xc9080",
+			"pixfmt": "yuyv422"
+		},
+		"port": {
+			"out": {
+				"w": 1280,
+				"h": 640,
+                "fps": 30,
+				"pixel": "yuyv422",
+				"bind": { 
+                    "encavc0": "frame",
+                    "jpeg": "in",
+                    "jpegfull": "in"
+                }
+			}
+		}
+	},
+
+    "encavc0": { 
+        "ipu": "h1264", 
+        "args": {"rotate":"90R", "framebase": 1, "framerate": 30}
+    },
+    "jpeg": { "ipu": "h1jpeg", "args": { "mode": "trigger"}},
+    "jpegfull": { 
+        "ipu": "h1jpeg", 
+        "args": { "mode": "trigger"}
+        }
+}

@@ -1,0 +1,44 @@
+on init
+	export PATH /sbin:/system/bin
+	start symlink_android
+
+# This service starts a script which uses blkid_static to locate a filesystem
+# with the name 'Android', creates a suitable symlink to /dev/block/Android,
+# checks the filesystem, and then returns. A magic file is created once the
+# script completes, which early-fs waits on, to block the normal system boot.
+
+service symlink_android /sbin/symlink_android.sh
+	console
+	oneshot
+	disabled
+	user root
+	group root log
+
+on early-fs
+	# Force the boot process to serialize behind the symlink_android task
+	wait /dev/block/.symlink_android_done 60
+
+	# Manually mount the Android filesystem at /mnt/android so it can be
+	# manipulated via 'adb push' and so the misc.img can be read/written
+	# by recovery.
+	mkdir /mnt 0755 root root
+	mkdir /mnt/android 0755 root root
+	mount ext4 /dev/block/Android /mnt/android
+
+	# If /mnt/android is mounted, these files should be writable
+	# by any process that can call android_reboot().
+	chown system system /mnt/android/grubenv
+	chmod 0660 /mnt/android/grubenv
+	chown system system /mnt/android/misc.img
+	chmod 0660 /mnt/android/misc.img
+
+service console /system/bin/sh
+	class core
+	console
+	disabled
+	user root
+	group root log
+	seclabel u:r:shell:s0
+
+on property:ro.debuggable=1
+	start console

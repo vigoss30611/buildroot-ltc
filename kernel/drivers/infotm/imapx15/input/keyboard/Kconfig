@@ -1,0 +1,9 @@
+menuconfig IMAPX15_KEYBOARD
+	bool "iMAPx15 Keyboards and keypads"
+if IMAPX15_KEYBOARD
+	config IMAPX15_GPIO_KEY
+	tristate "iMAPX15 GPIO Keys"                             
+	default y                                                 
+	help                                                      
+	Say Y here if you want to use the GPIO keys of iMAPx15.
+endif

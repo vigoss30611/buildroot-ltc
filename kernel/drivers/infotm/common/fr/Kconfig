@@ -1,0 +1,18 @@
+
+config INFOTM_FR
+	tristate "Frame Ring"
+	default n
+	help
+	  Frame Ring (FR) manages ring-buffer of frames between different
+	  video devices.
+
+config INFOTM_FR_TEST
+	tristate "Test code for frame-ring"
+	default n
+	depends on INFOTM_FR
+
+config INFOTM_FR_STATISTICS
+	tristate "Collect time data and analysis performence"
+	default n
+	depends on INFOTM_FR
+

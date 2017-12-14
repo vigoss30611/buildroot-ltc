@@ -1,0 +1,5 @@
+config BR2_PACKAGE_APP_REC_DEMO
+    bool "video recoder demo"
+    help
+        recoder demo,using the demo CMakeList to construct your static app.
+

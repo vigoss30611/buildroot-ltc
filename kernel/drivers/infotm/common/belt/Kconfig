@@ -1,0 +1,5 @@
+
+config INFOTM_BELT
+	tristate "A great belt that connects kernel and user space"
+	default y
+

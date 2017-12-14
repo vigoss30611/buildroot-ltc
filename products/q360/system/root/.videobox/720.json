@@ -1,0 +1,68 @@
+{
+    "isp": {
+        "ipu": "v2500",
+        "args": {
+            "mode": 0,
+            "flip": 2,
+            "name": "IMX179MIPI",
+            "config": "/root/.ispddk/config-normal.txt"
+        },
+        "port": {
+            "out": {
+                "w": 768,
+                "h": 768,
+                "pixel_format": "nv12",
+                "fps": 30
+            }
+        }
+    },
+
+    "marker0": {
+        "ipu": "marker",
+        "args": {
+            "mode": "normal"
+        },
+        "port": {
+            "out": {
+                "w": 600,
+                "h": 40,
+                "pixel_format": "nv12",
+                "bind": { "softlayer0": "ol0" }
+            }
+        }
+    },
+
+    "softlayer0":{
+        "ipu": "softlayer",
+        "port": {
+            "ol0": {
+                "pip_x":16,
+                "pip_y":8
+            },
+            "out": {
+                "w": 768,
+                "h": 768,
+                "pixel_format": "nv12",
+                "bind": {
+                    "encavc0": "frame",
+                    "encavc1": "frame",
+                    "jpeg": "in"
+                },
+                "embezzle": {"isp": "out"}
+            }
+        }
+    },
+
+
+    "jpeg": { "ipu": "h1jpeg", "args": { "mode": "trigger"}},
+    "encavc0": { "ipu": "vencoder",
+        "args": {
+            "encode_type": "h264"
+        }
+    },
+    "encavc1": { "ipu": "vencoder",
+        "args": {
+            "encode_type": "h264"
+        }
+    }
+}

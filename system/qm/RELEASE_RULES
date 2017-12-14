@@ -1,0 +1,25 @@
+
+header:
+libinc/*  usr/include/qm/
+
+
+shared:
+libs/Q3/libQM.so   usr/lib
+libs/Q3/ProtocolService/libProtocolService.so  usr/lib
+libs/Q3/libonvif/libonvif.so  usr/lib
+libs/Q3/libthttpd/libthttpd.so  usr/lib
+static:
+
+binary:
+libs/Q3/main/qm_app usr/bin/
+libs/Q3/Daemon/qm_daemon usr/bin/
+
+resource:
+etc/init.d/S904APP      etc/init.d/
+etc/thttpd.conf	 etc/
+root/qm_app/ root/
+
+pkgconfig:
+module:
+
+

@@ -1,0 +1,19 @@
+-- TAL config to test the MMU
+
+MEMORY_MAP
+
+-- setting the physical base to something within 32 bits but not at 0
+DEVICE FAKE  0x00000000 0x00800000 0x10000000 0 0x000000000
+
+-- 256MB
+MEMORY TOP      FAKE 0x00000000 0x10000000 0
+
+-- 512MB
+MEMORY BOTTOM      FAKE 0x10000000 0x20000000 0
+
+END_MEMORY_MAP
+
+WRAPPER
+-- Null TAL interface for unit testing config...
+CONTROL 20000  0x00000700
+END_WRAPPER

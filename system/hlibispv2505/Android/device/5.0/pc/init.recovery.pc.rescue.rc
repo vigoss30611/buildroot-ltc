@@ -1,0 +1,68 @@
+on init
+	export PATH /sbin:/system/bin
+
+	# Wait a file for the block device to appear, then initialize it
+	wait /dev/block/sda 60
+	start gptinit
+
+	# If gptinit fails, it will reboot the system. So we can wait forever
+	# for it to complete, then start the symlink task.
+	wait /dev/block/.gptinit_done
+	start symlink_android
+
+# This services erases the partition table on the primary hard disk drive
+# and replaces it with a new one, containing a single ext4 partition with
+# the correct label.
+
+service gptinit /sbin/gptinit.sh
+	console
+	oneshot
+	disabled
+	user root
+	group root log
+
+# This service starts a script which uses blkid_static to locate a filesystem
+# with the name 'Android', creates a suitable symlink to /dev/block/Android,
+# checks the filesystem, and then returns. A magic file is created once the
+# script completes, which early-fs waits on, to block the normal system boot.
+
+service symlink_android /sbin/symlink_android.sh
+	console
+	oneshot
+	disabled
+	user root
+	group root log
+
+# We overload 'charger' here so late-init isn't triggered, which would cause
+# recovery to start immediately. We want to delay starting recovery until
+# the update files are in place.
+
+on charger
+	# Force the boot process to serialize behind the symlink_android task
+	wait /dev/block/.symlink_android_done 60
+
+	# Manually mount the Android filesystem at /mnt/android so it can be
+	# manipulated via 'adb push' and so the misc.img can be read/written
+	# by recovery.
+	mkdir /mnt 0755 root root
+	mkdir /mnt/android 0755 root root
+	mount ext4 /dev/block/Android /mnt/android
+
+	# Ready to receive the update.zip and misc.img files
+	start adbd
+
+	# When misc.img is uploaded, this is a trigger to tell the rescue
+	# environment to continue the boot sequence and start recovery.
+	wait /mnt/android/misc.img 3600
+
+	# If /mnt/android is mounted, these files should be writable
+	# by any process that can call android_reboot().
+	chown system system /mnt/android/grubenv
+	chmod 0660 /mnt/android/grubenv
+	chown system system /mnt/android/misc.img
+	chmod 0660 /mnt/android/misc.img
+
+	# load any necessary properties for recovery and then allow the recovery
+	# service to start (by virtue of 'on charger' finishing)
+	trigger load_all_props_action
+	trigger boot

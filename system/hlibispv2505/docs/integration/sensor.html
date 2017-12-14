@@ -1,0 +1,478 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Sensor driver &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="next" title="Test Tools" href="../test_tools/test_tools.html" />
+    <link rel="prev" title="Platform Integration Guide" href="platform.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../test_tools/test_tools.html" title="Test Tools"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="platform.html" title="Platform Integration Guide"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li><li>Sensor driver</li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="sensor-driver">
+<span id="isp-pi-sensor-driver"></span><h1>Sensor driver<a class="headerlink" href="#sensor-driver" title="Permalink to this headline">¶</a></h1>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">It is the customer responsibility to modify the PHY control to cope with
+their PHY. Customers are also expected to modify the sensor API to
+support their own sensor.</p>
+</div>
+<p>This section will explain how to handle sensor porting using the Imagination
+PHY and sensor drivers as examples. The Figure
+<a class="reference internal" href="#isp-pi-fpga-phy-gasket-links-fig"><span>Imagination FPGA PHY/Gasket links</span></a> shows how the Imagination FPGA uses
+the IMG PHY to select the source of data for the V2500 IP. Any block of HW
+not provided by IMG that has to be configured for a sensor to be able to
+transfer data to the V2500 Gasket should be considered as a PHY. If none is
+present then the PHY control can be removed.</p>
+<div class="figure" id="id1">
+<span id="isp-pi-fpga-phy-gasket-links-fig"></span><a class="reference internal image-reference" href="../_images/fpga_phy_gasket_links.png"><img alt="../_images/fpga_phy_gasket_links.png" src="../_images/fpga_phy_gasket_links.png" style="width: 373px; height: 227px;" /></a>
+<p class="caption"><span class="caption-text">Imagination FPGA PHY/Gasket links</span></p>
+</div>
+<div class="section" id="platform-integration">
+<span id="isp-pi-platform-integration"></span><h2>Platform Integration<a class="headerlink" href="#platform-integration" title="Permalink to this headline">¶</a></h2>
+<p>The V2500 drivers will require customisation to work within a SoC and to work
+with different camera sensors. The example sensor drivers demonstrate the
+interface a sensor driver needs to implement to allow the other parts of the
+driver stack to interact with a camera sensor (see
+<a class="reference internal" href="#isp-pi-example-sensor-drivers"><span>Example sensor drivers</span></a>).  The PHY and SCB connection are managed
+by the <a class="reference external" href="../doxygen/sensor__phy_8h.html">sensor_phy.h</a> functions (implemented in <code class="docutils literal"><span class="pre">sensor_phy.c</span></code>).  The
+Sensor drivers are implemented in the various sensor files of the <code class="docutils literal"><span class="pre">sensors</span></code>
+folder.</p>
+<div class="section" id="phy-control-sensor-phy-c">
+<span id="isp-pi-phy-control"></span><h3>PHY control (<code class="docutils literal"><span class="pre">sensor_phy.c</span></code>)<a class="headerlink" href="#phy-control-sensor-phy-c" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>This implementation is specific to IMG PHY, an internal block of HW
+available only on IMG FPGA test systems.</p>
+<p class="last">This also assumes that the IMG I2C bus is used. This is not available on
+all HW versions.</p>
+</div>
+<p>The sensor driver is written as a user mode driver which does its own
+mapping of the registers it requires for accessing the IMG PHY. User-mode
+was chosen because the PHY may be completely different on customer systems
+or even not present at all on a SoC.</p>
+<p>The sensor driver also requires the V2500 driver to
+be installed to allow the sensor driver access to the ISP gaskets. The
+communication to the PHY can be changed to an ioctl based or any other
+mechanism that allows the customer to configure their PHY. The customer could
+even choose to integrate their PHY setup in the kernel-side gasket setup.</p>
+<p>The SCB connection assumes that either the Imagination I2C device is used or
+that a similar one implementing the standard i2c-device for GNU/Linux is
+present. It is also likely that <a class="reference external" href="../doxygen/sensor__phy_8h.html">sensor_phy.h</a> should be modified to
+update the <a class="reference external" href="../doxygen/sensor__phy_8h.html#a3460098b5e96a10a07440c552fc8cb5f">SENSOR_PHY</a> structure with the correct fields.</p>
+<p>To port the sensor drivers to a new platform a customer is expected to:</p>
+<ul>
+<li><p class="first">Modify <a class="reference external" href="../doxygen/sensor__phy_8c.html#a1110597a899793b497dbd07f11feba8a">SensorPhyInit()</a> to interact with the PHY as required. This
+means replacing the <a class="reference external" href="../doxygen/pciuser_8h.html#af07668485cf694935a157558e1cebfb1">UserGetMapping()</a> to use whatever means the
+customer choose to interact with their own PHY. The part initialising the
+Gasket object is required as reservation of Gaskets is done through the CI
+driver.</p>
+</li>
+<li><p class="first">Any operation done in <a class="reference external" href="../doxygen/sensor__phy_8c.html#a1110597a899793b497dbd07f11feba8a">SensorPhyInit()</a> should be reversed in
+<a class="reference external" href="../doxygen/sensor__phy_8h.html#a7f8b687ea1e3a2354a4b910efaffdad4">SensorPhyDeinit()</a>.</p>
+</li>
+<li><p class="first"><a class="reference external" href="../doxygen/sensor__phy_8c.html#ad887f676624290f6554aa506145cc75e">SensorPhyCtrl()</a> should be modified to replace the register access to
+the PHY with the correct operation to enable a particular sensor to
+communicate with the V2500 Gasket correctly. For instance the IMG PHY has to
+setup the number of MIPI lanes when using a MIPI sensor.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>The order of operations Gasket <strong>then</strong> PHY should be maintained.</p>
+<p class="last">It is expected that the sensor starts streaming <strong>after</strong> both PHY and
+Gasket are configured. And obviously that the sensor stops streaming
+<strong>before</strong> PHY and gasket are disabled.</p>
+</div>
+</li>
+<li><p class="first">Modify <a class="reference external" href="../doxygen/sensor__phy_8c.html#af183fe0b5d28c19d32249ae05d702ee8">find_i2c_dev()</a> to search for the correct I2C device if not
+using the Imagination SCB block.</p>
+<p>This function does not have to be called by all sensors implementation.
+Typically on a known platform it is expected to know which I2C device to
+use and not have to search for it by name.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="i2c-interface">
+<span id="isp-pi-i2c"></span><h3>I2C interface<a class="headerlink" href="#i2c-interface" title="Permalink to this headline">¶</a></h3>
+<p>Some of the camera sensors are controlled using I2C interface. Every platform
+usually has different I2C controller, so the best solution is to use some
+generic I2C device to interact with I2C bus.</p>
+<p>Such I2C generalization under
+Linux/Android systems is brought by <code class="docutils literal"><span class="pre">i2c-dev</span></code> module. It detects all
+registered I2C adapters and creates user space devices to interact with them.
+In case that a platform has more than one I2C controller, there is a need to
+select the one which is actually connected to the camera sensor. As explained
+before the detection which I2C controller is done in <code class="docutils literal"><span class="pre">sensor_phy.c</span></code> file,
+which opens all the I2C devices using: <code class="docutils literal"><span class="pre">/sys/class/i2c-dev/i2c-id/name</span></code> and
+checks name of the controller. In delivered sensor code, it looks for <em>ImgTec
+SCB I2C</em> name which identifies I2C controller from IMG. In case customer is
+using different I2C controller this code should be changed or even not called
+at all by the sensor&#8217;s implementation.</p>
+<p>To load <code class="docutils literal"><span class="pre">i2c-dev</span></code> module refer to the <a class="reference internal" href="../getting_started.html#isp-gsg-i2c-driver"><span>IMG SCB driver (I2C driver)</span></a>.</p>
+</div>
+</div>
+<div class="section" id="implementing-a-new-sensor">
+<span id="isp-pi-implementing-a-new-sensor"></span><h2>Implementing a new sensor<a class="headerlink" href="#implementing-a-new-sensor" title="Permalink to this headline">¶</a></h2>
+<p>This section assumes that the PHY and SCB are already implemented:</p>
+<ol class="arabic simple">
+<li>Implement the sensor functions</li>
+<li>Make it available in sensor API</li>
+</ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">CMake has several options to choose which sensors to compile, the
+default values are available in <code class="docutils literal"><span class="pre">FindSensorAPI.cmake</span></code>. The options can
+be modified to fit the sensor available on the customer&#8217;s platform to
+avoid adding sensor drivers to unavailable sensors.</p>
+</div>
+<div class="section" id="sensor-implementation">
+<span id="isp-pi-sensor-implementation"></span><h3>Sensor implementation<a class="headerlink" href="#sensor-implementation" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Create a sensor implementation file (e.g. <code class="docutils literal"><span class="pre">ar330.c</span></code>)</li>
+<li>This file needs to implement as many of the Sensor API functions defined in
+the <a class="reference external" href="../doxygen/group___s_e_n_s_o_r___a_p_i.html#ga871bc3da779dc9220b17cfc3c285d298">SENSOR_FUNCS</a> as possible.</li>
+<li>This file must also implement the initialisation function for the sensor
+which populates the <a class="reference external" href="../doxygen/group___s_e_n_s_o_r___a_p_i.html#ga871bc3da779dc9220b17cfc3c285d298">SENSOR_FUNCS</a> structure.</li>
+<li>This should initialise a PHY structure using <a class="reference external" href="../doxygen/sensor__phy_8c.html#a1110597a899793b497dbd07f11feba8a">SensorPhyInit()</a></li>
+</ul>
+<p>Use one of the samples which most closely resemble the configuration of the
+selected sensor as an example (e.g. AR330 for MIPI, P401 for Parallel,
+Internal DG for data generators).</p>
+<p>Un-implemented functions can be left as NULL in the <a class="reference external" href="../doxygen/group___s_e_n_s_o_r___a_p_i.html#ga871bc3da779dc9220b17cfc3c285d298">SENSOR_FUNCS</a> if
+they are described as optional. Any function not marked as optional <strong>HAS
+TO BE IMPLEMENTED</strong> even if they do not do a thing (e.g. Internal Data
+Generator cannot change exposure but implements the function).</p>
+<p>The <code class="docutils literal"><span class="pre">sensorapi.c</span></code> file must have access to both the new sensor name and
+initialise function. Create a header containing the declaration of the
+initialise function:</p>
+<ul class="simple">
+<li>Modify the <code class="docutils literal"><span class="pre">InitialiseSensors[]</span></code> array to have the new initialise function
+in its list</li>
+<li>Modify the <code class="docutils literal"><span class="pre">Sensors[]</span></code> to have the sensor name in the same offset than the
+initialise function was inserted.</li>
+</ul>
+<p>If the sensor supports extended parameters they can be listed in that header
+too for the applications to have an easy access to it as well.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>It is important that mode setting and enabling are handled separately.</p>
+<p>The mode configures the output and frame-rate for a sensor before
+acquiring information about the sensor.</p>
+<p>The enable function starts sending data to the ISP.</p>
+<p class="last">The separation is important because the V2500 HW recommends that the
+sensor is started once the gasket is enabled (but the SW needs to know
+what the sensor configuration is before starting it).</p>
+</div>
+<p>The enable function is also responsible for enabling the ISP gasket which is
+done using the PHY structure created in the sensor’s initialised function.
+To enable the gasket sensors <code class="docutils literal"><span class="pre">pGasket</span></code> structure of the PHY should be
+filled in indicating</p>
+<ul>
+<li><p class="first">The gasket number to be enabled. This is expected to be static (expected 1 to
+1 mapping of sensors to gaskets). If the customised PHY can modify which
+gasket receives the data it should be taken into account.</p>
+<p>Customers are <strong>expected</strong> to set the correct value for their SoC for each
+sensor.</p>
+</li>
+<li><p class="first">If this is a parallel or mipi sensor (this is <strong>IMPORTANT</strong> as V2500 has 2
+different gasket types that are part of customer configurations!)</p>
+</li>
+<li><p class="first">The width, height, bit-depth of the mode</p>
+</li>
+<li><p class="first">For a parallel sensor it is <strong>IMPERATIVE</strong> that it also contain the Gasket
+width, height and the sync polarity of H sync and VSync. Examples of these
+are in the sample P401 drivers.</p>
+<p>Having those parameters set for MIPI sensors have no effects.</p>
+</li>
+</ul>
+<p>The enable function should then call the <a class="reference external" href="../doxygen/sensor__phy_8c.html#ad887f676624290f6554aa506145cc75e">SensorPhyCtrl()</a> function with
+the parameters indicating enable/disable number of mipi lanes (for mipi
+sensors) and the sensor number. If there is any additional configuration for an
+external PHY it should be done in the <a class="reference external" href="../doxygen/sensor__phy_8c.html#ad887f676624290f6554aa506145cc75e">SensorPhyCtrl()</a> function.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The IMG PHY also asks for a <code class="docutils literal"><span class="pre">ui8SensorNum</span></code> because our sensor board can
+have several sensors attached. If the customer&#8217;s PHY does not support such
+selection then this parameter could be ignored.</p>
+</div>
+</div>
+<div class="section" id="additional-information">
+<span id="isp-pi-additional-information"></span><h3>Additional information<a class="headerlink" href="#additional-information" title="Permalink to this headline">¶</a></h3>
+<p>The sensor API is expected to provide information about the selected sensor
+(stored into the <a class="reference external" href="../doxygen/group___s_e_n_s_o_r___a_p_i.html#ga649bacb599bf6b04ab2e5c597c3e6021">SENSOR_INFO</a> structure). The needed information is (not
+limited to):</p>
+<ul class="simple">
+<li>Aperture f/# of the attached lens</li>
+<li>Focal length of the lens in millimiters</li>
+<li>Usable full well depth (number of electrons the sensor wells can hold before clipping)</li>
+<li>Bit depth of the sensor data</li>
+<li>Read noise of the sensor in electrons</li>
+</ul>
+<p>Additional functions may provide more information about the selected running
+mode:</p>
+<ul class="simple">
+<li><a class="reference external" href="../doxygen/struct___sensor___functions__.html#a655ffe1bfffe00787c597d99a1ab2a7c">GetGainRange()</a> as possible gain multipliers for the sensor</li>
+<li><a class="reference external" href="../doxygen/struct___sensor___functions__.html#af1f5c088c83f894bf72cad93041c6243">GetExposureRange()</a> as exposure lengths in microseconds</li>
+<li><a class="reference external" href="../doxygen/struct___sensor___functions__.html#af450626eb86587f4173e652e9ec78bac">GetFocusRange()</a> as distances in millimiters</li>
+</ul>
+<p>The <a class="reference external" href="../doxygen/group___s_e_n_s_o_r___a_p_i.html#gac6207c8a39f1c5964ef88380149f049b">SENSOR_MODE</a> structure contains information about a running mode
+for a sensor (a sensor can have several modes to run faster/slower etc).
+That contains:</p>
+<ul class="simple">
+<li>Width of the sensor output in pixels</li>
+<li>Height of the sensor output in pixels</li>
+<li>Frame rate of the sensor in Hz</li>
+<li>The total number of lines including blanking time to be used by the
+flicker detection</li>
+</ul>
+</div>
+</div>
+<div class="section" id="example-sensor-drivers">
+<span id="isp-pi-example-sensor-drivers"></span><h2>Example sensor drivers<a class="headerlink" href="#example-sensor-drivers" title="Permalink to this headline">¶</a></h2>
+<p>The three real sensor drivers provide examples on how to interface to different
+types of sensor (parallel or MIPI) with different possible configurations.</p>
+<div class="section" id="omnivision-ov4688">
+<span id="isp-pi-ex-ov4688"></span><h3>Omnivision OV4688<a class="headerlink" href="#omnivision-ov4688" title="Permalink to this headline">¶</a></h3>
+<p>Implementation is available in <a class="reference external" href="../doxygen/ov4688_8h.html">ov4688.h</a> and <code class="docutils literal"><span class="pre">ov4688.c</span></code>. The OV4688
+driver communicates with a MIPI sensor which supports exposure, gains and
+focus control.</p>
+<p>The mode setting registers are stored in a table which is written in
+a loop at enable time (not configured like other sensors). The sensor uses 16 bit addresses and 8 bit data. The
+focus is controlled by a voice coil motor which is controlled by an I2C device
+on another address. The sensor driver demonstrates the setup of multiple I2C
+devices on the same bus.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">That driver had to be modified to have the whole setup done in enable
+instead of when selecting the mode as the sensor would otherwise start
+sending frames even if it was not enabled yet.</p>
+</div>
+<p>The data sheet for the VCM provides register values for 4 focus
+distances, the driver interpolates between these to provide a continuous
+range. The interpolation is done using the reciprocal of the focus
+distance as this is much more linear than the focus distance as shown in Figure
+<a class="reference internal" href="#isp-pi-ov4688focus-1-fig"><span>Distance (mm) over register values</span></a> and <a class="reference internal" href="#isp-pi-ov4688focus-1-fig"><span>Distance (mm) over register values</span></a>.</p>
+<div class="figure" id="id2">
+<span id="isp-pi-ov4688focus-1-fig"></span><a class="reference internal image-reference" href="../_images/ov4688focus_1.png"><img alt="../_images/ov4688focus_1.png" src="../_images/ov4688focus_1.png" style="width: 591.0px; height: 408.0px;" /></a>
+<p class="caption"><span class="caption-text">Distance (mm) over register values</span></p>
+</div>
+<div class="figure" id="id3">
+<span id="isp-pi-ov4688focus-2-fig"></span><a class="reference internal image-reference" href="../_images/ov4688focus_2.png"><img alt="../_images/ov4688focus_2.png" src="../_images/ov4688focus_2.png" style="width: 591.5px; height: 408.0px;" /></a>
+<p class="caption"><span class="caption-text">Distance (mm-1) over register values</span></p>
+</div>
+</div>
+<div class="section" id="aptina-ar330">
+<span id="isp-pi-ex-ar330"></span><h3>Aptina AR330<a class="headerlink" href="#aptina-ar330" title="Permalink to this headline">¶</a></h3>
+<p>Implementation is available in <a class="reference external" href="../doxygen/ar330_8h.html">ar330.h</a> and <code class="docutils literal"><span class="pre">ar330.c</span></code>. The AR330
+driver is a MIPI sensor that supports exposure and gains controls as well as
+modes using different number of MIPI lanes.</p>
+<p>This driver demonstrates extracting of information from the mode
+configuration register in order to calculate the number of MIPI lanes, and
+minimum exposure time. Also provided in the driver is an example for
+controlling flash.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Flash control has not been tested but has been done following the AR330
+documentation.</p>
+</div>
+</div>
+<div class="section" id="aptina-p401">
+<span id="isp-pi-ex-p401"></span><h3>Aptina P401<a class="headerlink" href="#aptina-p401" title="Permalink to this headline">¶</a></h3>
+<p>Implementation is available in <a class="reference external" href="../doxygen/p401_8h.html">p401.h</a> and <code class="docutils literal"><span class="pre">p401.c</span></code>. This is a very
+simple driver showing the usage of a parallel gasket that supports exposure and
+gains controls.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <a class="reference external" href="../doxygen/p401_8c.html#a59d7831f9d509b296c09de76776969ac">P401_Create()</a> has a special feature searching for the 1st
+parallel gasket. The customers are expected to know which one is their
+first parallel gasket and therefore this function can be replaced by
+directly writing the number of the gasket.</p>
+</div>
+</div>
+<div class="section" id="internal-data-generator">
+<span id="isp-pi-ex-iifdg"></span><h3>Internal Data Generator<a class="headerlink" href="#internal-data-generator" title="Permalink to this headline">¶</a></h3>
+<p>Implementation is available in <a class="reference external" href="../doxygen/iifdatagen_8h.html">iifdatagen.h</a> and <code class="docutils literal"><span class="pre">iifdatagen.c</span></code>. The
+Internal Data Generator Sensor driver is provided as a way of passing image to
+the internal data generator that is part of some ISP versions.</p>
+<p>This sensor is available in HW and can be used both with CSIM and silicon
+to insert images. However it only supports FLX as an input format but could
+be modified to get the image from other sources (the customer can implement
+a different frame converter to generate the data the IIF Datagen needs).</p>
+<p>The Internal Data Generator demonstrates a simple implementation of an
+insertion capable sensor. It does not handle gains or exposure and has a
+simpler implementation than the external data generator. It also can be used as
+an example of using extended parameters.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Sensor driver</a><ul>
+<li><a class="reference internal" href="#platform-integration">Platform Integration</a><ul>
+<li><a class="reference internal" href="#phy-control-sensor-phy-c">PHY control (<code class="docutils literal"><span class="pre">sensor_phy.c</span></code>)</a></li>
+<li><a class="reference internal" href="#i2c-interface">I2C interface</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#implementing-a-new-sensor">Implementing a new sensor</a><ul>
+<li><a class="reference internal" href="#sensor-implementation">Sensor implementation</a></li>
+<li><a class="reference internal" href="#additional-information">Additional information</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#example-sensor-drivers">Example sensor drivers</a><ul>
+<li><a class="reference internal" href="#omnivision-ov4688">Omnivision OV4688</a></li>
+<li><a class="reference internal" href="#aptina-ar330">Aptina AR330</a></li>
+<li><a class="reference internal" href="#aptina-p401">Aptina P401</a></li>
+<li><a class="reference internal" href="#internal-data-generator">Internal Data Generator</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="platform.html"
+                        title="previous chapter">Platform Integration Guide</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../test_tools/test_tools.html"
+                        title="next chapter">Test Tools</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

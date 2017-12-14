@@ -1,0 +1,5 @@
+
+config CORONAMPW_INFOTM_DPMU
+	tristate "Dram PMU func add"
+	default n
+

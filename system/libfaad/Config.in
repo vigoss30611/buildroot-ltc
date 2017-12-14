@@ -1,0 +1,16 @@
+config BR2_PACKAGE_LIBFAAD
+	bool "libfaad"
+	help
+	  Osa communication lib
+
+	  http://www.infotm.com/
+if BR2_PACKAGE_LIBFAAD 
+menu "options"
+	config  BR2_PACKAGE_LIBFAAD_INSTALL_SHARED
+		bool "Install Shared"
+		default y
+		help
+	  		install shared library into target dir	
+endmenu
+
+endif

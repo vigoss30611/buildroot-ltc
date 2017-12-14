@@ -1,0 +1,486 @@
+config BR2_PACKAGE_VIDEOBOX
+	bool "Videobox"
+	help
+		Videobox deal with QSDK video issues
+
+if BR2_PACKAGE_VIDEOBOX
+menu "Select IPUs"
+    config BR2_PACKAGE_VIDEOBOX_OPTIMIZATION
+        bool "Optimize boot speed"
+        default n
+        help
+            Optimize videobox's speed by method staticfy its dependency library.when selected, complier will use
+            static lib as possible, and if only dynamic lib exits, complier will use dynamic lib.
+	config  BR2_PACKAGE_VIDEOBOX_DGPIXEL
+		bool "DGPixel"
+		default y
+		help
+	  		DGPIXEL is an IPU that provides software generated image
+			data. DGPIXEL supports NV12/NV12/RGB8888/RGB565 output.
+			DGPIXEL uses a single output buffer.
+
+	config  BR2_PACKAGE_VIDEOBOX_DGFRAME
+		bool "DGFrame"
+		default y
+		help
+	  		DGFRAME is an IPU that provides software generated image
+			data. DGFRAME supports NV12/NV21 output. DGFRAME uses 6
+			output buffers.
+
+	config  BR2_PACKAGE_VIDEOBOX_DGMATH
+		bool "DGMath"
+		default y
+		help
+	  		DGMATH is wonderful data generator, it provides amazing
+			image patterns. For now DGMATH only support RGB8888, it uses
+			3 VACANT buffers.
+
+	config  BR2_PACKAGE_VIDEOBOX_DGOV
+		bool "DGOV"
+		default n
+		help
+			DGOV is an IPU that provides software generated image test overlay 
+			data. DGOV supports NV12/BPP2 output. DGOV uses 6
+			output buffers.
+
+	config  BR2_PACKAGE_VIDEOBOX_G1264
+		bool "G1264"
+		default n
+		help
+            G1264 is the H.264 decoder IPU.
+
+    config  BR2_PACKAGE_VIDEOBOX_G1JDEC
+        bool "G1JDec"
+        default n
+        help
+            G1Jdec is an IPU supports Jpeg HW decoding.
+
+	config  BR2_PACKAGE_VIDEOBOX_G2
+		bool "G2"
+		default y
+		help
+	  		G2 is the H.265 decoder IPU.
+
+	config  BR2_PACKAGE_VIDEOBOX_H1JPEG
+		bool "H1JPEG"
+		default n
+		help
+			H1JPEG is the jpeg encoder IPU.
+
+    if BR2_PACKAGE_VIDEOBOX_H1JPEG
+            config BR2_PACKAGE_VIDEOBOX_H1JPEG_SWSCALE
+                bool "Software scale feature for image scaling"
+                default n
+                select BR2_PACKAGE_QLIBMEDIAUTILS
+                select CONFIG_QLIBMEDIAUTILS_SWSCALE
+                help
+                    H1Jpeg support picture software scaling feature.
+            config BR2_PACKAGE_VIDEOBOX_H1JPEG_SWCROP
+                bool "Software crop feature for image croping"
+                default n
+                select BR2_PACKAGE_QLIBMEDIAUTILS
+                select CONFIG_QLIBMEDIAUTILS_SWCROP
+                help
+                    H1Jpeg support picture software scaling feature.
+    endif
+
+	config  BR2_PACKAGE_VIDEOBOX_H1264
+		bool "H1264"
+		default y
+		help
+			H1264 is the h264 encoder IPU.
+
+    config  BR2_PACKAGE_VIDEOBOX_JENC
+            bool "Jenc"
+            default n
+            select BR2_PACKAGE_HLIBJENC
+            help
+                JENC is the jpeg encoder IPU.
+        if BR2_PACKAGE_VIDEOBOX_JENC
+            config BR2_PACKAGE_VIDEOBOX_JENC_SWSCALE
+                bool "Support thumbnail feature"
+                default n
+                select BR2_PACKAGE_QLIBMEDIAUTILS
+                select CONFIG_QLIBMEDIAUTILS_SWSCALE
+                help
+                    Jenc support thumbnail feature.
+        endif
+
+	config  BR2_PACKAGE_VIDEOBOX_FFVDEC
+		bool "FFVdec"
+		default y
+		help
+			FFVDEC is the ffmpeg decoder IPU.
+
+	config  BR2_PACKAGE_VIDEOBOX_H2
+		bool "H2"
+		default y
+		help
+	  		H2 is the H.265 encoder IPU.
+	config  BR2_PACKAGE_VIDEOBOX_H2V4
+		bool "H2V4"
+		default n
+		help
+	  		H2 is the H.265 encoder IPU.
+
+	config  BR2_PACKAGE_VIDEOBOX_VENCODER
+		bool "Video Encoder"
+		default n
+		help
+            Encoder IPU. Please select at least one encoder lib.
+            To select H2V4, H1V6 must be deselected.
+
+        if BR2_PACKAGE_VIDEOBOX_VENCODER
+            config  BR2_PACKAGE_VIDEOBOX_VENCODER_H1264
+                bool "h1264"
+                default y
+                help
+                    H1264 encoder lib.
+
+            choice
+                prompt "h2 encoder lib"
+                default BR2_PACKAGE_VIDEOBOX_VENCODER_H2
+                help
+                    h2 encoder lib
+
+                config  BR2_PACKAGE_VIDEOBOX_VENCODER_H2
+                    bool "h2"
+                    help
+                        H2V1 encoder lib
+
+                config  BR2_PACKAGE_VIDEOBOX_VENCODER_H2V4
+                    depends on !BR2_PACKAGE_VIDEOBOX_VENCODER_H1264
+                    bool "h2v4"
+                        help
+                            H2V4 encoder lib, depends on h1v6's deselected
+
+                config  BR2_PACKAGE_VIDEOBOX_VENCODER_H2_NONE
+                    bool "NONE"
+                    help
+                        no h2 lib.
+            endchoice
+        endif
+
+	config  BR2_PACKAGE_VIDEOBOX_IDS
+		bool "IDS"
+		default y
+		help
+	  		IDS is the display IPU.
+
+	config  BR2_PACKAGE_VIDEOBOX_IDS2
+		bool "IDS2"
+		default n
+		help
+	  		IDS2 is the new display IPU.
+
+	config  BR2_PACKAGE_VIDEOBOX_ISPOSTV1
+		bool "ISPOSTv1"
+		default n
+		help
+	  		ISPOSTv1 is a special IPU for Q3, it is in charge of
+			image de-noising, scaling, and overlying. ISPOSTv1
+			supports 1 image input, 1 overlay input, and 3 outputs.
+
+    if  BR2_PACKAGE_VIDEOBOX_ISPOSTV1
+        config BR2_PACKAGE_VIDEOBOX_ISPOSTV1_FCE
+            bool "Dynamic create fisheye correction grid data"
+            default n
+            select BR2_PACKAGE_LIBGRIDTOOLS
+            help
+                Whether enable fce function, enable gridtools function.
+    endif
+
+	config  BR2_PACKAGE_VIDEOBOX_ISPOSTV2
+		bool "ISPOSTv2"
+		default n
+		help
+	  		ISPOSTv2 is like ISPOSTv1 but it has 8 overlay inputs.
+			ISPOSTv2 is available on Q3F.
+
+    if  BR2_PACKAGE_VIDEOBOX_ISPOSTV2
+        config BR2_PACKAGE_VIDEOBOX_ISPOSTV2_FCE
+            bool "Dynamic create fisheye correction grid data"
+            default n
+            select BR2_PACKAGE_LIBGRIDTOOLS
+            help
+                Whether enable fce function, enable gridtools function.
+    endif
+
+	config  BR2_PACKAGE_VIDEOBOX_FODETV2
+		bool "FODETv2"
+		default n
+		help
+	  		FODETv2 is face detection IPU.
+			FODETv2 is available on Q3F.
+
+    config  BR2_PACKAGE_VIDEOBOX_PP
+        bool "PP"
+        default n
+        help
+            PP is a simple image post processer, it is capable of scaling, croping, color space conversion and rotating.
+
+    config  BR2_PACKAGE_VIDEOBOX_V2500
+        bool "V2500"
+        default y
+            select BR2_PACKAGE_HLIBCAMSENSOR
+            select BR2_PACKAGE_LIBISPV2500
+        help
+            V2500 is the ISP IPU for Q3.
+    if  BR2_PACKAGE_VIDEOBOX_V2500
+        config BR2_PACKAGE_VIDEOBOX_V2500_IQ_REALTIME_SAVE_RAW
+            bool "Save raw file in realtime"
+            default n
+            help
+                For IQ, save raw file in realtime.
+    endif
+
+    config  BR2_PACKAGE_VIDEOBOX_V2505
+        bool "V2505"
+        default n
+            select BR2_PACKAGE_HLIBCAMSENSOR
+            select BR2_PACKAGE_LIBISPV2505
+        help
+            V2505 is the ISP IPU for Q3F.
+    if  BR2_PACKAGE_VIDEOBOX_V2505
+        config BR2_PACKAGE_VIDEOBOX_V2505_HW_AWB
+            bool "Hardware AWB method"
+            default n
+                select BR2_PACKAGE_LIBISPV2505_HW_AWB
+            help
+                Whether use hardware awb
+
+    endif
+
+    if  BR2_PACKAGE_VIDEOBOX_V2505
+        config BR2_PACKAGE_VIDEOBOX_V2505_HW_BLENDING_8ALPHA
+            bool "Hardware Blending use 8 step alpha"
+            default n
+            help
+                Whether use 8 step alpha for hardware blending
+
+    endif
+
+    if  BR2_PACKAGE_VIDEOBOX_V2505
+        config BR2_PACKAGE_VIDEOBOX_V2505_HW_BLENDING
+            bool "Hardware Blending method"
+            default y
+            help
+                Whether use hardware blending
+
+    endif
+
+    if  BR2_PACKAGE_VIDEOBOX_V2505
+        config BR2_PACKAGE_VIDEOBOX_V2505_IQ_REALTIME_SAVE_RAW
+            bool "Save raw file in realtime"
+            default n
+            help
+                For IQ, save raw file in realtime.
+
+        config BR2_PACKAGE_VIDEOBOX_V2505_AWB_ALG_PLANCKIAN
+            bool "awb alg use planckian"
+            default n
+            help
+                For awb alg select.
+
+    endif
+    
+    config  BR2_PACKAGE_VIDEOBOX_ISP
+        bool "ISP"
+        default n
+        help
+            ISP is the isp IPU for Q3 and Q3F.
+            
+    if BR2_PACKAGE_VIDEOBOX_ISP
+		    choice
+		    	prompt "V2500 Module"
+		    	default BR2_PACKAGE_VIDEOBOX_ISP_V2500
+		    	help
+	      		Select the V2500 module you wish to use.
+	      
+		    config  BR2_PACKAGE_ISP_V2500
+		        bool "V2500"
+		            select BR2_PACKAGE_HLIBCAMSENSOR
+		            select BR2_PACKAGE_LIBISPV2500
+		        help
+		            V2500 is the ISP IPU for Q3.
+		    
+		    config  BR2_PACKAGE_ISP_V2505
+		        bool "V2505"
+		            select BR2_PACKAGE_HLIBCAMSENSOR
+		            select BR2_PACKAGE_LIBISPV2505
+		        help
+		            V2505 is the ISP IPU for Q3F.
+		    endchoice
+		
+	      if  BR2_PACKAGE_ISP_V2505
+            config BR2_PACKAGE_VIDEOBOX_V2505_HW_AWB
+                bool "Hardware AWB Method"
+                default n
+                    select BR2_PACKAGE_LIBISPV2505_HW_AWB
+                help
+                    Whether use hardware awb
+        
+        endif
+
+        if  BR2_PACKAGE_ISP_V2505
+            config BR2_PACKAGE_VIDEOBOX_V2505_HW_BLENDING_8ALPHA
+                bool "Hardware Blending use 8 step alpha"
+                default n
+                help
+                    Whether use 8 step alpha for hardware blending
+
+        endif
+
+       if  BR2_PACKAGE_ISP_V2505
+            config BR2_PACKAGE_VIDEOBOX_V2505_AWB_ALG_PLANCKIAN
+                bool "awb alg use planckian"
+                default n
+             help
+                For awb alg select.
+       endif
+
+       if  BR2_PACKAGE_ISP_V2505
+           config BR2_PACKAGE_VIDEOBOX_V2505_HW_BLENDING
+                bool "Hardware Blending method"
+                default y
+                help
+                    Whether use hardware blending
+
+       endif
+    
+        config BR2_PACKAGE_VIDEOBOX_ISP_IQ_REALTIME_SAVE_RAW
+            bool "Save raw file in realtime"
+            default n
+            help
+                For IQ, save raw file in realtime.
+	endif
+
+	config  BR2_PACKAGE_VIDEOBOX_CAMV4L2
+		bool "CamV4L2"
+		default n
+		help
+			Common V4L2 faced camera IPU, support connecting some sensors whose data format is YUV not raw RGB.
+
+	config  BR2_PACKAGE_VIDEOBOX_FILESINK
+		bool "FileSink"
+		default n
+		help
+	  		Write frame data to a file.
+
+	config  BR2_PACKAGE_VIDEOBOX_FILESOURCE
+		bool "FileSource"
+		default n
+		help
+	  		Read frame data from a file and provide it to another IPU.
+
+	config  BR2_PACKAGE_VIDEOBOX_VAMOVEMENT
+		bool "VAMovement"
+		default n
+		help
+			Movement detection IPU.
+
+	config  BR2_PACKAGE_VIDEOBOX_MVMOVEMENT
+		bool "MVMovement"
+		default n
+		help
+			Movement detection based on motion vector IPU.
+
+	config  BR2_PACKAGE_VIDEOBOX_VAQRSCANNER
+		bool "VAQRScanner"
+		default n
+		help
+			Analyze frame data, and decide if there is a valid QR code in it.
+
+    config  BR2_PACKAGE_VIDEOBOX_MARKER
+        bool "Marker"
+        default n
+        help
+            Marker IPU generates maker data(time,picture),the data usually need be overlayed by ispost.
+        if BR2_PACKAGE_VIDEOBOX_MARKER
+            config BR2_ENABLE_FREETYPE
+                bool "Using freetype lib to generate maker data"
+                default y
+                help
+                    Marker use freetype lib to generate maker data.
+        endif
+
+	config  BR2_PACKAGE_VIDEOBOX_SOFTLAYER
+		bool "Softlayer"
+		default n
+		help
+			Softlayer ipu uses software way for image overlay.
+
+	config  BR2_PACKAGE_VIDEOBOX_BADENCODER
+		bool "Bad encoder(developing)"
+		default n
+		help
+			Encode 4K videos with bad quality.
+
+	config  BR2_PACKAGE_VIDEOBOX_TFESTITCHER
+		bool "Two fisheyes stitcher"
+		default n
+		help
+			Stitch two fisheye frames together to generate a panoramic picture.
+
+    config  BR2_PACKAGE_VIDEOBOX_FFPHOTO
+        bool "FFPhoto"
+        default y
+        help
+            FFPHOTO is the ffmpeg decoder IPU for photo.
+    if BR2_PACKAGE_VIDEOBOX_FFPHOTO
+        config  BR2_PACKAGE_VIDEOBOX_FFPHOTO_SWSCALE
+            bool "Enable software scale"
+            default n
+            help
+                Support image scaling when software decode a jpeg.
+    endif
+    config  BR2_PACKAGE_VIDEOBOX_SWC
+        bool "SoftwareComposer"
+        default n
+        help
+            SWC(SoftWareComposer) stitch max 4 input video to one.
+    config  BR2_PACKAGE_VIDEOBOX_ISPLUS
+        bool "ISPlus"
+        default n
+        select BR2_PACKAGE_HLIBCAMSENSOR
+        select BR2_PACKAGE_LIBISPV2505
+        help
+            ISP and ISPOST are physically linked.
+            ISPLUS is available on Q3F.
+    if BR2_PACKAGE_VIDEOBOX_ISPLUS
+        config BR2_PACKAGE_VIDEOBOX_ISPLUS_FCE
+            bool "Dynamic create fisheye correction grid data"
+            default n
+            select BR2_PACKAGE_LIBGRIDTOOLS
+            help
+                Whether enable fce function, enable gridtools function
+    endif
+    config  BR2_PACKAGE_VIDEOBOX_BUFSYNC
+        bool "Bufsync"
+        default n
+        help
+            Sync multi referenced buffers.
+endmenu
+
+menu "Select APIs"
+    config BR2_PACKAGE_VIDEOBOX_IQ_TUNING_TOOL_APIS
+        bool "IQ tuning tool APIs"
+        default n
+        help
+            Whether enable IQ tuning tool APIs.
+
+    config BR2_PACKAGE_VIDEOBOX_ISPOSTV1_IQ_TUNING_TOOL_APIS
+        bool "ISPOSTv1 IQ tuning tool APIs"
+        default n
+        help
+            Whether enable ISPOSTv1 IQ tuning tool APIs.
+
+    config BR2_PACKAGE_VIDEOBOX_ISPOSTV2_IQ_TUNING_TOOL_APIS
+        bool "ISPOSTv2 IQ tuning tool APIs"
+        default n
+        help
+            Whether enable ISPOSTv2 IQ tuning tool APIs.
+endmenu
+
+
+endif

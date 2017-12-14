@@ -1,0 +1,1 @@
+gcc *.c -lz -lpthread -lcurl -lssl -lcrypto -ldl  -I ./ ../upgrade/ ../qlibwifi/ ../qlibsys/include/

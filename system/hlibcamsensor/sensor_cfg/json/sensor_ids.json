@@ -1,0 +1,19 @@
+{
+    "isp": {
+        "ipu": "v2500",
+        "args": {
+            "skipframe": 1,
+            "nbuffers": 3
+        },
+
+        "port": {
+            "out": {
+                "w": 1920,
+                "h": 1080,                
+                "pixel": "nv12",
+                "bind": { "display": "osd0" }
+            }
+        }
+    },
+    "display": { "ipu": "ids"}
+}

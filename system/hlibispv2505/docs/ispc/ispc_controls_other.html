@@ -1,0 +1,337 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Light Based Control (LBC) &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="up" title="ISP Control Library" href="ispc_library.html" />
+    <link rel="next" title="Android Camera HAL" href="../android/hal_camera_library.html" />
+    <link rel="prev" title="Automatic Tone Mapping Control (TNMC)" href="ispc_controls_tnmc.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../android/hal_camera_library.html" title="Android Camera HAL"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="ispc_controls_tnmc.html" title="Automatic Tone Mapping Control (TNMC)"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="ispc_library.html" accesskey="U">ISP Control Library</a> &raquo;</li><li>Light Based Control (LBC)</li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="light-based-control-lbc">
+<span id="isp-icm-lbc"></span><h1>Light Based Control (LBC)<a class="headerlink" href="#light-based-control-lbc" title="Permalink to this headline">¶</a></h1>
+<p>The Light Based Control (LBC) is a control module in charge of changing
+settings of the pipeline according to the amount of light that the sensor is
+receiving. It is possible to define an arbitrary number of configurations
+corresponding to different light levels and define the values for a predefined
+set of pipeline parameters for each one of the configuration. The module is in
+charge of estimating the amount of light and interpolating configurations from
+the defined set of available ones.  Currently the module supports control for
+the following set of parameters:</p>
+<ul class="simple">
+<li><strong>Sharpness</strong>: Making use of the <code class="docutils literal"><span class="pre">SHA_STRENGTH</span></code> setup parameter.</li>
+<li><strong>Brightness</strong>: Making use of the <code class="docutils literal"><span class="pre">R2Y_BRIGHTNESS</span></code> setup parameter.</li>
+<li><strong>Contrast</strong>: Making use of the <code class="docutils literal"><span class="pre">R2Y_CONTRAST</span></code> setup parameter.</li>
+<li><strong>Saturation</strong>: Making use of the <code class="docutils literal"><span class="pre">R2Y_SATURATION</span></code> setup parameter.</li>
+</ul>
+<p>It must be noted that the LBC relies on the HIS statistics and those are
+gathered <strong>after</strong> the R2Y module. Therefore changes in the brightness and
+contrast in particular can affect the statistics and hence the light level
+estimation in the LBC module. For this reason it is recommended to be careful
+if using the LBC module to control the brightness and saturation values as this
+could yield to unstable configurations, oscillations, etc.</p>
+<div class="section" id="code-organization">
+<span id="isp-lbc-code"></span><h2>Code Organization<a class="headerlink" href="#code-organization" title="Permalink to this headline">¶</a></h2>
+<p>The Light Based Control is implemented in the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_l_b_c.html">ControlLBC</a> class which, as
+the rest of the control modules, inherits from the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> class.
+The virtual function <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_l_b_c.html#a2ab055c6d110ca2c151b65d3e4d04b4d">ControlLBC::update()</a> is call after the capture of
+each new shot and it is in that function where the updates in the configuration
+must be carried out.</p>
+<p>The algorithm is implemented in the following stages:</p>
+<ul class="simple">
+<li>First the light level is estimated by calling the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_l_b_c.html#ab7aab9182597c55f20f4c71961710d9c">calculateBrightness()</a> method to calculate the captured image average
+brightness and then applying the following estimation formula:</li>
+</ul>
+<div class="math">
+\[\text{lightLevel} = \text{exposure} \cdot
+                    \frac{\text{gain}}{\text{averageBrightness}}\]</div>
+<ul class="simple">
+<li>The configuration to be applied is interpolated using the auxiliary class
+<code class="docutils literal"><span class="pre">LBCConfiguration</span></code> (see description in section below).</li>
+<li>The interpolated configuration is applied in the call to the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_l_b_c.html#a112d541f40ee73b8328bcc3b83113240">ControlLBC::programCorrection()</a> method.</li>
+</ul>
+</div>
+<div class="section" id="auxiliary-classes">
+<span id="isp-lbc-auxiliary"></span><h2>Auxiliary classes<a class="headerlink" href="#auxiliary-classes" title="Permalink to this headline">¶</a></h2>
+<p>Within the <a class="reference external" href="../doxygen/_control_l_b_c_8h.html">ControlLBC.h</a> header file it is included the definition for
+the <code class="docutils literal"><span class="pre">LBCConfiguration</span></code> class. The <code class="docutils literal"><span class="pre">LBCConfiguration</span></code> class is used for
+storing a set of configuration parameters and associated light level.  It also
+defines operators and methods in order to ease the interpolation between
+couples of configurations. The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_l_b_c.html">ControlLBC</a> class maintains a collection
+of <code class="docutils literal"><span class="pre">LBCConfiguration</span></code> instances as defined in the setup parameters to
+interpolate from. The set of interpolated configurations is retrieved from
+loaded from a <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_parameter_list.html">ParameterList</a> as any other setup parameter.</p>
+</div>
+<div class="section" id="lbc-high-level-parameters">
+<span id="isp-lbc-hlp"></span><h2>LBC High Level Parameters<a class="headerlink" href="#lbc-high-level-parameters" title="Permalink to this headline">¶</a></h2>
+<p>This Control Module modifies the parameters of the R2Y and SHA modules
+according to computed light level from global HIS statistics. It loads
+several configurations defined at tuning time.</p>
+<p>More information about the module is available in <a class="reference internal" href="#isp-icm-lbc"><span>Light Based Control (LBC)</span></a>.</p>
+<div class="section" id="lbc-generic-parameters">
+<span id="isp-lbc-hlp-generic"></span><h3>LBC Generic parameters<a class="headerlink" href="#lbc-generic-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>LBC_UPDATE_SPEED:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,1]</p>
+<p><strong>Defaults:</strong> 0.1</p>
+<p class="last">Speed to update the light metering so we have a smooth transition
+between configurations.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="lbc-multi-ligh-level-based-values">
+<span id="isp-lbc-hlp-light"></span><h3>LBC Multi ligh-level based values<a class="headerlink" href="#lbc-multi-ligh-level-based-values" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>LBC_CONFIGURATIONS:</dt>
+<dd><p class="first"><strong>Format:</strong> int range [0,20]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p>Number of Light Level Configurations to load from the file.</p>
+<p class="last">Will load all the following parameters from 0 to LBC_CONFIGURATIONS-1.</p>
+</dd>
+<dt>LBC_LIGHT_LEVEL_X:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,1e+08]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p>E.g. LBC_LIGHT_LEVEL_0</p>
+<p class="last">Light level of that particular configuration.</p>
+</dd>
+<dt>LBC_BRIGHTNESS_X:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [-0.5,0.5]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p>E.g. LBC_BRIGHTNESS_0</p>
+<p class="last">Brightness to replace the one loaded in R2Y module (see <a class="reference internal" href="ispc_modules.html#isp-ispc-r2y"><span>RGB to YUV (R2Y)</span></a>).</p>
+</dd>
+<dt>LBC_CONTRAST_X:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,2]</p>
+<p><strong>Defaults:</strong> 1</p>
+<p>E.g. LBC_CONTRAST_0</p>
+<p class="last">Contrast to replace the one loaded in R2Y module (see <a class="reference internal" href="ispc_modules.html#isp-ispc-r2y"><span>RGB to YUV (R2Y)</span></a>).</p>
+</dd>
+<dt>LBC_SATURATION_X:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0.1,10]</p>
+<p><strong>Defaults:</strong> 1</p>
+<p>E.g. LBC_SATURATION_0</p>
+<p class="last">Saturation to replace the one loaded in R2Y module (see <a class="reference internal" href="ispc_modules.html#isp-ispc-r2y"><span>RGB to YUV (R2Y)</span></a>).</p>
+</dd>
+<dt>LBC_SHARPNESS_X:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,1]</p>
+<p><strong>Defaults:</strong> 0.4</p>
+<p>E.g. LBC_SHARPNESS_0</p>
+<p class="last">Sharpness to replace the one loaded in SHA module (see <a class="reference internal" href="ispc_modules.html#isp-ispc-sha"><span>Sharpening (SHA)</span></a>).</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="parameters-modified">
+<h3>Parameters modified<a class="headerlink" href="#parameters-modified" title="Permalink to this headline">¶</a></h3>
+<p>The corresponding <a class="reference internal" href="ispc_modules.html#isp-ispc-sha"><span>Sharpening (SHA)</span></a> and <a class="reference internal" href="ispc_modules.html#isp-ispc-r2y"><span>RGB to YUV (R2Y)</span></a> parameters are
+modified.</p>
+</div>
+</div>
+<div class="section" id="statistics-configuration">
+<span id="isp-lbc-statistics"></span><h2>Statistics Configuration<a class="headerlink" href="#statistics-configuration" title="Permalink to this headline">¶</a></h2>
+<p>The LBC module also has the ability to configure the HIS it uses if
+another module did not configure it already (the choice has to be done when
+instenciating the control algorithms).</p>
+<p>The LBC control module makes use of the histogram statistics (HIS) which
+must be configured as described in the AE module (see
+<a class="reference internal" href="ispc_controls_ae.html#isp-ae-statistics"><span>Statistics Configuration</span></a>).</p>
+</div>
+</div>
+<div class="section" id="denoiser-control">
+<span id="isp-icm-dnsc"></span><h1>Denoiser Control<a class="headerlink" href="#denoiser-control" title="Permalink to this headline">¶</a></h1>
+<p>The denoiser control is in charge of dynamically configuring the denoiser
+module (DNS) according to the capture settings (and potentially other criteria
+like light levels, etc.). Current implementation is a simple approach where
+only the ISO_GAIN parameter of the DNS is configured with the value used for
+the sensor capture configuration. The denoiser strength is not modified in that
+control module.</p>
+<div class="section" id="isp-dnsc-code">
+<span id="id1"></span><h2>Code Organization<a class="headerlink" href="#isp-dnsc-code" title="Permalink to this headline">¶</a></h2>
+<p>The denoiser control is implemented in the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_d_n_s.html">ControlDNS</a> class which, as
+the rest of the control modules, inherits from the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> class.
+The virtual function <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_d_n_s.html#ab8272c70d395e4348bf0b86ec225a1d4">ControlDNS::update()</a> is call after the capture of
+each new shot and it is in that function where the updates in the configuration
+must be carried out. From such function the method
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_d_n_s.html#ab16c1c3a4db6d02a400da3ea77fb9a25">ControlDNS::programCorrection()</a> is called to update the pipeline
+configuration.</p>
+</div>
+<div class="section" id="dnsc-high-level-parameters">
+<span id="isp-dnsc-hlp"></span><h2>DNSC High Level Parameters<a class="headerlink" href="#dnsc-high-level-parameters" title="Permalink to this headline">¶</a></h2>
+<p>The denoiser control doesn’t require additional setup parameters. If activated
+the DNS_ISO_GAIN corresponding to the DNS module is ignored and the control
+module programs the corresponding values in the pipeline.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Light Based Control (LBC)</a><ul>
+<li><a class="reference internal" href="#code-organization">Code Organization</a></li>
+<li><a class="reference internal" href="#auxiliary-classes">Auxiliary classes</a></li>
+<li><a class="reference internal" href="#lbc-high-level-parameters">LBC High Level Parameters</a><ul>
+<li><a class="reference internal" href="#lbc-generic-parameters">LBC Generic parameters</a></li>
+<li><a class="reference internal" href="#lbc-multi-ligh-level-based-values">LBC Multi ligh-level based values</a></li>
+<li><a class="reference internal" href="#parameters-modified">Parameters modified</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#statistics-configuration">Statistics Configuration</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#denoiser-control">Denoiser Control</a><ul>
+<li><a class="reference internal" href="#isp-dnsc-code">Code Organization</a></li>
+<li><a class="reference internal" href="#dnsc-high-level-parameters">DNSC High Level Parameters</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="ispc_controls_tnmc.html"
+                        title="previous chapter">Automatic Tone Mapping Control (TNMC)</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../android/hal_camera_library.html"
+                        title="next chapter">Android Camera HAL</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

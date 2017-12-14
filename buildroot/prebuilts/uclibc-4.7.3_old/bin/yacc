@@ -1,0 +1,2 @@
+#! /bin/sh
+exec '/home/fengwu/b/work/sportDv_x15_6/output/host/usr/bin/bison' -y "$@"

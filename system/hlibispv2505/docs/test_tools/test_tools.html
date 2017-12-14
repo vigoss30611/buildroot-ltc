@@ -1,0 +1,598 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Test Tools &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="next" title="Capture Interface test: driver_test" href="driver_test.html" />
+    <link rel="prev" title="Sensor driver" href="../integration/sensor.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="driver_test.html" title="Capture Interface test: driver_test"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="../integration/sensor.html" title="Sensor driver"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li><li>Test Tools</li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="test-tools">
+<span id="isp-test-tools"></span><h1>Test Tools<a class="headerlink" href="#test-tools" title="Permalink to this headline">¶</a></h1>
+<p>This chapter aims to detail how the several command line test tools can be
+used to run tests on the V2500 DDK. Please refer to the
+<a class="reference internal" href="../getting_started.html#isp-getting-started-guide"><span>Getting Started Guide</span></a> for details on how to build the drivers and
+insert the kernel module. This document also covers the GUI tools.</p>
+<p>The target reader is assumed to know the V2500 IP software and hardware, its
+capabilities and deliverables. This chapter introduces the tools and
+parameter files that can be used to run the driver test applications in
+different conditions.</p>
+<div class="section" id="running-modes">
+<span id="isp-tt-running-modes"></span><h2>Running modes<a class="headerlink" href="#running-modes" title="Permalink to this headline">¶</a></h2>
+<p>Regardless of the tool used the running mode is either using the Fake
+interface (connection to the simulator) or the kernel-module. Some tools
+will only run against the kernel-module (e.g. <a class="reference internal" href="ispc_capture.html#isp-ispc-capture"><span>ISPC_capture</span></a>).</p>
+<div class="section" id="running-against-the-simulator">
+<span id="isp-tt-running-simulator"></span><h3>Running against the simulator<a class="headerlink" href="#running-against-the-simulator" title="Permalink to this headline">¶</a></h3>
+<p>This section assumes that a compiled version of the V2500 C Simulator is
+available (compile it using the CSIM documentation or use the provided
+binary package). The CI should be compiled using the Fake Interface. The
+internal library that manages register access (TAL) handles different
+protocols to access the device. The protocol used for connecting to the
+simulator using TCP/IP is called <em>devif</em>. Before running the application you
+will need to start the simulator:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>./testbench -testbench devif_slave -devifportnum <span class="m">2345</span> &lt;other options&gt;
+</pre></div>
+</div>
+<p>Please refer to the <em>User Guide</em> which accompanies the simulator package to
+find more details about other options. A potentially important option is the
+<code class="docutils literal"><span class="pre">-hwcfg</span></code> this should be set to match the hardware configuration you are
+using.</p>
+<p>The simulator can be compiled as a library and executables linked against it
+in a virtual platform system (e.g. android emulator uses this technique).
+This interface is called <em>transif</em>.</p>
+</div>
+<div class="section" id="running-against-the-kernel-module">
+<span id="isp-tt-running-kernel-module"></span><h3>Running against the kernel-module<a class="headerlink" href="#running-against-the-kernel-module" title="Permalink to this headline">¶</a></h3>
+<p>The only requirement is to insert the kernel module prior to run the test
+(as root):</p>
+<blockquote>
+<div><div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>insmod Felix.ko
+</pre></div>
+</div>
+</div></blockquote>
+<p>Refer to the <a class="reference internal" href="../getting_started.html#isp-gsg-insmod-options"><span>V2500 Insertion options</span></a> for more details on the
+kernel-module options.</p>
+<p>If using sensors with IMG SCB device the i2c-driver should be inserted (or
+enabled in the kernel build):</p>
+<blockquote>
+<div><div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>insmod /lib/modules/<span class="sb">`</span>uname -r<span class="sb">`</span>/kernel/drivers/i2c/i2c-dev.ko
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="register-override">
+<span id="isp-tt-register-override"></span><h2>Register override<a class="headerlink" href="#register-override" title="Permalink to this headline">¶</a></h2>
+<p>If the driver was compiled using the Fake interface <strong>and</strong> the debug
+functions (see the <a class="reference internal" href="../getting_started.html#isp-getting-started-guide"><span>Getting Started Guide</span></a>) the register override
+functionality is available to <a class="reference internal" href="driver_test.html#isp-driver-test"><span>driver_test</span></a> and
+<a class="reference internal" href="ispc_test.html#isp-ispc-test"><span>ISPC_test</span></a>. This allows some specific registers to
+be overridden prior to submitting a configuration. This should only be
+considered by advanced users who know the pipeline well.</p>
+<p>The test application is looking for a file following the format
+<code class="docutils literal"><span class="pre">drv_regovr_ctxX_frmD.txt</span></code> where <code class="docutils literal"><span class="pre">X</span></code> is the context number and <code class="docutils literal"><span class="pre">D</span></code> the frame
+number if <code class="docutils literal"><span class="pre">-CTX_regOverride</span></code> option is set to 1. Only the registers loaded
+from the HW load structure are available to be overridden and the file
+format is:</p>
+<div class="highlight-python"><div class="highlight"><pre>&lt;bank name&gt; &lt;field name&gt; &lt;0x prefixed hex value&gt;\n
+</pre></div>
+</div>
+<p>The file is read line by line and any other format is potentially treated as
+a comment (this is a debugging option and is not aiming to be resilient).
+More information is available in <a class="reference internal" href="../ci/ci_library.html#isp-ci-register-override"><span>Register override</span></a>.</p>
+<div class="section" id="register-override-file-example">
+<span id="isp-tt-register-override-example"></span><h3>Register override file example<a class="headerlink" href="#register-override-file-example" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre>// SHA_PARAMS_0
+REG_FELIX_CONTEXT_0 SHA_THRESH 0x3B // 59
+REG_FELIX_CONTEXT_0 SHA_STRENGTH 0x14 // 20
+REG_FELIX_CONTEXT_0 SHA_DETAIL 0x16 // 22
+REG_FELIX_CONTEXT_0 SHA_DENOISE_BYPASS 0x0 // 0
+
+// SHA_PARAMS_1
+REG_FELIX_CONTEXT_0 SHA_GWEIGHT_0 0xB // 11
+REG_FELIX_CONTEXT_0 SHA_GWEIGHT_1 0xE // 14
+REG_FELIX_CONTEXT_0 SHA_GWEIGHT_2 0x6 // 6
+
+// SHA_ELW_SCALEOFF
+REG_FELIX_CONTEXT_0 SHA_ELW_SCALE 0x5D // 93
+REG_FELIX_CONTEXT_0 SHA_ELW_OFFS 0x06 // 6
+
+// SHA_DN_EDGE_SIMIL_COMP_PTS_0
+REG_FELIX_CONTEXT_0 SHA_DN_EDGE_SIMIL_COMP_PTS_0_TO_3[0] 0xA1 // 161
+REG_FELIX_CONTEXT_0 SHA_DN_EDGE_SIMIL_COMP_PTS_0_TO_3[1] 0x41 // 65
+REG_FELIX_CONTEXT_0 SHA_DN_EDGE_SIMIL_COMP_PTS_0_TO_3[2] 0x3D // 61
+REG_FELIX_CONTEXT_0 SHA_DN_EDGE_SIMIL_COMP_PTS_0_TO_3[3] 0x6E // 110
+
+// SHA_DN_EDGE_SIMIL_COMP_PTS_1
+REG_FELIX_CONTEXT_0 SHA_DN_EDGE_SIMIL_COMP_PTS_4_TO_6[0] 0x89 // 137
+REG_FELIX_CONTEXT_0 SHA_DN_EDGE_SIMIL_COMP_PTS_4_TO_6[1] 0x10 // 16
+REG_FELIX_CONTEXT_0 SHA_DN_EDGE_SIMIL_COMP_PTS_4_TO_6[2] 0x49 // 73
+
+// SHA_DN_EDGE_AVOID_COMP_PTS_0
+REG_FELIX_CONTEXT_0 SHA_DN_EDGE_AVOID_COMP_PTS_0_TO_3[0] 0x95 // 149
+REG_FELIX_CONTEXT_0 SHA_DN_EDGE_AVOID_COMP_PTS_0_TO_3[1] 0xC1 // 193
+REG_FELIX_CONTEXT_0 SHA_DN_EDGE_AVOID_COMP_PTS_0_TO_3[2] 0xD4 // 212
+REG_FELIX_CONTEXT_0 SHA_DN_EDGE_AVOID_COMP_PTS_0_TO_3[3] 0x2F // 47
+
+// SHA_DN_EDGE_AVOID_COMP_PTS_1
+REG_FELIX_CONTEXT_0 SHA_DN_EDGE_AVOID_COMP_PTS_4_TO_6[0] 0x7C // 124
+REG_FELIX_CONTEXT_0 SHA_DN_EDGE_AVOID_COMP_PTS_4_TO_6[1] 0xFB // 251
+REG_FELIX_CONTEXT_0 SHA_DN_EDGE_AVOID_COMP_PTS_4_TO_6[2] 0xF5 // 245
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="common-output">
+<span id="isp-tt-common-output"></span><h2>Common Output<a class="headerlink" href="#common-output" title="Permalink to this headline">¶</a></h2>
+<p>Most of the test applications share the same output rules.</p>
+<div class="section" id="format-strings">
+<span id="isp-tt-format-strings"></span><h3>Format strings<a class="headerlink" href="#format-strings" title="Permalink to this headline">¶</a></h3>
+<p>The YUV and RGB format strings are generated in the code from the pixel
+format:</p>
+<div class="highlight-python"><div class="highlight"><pre>DDKSource/common/felixcommon/source/pixel_format.c FormatString()
+</pre></div>
+</div>
+<p>More information about each format is available in the HW TRM documentation.</p>
+<span class="target" id="isp-tt-yuv-formats"></span><div class="section" id="yuv-formats">
+<h4>YUV formats<a class="headerlink" href="#yuv-formats" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">NV21</span></code>:</dt>
+<dd>For 8b 420 Y/<strong>VU</strong>, chroma is interleaved (<code class="docutils literal"><span class="pre">NV12</span></code> is <strong>UV</strong> order).</dd>
+<dt><code class="docutils literal"><span class="pre">NV61</span></code>:</dt>
+<dd>For 8b 422 Y/<strong>VU</strong>, chroma is interleaved (<code class="docutils literal"><span class="pre">NV16</span></code> is <strong>UV</strong> order).</dd>
+<dt><code class="docutils literal"><span class="pre">NV12-10bit</span></code> and <code class="docutils literal"><span class="pre">NV21-10bit</span></code>:</dt>
+<dd>Are 10b equivalent of <code class="docutils literal"><span class="pre">NV12</span></code> and <code class="docutils literal"><span class="pre">NV21</span></code>. See HW documentation about
+the packing of the data.</dd>
+<dt><code class="docutils literal"><span class="pre">NV16-10bit</span></code> and <code class="docutils literal"><span class="pre">NV61-10bit</span></code>:</dt>
+<dd>Are 10b equivalent of <code class="docutils literal"><span class="pre">NV16</span></code> and <code class="docutils literal"><span class="pre">NV61</span></code>. See HW documentation about
+the packing of the data.</dd>
+</dl>
+</div>
+<div class="section" id="rgb-formats">
+<span id="isp-tt-rgb-formats"></span><h4>RGB formats<a class="headerlink" href="#rgb-formats" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">BI_RGB24</span></code>:</dt>
+<dd><p class="first">For 8,8,8 RGB in 24b (B in LSB).</p>
+<p class="last">Also available as BGR24 with R in LSB.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">BI_RGB32</span></code>:</dt>
+<dd><p class="first">For 8,8,8 RGB in 32b (alpha is not used, B in LSB).</p>
+<p class="last">Also available as BGR32 with R in LSB.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">BI_RGB32-10bit</span></code>:</dt>
+<dd><p class="first">For 10,10,10 RGB in 32b (B in LSB).</p>
+<p class="last">Aslo available as BGR32-10bit with R in LSB.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">BI_BGR32-10bit</span></code>:</dt>
+<dd>For 10,10,10 RGB in 32b (R in LSB) - HDR Extraction in V2500 v2 only.</dd>
+<dt><code class="docutils literal"><span class="pre">BI_BGR64-16bit</span></code>:</dt>
+<dd>For 16,16,16 RGB in 64b (R in LSB) - HDR Insertion in V2500 v2 only.</dd>
+</dl>
+</div>
+<div class="section" id="bayer-formats">
+<span id="isp-tt-bayer-formats"></span><h4>Bayer formats<a class="headerlink" href="#bayer-formats" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">RGGB8</span></code>:</dt>
+<dd>For 8b Bayer data (see HW documentation about the packing of the data).</dd>
+<dt><code class="docutils literal"><span class="pre">RGGB10</span></code>:</dt>
+<dd>For 10b Bayer data (see HW documentation about the packing of the data).</dd>
+<dt><code class="docutils literal"><span class="pre">RGGB12</span></code>:</dt>
+<dd>For 12b Bayer data (see HW documentation about the packing of the data).</dd>
+<dt><code class="docutils literal"><span class="pre">TIFF10</span></code>:</dt>
+<dd>For 10b Bayer data with TIFF byte aligned packing (see HW documentation
+- RAW 2D Extraction in V2500 v2 only).</dd>
+<dt><code class="docutils literal"><span class="pre">TIFF12</span></code>:</dt>
+<dd>For 12b Bayer data with TIFF byte aligned packing (see HW documentation
+- RAW 2D Extraction in V2500 v2 only).</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="statistics-format">
+<span id="isp-tt-statistics-format"></span><h3>Statistics Format<a class="headerlink" href="#statistics-format" title="Permalink to this headline">¶</a></h3>
+<p>The output statistics are mostly raw statistics from the HW (binary - see
+Save Structure details in the HW TRM) with an additional header and footer:</p>
+<div class="highlight-python"><div class="highlight"><pre>#stats-&lt;size&gt;B#
+&lt;binary data from HW&gt;
+#stats-done#
+</pre></div>
+</div>
+<p>The size being rounded up for page allocation in the driver will most likely
+always be 8192B. The header is therefore 13
+Bytes and the footer 12 Bytes.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">When using 16kB pages the save structure is 16384B the header becomes
+therefore 14 Bytes.</p>
+</div>
+<p>Let&#8217;s assume a 4kB CPU page and a 2 frame run. The statistic file may look
+like (depending on the test application used):</p>
+<div class="highlight-python"><div class="highlight"><pre>#stats-8192B#
+&lt;8192 Bytes in HW format&gt;
+#stats-done#
+#stats-8192B#
+&lt;8192 Bytes in HW format&gt;
+#stats-done#
+</pre></div>
+</div>
+<p>Each frame uses:</p>
+<div class="math">
+\[\text{stats size (Bytes)} = \text{header size} + \text{stats size} + \text{footer size}\]</div>
+<p>In our example the header is 13 Bytes (1 per character) and footer
+12 Bytes (12), each frame therefore uses 8217 Bytes
+(<span class="math">\(13 + 8192 + 12 = 8217\)</span>).</p>
+<p>Let&#8217;s imagine we want to access the information in the statistics at offset
+0x6C (decimal offset: 108 Bytes):</p>
+<ul class="simple">
+<li>the information for frame 1 should therefore be at
+<span class="math">\(\text{header size} + \text{offset} = 13 + 108 = 121 = \text{0x79}\)</span></li>
+<li>the information for frame 2 should be at
+<span class="math">\(\text{stats size} + \text{header size} + \text{offset} = 8217 + 13 + 108 = 8338 = \text{0x2092}\)</span></li>
+</ul>
+<p>By extension the offset for frame <code class="docutils literal"><span class="pre">n</span></code> (from 1) is</p>
+<div class="math">
+\[(n - 1)*\text{stats size} + \text{header size} + \text{offset}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The size reported in the header vary when using ISPC or CI based
+applications. CI based application will report the full page size (4096 or
+16384 depending on CPU page size) and save it all to disk. ISPC based
+application will report only the effective statistics size (e.g. 5188
+Bytes).</p>
+</div>
+<div class="section" id="text-statistics-format">
+<span id="isp-tt-text-stats"></span><h4>Text statistics format<a class="headerlink" href="#text-statistics-format" title="Permalink to this headline">¶</a></h4>
+<p>The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_save.html">ISPC::Save</a> class allows the test application such as ISPC_test or
+ISPC_loop to also save the statistics as text. The format follows the syntax:</p>
+<div class="highlight-python"><div class="highlight"><pre>frame:
+  Title:
+    config:
+      # comment
+      MC_field = (value value value)
+    content:
+      MC_field[0][1] = value
+</pre></div>
+</div>
+<p>Some of the field contain description to help the analysis of the statistics
+but it is expected that thre reader knows how to interpret those statistics.</p>
+<p>The text format also contains the DPF output map and the ENS output as plain
+text.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The DPF input map is currently not supported and will always show as null
+even if the number of entries is correct.</p>
+</div>
+</div>
+</div>
+<div class="section" id="defective-pixel-output-map">
+<span id="isp-tt-dpf-output"></span><h3>Defective Pixel output map<a class="headerlink" href="#defective-pixel-output-map" title="Permalink to this headline">¶</a></h3>
+<p>The defective pixel map generated by all test applications is currently the raw
+HW format described in the TRM:</p>
+<div class="figure" id="id1">
+<a class="reference internal image-reference" href="../_images/HW_dpf_out.png"><img alt="../_images/HW_dpf_out.png" src="../_images/HW_dpf_out.png" style="width: 607px; height: 647px;" /></a>
+<p class="caption"><span class="caption-text">Output Defective Pixel Map Format</span></p>
+</div>
+</div>
+<div class="section" id="encoder-statistics-output">
+<span id="isp-tt-ens-output"></span><h3>Encoder statistics output<a class="headerlink" href="#encoder-statistics-output" title="Permalink to this headline">¶</a></h3>
+<p>The Encoder statistics map generated by all test applications is currenlty the
+raw HW format descrined in the TRM:</p>
+<div class="figure" id="id2">
+<a class="reference internal image-reference" href="../_images/HW_ens_out.png"><img alt="../_images/HW_ens_out.png" src="../_images/HW_ens_out.png" style="width: 664px; height: 504px;" /></a>
+<p class="caption"><span class="caption-text">Encoder statistics output Format</span></p>
+</div>
+</div>
+</div>
+<div class="section" id="common-input">
+<span id="isp-tt-common-input"></span><h2>Common Input<a class="headerlink" href="#common-input" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="deshading-grid-file-format-lsh">
+<span id="isp-tt-deshading-grid"></span><h3>Deshading Grid file format (LSH)<a class="headerlink" href="#deshading-grid-file-format-lsh" title="Permalink to this headline">¶</a></h3>
+<p>The deshading grid format used to load a Lens Shading matrix is not the HW
+format. The matrix is saved as floating points values and encoded to the HW
+format to allow compatibility between several versions of the HW.</p>
+<p>The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_module_l_s_h.html">ISPC::ModuleLSH</a> stores the grid in the same way the MC level does.
+More information about how the grid is stored in the low-level driver is
+available in the <a class="reference internal" href="../ci/ci_library.html#isp-ci-deshading-grid"><span>Deshading Grid (Lens shading)</span></a> section.</p>
+<p>Common functions are available to load and save the grid in <a class="reference external" href="../doxygen/lshgrid_8h.html">lshgrid.h</a>.</p>
+<p>The format is binary, each channel is stored after the other in raster order.</p>
+<div class="highlight-python"><div class="highlight"><pre>&lt;char*4 == &quot;LSH\0&quot;&gt;&lt;i32 version&gt;
+&lt;i32 width&gt;&lt;i32 height&gt;&lt;i32 tile-size&gt;
+&lt;float32 channel0&gt;*width*height
+&lt;float32 channel1&gt;*width*height
+&lt;float32 channel2&gt;*width*height
+&lt;float32 channel3&gt;*width*height
+</pre></div>
+</div>
+<p>An example was generated using the tuning tools and is available in the DDK
+package for the AR330 telescopic lens
+(<code class="docutils literal"><span class="pre">sensorConfig/ar330/ar330/ar330_telescope_16.lsh</span></code>).</p>
+</div>
+<div class="section" id="defective-pixels-fixing-read-map-dpf">
+<span id="isp-tt-dpf-read"></span><h3>Defective Pixels Fixing read map (DPF)<a class="headerlink" href="#defective-pixels-fixing-read-map-dpf" title="Permalink to this headline">¶</a></h3>
+<p>Implementation of the loading is done in <a class="reference external" href="../doxygen/dpfmap_8h.html">dpfmap.h</a>. Currently the drivers
+loads a defective map following the pure HW format described in the TRM as
+in <a class="reference internal" href="#isp-dpf-hw-format-fig"><span>Defective Pixel Map Format</span></a>.</p>
+<p>The defect map consists of a list of defective pixels given as pixel
+coordinates that correspond to the full dimensions and resolution of the
+imager, excluding any optical black border as this is not ‘seen’ by the
+Defective Pixel Fixing module. The list of pixels is always specified in
+<strong>raster scan order</strong>.</p>
+<p>However, not all defective pixels in the imager need
+to be present in the map, but only the subset of them which is required
+for processing of the current image.</p>
+<div class="figure" id="id3">
+<span id="isp-dpf-hw-format-fig"></span><a class="reference internal image-reference" href="../_images/HW_dpf_input.png"><img alt="../_images/HW_dpf_input.png" src="../_images/HW_dpf_input.png" style="width: 605px; height: 515px;" /></a>
+<p class="caption"><span class="caption-text">Defective Pixel Map Format</span></p>
+</div>
+<p>The defect map should be a contiguous list of defective pixels,
+specified in the format shown in Figure <a class="reference internal" href="#isp-dpf-hw-format-fig"><span>Defective Pixel Map Format</span></a>.</p>
+<p>More information about the DPF module is available in the <a class="reference internal" href="../ispc/ispc_modules.html#isp-ispc-dpf"><span>Defective Pixels Fixing (DPF)</span></a>
+section.</p>
+</div>
+</div>
+<div class="section" id="command-line-application-user-guide">
+<span id="isp-tt-application-usage"></span><h2>Command line application user guide<a class="headerlink" href="#command-line-application-user-guide" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="driver_test.html">Capture Interface test: <code class="docutils literal"><span class="pre">driver_test</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="driver_test.html#parameters">Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="driver_test.html#behaviour">Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="driver_test.html#expected-output">Expected Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="driver_test.html#example-of-scenarii">Example of <em>scenarii</em></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ispc_test.html">ISP Control test: <code class="docutils literal"><span class="pre">ISPC_test</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ispc_test.html#parameters">Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_test.html#behaviour">Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_test.html#parameter-example">Parameter Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_test.html#expected-output">Expected Output</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ispc_loop.html">ISPC loop application: <code class="docutils literal"><span class="pre">ISPC_loop</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ispc_loop.html#parameters">Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_loop.html#behaviour">Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_loop.html#parameter-example">Parameter Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_loop.html#expected-output">Expected Output</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ispc_capture.html">ISP Control video capture: <code class="docutils literal"><span class="pre">ISPC_capture</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ispc_capture.html#parameters">Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_capture.html#behaviour">Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_capture.html#expected-output">Expected Output</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ispc_hdr.html">ISP Control HDR: <code class="docutils literal"><span class="pre">ISPC_hdr</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ispc_hdr.html#parameters">Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_hdr.html#behaviour">Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_hdr.html#parameter-example">Parameter Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_hdr.html#expected-output">Expected Output</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dpf_conv.html">Defective Pixel output converter: <code class="docutils literal"><span class="pre">dpf_conv</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dpf_conv.html#parameters">Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dpf_conv.html#generating-dpf-write-map">Generating DPF write map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dpf_conv.html#using-the-tool">Using the tool</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="other_tools.html">Sensor Test application <code class="docutils literal"><span class="pre">sensor_test</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="other_tools.html#parameters">Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="other_tools.html#using-the-tool">Using the tool</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="other_tools.html#console-raw-mode-testing">Console Raw Mode testing</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="gui-tools-applications-user-guide">
+<span id="isp-tt-gui-tools"></span><h2>GUI tools applications user guide<a class="headerlink" href="#gui-tools-applications-user-guide" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="vision_live_2.html">VisionLive and ISPC_tcp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="vision_live_2.html#running-steps">Running steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vision_live_2.html#ispc-tcp-options">ISPC_tcp options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vision_live_2.html#imageview">ImageView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vision_live_2.html#moduleview">ModuleView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vision_live_2.html#logview">LogView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vision_live_2.html#capturepreview">CapturePreview</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="vision_tuning.html">VisionTuning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="vision_tuning.html#running-the-tool">Running the tool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vision_tuning.html#running-steps">Running steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vision_tuning.html#saving-results">Saving results</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Test Tools</a><ul>
+<li><a class="reference internal" href="#running-modes">Running modes</a><ul>
+<li><a class="reference internal" href="#running-against-the-simulator">Running against the simulator</a></li>
+<li><a class="reference internal" href="#running-against-the-kernel-module">Running against the kernel-module</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#register-override">Register override</a><ul>
+<li><a class="reference internal" href="#register-override-file-example">Register override file example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#common-output">Common Output</a><ul>
+<li><a class="reference internal" href="#format-strings">Format strings</a><ul>
+<li><a class="reference internal" href="#yuv-formats">YUV formats</a></li>
+<li><a class="reference internal" href="#rgb-formats">RGB formats</a></li>
+<li><a class="reference internal" href="#bayer-formats">Bayer formats</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#statistics-format">Statistics Format</a><ul>
+<li><a class="reference internal" href="#text-statistics-format">Text statistics format</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#defective-pixel-output-map">Defective Pixel output map</a></li>
+<li><a class="reference internal" href="#encoder-statistics-output">Encoder statistics output</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#common-input">Common Input</a><ul>
+<li><a class="reference internal" href="#deshading-grid-file-format-lsh">Deshading Grid file format (LSH)</a></li>
+<li><a class="reference internal" href="#defective-pixels-fixing-read-map-dpf">Defective Pixels Fixing read map (DPF)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#command-line-application-user-guide">Command line application user guide</a></li>
+<li><a class="reference internal" href="#gui-tools-applications-user-guide">GUI tools applications user guide</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../integration/sensor.html"
+                        title="previous chapter">Sensor driver</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="driver_test.html"
+                        title="next chapter">Capture Interface test: <code class="docutils literal"><span class="pre">driver_test</span></code></a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

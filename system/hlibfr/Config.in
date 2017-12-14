@@ -1,0 +1,45 @@
+config BR2_PACKAGE_HLIBFR
+	bool "hlibfr"
+	help 
+	  fr(frame-ring) enable you to access /dev/fring to allocate
+	  and free memory as ring buffer.
+
+choice 
+	bool "cache policy for fr buffer"
+	default BR2_FR_CC_BUFFER
+	depends on BR2_PACKAGE_HLIBFR
+	
+config BR2_FR_CC_BUFFER
+	bool "FR CACHE BUFFER"
+	help
+	    fr mmap to buffer (no cache).
+
+config BR2_FR_CC_WRITETHROUGH
+	bool "FR CACHE WRITETHROUGH"
+	help
+	    fr mmap to cache writethrough.
+
+config BR2_FR_CC_WRITEBACK
+	bool "FR CACHE WRITEBACK"
+	help
+	    fr mmap to cache writeback.
+
+
+endchoice
+	
+choice
+        bool "mmap scheme for fr buffer"
+        default BR2_FR_MMAP_EACH_ONE
+        depends on BR2_PACKAGE_HLIBFR
+
+config BR2_FR_MMAP_EACH_ONE
+        bool "FR MMAP Every ONE"
+        help
+            fr mmap to buffer all time
+
+config BR2_FR_MMAP_ONLY_ONE
+        bool "FR MMAP Only at First"
+        help
+            fr mmap to buffer only at first time
+
+endchoice

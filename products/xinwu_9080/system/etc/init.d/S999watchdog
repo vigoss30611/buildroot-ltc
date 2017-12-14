@@ -1,0 +1,15 @@
+#! /bin/sh
+
+case "$1" in
+	start|"")
+#		sys-watchdog &
+		;;
+	stop)
+		killall sys-watchdog
+		;;
+	*)
+		echo "Usage: sys-watchdog {start|stop}" >&2
+		exit 1
+		;;
+esac
+

@@ -1,0 +1,182 @@
+
+items.start
+#config.vol.regulator pwm.0
+board.hwid    APOLLO3EVB
+board.cpu apollo3
+board.arch    apollo3pv10
+board.case    0
+board.disk	flash
+board.string.product APOLLO3EVB
+board.string.device APOLLO3EVB
+board.string.model APOLLO3EVB
+board.string.label APOLLO3EVB
+soc.cpu.freq -516
+soc.cpu.dvfs 1
+soc.gpu.freq 444
+soc.gpu.dvfs 1
+soc.vpu.dvfs 1
+soc.usb.otg 1
+soc.usb.host 1
+config.ui tablet
+config.phase final
+config.preload preboot
+config.root 1
+config.trace 0
+config.media.pmm 0
+config.media.out rgb565
+config.uboot.logo 0
+config.otg.nluns 2
+config.otg.extraid pads.113
+config.otg.drvbus pads.108
+config.policy.power 1
+config.wdt 0
+
+bt.model bcm6212
+#bt.enable 80
+bt.reset 117
+wifi.model sdio.bcmdhd6212
+wifi.power pads.122
+
+#sd1.delayline R.16.W.64
+#sd2.delayline W.64.R.16
+
+cpu.power pmu.sw1
+cpu.io33.power pmu.sw2
+dram.count 1
+dram.power pmu.swio
+dram.freq  400
+dram.type DDR3
+dram.width 16
+dram.capacity 512
+memory.cl  6
+memory.rtt 0
+memory.driver 0
+#memory.tras 15
+#memory.trfc 64
+part0					uboot.48.boot
+part1					item.16.boot
+#part2					ramdisk.4096.boot
+part3					kernel0.2560.boot
+#part4					kernel.2560.boot
+part5					system.24000.normal
+part7					config.512.fs.fat
+
+ispost.freq 150
+
+#camera.front.interface    camif     #modify for apollo
+#camera.front.model        gc0308_demo
+#camera.front.orientation  270
+#camera.front.align	  low8_align
+#camera.front.ctrl         i2c.3     #modify for apollo
+##camera.front.power.iovdd  pmu.ldo3
+##camera.front.power.dvdd   pmu.ldo4
+#camera.front.power.down   pads.107
+#camera.front.reset	  pads.44
+#
+#camera.rear.interface    camif      #modify for apollo
+#camera.rear.model        gc2035_demo
+#camera.rear.orientation  90
+#camera.rear.align	 low8_align
+#camera.rear.ctrl         i2c.3      #modify for apollo
+##camera.rear.power.iovdd  pmu.ldo3
+##camera.rear.power.dvdd   pmu.ldo4
+#camera.rear.power.down   pads.108
+#camera.rear.reset	 pads.44
+
+# ids item list
+#for rgb
+#lcd.vic 2000
+#lcd.interface 1
+#dss.osd0.rbexg 1
+#dss.osd1.rbexg 1
+#dss.lcdpanel.name GM05004001Q_800_480
+#dss.lcdpanel.master.gpio 121
+#dss.lcdpanel.master.polarity 1
+#dss.lcdpanel.bl.gpio 64
+#dss.lcdpanel.bl.polarity 1
+#dss.lcdpanel.bl.pwm 107
+
+#for srgb
+lcd.vic 2000
+lcd.interface 6 ## 1: lcd 2: tvif 6: srgb
+
+dss.dev.name ili8961
+dss.lcdpanel.name ILI8961_360_240
+dss.lcdpanel.bl.gpio 52
+dss.lcdpanel.bl.polarity 1
+dss.lcdpanel.master.pmu pmu.ldo2
+
+# for bt656
+#lcd.vic 18
+#lcd.interface 2
+#dss.osd0.rbexg 1
+#dss.osd1.rbexg 1
+#dss.lcdpanel.name OTA5180A_PAL
+#dss.lcdpanel.master.gpio 116
+#dss.lcdpanel.master.polarity 1
+#dss.lcdpanel.bl.gpio 52
+#dss.lcdpanel.bl.polarity 1
+
+# ids item end
+
+led0.ctrl pads.161
+led0.polarity 0
+led1.ctrl pads.147
+led1.polarity 1
+bl.ctrl pwm.0
+bl.periodns 99000
+bl.max_brightness 200
+bl.min_brightness 20
+bl.dft_brightness 120
+bl.polarity 1
+codec.model ip2906
+codec.power pmu.ldo5
+codec.data i2s.0
+codec.ctrl i2c.1
+#sound.speaker pads.120
+soc.usb.host 0
+soc.usb.otg 0
+ts.model gt9147
+ts.ctrl i2c.2
+ts.orientation xy
+sensor.grivaty.model mir3da
+sensor.grivaty.ctrl i2c.1
+sensor.grivaty.int pads.141
+sensor.grivaty.orientation yxz
+#keys.menu adc.10.5
+#keys.up adc.10.0
+#keys.down adc.10.23
+#keys.ok adc.10.15
+#keys.lock adc.10.10
+#keys.mode adc.10.20
+keys.down adc.10.5
+keys.up adc.10.0
+keys.ok adc.10.23
+keys.menu adc.10.15
+keys.mode adc.10.10
+keys.lock adc.10.20
+keyboard.model ht82b40xv150
+pmu.model ip6313
+pmu.ctrl i2c.0
+power.full pads.130
+power.dcdetect pads.139
+power.curve.charge      4169.4150.4130.4101.4067.4013.3950.3916.3857.3784.3720.3666
+power.curve.discharge   4000.3902.3785.3725.3681.3615.3554.3496.3441.3373.3323.3300
+initi2c.0 i2c.0.40.99
+virtualvolkey 1
+sensor.mclk.pads 114
+sensor.reset.pads 44
+sensor.iovdd.ldo ldo7
+sensor.iovdd.vol 2800000
+sensor.dvdd.ldo ldo8
+sensor.dvdd.vol 1800000
+sensor.corevdd.ldo ldo4
+sensor.corevdd.vol 1200000
+app.evbboard.ver one
+app.mmc.device /dev/mmcblk0p1
+#enable gui's log info
+#debug.enable
+#enable auto play next video in playback
+video.autoplay.enable
+
+items.end

@@ -1,0 +1,49 @@
+##### End of variables to change
+LIBRARY_LINK = $(CPLUSPLUS_COMPILER) 
+LIBRARY_LINK_OPTS =	-fPIC -shared
+NAME = librtsp
+ALL = $(NAME).so rtsp_server_test
+RTSP_SERVER_TEST_OBJS = rtsp_server_test.$(OBJ)
+LINK_OPTS += -lrtsp -lpthread
+
+all:	$(ALL)
+
+.$(C).$(OBJ):
+	$(C_COMPILER) -c $(C_FLAGS) $<
+.$(CPP).$(OBJ):
+	$(CPLUSPLUS_COMPILER) -c $(CPLUSPLUS_FLAGS) $<
+
+RTSPSERVER_LIB_OBJS = rtsp_server.$(OBJ) DynamicRTSPServer.$(OBJ)
+
+rtsp_server.$(CPP):	rtsp_server.h types.h
+DynamicRTSPServer.$(CPP):	DynamicRTSPServer.hh types.h
+
+rtsp_server_test.$(CPP): rtsp_server.h
+
+USAGE_ENVIRONMENT_DIR = ../UsageEnvironment
+USAGE_ENVIRONMENT_LIB = $(USAGE_ENVIRONMENT_DIR)/libUsageEnvironment.$(libUsageEnvironment_LIB_SUFFIX)
+BASIC_USAGE_ENVIRONMENT_DIR = ../BasicUsageEnvironment
+BASIC_USAGE_ENVIRONMENT_LIB = $(BASIC_USAGE_ENVIRONMENT_DIR)/libBasicUsageEnvironment.$(libBasicUsageEnvironment_LIB_SUFFIX)
+LIVEMEDIA_DIR = ../liveMedia
+LIVEMEDIA_LIB = $(LIVEMEDIA_DIR)/libliveMedia.$(libliveMedia_LIB_SUFFIX)
+GROUPSOCK_DIR = ../groupsock
+GROUPSOCK_LIB = $(GROUPSOCK_DIR)/libgroupsock.$(libgroupsock_LIB_SUFFIX)
+LOCAL_LIBS =	$(LIVEMEDIA_LIB) $(GROUPSOCK_LIB) \
+		$(USAGE_ENVIRONMENT_LIB) $(BASIC_USAGE_ENVIRONMENT_LIB) 
+LIBS =			$(LOCAL_LIBS) $(LIBS_FOR_CONSOLE_APPLICATION)
+
+$(NAME).so: $(RTSPSERVER_LIB_OBJS) $(LOCAL_LIBS)
+	$(LIBRARY_LINK) -o $@ $(LIBRARY_LINK_OPTS) \
+		$(RTSPSERVER_LIB_OBJS) $(LOCAL_LIBS)
+		
+rtsp_server_test: $(RTSP_SERVER_TEST_OBJS) $(NAME).so
+	$(LINK) $@ $(RTSP_SERVER_TEST_OBJS) $(CONSOLE_LINK_OPTS) 
+
+clean:
+	-rm -rf *.$(OBJ) $(ALL) core *.core *~ include/*~
+
+install: 
+	  install -m 644 rtsp_server.h $(DESTDIR)/$(PREFIX)/include/qsdk
+	  install -m 644 $(NAME).so $(DESTDIR)/$(PREFIX)/$(LIBDIR)
+
+##### Any additional, platform-specific rules come here:

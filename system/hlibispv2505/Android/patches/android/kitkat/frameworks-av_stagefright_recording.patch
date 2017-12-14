@@ -1,0 +1,67 @@
+diff --git a/media/libmediaplayerservice/StagefrightRecorder.cpp b/media/libmediaplayerservice/StagefrightRecorder.cpp
+index f9d9020..7503883 100644
+--- a/media/libmediaplayerservice/StagefrightRecorder.cpp
++++ b/media/libmediaplayerservice/StagefrightRecorder.cpp
+@@ -14,7 +14,7 @@
+  * limitations under the License.
+  */
+ 
+-//#define LOG_NDEBUG 0
++#define LOG_NDEBUG 0
+ #define LOG_TAG "StagefrightRecorder"
+ #include <utils/Log.h>
+ 
+@@ -1101,7 +1101,7 @@ status_t StagefrightRecorder::checkVideoEncoderCapabilities(
+             (mVideoEncoder == VIDEO_ENCODER_H263 ? MEDIA_MIMETYPE_VIDEO_H263 :
+              mVideoEncoder == VIDEO_ENCODER_MPEG_4_SP ? MEDIA_MIMETYPE_VIDEO_MPEG4 :
+              mVideoEncoder == VIDEO_ENCODER_H264 ? MEDIA_MIMETYPE_VIDEO_AVC : ""),
+-            false /* decoder */, true /* hwCodec */, &codecs);
++            false /* decoder */, false /* hwCodec */, &codecs);
+     *supportsCameraSourceMetaDataMode = codecs.size() > 0;
+     ALOGV("encoder %s camera source meta-data mode",
+             *supportsCameraSourceMetaDataMode ? "supports" : "DOES NOT SUPPORT");
+diff --git a/media/libstagefright/codecs/avc/enc/SoftAVCEncoder.cpp b/media/libstagefright/codecs/avc/enc/SoftAVCEnco
+index 1ecaee6..4127987 100644
+--- a/media/libstagefright/codecs/avc/enc/SoftAVCEncoder.cpp
++++ b/media/libstagefright/codecs/avc/enc/SoftAVCEncoder.cpp
+@@ -254,9 +254,10 @@ OMX_ERRORTYPE SoftAVCEncoder::initEncParams() {
+ 
+     if (mVideoColorFormat == OMX_COLOR_FormatYUV420SemiPlanar) {
+         // Color conversion is needed.
+-        CHECK(mInputFrameData == NULL);
+-        mInputFrameData =
+-            (uint8_t *) malloc((mVideoWidth * mVideoHeight * 3 ) >> 1);
++        if(mInputFrameData == NULL) {
++            mInputFrameData =
++                (uint8_t *) malloc((mVideoWidth * mVideoHeight * 3 ) >> 1);
++       }
+         CHECK(mInputFrameData != NULL);
+     }
+ 
+@@ -721,7 +722,7 @@ OMX_ERRORTYPE SoftAVCEncoder::internalSetParameter(
+                     mStoreMetaDataInBuffers ? " true" : "false");
+ 
+             if (mStoreMetaDataInBuffers) {
+-                mVideoColorFormat == OMX_COLOR_FormatYUV420SemiPlanar;
++                mVideoColorFormat = OMX_COLOR_FormatYUV420SemiPlanar;
+                 if (mInputFrameData == NULL) {
+                     mInputFrameData =
+                             (uint8_t *) malloc((mVideoWidth * mVideoHeight * 3 ) >> 1);
+diff --git a/services/camera/libcameraservice/api1/client2/Parameters.cpp b/services/camera/libcameraservice/api1/cli
+index 61e3588..7c7593c 100644
+--- a/services/camera/libcameraservice/api1/client2/Parameters.cpp
++++ b/services/camera/libcameraservice/api1/client2/Parameters.cpp
+@@ -775,8 +775,12 @@ status_t Parameters::initialize(const CameraMetadata *info) {
+             0);
+ 
+     params.set(CameraParameters::KEY_VIDEO_FRAME_FORMAT,
++#if(0)
+             CameraParameters::PIXEL_FORMAT_ANDROID_OPAQUE);
+-
++#else
++           // needed by software AVC encoder
++           CameraParameters::PIXEL_FORMAT_YUV420P);
++#endif
+     recordingHint = false;
+     params.set(CameraParameters::KEY_RECORDING_HINT,
+             CameraParameters::FALSE);

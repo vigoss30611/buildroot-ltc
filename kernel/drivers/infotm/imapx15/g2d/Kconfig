@@ -1,0 +1,14 @@
+menuconfig INFOTM_G2D
+  bool "Infotm g2d driver support"
+  help                             
+    Infotm g2d driver support     
+                                   
+if INFOTM_G2D
+                                   
+config IMAPX15_G2D
+ bool "iMAPx15 g2d driver support"
+ help                              
+   iMAPx15 g2d driver support     
+                                   
+endif                              
+

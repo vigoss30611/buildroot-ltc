@@ -1,0 +1,14 @@
+prefix=/usr
+exec_prefix=/usr
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+ADDMNEONLIB=
+
+Name:  hlibispv2505
+Description: hlibispv2505  infotm
+Version: 2.8.4
+Requires: 
+Libs: -L${libdir} -lISPC -lsensorapi -lCI_User -lImgLib_DynamicCommand -lsim_image -lFelixCommon -lImgLib_LinkedList -lISPC2Test -lFelixParamSocket2 -lhlibcamsensor ${ADDMNEONLIB}
+Libs.private: -lm -ldl -lpthread -lrt
+
+Cflags:  -I${includedir}/hlibispv2505 -I${includedir}/hlibispv2505/c99 -I${includedir}/hlibispv2505/Auxiliar -I${includedir}/hlibispv2505/Controls -I${includedir}/hlibispv2505/Modules

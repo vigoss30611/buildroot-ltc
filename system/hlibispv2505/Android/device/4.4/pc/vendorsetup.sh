@@ -1,0 +1,2 @@
+add_lunch_combo mini_pc-userdebug
+add_lunch_combo full_pc-userdebug

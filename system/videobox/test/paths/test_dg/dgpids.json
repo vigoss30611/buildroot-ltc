@@ -1,0 +1,19 @@
+{
+	"dg": {
+		"ipu": "dg-pixel",
+		"args": {
+			"path": "/root/.videobox/path.json"
+		},
+		"port": {
+			"out": {
+				"w": 1920,
+				"h": 1088,
+				"pixel": "nv12",
+				"bind": { "display": "osd0" }
+			}
+		}
+	},
+
+	"display": { "ipu": "ids"}
+}
+

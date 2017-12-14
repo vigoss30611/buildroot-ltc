@@ -1,0 +1,26 @@
+#!/bin/sh
+#
+# Start the network....
+#
+
+usbether=/sys/devices/platform/imap-ehci/usb2/2-1/2-1:1.0/net/
+detected=0
+while true; do
+	if ls $usbether 2>/dev/null 1>&2; then
+		if [ $detected -eq 0 ]; then
+			deviceid=`ls $usbether`
+			ifup $deviceid
+			detected=1
+		else
+			test -L /bin/usleep && usleep 200000
+		fi
+	else
+		if [ $detected -eq 0 ]; then
+			test -L /bin/usleep && usleep 200000
+		else
+			ifdown $deviceid
+			detected=0
+		fi
+	fi
+done &
+

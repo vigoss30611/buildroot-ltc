@@ -1,0 +1,24 @@
+#! /bin/sh
+
+case "$1" in
+        start|"")
+        if [ ! -d /config ];then
+                 mkdir -p /config
+        fi
+	ln -s /config /mnt/
+	mount -a
+        if [ ! -d /config/wifi ];then
+                 mkdir -p /config/wifi
+                 cp /wifi/*.conf /config/wifi
+        fi
+        if [ ! -d /config/bt ];then
+                mkdir -p /config/bt
+        fi
+                ;;
+        stop)
+                ;;
+        *)
+                echo "Usage: initdir {start|stop}" >&2
+                exit 1
+                ;;
+esac

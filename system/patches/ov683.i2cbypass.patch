@@ -1,0 +1,15 @@
+diff --git a/hlibispv2505/DDKSource/sensorapi/sensors/ov683Dual.c b/hlibispv2505/DDKSource/sensorapi/sensors/ov683Dual.c
+index fc20e77..a29f1f1 100644
+--- a/hlibispv2505/DDKSource/sensorapi/sensors/ov683Dual.c
++++ b/hlibispv2505/DDKSource/sensorapi/sensors/ov683Dual.c
+@@ -2507,6 +2507,10 @@ static IMG_RESULT OV683Dual_Enable(SENSOR_HANDLE hHandle)
+ 	aui8Regs[1] = 0x01;
+ 	aui8Regs[2] = 0x90;
+ 	ov683Dual_i2c1_write8(psCam->i2c, aui8Regs, 3, 0x42);
++	aui8Regs[0] = 0x02;
++	aui8Regs[1] = 0x0b;
++	aui8Regs[2] = 0x09;
++	ov683Dual_i2c1_write8(psCam->i2c, aui8Regs, 3, 0x42);
+ 
+     return IMG_SUCCESS;
+ }

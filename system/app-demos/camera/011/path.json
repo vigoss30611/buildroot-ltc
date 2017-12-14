@@ -1,0 +1,50 @@
+{
+
+       	"dgframe0": {
+		"ipu":"dg-frame",
+		"args":{
+			"frames": 3,
+                        "mode":"picture",
+			"data":"./fisheye_1080x1080.yuv"
+		},
+		"port": {
+			"out":{
+				"w":1080,
+				"h":1080,
+                                "minfps": 30,
+                                "maxfps": 30,
+				"pixel_format":"nv12",
+				"bind":{ "ispost":"in"}
+			}
+		}
+	},
+
+	"ispost": {
+		"ipu": "ispostv2",
+		"args": {
+			"lc_grid_file_name1": "./lc_v1_0-0-0-0_hermite32_1080x1080-1920x1088_fisheye_360.bin",
+			"dn_enable": 1
+		},
+		"port": {
+			"dn": {
+				"w": 1920,
+				"h": 1088,
+				"pixel_format": "nv12"
+			},
+                        "uo": {
+                                "w": 1920, 
+                                "h": 1088,
+                                "pixel_format": "nv12"
+                        },
+
+			"ss0": {
+				"w": 640,
+				"h": 480,
+				"pixel_format": "nv12",
+                                "bind": { "display": "osd0" }
+			}
+		}
+	},
+
+        "display": { "ipu": "ids"}
+}

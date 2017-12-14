@@ -1,0 +1,11 @@
+obj-$(CONFIG_INFOTM_DRV_APOLLO3)   += clk/
+obj-$(CONFIG_INFOTM_DRV_APOLLO3)   += dpmu/
+obj-$(CONFIG_INFOTM_DRV_APOLLO3)   += gpio/
+obj-$(CONFIG_INFOTM_DRV_APOLLO3)   += input/
+obj-$(CONFIG_INFOTM_DRV_APOLLO3) 	+= display/
+obj-$(CONFIG_INFOTM_DRV_APOLLO3)	+= emif/
+obj-$(CONFIG_INFOTM_DRV_APOLLO3)	+= mfd/
+obj-$(CONFIG_INFOTM_DRV_APOLLO3)	+= regulator/
+obj-$(CONFIG_INFOTM_DRV_APOLLO3)	+= ispost/
+obj-y				+= efuse/
+obj-y				+= power_domain/

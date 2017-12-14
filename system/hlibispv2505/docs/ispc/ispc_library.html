@@ -1,0 +1,2086 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ISP Control Library &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="next" title="Implemented Setup Modules" href="ispc_modules.html" />
+    <link rel="prev" title="Capture Interface" href="../ci/ci_library.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="ispc_modules.html" title="Implemented Setup Modules"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="../ci/ci_library.html" title="Capture Interface"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li><li>ISP Control Library</li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="isp-control-library">
+<span id="isp-isp-control-library"></span><h1>ISP Control Library<a class="headerlink" href="#isp-control-library" title="Permalink to this headline">¶</a></h1>
+<p>The ISP Control library (or ISPC/ISPC2) is a high level API for controlling the
+V2500 pipeline, sensor and includes an implementation of the basic loop control
+algorithms. This document summarizes the functionalities and architecture of
+the ISP Control library.</p>
+<p>ISPC2 is a C++ implementation designed to be extensible and customizable in
+terms of pipeline setup modules and control algorithms. It represents an
+alternative to the historic ISPC1 library implemented in C.</p>
+<p>The ISPC library makes use of the MC and CI driver layers which serve as an
+interface to program the pipeline and program/retrieve shots. The complexity of
+MC and CI is encapsulated within the library calls and it is not required to
+directly invoke their functions (unless very specific functionalities are
+required).</p>
+<p><a class="reference internal" href="#isp-ispcl-ispc-v2-overview-fig"><span>ISPC overview</span></a> depicts the application architecture with
+the usage of the ISPC library. In this case the sensor API and control loops
+are integrated within the library. The ISPC objects are aimed to provide all
+required methods to interact with the pipeline, sensor and control loops in a
+unified way, therefore simplifying the implementation of applications making
+use of the system.</p>
+<div class="figure" id="id2">
+<span id="isp-ispcl-ispc-v2-overview-fig"></span><a class="reference internal image-reference" href="../_images/ispc_overview.png"><img alt="../_images/ispc_overview.png" src="../_images/ispc_overview.png" style="width: 270px; height: 332px;" /></a>
+<p class="caption"><span class="caption-text">ISPC overview</span></p>
+</div>
+<p>In the rest of this document the architecture and implementation of the ISPC
+library will be described as well as the implemented functionalities and
+potential extensibility.</p>
+<p>As a complementary material the description of the implemented algorithms
+and HW modules as well as notes on their implementation and configuration
+can be found in the <a class="reference internal" href="#isp-ispc-control-modules"><span>Implemented Control Modules</span></a> section.</p>
+<div class="section" id="ispc-architecture">
+<span id="isp-ispcl-ispc-architecture"></span><h2>ISPC Architecture<a class="headerlink" href="#ispc-architecture" title="Permalink to this headline">¶</a></h2>
+<p>The main class in the ISPC architecture is the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> class. The
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> class is integrated by several other classes implementing
+different functionalities for controlling the capture of images. The main
+classes within the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> class are the following:</p>
+<ul class="simple">
+<li><a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html">Pipeline</a>: Encapsulates the functionality for interacting with the CI
+pipeline in terms of module configuration, buffer allocations, shot capture,
+etc. Also contains the list of SetupModule list that contain the high-level
+setups to configure the CI pipeline.</li>
+<li><a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a>: Encapsulates the Sensor API allowing initializing, starting
+and configuring the physical sensor present in the system.</li>
+<li><a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control.html">Control</a>: The control class is a register that allows to dynamically
+add loop control algorithms to be run periodically during the capture process
+and that allow to update the pipeline and sensor configuration while
+capturing according to the scene characteristics (most typically will include
+auto exposure, auto focus and auto white balance algorithms).</li>
+</ul>
+<div class="figure align-center">
+<p class="plantuml">
+<img src="../_images/plantuml-34b0cc2aa602f2a1180cf18ec8ef6684ef01029f.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+
+hide empty members
+
+class ISPC::ControlModule &lt;&lt; abstract &gt;&gt;
+'class ISPC::ControlModuleBase &lt;&lt; template, abstract &gt;&gt;
+class ISPC::SetupModule &lt;&lt; abstract &gt;&gt;
+'class ISPC::SetupModuleBase &lt;&lt; template, abstract &gt;&gt;
+'class ISPC::ModuleBase &lt;&lt; abstract &gt;&gt;
+
+'ISPC::ControlModule --|&gt; ISPC::ModuleBase
+ISPC::ControlModule &quot;*&quot; o--&gt; &quot;*&quot; ISPC::Pipeline : list of affected
+ISPC::ControlModule &quot;*&quot; --&gt; &quot;1&quot; ISPC::Pipeline : owner
+
+'ISPC::ControlModuleBase --|&gt; ISPC::ControlModule
+
+'ISPC::ControlAE --|&gt; ISPC::ControlModuleBase
+
+'ISPC::SetupModule --|&gt; ISPC::ModuleBase
+ISPC::SetupModule &quot;1&quot; --&gt; &quot;1&quot; ISPC::Pipeline : owner
+
+'ISPC::SetupModuleBase --|&gt; ISPC::SetupModule
+
+'ISPC::ModuleBLC --|&gt; ISPC::SetupModuleBase
+
+ISPC::Camera *--&gt; &quot;1&quot; ISPC::Control
+ISPC::Camera o--&gt; &quot;1&quot; ISPC::Sensor
+ISPC::Camera *-right-&gt; &quot;1&quot; ISPC::Connection
+ISPC::Camera *--&gt; &quot;1&quot; ISPC::Pipeline
+
+ISPC::Control &quot;1&quot; o--&gt; &quot;*&quot; ISPC::ControlModule : list of modules
+
+ISPC::Sensor *--&gt; SensorAPI::SENSOR_HANDLE
+
+ISPC::Connection *--&gt; CI::CI_CONNECTION
+
+ISPC::Pipeline -left-&gt; CI::CI_PIPELINE
+ISPC::Pipeline &quot;1&quot; o--&gt; &quot;*&quot; ISPC::SetupModule : list of modules
+ISPC::Pipeline &quot;*&quot; --&gt; &quot;1&quot; ISPC::Sensor
+
+legend center
+    ISPC::Camera relations
+endlegend
+
+&#64;enduml" />
+</p>
+</div>
+<p>The ISPC::Camera relations figure shows a class diagram
+of the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> organization. The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> instance is composed by
+an instance of the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html">Pipeline</a>, one instance of the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a> and
+one instance of the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control.html">Control</a> classes with the functionalities
+described above.</p>
+<p>The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html">Pipeline</a> instance can have registered an arbitrary number of
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_setup_module.html">SetupModule</a> instances which serve for the configuration of the
+different modules of the pipeline.</p>
+<p>On the other hand, the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control.html">Control</a> object can have registered an
+arbitrary number of <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> instances which typically would
+implement the control loop algorithms or any other algorithms requiring a
+periodic execution.</p>
+<p>Finally the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a> object is typically owned by the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a>
+object but can be shared between several <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> objects. In case of
+sharing the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> object uses the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a> as a passive object
+(only to retrieve information) and will not destroy it when destroyed.</p>
+<p>The Figure <a class="reference internal" href="#isp-ispcl-ispc-classes-communication-fig"><span>ISPC classes communication</span></a> shows the
+internal interaction between the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html">Pipeline</a>, <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a> and
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control.html">Control</a> classes which integrate the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> class. The
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html">Pipeline</a> instance is in charge of the pipeline and each
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_setup_module.html">SetupModule</a> object stored in it provides a number of configuration
+parameters and a setup function in charge of translating those high level
+parameters into lower level parameters that are passed to the MC and CI
+layers to be programmed in the pipeline hardware (see more details
+<a class="reference internal" href="#isp-ispcl-pipeline-and-setupmodule-classes"><span>Pipeline and SetupModule Classes</span></a>).</p>
+<div class="figure" id="id3">
+<span id="isp-ispcl-ispc-classes-communication-fig"></span><a class="reference internal image-reference" href="../_images/ispc_classes_communication.png"><img alt="../_images/ispc_classes_communication.png" src="../_images/ispc_classes_communication.png" style="width: 582px; height: 272px;" /></a>
+<p class="caption"><span class="caption-text">ISPC classes communication</span></p>
+</div>
+<p>The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a> instance serves for encapsulating the &#8220;Sensor API&#8221; and
+provides functionality for setting and querying about the sensor capture
+parameters (most importantly the exposure time and gain) and can be easily
+extended to provide additional functionality for setting up advanced
+functionalities include in the Sensor API.</p>
+<p>The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control.html">Control</a> instance is a registry where a number of
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> instances can be registered. A <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> is
+intended to correspond with a module which must operate in a continuous or
+periodical basis to control different aspects of the pipeline configuration in
+an automatic way. For example the automatic exposure, auto-focus, auto white
+balance and other loop control algorithms are implemented in the ISPC library
+as <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> instances (actually inheriting from the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> class and adding specialized functionality). The
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control.html">Control</a> class is in charge of requesting updates from the registered
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> instances when required.</p>
+<p>The Figure <a class="reference internal" href="#isp-ispcl-ispc-classes-communication-fig"><span>ISPC classes communication</span></a> also shows some
+examples of communications between the different modules. Both the Module
+instances in the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html">Pipeline</a> class and the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a>
+instances in the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control.html">Control</a> instance can have access to the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a> instance through their <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html">Pipeline</a> &#8220;owner&#8221;. Such access is
+available for several reasons. For example, in order to set up different
+elements of the HW pipeline, it may be required to get information about the
+sensor size, modes, etc. On the other hand it is also possible that a
+requirement is to set up different capture settings from one of the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> instances, for example the one implementing the auto
+exposure algorithm.</p>
+<p>Modules in the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control.html">Control</a> registry also have access to the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html">Pipeline</a>
+modules as it is required many times to change configuration parameters of the
+pipeline from one of the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> instances and that is normally
+carried out through the corresponding <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_setup_module.html">SetupModule</a> in the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html">Pipeline</a>
+class.</p>
+</div>
+<div class="section" id="camera-class">
+<span id="isp-ispcl-camera-class"></span><h2>Camera Class<a class="headerlink" href="#camera-class" title="Permalink to this headline">¶</a></h2>
+<p>This section gives more details about the Camera class and its usage.</p>
+<div class="section" id="initialisation">
+<span id="isp-ispcl-cc-initialisation"></span><h3>Initialisation<a class="headerlink" href="#initialisation" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> class is the principal interface for controlling the
+pipeline and sensor in an application making use of the ISPC library. Some
+details of the composition of the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> class have been provided in
+the previous section (see Figure in <a class="reference internal" href="#isp-ispcl-ispc-architecture"><span>ISPC Architecture</span></a>)
+and this section will be focused on its usage.</p>
+<p>The Figure <a class="reference internal" href="#isp-ispcl-camera-instance-states-fig"><span>Camera Instance states</span></a> shows the set of
+different internal states a <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> instance goes through in its
+lifetime. Creating an instance of the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> class is straightforward
+just providing a context number to use and the sensor identifier (which
+passes through the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a> class to the Sensor API).</p>
+<p>The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> constructor takes care to the connection to the CI driver but
+does not register modules. The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera_factory.html">CameraFactory</a> class can be used to
+populate a <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> object with the relevant modules according to the
+discovered HW (<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera_factory.html#a47084531583aefdecfa5842084f5beed">CameraFactory::populateCameraFromHWVersion()</a>). The
+modules can also be added manually as needed.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The factory provides a list of Control modules but does not add them to
+the Camera.</p>
+</div>
+<div class="figure" id="id4">
+<span id="isp-ispcl-camera-instance-states-fig"></span><a class="reference internal image-reference" href="../_images/camera_instance_states.png"><img alt="../_images/camera_instance_states.png" src="../_images/camera_instance_states.png" style="width: 546.8px; height: 322.8px;" /></a>
+<p class="caption"><span class="caption-text">Camera Instance states</span></p>
+</div>
+<p>As depicted in Figure <a class="reference internal" href="#isp-ispcl-camera-instance-states-fig"><span>Camera Instance states</span></a>, once the
+setup modules have been registered the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> instance will be in
+<code class="docutils literal"><span class="pre">CAM_REGISTERED</span></code> state which means we have a set of setup functions to be
+used as an interface with the HW pipeline and will permit its configuration.
+From such state we are ready to setup up the pipeline modules by calling
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html#a484d66a4346a2447bafa06af4cd4b0fb">setupModules()</a>, which calls all the setup functions of every
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_setup_module.html">SetupModule</a> instance registered in the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html">Pipeline</a>, or
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_temperature_correction.html#a79b4ae68a641d80e8d62fd07805e4ada">loadParameters()</a> which allows each registered Module instance to load
+the parameters from a <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_parameter_list.html">ParameterList</a> object (see
+<a class="reference internal" href="#isp-ispcl-several-camera-sharing-a-sensor"><span>Several Camera sharing a Sensor</span></a>) followed by a call to its
+setup function.  The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> will be in <code class="docutils literal"><span class="pre">CAM_SET_UP</span></code> state at that
+point.</p>
+<p>The next step (see Figure <a class="reference internal" href="#isp-ispcl-camera-instance-states-fig"><span>Camera Instance states</span></a>) would be the
+step in which the HW pipeline is actually programmed with the configuration
+obtained after calling to each Module setup function. Once the HW is programmed
+it is possible (and required prior to capture images) to request the allocation
+of buffers. The HW must be configured beforehand to allow a proper size
+calculation for the allocated buffers.</p>
+<p>The allocation can be done using the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html#a96a00a80e683ca7fd2ccf2f35b762540">allocateBufferPool()</a> method
+which allocates the amount of required buffers and shots. The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a>
+state will change to <code class="docutils literal"><span class="pre">CAM_READY</span></code> which indicates that the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> is
+ready to start a capture (see
+<a class="reference internal" href="#isp-ispcl-cc-buffer-alloc-vs-buffer-import"><span>Buffer allocation vs buffer importation</span></a> for more details about
+allocation or even importation of image data).</p>
+<p>The last step, as shown in the Figure
+<a class="reference internal" href="#isp-ispcl-camera-instance-states-fig"><span>Camera Instance states</span></a> would be the call to
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html#ac510625ec5e10b6e062b3651f617ea0c">startCapture()</a> which will reserve the HW for its usage by the
+application. The hardware can be released with a call to
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html#a6814439b4b217fbc635a01bee1cb2e84">stopCapture()</a>. The following pseudo-code shows an example of the
+camera initialization process (adapted from the <code class="docutils literal"><span class="pre">ISPC_capture</span></code>
+application) which enables 1 control algorithm (auto exposure):</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">ISPC</span><span class="o">::</span><span class="n">Camera</span> <span class="n">camera</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">pszSensor</span><span class="p">,</span> <span class="n">uiSensorMode</span><span class="p">);</span>
+<span class="n">ISPC</span><span class="o">::</span><span class="n">ParameterList</span> <span class="n">parameters</span><span class="p">;</span>
+<span class="n">ISPC</span><span class="o">::</span><span class="n">ControlAE</span> <span class="o">*</span><span class="n">pAE</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ISPC</span><span class="o">::</span><span class="n">ControlAE</span><span class="p">();</span>
+<span class="n">IMG_RESULT</span> <span class="n">ret</span><span class="p">;</span>
+
+<span class="n">ret</span> <span class="o">=</span> <span class="n">ISPC</span><span class="o">::</span><span class="n">CameraFactory</span><span class="o">::</span><span class="n">populateCameraFromHWVersion</span><span class="p">(</span><span class="n">camera</span><span class="p">,</span>
+    <span class="n">camera</span><span class="p">.</span><span class="n">getSensor</span><span class="p">());</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">IMG_SUCCESS</span> <span class="o">!=</span> <span class="n">ret</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;Error: failed to populate camera modules</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+   <span class="k">goto</span> <span class="n">exit_point</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">ret</span> <span class="o">=</span> <span class="n">camera</span><span class="p">.</span><span class="n">registerControlModule</span><span class="p">(</span><span class="n">pAE</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">IMG_SUCCESS</span> <span class="o">!=</span> <span class="n">ret</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;Error: failed to register AE to camera</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+   <span class="k">goto</span> <span class="n">exit_point</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// loads defaults if the file is empty</span>
+<span class="n">ret</span> <span class="o">=</span> <span class="n">camera</span><span class="p">.</span><span class="n">loadParameters</span><span class="p">(</span><span class="n">parameters</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">IMG_SUCCESS</span> <span class="o">!=</span> <span class="n">ret</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;Error: failed to load camera configuration</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+   <span class="k">goto</span> <span class="n">exit_point</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">ret</span> <span class="o">=</span> <span class="n">camera</span><span class="p">.</span><span class="n">setupModules</span><span class="p">();</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">IMG_SUCCESS</span> <span class="o">!=</span> <span class="n">ret</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;Error: failed to setup camera</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+   <span class="k">goto</span> <span class="n">exit_point</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">ret</span> <span class="o">=</span> <span class="n">camera</span><span class="p">.</span><span class="n">program</span><span class="p">();</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">IMG_SUCCESS</span> <span class="o">!=</span> <span class="n">ret</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;Error: failed to program camera</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+   <span class="k">goto</span> <span class="n">exit_point</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">ret</span> <span class="o">=</span> <span class="n">camera</span><span class="p">.</span><span class="n">allocateBufferPool</span><span class="p">(</span><span class="n">uiNBuffers</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">IMG_SUCCESS</span> <span class="o">!=</span> <span class="n">ret</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;Error: failed to allocate %d buffers!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">uiNBuffers</span><span class="p">);</span>
+   <span class="k">goto</span> <span class="n">exit_point</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// preparation of the output files should be done here</span>
+
+<span class="n">ret</span> <span class="o">=</span> <span class="n">camera</span><span class="p">.</span><span class="n">startCapture</span><span class="p">();</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">IMG_SUCCESS</span> <span class="o">!=</span> <span class="n">ret</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;Error: failed to start the capture!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+   <span class="k">goto</span> <span class="n">exit_point</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="capture">
+<span id="isp-ispcl-cc-capture"></span><h3>Capture<a class="headerlink" href="#capture" title="Permalink to this headline">¶</a></h3>
+<p>Shots can be captured if the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> instance is in <code class="docutils literal"><span class="pre">CAM_CAPTURING</span></code>
+state. First a shot must be en-queued in the pipeline by calling
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html#ad57f8173e27ec148edf52b8c78fa45d2">enqueueShot()</a>. The captured shot is returned as a <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_shot.html">Shot</a> which is
+populated when <code class="docutils literal"><span class="pre">getShot()</span></code> method is called. The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_shot.html">Shot</a> structure
+contains the captured image(s) and metadata.</p>
+<p>Once we are done with the captured shot we must return it to the pool by
+releasing it, so it can be reused for further captures. This is done with the
+call to the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html#a461547959c53da3029badb4e41acc283">releaseShot()</a> method.  This is an example of capture and
+release sequence (adapted from <code class="docutils literal"><span class="pre">ISPC_capture</span></code> application):</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">ISPC</span><span class="o">::</span><span class="n">Shot</span> <span class="n">frame</span><span class="p">;</span>
+<span class="n">IMG_RESULT</span> <span class="n">ret</span><span class="p">;</span>
+
+<span class="c1">// add one element to the capture queue</span>
+<span class="c1">// will be filled when HW receives a frame from the Sensor</span>
+<span class="n">ret</span> <span class="o">=</span> <span class="n">camera</span><span class="p">.</span><span class="n">enqueueShot</span><span class="p">();</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">IMG_SUCCESS</span> <span class="o">!=</span> <span class="n">ret</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;Error: failed to enque shot</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+   <span class="k">goto</span> <span class="n">exit_point</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// may be blocking until the frame is received</span>
+<span class="n">ret</span> <span class="o">=</span> <span class="n">camera</span><span class="p">.</span><span class="n">acquireShot</span><span class="p">(</span><span class="n">frame</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">IMG_SUCCESS</span> <span class="o">!=</span> <span class="n">ret</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;Error: failed to get shot</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+   <span class="k">goto</span> <span class="n">exit_point</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// use the frame data as needed (e.g. save to disk)</span>
+<span class="c1">// no need to call Control with the metadata information (it is done when</span>
+<span class="c1">// acquiring a Shot)</span>
+
+<span class="n">ret</span> <span class="o">=</span> <span class="n">camera</span><span class="p">.</span><span class="n">releaseShot</span><span class="p">(</span><span class="n">frame</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">IMG_SUCCESS</span> <span class="o">!=</span> <span class="n">ret</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;Error: failed to release shot</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+   <span class="k">goto</span> <span class="n">exit_point</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Where we can carry out any desired operations with the captured shot after the
+<code class="docutils literal"><span class="pre">getShot()</span></code> call and before the shot is released with the call to
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html#a461547959c53da3029badb4e41acc283">releaseShot()</a>.</p>
+</div>
+<div class="section" id="stopping-the-capture">
+<span id="isp-ispcl-cc-stopping-the-capture"></span><h3>Stopping the capture<a class="headerlink" href="#stopping-the-capture" title="Permalink to this headline">¶</a></h3>
+<p>Once we are done with the capture process the HW must be released with the call
+to <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html#a6814439b4b217fbc635a01bee1cb2e84">stopCapture()</a>. All pending captures will be cancelled and already
+non-acquired already captured shots will be lost but the acquired ones are
+still valid until released:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">ret</span> <span class="o">=</span> <span class="n">camera</span><span class="p">.</span><span class="n">stopCapture</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>The allocated shots and buffers will be destroyed when the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a>
+object is destroyed but it is possible to remove image buffers one by one.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last"><strong>Important</strong>: It must be noted that the registered <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_setup_module.html">SetupModule</a> and
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> instances (more details in the following sections) are
+assumed to be freed by the Camera class once they are registered. Therefore
+they shouldn’t be freed outside the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> class and they should be
+dynamically allocated to avoid errors when deleting the allocated
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_setup_module.html">SetupModule</a> and <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> instances.</p>
+</div>
+</div>
+<div class="section" id="buffer-allocation-vs-buffer-importation">
+<span id="isp-ispcl-cc-buffer-alloc-vs-buffer-import"></span><h3>Buffer allocation vs buffer importation<a class="headerlink" href="#buffer-allocation-vs-buffer-importation" title="Permalink to this headline">¶</a></h3>
+<p>The above example on how to use the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> object is allocating the
+memory. But it is possible that on some systems (e.g. Android) the image
+buffers should be pre-allocated by another component and this memory should be
+&#8220;shared&#8221; with the ISPC library. To use such buffer an &#8220;importation&#8221; mechanism
+is available in the ISPC library using the mechanisms provided by the low level
+libraries (CI).</p>
+<div class="section" id="buffers-vs-shots">
+<h4>Buffers VS Shots<a class="headerlink" href="#buffers-vs-shots" title="Permalink to this headline">¶</a></h4>
+<p>The section <a class="reference internal" href="../ci/ci_library.html#isp-ci-shot-and-buffer-lifecycle"><span>Shot and Buffer lifecycle</span></a> details the difference a
+<a class="reference external" href="../doxygen/struct_c_i___s_h_o_t.html">CI_SHOT</a> and <code class="docutils literal"><span class="pre">CI_BUFFER</span></code> (not an actual structure in user-space).
+The same differentiation applies in ISPC:</p>
+<ul>
+<li><p class="first">An <a class="reference external" href="../doxygen/struct_i_s_p_c_1_1_buffer.html">ISPC::Buffer</a> is considered as an image buffer; it can be either
+allocated by the V2500 driver or imported from an external driver. Every
+<a class="reference external" href="../doxygen/struct_i_s_p_c_1_1_buffer.html">Buffer</a> is identified by a unique number. Buffers can be added and
+removed at will as long as the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> is not in the <code class="docutils literal"><span class="pre">CAM_CAPTURING</span></code>
+state.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">When importing a buffer it is assumed that the SYS_Mem implementation
+of the ISP kernel module can recognise the given buffer identifier.</p>
+</div>
+</li>
+<li><p class="first">A <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_shot.html">ISPC::Shot</a> is the glue between several <a class="reference external" href="../doxygen/struct_i_s_p_c_1_1_buffer.html">Buffer</a>.  It also
+contains the additional internal information that cannot be imported (i.e.
+the meta-data).</p>
+</li>
+</ul>
+<p>Both <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_shot.html">Shot</a> and <a class="reference external" href="../doxygen/struct_i_s_p_c_1_1_buffer.html">Buffer</a> should be pre-allocated as they are used in
+the capture queues but can be allocated after the capture is started at the
+cost of performance.</p>
+</div>
+<div class="section" id="different-output-sizes">
+<span id="isp-ispc-output-size"></span><h4>Different output sizes<a class="headerlink" href="#different-output-sizes" title="Permalink to this headline">¶</a></h4>
+<p>The default allocation size for all outputs is the sensor&#8217;s resolution. However
+because the Encoder and Display output can be scaled down it is possible to
+modify the maximum size that either will be configured for using
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html#a7920144f63d82693ee3adc80a3cbcce6">Camera::setEncoderDimensions()</a> and
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html#aff6e126726d15d15739429ada66e011f">Camera::setDisplayDimensions()</a>.</p>
+<p>The allocation process is described in the <a class="reference internal" href="../ci/ci_library.html#isp-ci-output-size"><span>Different Output Size</span></a> section.
+In ISPC the procedure is the same using <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html#abaede7a925981b0439f7c2e9b6c75f3f">Camera::allocateBuffer()</a> to
+specify the buffer type and size.</p>
+</div>
+<div class="section" id="allocating-a-pool-or-importing-image-buffers">
+<h4>Allocating a pool or importing image buffers<a class="headerlink" href="#allocating-a-pool-or-importing-image-buffers" title="Permalink to this headline">¶</a></h4>
+<p>The example in <a class="reference internal" href="#isp-ispcl-cc-initialisation"><span>Initialisation</span></a> uses the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html#a96a00a80e683ca7fd2ccf2f35b762540">Camera::allocateBufferPool(n)</a> method which allocates <code class="docutils literal"><span class="pre">n</span></code> Shots and
+Buffers with default size.</p>
+<p>It is possible to allocate only Shots using <code class="docutils literal"><span class="pre">Camera::addShots(n)</span></code>.
+However Buffers have to be allocated one by one for each output using the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html#abaede7a925981b0439f7c2e9b6c75f3f">Camera::allocateBuffer()</a> method.</p>
+<p>The alternative to the Buffer allocation is importing it. When importing a
+<a class="reference external" href="../doxygen/struct_i_s_p_c_1_1_buffer.html">Buffer</a> it is assumed that the memory has already been allocated using
+a common allocator (in the Android case gralloc and ION) supported by the CI
+kernel-side driver (<a class="reference external" href="../doxygen/group___c_i___k_e_r_n_e_l___t_o_o_l_s.html#gac255d1b52429cb011f1c93c0d73f107e">Platform_MemImport()</a> function). This common
+allocator will produce an identifier that can be given the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html#a1c46fefd87e9e0447edaad8fce0d3ebe">Camera::importBuffer()</a> to retrieve that memory.</p>
+</div>
+<div class="section" id="populating-a-specific-buffer-when-enqueuing-shots">
+<span id="isp-ispc-output-layout"></span><h4>Populating a specific Buffer when enqueuing shots<a class="headerlink" href="#populating-a-specific-buffer-when-enqueuing-shots" title="Permalink to this headline">¶</a></h4>
+<p>When creating a <a class="reference external" href="../doxygen/struct_i_s_p_c_1_1_buffer.html">Buffer</a> a unique buffer identifier is provided as a
+return value. This identifier can be used to trigger frame captures that will
+populate specific Buffers using <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html#ae0ae9f60628f110a19ed0e21cbf9977a">Camera::enqueueSpecifiedShot()</a>.</p>
+<p>Using the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html#ad57f8173e27ec148edf52b8c78fa45d2">Camera::enqueueShot()</a> function will enqueue the 1st
+available <a class="reference external" href="../doxygen/struct_i_s_p_c_1_1_buffer.html">Buffer</a> and <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_shot.html">Shot</a> therefore it is not recommended to
+call both functions on the same object (it should be known from the start of
+day if specific shots need to be populated or if any will do).</p>
+<p>When specifying a <a class="reference external" href="../doxygen/struct_i_s_p_c_1_1_buffer.html">Buffer</a> for the capture it is possible to change the
+memory layout of the output (change the stride or offsets) using a similar
+mechanism than in CI (see <a class="reference internal" href="../ci/ci_library.html#isp-ci-output-layout"><span>Different memory layout</span></a>). In ISPC the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html#ae0ae9f60628f110a19ed0e21cbf9977a">Camera::enqueueSpecifiedShot()</a> function is used and takes a
+<a class="reference external" href="../doxygen/struct_c_i___b_u_f_f_i_d.html">CI_BUFFID</a> structure as input.</p>
+<p>Using the exmaple computation from <a class="reference internal" href="../ci/ci_appendix_alloc.html#isp-ci-frame-example-2frames"><span>2 Frames
+example</span></a> we can therefore use the buffer as
+following:</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">size</span> <span class="o">=</span> <span class="mi">1567808</span><span class="p">;</span>
+<span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">stride</span> <span class="o">=</span> <span class="mi">1088</span><span class="p">;</span>
+<span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">a_off_y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">a_off_cbcr</span> <span class="o">=</span> <span class="mi">783360</span><span class="p">,</span>
+    <span class="n">b_off_y</span> <span class="o">=</span> <span class="mi">1088</span><span class="p">,</span> <span class="n">b_off_cbcr</span> <span class="o">=</span> <span class="mi">784448</span><span class="p">;</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * assumes camera is connected, configured but not started yet</span>
+<span class="cm"> * the call could also be to Camera::importBuffer()</span>
+<span class="cm"> */</span>
+<span class="kt">int</span> <span class="n">buffId</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="n">ret</span> <span class="o">=</span> <span class="n">camera</span><span class="p">.</span><span class="n">allocateBuffer</span><span class="p">(</span><span class="n">CI_TYPE_ENCODER</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span>
+    <span class="nb">false</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">buffId</span><span class="p">);</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * the capture should now be started so that we can configure the</span>
+<span class="cm"> * trigger of a frame buffId could be found from a list after</span>
+<span class="cm"> * allocation or left to 0 and let the 1st available buffer be used</span>
+<span class="cm"> * (in that case the assumption is that all the YUV buffers were</span>
+<span class="cm"> * allocated with the correct size</span>
+<span class="cm"> */</span>
+
+ <span class="n">CI_BUFFID</span> <span class="n">toTrigger</span> <span class="o">=</span> <span class="n">CI_BUFFID</span><span class="p">();</span>
+ <span class="c1">// C struct constructor that should be equivalent than a memset to 0</span>
+
+ <span class="n">toTrigger</span><span class="p">.</span><span class="n">encId</span> <span class="o">=</span> <span class="n">buffId</span><span class="p">;</span>
+ <span class="n">toTrigger</span><span class="p">.</span><span class="n">encStrideY</span> <span class="o">=</span> <span class="n">stride</span><span class="p">;</span>
+ <span class="n">toTrigger</span><span class="p">.</span><span class="n">encStrideC</span> <span class="o">=</span> <span class="n">stride</span><span class="p">;</span>
+ <span class="k">if</span> <span class="p">(</span><span class="n">is_a</span><span class="p">)</span>
+ <span class="p">{</span>
+    <span class="n">toTrigger</span><span class="p">.</span><span class="n">encOffsetY</span> <span class="o">=</span> <span class="n">a_off_y</span><span class="p">;</span>
+    <span class="n">toTrigger</span><span class="p">.</span><span class="n">encOffsetC</span> <span class="o">=</span> <span class="n">a_off_cbcr</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="k">else</span>
+ <span class="p">{</span>
+    <span class="n">toTrigger</span><span class="p">.</span><span class="n">encOffsetY</span> <span class="o">=</span> <span class="n">b_off_y</span><span class="p">;</span>
+    <span class="n">toTrigger</span><span class="p">.</span><span class="n">encOffsetC</span> <span class="o">=</span> <span class="n">b_off_cbcr</span><span class="p">;</span>
+ <span class="p">}</span>
+
+ <span class="n">ret</span> <span class="o">=</span> <span class="n">camera</span><span class="p">.</span><span class="n">enqueueSpecifiedShot</span><span class="p">(</span><span class="n">toTrigger</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="lifetime-of-images">
+<h4>Lifetime of images<a class="headerlink" href="#lifetime-of-images" title="Permalink to this headline">¶</a></h4>
+<p>In a system that supports image buffer importation it is very likely that the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> object should be initialised beforehand and configured with a
+given amount of <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_shot.html">Shot</a> (to cope with the latency and double buffering
+as explained in the <a class="reference internal" href="../ci/ci_library.html#isp-ci-shot-pool-size-and-number-of-buffers"><span>Shot pool size and number of buffers</span></a>
+section). When the system requires a capture to be done it will provide a
+handful of image buffers to be imported just before the capture is started.
+As soon as the capture terminates however the system should be able to
+reclaim the given buffers (to liberate the memory) and therefore they should
+be &#8220;de-registered&#8221; from the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> object. This is possible with the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html#a4843230ff3807aa9fc437f07800c074e">Camera::deregisterBuffer()</a> function.</p>
+</div>
+</div>
+<div class="section" id="sensor-ownership">
+<span id="isp-ispcl-cc-sensor-ownership"></span><h3>Sensor ownership<a class="headerlink" href="#sensor-ownership" title="Permalink to this headline">¶</a></h3>
+<p>According to the constructor used for the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> the object is
+assumed to own or not the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a>. The ownership is assumed when the
+sensor is created by the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> object but can always be modified
+later using setter functions.</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="c1">// creates the sensor therefore owns it</span>
+<span class="n">Camera</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">contextNumber</span><span class="p">,</span> <span class="kt">int</span> <span class="n">sensorId</span><span class="p">,</span> <span class="kt">int</span> <span class="n">sensorMode</span><span class="o">=</span><span class="mi">0</span><span class="p">);</span>
+<span class="c1">// is given a sensor therefore does not own it</span>
+<span class="n">Camera</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">contextNumber</span><span class="p">,</span> <span class="n">Sensor</span> <span class="o">*</span><span class="n">pSensor</span><span class="p">);</span>
+
+<span class="c1">// to known if the sensor is owned by this object</span>
+<span class="kt">bool</span> <span class="n">ownsSensor</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+<span class="c1">// to change the fact that the sensor is owned</span>
+<span class="kt">void</span> <span class="nf">setOwnSensor</span><span class="p">(</span><span class="kt">bool</span> <span class="n">b</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Once a Sensor is owned by a <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> it is assumed that the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> has the right to modify it:</p>
+<ul class="simple">
+<li>Configure the sensor</li>
+<li>Start and stop the sensor</li>
+<li>Destroy the sensor object when destroyed</li>
+</ul>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>The control modules will not verify if the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> they are part of
+owns the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a> and will always modify it. Ensure that control
+modules that modify sensor settings are registered in <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a>
+instances that owns their sensor.</p>
+<p class="last">This does not apply to setup modules in general as they usually only need
+information about the sensor.</p>
+</div>
+<div class="section" id="ownership-usages">
+<h4>Ownership usages<a class="headerlink" href="#ownership-usages" title="Permalink to this headline">¶</a></h4>
+<p>It is possible to play with Sensor ownership to share a sensor with multiple
+Cameras to handle more outputs or apply different configurations at once as
+explained in the <a class="reference internal" href="#isp-ispcl-several-camera-sharing-a-sensor"><span>Several Camera sharing a Sensor</span></a> section. It is
+also possible to use the sensor owner as a way to create and manage the
+sensor from an external point than the Camera without having to re-implement
+all the Control and Pipeline handling.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">In the second case remember that the sensor has to be started <strong>AFTER</strong> the
+ISP pipeline and configured before programming it.</p>
+</div>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">ISPC</span><span class="o">::</span><span class="n">Sensor</span> <span class="n">appSensor</span><span class="p">;</span>
+<span class="n">ISPC</span><span class="o">::</span><span class="n">Camera</span> <span class="n">camera</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">appSensor</span><span class="p">);</span>
+<span class="n">ISPC</span><span class="o">::</span><span class="n">ParameterList</span> <span class="n">parameters</span><span class="p">;</span>
+<span class="n">IMG_RESULT</span> <span class="n">ret</span><span class="p">;</span>
+
+<span class="c1">// configure sensor – the size and information will now be correct</span>
+<span class="c1">// HAS TO BE DONE BEFORE CONFIGURING THE CAMERA</span>
+<span class="c1">// sensor will start sending frames when enabled</span>
+<span class="n">appSensor</span><span class="p">.</span><span class="n">configure</span><span class="p">(</span><span class="n">sensorMode</span><span class="p">);</span>
+
+<span class="n">ret</span> <span class="o">=</span> <span class="n">ISPC</span><span class="o">::</span><span class="n">CameraFactory</span><span class="o">::</span><span class="n">populateCameraFromHWVersion</span><span class="p">(</span><span class="n">camera</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">appSensor</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">IMG_SUCCESS</span> <span class="o">!=</span> <span class="n">ret</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;Error: failed to populate camera modules</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+   <span class="k">goto</span> <span class="n">exit_point</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// loads defaults if the file is empty</span>
+<span class="n">ret</span> <span class="o">=</span> <span class="n">camera</span><span class="p">.</span><span class="n">loadParameters</span><span class="p">(</span><span class="n">parameters</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">IMG_SUCCESS</span> <span class="o">!=</span> <span class="n">ret</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;Error: failed to load camera configuration</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+   <span class="k">goto</span> <span class="n">exit_point</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">ret</span> <span class="o">=</span> <span class="n">camera</span><span class="p">.</span><span class="n">setupModules</span><span class="p">();</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">IMG_SUCCESS</span> <span class="o">!=</span> <span class="n">ret</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;Error: failed to setup camera</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+   <span class="k">goto</span> <span class="n">exit_point</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">ret</span> <span class="o">=</span> <span class="n">camera</span><span class="p">.</span><span class="n">program</span><span class="p">();</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">IMG_SUCCESS</span> <span class="o">!=</span> <span class="n">ret</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;Error: failed to program camera</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+   <span class="k">goto</span> <span class="n">exit_point</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">ret</span> <span class="o">=</span> <span class="n">camera</span><span class="p">.</span><span class="n">allocateBufferPool</span><span class="p">(</span><span class="n">uiNBuffers</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">IMG_SUCCESS</span> <span class="o">!=</span> <span class="n">ret</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;Error: failed to allocate %d buffers!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">uiNBuffers</span><span class="p">);</span>
+   <span class="k">goto</span> <span class="n">exit_point</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// preparation of the output files should be done here</span>
+
+<span class="c1">// start ISP pipeline – sensor is not enabled therefore it does not send</span>
+<span class="c1">// frames yet</span>
+<span class="n">ret</span> <span class="o">=</span> <span class="n">camera</span><span class="p">.</span><span class="n">startCapture</span><span class="p">()</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">IMG_SUCCESS</span> <span class="o">!=</span> <span class="n">ret</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;Error: failed to start the capture!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+   <span class="k">goto</span> <span class="n">exit_point</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">ret</span> <span class="o">=</span> <span class="n">appSensor</span><span class="p">.</span><span class="n">enable</span><span class="p">();</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">IMG_SUCCESS</span> <span class="o">!=</span> <span class="n">ret</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;Error: failed to enable the sensor!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+   <span class="n">camera</span><span class="p">.</span><span class="n">stopCapture</span><span class="p">();</span>
+   <span class="k">goto</span> <span class="n">exit_point</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// do the capture here</span>
+
+<span class="n">appSensor</span><span class="p">.</span><span class="n">disable</span><span class="p">();</span>
+
+<span class="n">camera</span><span class="p">.</span><span class="n">stopCapture</span><span class="p">();</span>
+
+<span class="c1">// this is the end of the C++ context – both camera and appSensor will</span>
+<span class="c1">// be destroyed</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="pipeline-and-setupmodule-classes">
+<span id="isp-ispcl-pipeline-and-setupmodule-classes"></span><h2>Pipeline and SetupModule Classes<a class="headerlink" href="#pipeline-and-setupmodule-classes" title="Permalink to this headline">¶</a></h2>
+<p>Within the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> object the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html">Pipeline</a> is in charge of managing
+the configuration of the HW ISP. The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html">Pipeline</a> is able to register an
+arbitrary number of <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_setup_module.html">SetupModule</a> instances.</p>
+<p>The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_setup_module.html">SetupModule</a> class is actually an interface intended to be
+extended so each actual HW module has a corresponding class specialised on
+its configuration as detailed in the Setup Module inheritance figure.</p>
+<div class="figure align-center">
+<p class="plantuml">
+<a href="../_images/plantuml-c2e51eed64ce0d5a962612cf875f1ee2276c1d8e.png"><img src="../_images/plantuml-c2e51eed64ce0d5a962612cf875f1ee2276c1d8e.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+
+hide empty members
+
+enum SetupID
+
+class ModuleBase &lt;&lt; abstract &gt;&gt; {
+    string #logName
+    {abstract} +load()
+    {abstract} +save() const
+}
+
+class SetupModule &lt;&lt; abstract &gt;&gt; {
+    {abstract} +setup()
+    {abstract} +getModuleID()
+}
+
+SetupModule -up-|&gt; ModuleBase
+SetupModule &quot;1&quot; -left-&gt; &quot;1&quot; Pipeline : owner
+
+class SetupModuleBase &lt;&lt; template, abstract &gt;&gt; {
+    +SetupID id
+    +getModuleID()
+}
+
+SetupModuleBase -up-|&gt; SetupModule
+
+legend center
+    Setup module inheritance
+endlegend
+
+&#64;enduml" width="300px" height="329px"/></a>
+</p>
+</div>
+<p>Each implemented &#8220;Setup Module&#8221; class will declare a number of public
+attributes which will represent the HW module setup parameters.</p>
+<p>The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_module_base.html">ModuleBase</a> abstract class is the root for every module. It defines
+the abstract <strong>load()</strong> and <strong>save()</strong> function that allow the manipulation
+of high-level parameters using a <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_parameter_list.html">ParameterList</a> object.
+This class is used by both Setup and Control modules.</p>
+<p>The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_setup_module.html">SetupModule</a> class defines the abstract <strong>setup()</strong> method that
+will convert the parameters into a set of lower level parameters to be
+programmed in the HW.</p>
+<p>An intermediate class is used in between the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_setup_module.html">SetupModule</a> and actual
+module implementation to encapsulate some template declarations. Each
+implemented module uses a unique <a class="reference external" href="../doxygen/namespace_i_s_p_c.html#aa9400112e561573f9227bbc8eaa36f16">SetupID</a> value that can be used to
+retrieve the module using a simple template function in the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html">Pipeline</a> as
+explained in the section <a class="reference internal" href="#isp-ispcl-ps-module-setup-and-update"><span>Module Setup and Update</span></a>.</p>
+<p>The ISPC library already implements a setup module for each existing HW module
+which is registered in the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> when it is created; some of
+the HW v1 modules are shown here as an example.</p>
+<div class="figure align-center">
+<p class="plantuml">
+<a href="../_images/plantuml-1764367db8b59d485bce5addb0da7a05809d77fb.png"><img src="../_images/plantuml-1764367db8b59d485bce5addb0da7a05809d77fb.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+
+    hide empty members
+
+    enum SetupID {
+        STP_FOS,
+        STP_HIS,
+        STP_BLC,
+        STP_CCM,
+    }
+    class SetupModuleBase &lt;&lt; template, abstract &gt;&gt; {
+        SetupID id
+    }
+
+    class ModuleFOS {
+        id = STP_FOS
+    }
+    ModuleFOS -up-|&gt; SetupModuleBase
+
+    class ModuleHIS {
+        id = STP_HIS
+    }
+    ModuleHIS -up-|&gt; SetupModuleBase
+
+    class ModuleBLC {
+     id = STP_BLC
+    }
+    ModuleBLC -up-|&gt; SetupModuleBase
+
+    class ModuleCCM {
+        id = STP_CCM
+    }
+    ModuleCCM -up-|&gt; SetupModuleBase
+
+    legend center
+        Some of the Setup modules
+    endlegend
+
+&#64;enduml" width="391px" height="213px"/></a>
+</p>
+</div>
+<p>When the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html#afea3fea8eb261a997240ddd814e49360">Pipeline::registerModule()</a> method is invoked the setup
+modules is registered in the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html">Pipeline</a> instance, the order of
+registration should not matter. If it was required to create a
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html">Pipeline</a> with a different set of modules the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera_factory.html">CameraFactory</a>
+class could be extended to generate a different list of modules.
+Alternatively the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html">Pipeline</a> instance created within the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a>
+object has public access, as does its elements; this includes methods for
+clearing the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_setup_module.html">SetupModule</a> registry and manually registering other
+setup modules (see the doxygen documentation for more details).</p>
+<p>Every module is registered with a unique id from the list in
+<a class="reference external" href="../doxygen/namespace_i_s_p_c.html#aa9400112e561573f9227bbc8eaa36f16">ISPC::SetupID</a> (see <a class="reference external" href="../doxygen/_module_8h.html">Module.h</a>) so it is not possible to
+register two different modules with the same ID. The ID&#8217;s usually correspond
+to actual HW modules present in the pipeline but some additional ones exist,
+for example the additional ID named <code class="docutils literal"><span class="pre">STP_OUT</span></code> corresponds to the
+<a class="reference internal" href="ispc_modules.html#isp-ispc-out"><span>Output formats (OUT)</span></a> which control the output pixel format of the pipeline.</p>
+<div class="section" id="module-setup-and-update">
+<span id="isp-ispcl-ps-module-setup-and-update"></span><h3>Module Setup and Update<a class="headerlink" href="#module-setup-and-update" title="Permalink to this headline">¶</a></h3>
+<p>As explained in the previous section each module registered in the camera
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html">Pipeline</a> instance is associated with a unique ID. Such ID can be used
+to retrieve the associated setup module registered in the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html">Pipeline</a>.
+There are two types of getter functions declared:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">SetupModule*</span> <span class="pre">Pipeline::getModule(moduleID</span> <span class="pre">id)</span></code> method returns a
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_setup_module.html">SetupModule</a> base class type pointer to the instance of module
+associated with a given ID</li>
+<li><code class="docutils literal"><span class="pre">T*</span> <span class="pre">Pipeline::getModule&lt;T&gt;()</span></code> returns a pointer to the object of type T
+derived from <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_setup_module.html">SetupModule</a> class.</li>
+</ul>
+<p>Such pointers can be used to modify setup parameters as in the following
+examples:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="c1">// non template</span>
+<span class="k">static_cast</span><span class="o">&lt;</span><span class="n">ModuleWBC</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">pipeline</span><span class="o">-&gt;</span><span class="n">getModule</span><span class="p">(</span><span class="n">ISPC</span><span class="o">::</span><span class="n">WBC</span><span class="p">))</span><span class="o">-&gt;</span><span class="n">WBGAIN</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">15.6</span><span class="p">;</span>
+<span class="c1">// template</span>
+<span class="n">pipeline</span><span class="o">-&gt;</span><span class="n">getModule</span><span class="o">&lt;</span><span class="n">ModuleWBC</span><span class="o">&gt;</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">requestUpdate</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Usage of this template method avoids the need of casting and thus helps to have
+cleaner code and fewer bugs. However direct access as in the example is
+discouraged (the module could not exist and <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html#a91189de58cd97153e2b3bda68623754c">getModule()</a> would return 0).</p>
+<p>This is a common way in which the control loop algorithms can access the
+setup parameters of any module in the pipeline (a <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a>
+instance keeps a list of <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html">Pipeline</a> instance to update). The second
+line in the example is a call to the <cite>ISPC::SetupModule::requestUpdate()</cite>
+method which marks a given module for being updated. The changes in a given
+module parameters are not applied until the corresponding module
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_setup_module.html#a34537afd2a986ffc4e2a177265a46f99">SetupModule::setup()</a> function is called.</p>
+<p>There are several methods to invoke the registered module&#8217;s setup functions
+from a <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> or a <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html">Pipeline</a> instance, here some of the Camera
+ones:</p>
+<ul class="simple">
+<li><a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html#a484d66a4346a2447bafa06af4cd4b0fb">Camera::setupModules()</a> update all modules by calling all
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_module_y2_r.html#ae2a814f9cb052375032cca0489f7d19f">setup()</a> functions</li>
+<li><a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html#aa4b4678b61aeeeff1d5bd7dbf1125d32">Camera::setupModule()</a> update a specific module by running its
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_module_y2_r.html#ae2a814f9cb052375032cca0489f7d19f">setup()</a> function</li>
+</ul>
+<p>Refer to the doxygen documentation for more details on the other functions.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html">Pipeline</a> class has a more detailed update function (e.g. update
+only the modules that requested an update). To understand the previous
+example it must be noted that every time a new shot is queued for a new
+capture, the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> class calls the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html#aa54c8a59342650724a4cbc55218f3a99">Pipeline::setupRequested()</a> method which runs the setup function
+for every setup module that has previously received a
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_setup_module.html#a9dab5795f21666006c8de7f7865dde02">requestUpdate()</a> call. Therefore it is not needed to update the
+configuration of each module but only of those with changes and with a
+request for update.</p>
+<p class="last">Alternatively it is also possible to directly call the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_setup_module.html#a34537afd2a986ffc4e2a177265a46f99">SetupModule::setup()</a> function of any retrieved module instead of
+marking it for later update or delegating its update to the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a>.</p>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ispc_modules.html">Implemented Setup Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ispc_modules.html#black-level-correction-blc">Black Level Correction (BLC)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_modules.html#colour-correction-matrix-ccm">Colour Correction Matrix (CCM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_modules.html#display-gamut-mapper-dgm">Display Gamut Mapper (DGM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_modules.html#denoiser-dns-sha-dn">Denoiser (DNS/SHA_DN)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_modules.html#defective-pixels-fixing-dpf">Defective Pixels Fixing (DPF)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_modules.html#display-pipeline-scaler-dsc">Display Pipeline Scaler (DSC)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_modules.html#encoder-pipeline-scaler-esc">Encoder Pipeline Scaler (ESC)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_modules.html#gamma-look-up-table-gma">Gamma Look-Up table (GMA)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_modules.html#output-formats-out">Output formats (OUT)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_modules.html#imager-interface-iif">Imager Interface (IIF)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_modules.html#lateral-chromatic-aberration-lca">Lateral Chromatic Aberration (LCA)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_modules.html#lens-shading-lsh">Lens Shading (LSH)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_modules.html#main-gamut-mapper-mgm">Main Gamut Mapper (MGM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_modules.html#memory-image-enhancer-mie">Memory Image Enhancer (MIE)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_modules.html#rgb-to-yuv-r2y">RGB to YUV (R2Y)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_modules.html#raw-look-up-table-rlt">Raw Look-up Table (RLT)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_modules.html#sharpening-sha">Sharpening (SHA)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_modules.html#tone-mapper-tnm">Tone Mapper (TNM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_modules.html#vibrancy-vib">Vibrancy (VIB)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_modules.html#white-balance-correction-wbc">White Balance Correction (WBC)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_modules.html#yuv-to-rgb-y2r">YUV to RGB (Y2R)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ispc_statistics.html">Implemented Statistics Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ispc_statistics.html#defective-pixel-fixing-dpf">Defective Pixel Fixing (DPF)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_statistics.html#encoder-statistics-ens">Encoder Statistics (ENS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_statistics.html#exposure-statistics-exs">Exposure Statistics (EXS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_statistics.html#flicker-detection-fld">Flicker Detection (FLD)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_statistics.html#focus-statistics-fos">Focus Statistics (FOS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_statistics.html#luma-histogram-statistics-his">Luma Histogram Statistics (HIS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_statistics.html#white-balance-statistics-wbs">White Balance Statistics (WBS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_statistics.html#auto-white-balance-statistics-aws">Auto White Balance Statistics (AWS)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="control-and-controlmodule-classes">
+<span id="isp-ispcl-control-and-controlmodule-classes"></span><h2>Control and ControlModule Classes<a class="headerlink" href="#control-and-controlmodule-classes" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control.html">Control</a> and <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> classes are targeted to be able
+to easily &#8220;attach&#8221; or &#8220;detach&#8221; control loop algorithms to the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a>.
+As described in previous sections the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> object maintains an
+instance of the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control.html">Control</a> class which is used to register an arbitrary
+number of <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> instances. Each <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> would
+typically represent a different algorithm so different versions or new
+functionalities could be easily integrated, substituted or tested. However
+it would be perfectly possible to implement all the loop algorithms in a
+single <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a>.</p>
+<div class="figure align-center">
+<p class="plantuml">
+<a href="../_images/plantuml-783543dee9e5d7f5d630236f7e5005f9b5fbfc59.png"><img src="../_images/plantuml-783543dee9e5d7f5d630236f7e5005f9b5fbfc59.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+
+hide empty members
+
+enum ControlID
+
+class ModuleBase &lt;&lt; abstract &gt;&gt; {
+    string #logName
+    {abstract} +load()
+    {abstract} +save() const
+}
+
+class ControlModule &lt;&lt; abstract &gt;&gt; {
+    {abstract} programCorrection()
+    {abstract} update()
+    {abstract} configureStatistics()
+}
+
+ControlModule &quot;*&quot; o-left-&gt; &quot;*&quot; Pipeline : &lt;&lt; list &gt;&gt;
+ControlModule &quot;*&quot; --&gt; &quot;1&quot; Pipeline : owner
+ControlModule -up-|&gt; ModuleBase
+
+class ControlModuleBase &lt;&lt; template, abstract &gt;&gt; {
+    ControlID id
+    +getModuleID()
+}
+
+ControlModuleBase -up-|&gt; ControlModule
+
+legend center
+    Setup Module inheritance
+endlegend
+&#64;enduml" width="261px" height="338px"/></a>
+</p>
+</div>
+<p>The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_module_base.html">ModuleBase</a> abstract class is the root for every module. It defines
+the abstract <strong>load()</strong> and <strong>save()</strong> function that allow the manipulation
+of high-level parameters using a <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_parameter_list.html">ParameterList</a> object.
+This class is used by both Setup and Control modules.</p>
+<p>Any new control algorithm must extend the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> class which
+serves as an interface. It is mandatory to implement some methods:
+the <strong>load()</strong>, <strong>save()</strong> and <strong>update()</strong> functions.</p>
+<p>Similar to a setup module, the load() function is in charge of loading any
+configuration for the control algorithm from a <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_parameter_list.html">ParameterList</a> (if the
+algorithm requires so). The save() function saves the current configuration
+of the control algorithm.</p>
+<p>The update() function will implement the control algorithm&#8217;s logic.
+The update() function will be called every time a new shot is captured with
+the camera if the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> update mode has been set to
+<code class="docutils literal"><span class="pre">UPDATE_SHOT</span></code> module. If the update mode is set to <code class="docutils literal"><span class="pre">UPDATE_REQUEST</span></code> the
+control module will not be called every capture but only on demand. By
+default the registered <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> instances are set to
+<code class="docutils literal"><span class="pre">UPDATE_SHOT</span></code> mode. Other functions are available in the doxygen
+documentation.</p>
+<p>In the same manner as the setup modules, an intermediate class is used in
+between the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> and actual module implementation to
+encapsulate the template declarations. Each implemented module uses a unique
+<a class="reference external" href="../doxygen/namespace_i_s_p_c.html#a32e9d2a975732b983a87fb2cc532a564">ControlID</a> value that can be used to retrieve the module using a
+simple template function in the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html">Pipeline</a> as explained in the section
+<a class="reference internal" href="#isp-ispcl-ps-module-setup-and-update"><span>Module Setup and Update</span></a>.</p>
+<div class="figure align-center">
+<p class="plantuml">
+<a href="../_images/plantuml-1cfb5936c0b678dc7c72e42438ca29be551d994c.png"><img src="../_images/plantuml-1cfb5936c0b678dc7c72e42438ca29be551d994c.png" alt="
+skinparam dpi 125
+skinparam defaultFontName Open Sans
+skinparam shadowing false
+
+!define ARROWFONT Droid Sans Mono
+!define IMGDARK #650f4d
+!define IMGLIGHT #B71A8B
+
+
+skinparam title {
+
+    FontStyle Bold
+    FontSize 20
+}
+
+skinparam note {
+
+    BackgroundColor #FBFB77
+    BorderColor IMGDARK
+}
+
+skinparam sequence {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+	ActorBorderColor Black
+	
+    LifeLineBorderColor Black
+	LifeLineBackgroundColor White
+    
+    ParticipantBorderColor Black
+	ParticipantBackgroundColor White
+    
+    ActorBackgroundColor White
+	ActorFontColor Black
+}
+
+skinparam state {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+    
+    StartColor IMGDARK
+    EndColor IMGDARK
+}
+
+skinparam activity {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam component {
+
+    ArrowColor Black
+    ArrowFontName ARROWFONT
+    
+    BorderColor IMGDARK
+    BackgroundColor White
+}
+
+skinparam interface {
+
+    BackgroundColor White
+    BorderColor IMGDARK
+}
+
+&#64;startuml
+
+hide empty members
+
+enum ControlID {
+    CTRL_AWB,
+    CTRL_AE,
+    CTRL_AF,
+    // ...
+}
+
+class ControlModuleBase &lt;&lt; template, abstract &gt;&gt; {
+    ControlID id
+}
+
+class ControlAWB {
+    id = CTRL_AWB
+}
+ControlAWB -up-|&gt; ControlModuleBase
+
+class ControlAWB_PID {
+    id = CTRL_AWB
+}
+ControlAWB_PID -up-|&gt; ControlAWB
+
+class ControlAE {
+    id = CTRL_AE
+}
+ControlAE -up-|&gt; ControlModuleBase
+
+class ControlAF {
+    id = CTRL_AF
+}
+ControlAF -up-|&gt; ControlModuleBase
+
+note as N1
+    Because they share the same id value only
+    one implementation can be added to the list
+    of modules of the Control object.
+end note
+ControlAWB .. N1
+N1 .. ControlAWB_PID
+
+legend center
+    Some of the Control Modules classes
+endlegend
+
+&#64;enduml" width="319px" height="392px"/></a>
+</p>
+</div>
+<p>The Control Module classes figure shows the set of already implemented
+control modules:</p>
+<ul class="simple">
+<li><a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_e.html">ControlAE</a> Implements the automatic exposure algorithm.</li>
+<li><a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b.html">ControlAWB</a> Implements automatic white balance algorithm using
+interpolated gain/ccm control points.</li>
+<li><a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_w_b___p_i_d.html">ControlAWB_PID</a>  Implements automatic white balance algorithm using
+PID controlled gains and interpolated CCM control points. It is an
+alternative to the original AWB and behaves better non-laboratory conditions.</li>
+<li><a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_d_n_s.html">ControlDNS</a> allows the update of some of the Denoiser parameters
+(sensor gain).</li>
+<li><a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_l_b_c.html">ControlLBC</a> Light Based Control, different sharpness, contrast,
+saturation and brightness settings for different captured light levels.</li>
+<li><a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_t_n_m.html">ControlTNM</a> Dynamic generation of global tone mapping curves and
+dynamic strength settings.</li>
+</ul>
+<p>Further details on each control module included in the ISPC implementation can
+be found in the <a class="reference internal" href="#isp-ispc-control-modules"><span>Implemented Control Modules</span></a> section.</p>
+<div class="section" id="registering-and-retrieving-a-controlmodule">
+<span id="isp-ispcl-ccm-registering-and-retrieving-a-controlmodule"></span><h3>Registering and Retrieving a ControlModule<a class="headerlink" href="#registering-and-retrieving-a-controlmodule" title="Permalink to this headline">¶</a></h3>
+<p>As opposed to the case of the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html">Pipeline</a> instance in the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a>
+object, which on creation is populated with the default set of pipeline
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_setup_module.html">SetupModule</a> instances, these are not <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> instances
+registered by default in the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control.html">Control</a> object. That&#8217;s because it is
+required to configure the pipeline modules for a proper operation of the
+camera while it is not necessary to have any loop control algorithm at all.</p>
+<p>The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html#a16f06c2672384453dffa9b125c2a1fa0">Camera::registerControlModule()</a> can be used for registering new
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> instances through an available <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> instance. In
+order to register a new control module in the camera a pointer to a
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> instance and an ID must be provided. It must be noted the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> will take care of the destruction of the registered
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> and therefore the allocated instances should not be
+deleted &#8216;manually&#8217; once registered in the camera.</p>
+<p>Each control module must be registered with a unique ID from a set of
+predefined ones (see <a class="reference external" href="../doxygen/namespace_i_s_p_c.html#a32e9d2a975732b983a87fb2cc532a564">ControlID</a> enum in <a class="reference external" href="../doxygen/_module_8h.html">Module.h</a>). The
+ID is used for retrieving a particular control module from the registered
+ones. There is a set of predefined IDs available (subject to be extended
+when new types of control algorithms become available) which also include a
+couple of generic IDs (<code class="docutils literal"><span class="pre">CTRL_AUX1</span></code>, <code class="docutils literal"><span class="pre">CTRL_AUX2</span></code>) for registering
+miscellaneous control modules. The following example shows how to register a
+new control module:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">ret</span> <span class="o">=</span> <span class="n">camera</span><span class="p">.</span><span class="n">registerControlModule</span><span class="p">(</span><span class="k">new</span> <span class="n">ControlAWB</span><span class="p">());</span>
+</pre></div>
+</div>
+<p>As in the example above, it is necessary to dynamically allocate a
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> as registered control modules will be automatically
+destroyed when the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> instance is destroyed.  In order to retrieve
+one of the registered <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> instances the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html#ab83dbc649fbf82e1db7e3f95e7d86f8b">Camera::getControlModule()</a> method is available and the ID used for
+registering the control module is used:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="k">static_cast</span><span class="o">&lt;</span><span class="n">ControlAWB</span><span class="o">*&gt;</span><span class="p">(</span>
+    <span class="n">camera</span><span class="p">.</span><span class="n">getControlModule</span><span class="p">(</span><span class="n">CTRL_TNM</span><span class="p">))</span><span class="o">-&gt;</span><span class="n">setAllowHISConfig</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>As with setup modules, the template method has been provided to help avoid
+use of casting:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">camera</span><span class="p">.</span><span class="n">getControlModule</span><span class="o">&lt;</span><span class="n">ControlTNM</span><span class="o">&gt;</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setAllowHISConfig</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The example shows how a <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> pointer can be retrieved and used
+for calling any specialized function implemented in the module. It will be
+common that different implementations of control modules inheriting from
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> will have implemented additional functionality and methods
+to be configured, etc.</p>
+<p>In the above example the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_t_n_m.html">ControlTNM</a> needs to setup the Histogram
+statistics modules. If a <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_e.html">ControlAE</a> module was not registered to the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> the HIS will not be configured and therefore the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_t_n_m.html">ControlTNM</a> can be allowed to configure the statistics as it needs them
+to operate.</p>
+<p>As previously mentioned a <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> is registered by default so its
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html#a64a0869152ff8b70f68a6cac006c77c4">ControlModule::update()</a> function is called after each captured shot. In
+order to change this behaviour the <span>ISPC::ControlModule::setUpdateType()</span>
+function can be used to set a different update policy and the
+<cite>ControlModule::update()</cite> function can be used to &#8216;manually&#8217; run an iteration
+of a control module at any time.</p>
+</div>
+<div class="section" id="additional-functionalities">
+<span id="isp-ispcl-ccm-additional-functionalities"></span><h3>Additional Functionalities<a class="headerlink" href="#additional-functionalities" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> class only provides a limited number of functions to interact
+with the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control.html">Control</a> and register new <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a>. There is some
+additional methods to manage the registry of control modules (clear it, run a
+set or a particular control module) available in the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control.html">Control</a> class. For
+accessing these functionalities the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control.html">Control</a> class instance of the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> class has public access. See the doxygen documentation for more
+details and a complete set of available functions).</p>
+</div>
+<div class="section" id="implemented-control-modules">
+<span id="isp-ispc-control-modules"></span><h3>Implemented Control Modules<a class="headerlink" href="#implemented-control-modules" title="Permalink to this headline">¶</a></h3>
+<p>This section describes the currently implemented algorithms in the ISPC library
+(version 2).</p>
+<p>A brief description of the algorithms is provided followed by a longer
+description (if necessary) as well as notes about the implementation,
+configuration and dependencies with statistics modules, etc.</p>
+<p>The control modules in the ISPC library are implemented by extending the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> class and require fulfilling certain conditions. More
+details about how the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> classes are implemented and how
+they interact with the rest of the ISPC library are provided in the
+<a class="reference internal" href="#isp-isp-control-library"><span>ISP Control Library</span></a> document and it is recommended to read that
+document before this one.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ispc_controls_ae.html">Automatic Exposure (AE)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ispc_controls_ae.html#code-organization">Code organization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_controls_ae.html#statistics-configuration">Statistics Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_controls_ae.html#algorithm-overview">Algorithm overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_controls_ae.html#ae-high-level-parameters">AE High Level Parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ispc_controls_awb.html">Automatic White Balance (AWB)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ispc_controls_awb.html#ac-hlw-wp-statistics">AC/HLW/WP statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_controls_awb.html#nearest-to-planckian-locus-statistics">Nearest to Planckian Locus statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_controls_awb.html#auxiliary-classes">Auxiliary Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_controls_awb.html#awb-high-level-parameters">AWB High Level Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_controls_awb.html#statistics-configuration">Statistics Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_controls_awb.html#correction-configuration">Correction Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_controls_awb.html#white-balance-flash-filtering-wbff">White Balance Flash Filtering (WBFF)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_controls_awb.html#white-balance-temporal-smoothing-wbts">White Balance Temporal Smoothing (WBTS)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ispc_controls_af.html">Automatic focus (AF)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ispc_controls_af.html#code-organization">Code Organization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_controls_af.html#statistics-configuration">Statistics Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ispc_controls_lshc.html">Lens Shading Grid Control</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ispc_controls_lshc.html#code-organization">Code Organization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_controls_lshc.html#control-lsh-high-level-parameters">Control LSH High Level Parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ispc_controls_tnmc.html">Automatic Tone Mapping Control (TNMC)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ispc_controls_tnmc.html#global-curve-generation">Global curve generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_controls_tnmc.html#dynamic-tone-mapping-strength">Dynamic Tone Mapping Strength</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_controls_tnmc.html#code-organization">Code Organization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_controls_tnmc.html#tnmc-high-level-parameters">TNMC High Level Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_controls_tnmc.html#statistics-configuration">Statistics Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ispc_controls_other.html">Light Based Control (LBC)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ispc_controls_other.html#code-organization">Code Organization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_controls_other.html#auxiliary-classes">Auxiliary classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_controls_other.html#lbc-high-level-parameters">LBC High Level Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_controls_other.html#statistics-configuration">Statistics Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ispc_controls_other.html#denoiser-control">Denoiser Control</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ispc_controls_other.html#isp-dnsc-code">Code Organization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ispc_controls_other.html#dnsc-high-level-parameters">DNSC High Level Parameters</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="sensor-class">
+<span id="isp-ispcl-sensor-class"></span><h2>Sensor Class<a class="headerlink" href="#sensor-class" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a> class encapsulates the Sensor API and provides
+functionality for sensor initialisation, starting as well as basic controls
+(such as gain, exposure, focus distance, etc.). There is a <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a>
+class instance as part of the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> object which gives a pointer to
+its <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html">Pipeline</a> object. The registered <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_setup_module.html">SetupModule</a> and
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> instances have access to the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a> object
+through their <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html">Pipeline</a> or <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control.html">Control</a> owner.</p>
+<p>The control loop algorithms will very commonly require access to the sensor
+(for example the auto exposure algorithms) but also the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_pipeline.html">Pipeline</a> setup
+modules as some aspect of the configuration may require knowledge about the
+sensor characteristics such as size, frame rate, etc.</p>
+<p>The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a> class provides a number of public methods for setting/getting
+the gain and exposure settings as well as for querying for the maximum or
+minimum gain and exposure. In addition there are a number of public members in
+the class to allow access to the sensor width, height, sensor format, etc.</p>
+<p>See the code documentation for a complete listing and details of the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a> class methods and members.</p>
+<p>An overloaded version of the Sensor class is available to cope with the
+internal and external data-generator: <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_d_g_sensor.html">DGSensor</a>. This object allows the
+loading of FLX images as input through the Sensor API interface. It also makes
+it easier to use a data-generator by triggering the shot on the data-generator
+when triggering a frame capture.</p>
+<div class="section" id="sensor-high-level-parameters">
+<span id="isp-ispcl-sensor-parameters"></span><h3>Sensor High-level Parameters<a class="headerlink" href="#sensor-high-level-parameters" title="Permalink to this headline">¶</a></h3>
+<p>These parameters are loaded and saved using a Sensor object and several
+modules use this information in their setup process by querying the sensor
+object directly.</p>
+<dl class="docutils">
+<dt>SENSOR_EXPOSURE_MS:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,5000]</p>
+<p><strong>Defaults:</strong> 35</p>
+<p>Exposure used for the capture in miliseconds.</p>
+<p><strong>Only saved as information.</strong></p>
+<p class="last">When using a data-generator sensor this parameter is ignored.</p>
+</dd>
+<dt>SENSOR_GAIN:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,128]</p>
+<p><strong>Defaults:</strong> 1</p>
+<p>Gain applied by the sensor (analogue &amp; digital).</p>
+<p><strong>Only saved as information.</strong></p>
+<p class="last">When using a data-generator sensor this parameter is loaded to allow the
+correct configuration of the denoiser module.</p>
+</dd>
+<dt>SENSOR_READ_NOISE:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [0,100]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p>Standard deviation of noise when reading pixel value off a sensor in
+electrons.</p>
+<p><strong>Only saved</strong> as information is gathered from the sensor driver directly.</p>
+<p class="last">When using a data-generator sensor this parameter is loaded to allow the
+correct configuration of the denoiser module.</p>
+</dd>
+<dt>SENSOR_BITDEPTH:</dt>
+<dd><p class="first"><strong>Format:</strong> unsigned range [8,16]</p>
+<p><strong>Defaults:</strong> 10</p>
+<p>Bitdepth of data from the sensor.</p>
+<p><strong>Only saved</strong> as information is gathered from the sensor driver directly.</p>
+<p class="last">When using a data-generator this value comes from the given input file
+bitdepth.</p>
+</dd>
+<dt>SENSOR_WELL_DEPTH:</dt>
+<dd><p class="first"><strong>Format:</strong> unsigned range [0,65535]</p>
+<p><strong>Defaults:</strong> 5000</p>
+<p>Maximum number of electrons a sensor pixel can collect before clipping.</p>
+<p><strong>Only saved</strong> as information is gathered from the sensor driver directly.</p>
+<p class="last">When using a data-generator sensor this parameter is loaded to allow the
+correct configuration of the denoiser module.</p>
+</dd>
+<dt>SENSOR_FRAME_RATE:</dt>
+<dd><p class="first"><strong>Format:</strong> double range [1,255]</p>
+<p><strong>Defaults:</strong> 30</p>
+<p>Expected frame-rate of the sensor configuration in frame per seconds.</p>
+<p><strong>Only saved as information.</strong></p>
+<p class="last">When using a data-generator this parameter is loaded to allow the
+correct configuration of the flicker detection module.</p>
+</dd>
+<dt>SENSOR_ACTIVE_SIZE:</dt>
+<dd><p class="first"><strong>Format:</strong> unsigned[2] range [0,16384]</p>
+<p><strong>Defaults:</strong> 16384 16384</p>
+<p>Active size of the sensor configuration (width and height).</p>
+<p><strong>Only saved as information.</strong></p>
+<p class="last">When using a data-generator this value comes from the given input file
+resolution.</p>
+</dd>
+<dt>SENSOR_VTOT:</dt>
+<dd><p class="first"><strong>Format:</strong> unsigned range [0,16383]</p>
+<p><strong>Defaults:</strong> 525</p>
+<p>Total number of lines the sensor is capturing (including blanking).</p>
+<p><strong>Only saved as information.</strong></p>
+<p class="last">When using a data-generator this values comes from the given input file
+resolution and the configured vertical blanking.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="several-camera-sharing-a-sensor">
+<span id="isp-ispcl-several-camera-sharing-a-sensor"></span><h2>Several Camera sharing a Sensor<a class="headerlink" href="#several-camera-sharing-a-sensor" title="Permalink to this headline">¶</a></h2>
+<p>This is also known as &#8220;multi-context&#8221; processing. The underlying idea is to
+use a single <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a> object but have several <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> objects to
+handle more output formats than a single <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> can produce or use
+different configuration for the outputs.</p>
+<div class="section" id="creation-of-the-camera">
+<span id="isp-ispcl-sc-creation-of-the-camera"></span><h3>Creation of the Camera<a class="headerlink" href="#creation-of-the-camera" title="Permalink to this headline">¶</a></h3>
+<p>When calling the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> constructor it is possible to specify if the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> object owns the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a>. In the case of sharing a sensor
+<strong>only ONE</strong> <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> object should own the sensor. The owner will be
+responsible for the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a> object; it will configure the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a>,
+start the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a>, stop the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a> etc.  The <code class="docutils literal"><span class="pre">sharer</span></code> will
+always assume the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a> is in the correct state. The sharer will
+however use the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a> to retrieve information (such as size and current
+gain).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Therefore it is the responsibility of the user to ensure the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a>
+that owns the sensor is used to manage the sensor before the sharer tries
+to access it.</p>
+</div>
+<p>The creation should therefore look like:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">ISPC</span><span class="o">::</span><span class="n">Camera</span> <span class="o">*</span><span class="n">owner</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ISPC</span><span class="o">::</span><span class="n">Camera</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sensorID</span><span class="p">,</span> <span class="n">sensorMode</span><span class="p">);</span>
+<span class="n">ISPC</span><span class="o">::</span><span class="n">Sensor</span> <span class="o">*</span><span class="n">sensor</span> <span class="o">=</span> <span class="n">owner</span><span class="o">-&gt;</span><span class="n">getSensor</span><span class="p">();</span>
+<span class="n">ISPC</span><span class="o">::</span><span class="n">Camera</span> <span class="o">*</span><span class="n">sharer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ISPC</span><span class="o">::</span><span class="n">Camera</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">sensor</span><span class="p">);</span>
+
+<span class="n">ISPC</span><span class="o">::</span><span class="n">CameraFactory</span><span class="o">::</span><span class="n">populateCameraFromHWVersion</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="n">sensor</span><span class="p">);</span>
+<span class="n">ISPC</span><span class="o">::</span><span class="n">CameraFactory</span><span class="o">::</span><span class="n">populateCameraFromHWVersion</span><span class="p">(</span><span class="n">sharer</span><span class="p">,</span> <span class="n">sensor</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The 1st parameter is the HW context number and it cannot be the same for
+the 2 Cameras or they will not be able to run at the same time. The maximum
+number of context for the HW is available in
+<code class="docutils literal"><span class="pre">CI_CONNECTION::sHWInfo::config_ui8NContexts</span></code>.</p>
+</div>
+</div>
+<div class="section" id="control-modules-ownership">
+<span id="isp-ispcl-sc-control-modules-ownership"></span><h3>Control Modules ownership<a class="headerlink" href="#control-modules-ownership" title="Permalink to this headline">¶</a></h3>
+<p>When sharing a <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a> thoughts have to be made on which <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a>
+will own the control modules. The choice has to be made with the following
+information in mind:</p>
+<ul class="simple">
+<li>If the control module tries to modify the Sensor&#8217;s parameters (e.g. gain)
+<strong>ONE AND ONLY ONE</strong> should ever have access to the sensor.</li>
+<li>A control module only tries to modify the statistics it uses on the Pipeline
+that owns it.</li>
+<li>Several control modules can try to access the same statistics and may have to
+be configured to do so!</li>
+<li>A control module can modify several Pipelines objects with their results.</li>
+<li>Several control modules of the same type can coexists <strong>if and only if</strong> they
+are in different Camera objects.</li>
+</ul>
+<div class="section" id="example-controlae-and-controltnm">
+<h4>Example (ControlAE and ControlTNM)<a class="headerlink" href="#example-controlae-and-controltnm" title="Permalink to this headline">¶</a></h4>
+<p>The Auto Exposure control module accesses the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a> object. <strong>ONE AND
+ONLY ONE</strong> can exist for a <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a>. It should be added to the owner as it
+handles all there is to handle about the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a>.</p>
+<p>The Tone Mapper control module does not access the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_sensor.html">Sensor</a> object.
+Therefore it is possible to have different objects in the <code class="docutils literal"><span class="pre">owner</span></code> and
+<code class="docutils literal"><span class="pre">sharer</span></code> (to apply different TNM curves). However the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_t_n_m.html">ControlTNM</a> uses
+the histogram statistics (HIS), and so does the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_e.html">ControlAE</a>.</p>
+<p>We have two possible choices:</p>
+<ul class="simple">
+<li>create several ControlTNM objects to allow different curves or</li>
+<li>create a single ControlTNM object and the same curve will be applied to both
+Pipelines</li>
+</ul>
+<div class="section" id="multiple-controltnm">
+<h5>Multiple ControlTNM<a class="headerlink" href="#multiple-controltnm" title="Permalink to this headline">¶</a></h5>
+<p>We have several <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_t_n_m.html">ControlTNM</a> objects therefore the <code class="docutils literal"><span class="pre">sharer's</span></code>
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_t_n_m.html">ControlTNM</a> has to be configured to enable the histogram statistics
+(because the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_a_e.html">ControlAE</a> enables the HIS in the owner).</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="c1">// owner control modules</span>
+<span class="n">ISPC</span><span class="o">::</span><span class="n">ControlAE</span> <span class="o">*</span><span class="n">pAE</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ISPC</span><span class="o">::</span><span class="n">ControlAE</span><span class="p">();</span>
+<span class="n">ISPC</span><span class="o">::</span><span class="n">ControlTNM</span> <span class="o">*</span><span class="n">pTNM_owner</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ISPC</span><span class="o">::</span><span class="n">ControlTNM</span><span class="p">();</span>
+
+<span class="n">owner</span><span class="o">-&gt;</span><span class="n">registerControlModule</span><span class="p">(</span><span class="n">pAE</span><span class="p">);</span>
+<span class="n">owner</span><span class="o">-&gt;</span><span class="n">registerControlModule</span><span class="p">(</span><span class="n">pTNM_owner</span><span class="p">);</span>
+
+<span class="c1">// sharer control modules</span>
+<span class="n">ISPC</span><span class="o">::</span><span class="n">ControlTNM</span> <span class="o">*</span><span class="n">pTNM_sharer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ISPC</span><span class="o">::</span><span class="n">ControlTNM</span><span class="p">();</span>
+
+<span class="c1">// enable configuration of HIS because AE does not exists on this pipeline</span>
+<span class="n">pTNM_sharer</span><span class="o">-&gt;</span><span class="n">setAllowHISConfig</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
+<span class="n">sharer</span><span class="o">-&gt;</span><span class="n">registerControlModule</span><span class="p">(</span><span class="n">pTNM_sharer</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="single-controltnm">
+<h5>Single ControlTNM<a class="headerlink" href="#single-controltnm" title="Permalink to this headline">¶</a></h5>
+<p>In this case a single <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_t_n_m.html">ControlTNM</a> object can be added to either the owner
+or the sharer object. We choose to add it to the owner so that it will be the
+only <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html">Camera</a> with control modules. If it was added to the sharer then the
+HIS should be configured as in the Multiple <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_t_n_m.html">ControlTNM</a> example.</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">ISPC</span><span class="o">::</span><span class="n">ControlAE</span> <span class="o">*</span><span class="n">pAE</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ISPC</span><span class="o">::</span><span class="n">ControlAE</span><span class="p">();</span>
+<span class="n">ISPC</span><span class="o">::</span><span class="n">ControlTNM</span> <span class="o">*</span><span class="n">pTNM</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ISPC</span><span class="o">::</span><span class="n">ControlTNM</span><span class="p">();</span>
+
+<span class="n">owner</span><span class="o">-&gt;</span><span class="n">registerControlModule</span><span class="p">(</span><span class="n">pAE</span><span class="p">);</span>
+<span class="n">owner</span><span class="o">-&gt;</span><span class="n">registerControlModule</span><span class="p">(</span><span class="n">pTNM</span><span class="p">);</span>
+
+<span class="c1">// alow the control module to modify more than 1 Pipeline</span>
+<span class="n">pTNM</span><span class="o">-&gt;</span><span class="n">addPipeline</span><span class="p">(</span><span class="n">sharer</span><span class="o">-&gt;</span><span class="n">getPipeline</span><span class="p">());</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="camera-and-sensor-management">
+<span id="isp-ispcl-sc-camera-and-sensor-management"></span><h3>Camera and Sensor management<a class="headerlink" href="#camera-and-sensor-management" title="Permalink to this headline">¶</a></h3>
+<p>It is important to understand that the owner object handles all the sensor
+operations (see <a class="reference internal" href="#isp-ispcl-cc-sensor-ownership"><span>Sensor ownership</span></a>) therefore it has to be
+started last and stopped first. Triggering frame can be done in any order.</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">ISPC</span><span class="o">::</span><span class="n">ParameterList</span> <span class="n">ownerSetup</span><span class="p">;</span> <span class="c1">// assumes it is ready to be loaded</span>
+<span class="n">ISPC</span><span class="o">::</span><span class="n">ParameterLsit</span> <span class="n">sharerSetup</span><span class="p">;</span> <span class="c1">// assumes it is ready to be loaded</span>
+
+<span class="n">owner</span><span class="o">-&gt;</span><span class="n">load</span><span class="p">(</span><span class="n">ownerSetup</span><span class="p">);</span>
+<span class="n">sharer</span><span class="o">-&gt;</span><span class="n">load</span><span class="p">(</span><span class="n">sharerSetup</span><span class="p">);</span>
+
+<span class="n">owner</span><span class="o">-&gt;</span><span class="n">setupModules</span><span class="p">();</span>
+<span class="n">sharer</span><span class="o">-&gt;</span><span class="n">setupModules</span><span class="p">();</span>
+
+<span class="n">owner</span><span class="o">-&gt;</span><span class="n">program</span><span class="p">();</span>
+<span class="n">sharer</span><span class="o">-&gt;</span><span class="n">program</span><span class="p">();</span>
+
+<span class="n">sharer</span><span class="o">-&gt;</span><span class="n">startCapture</span><span class="p">();</span> <span class="c1">// does not affect the sensor – only starts ISP pipeline</span>
+<span class="n">owner</span><span class="o">-&gt;</span><span class="n">startCapture</span><span class="p">();</span> <span class="c1">// start ISP pipeline and then starts sensor</span>
+
+<span class="n">loop</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Shot</span> <span class="n">ownerShot</span><span class="p">;</span>
+    <span class="n">Shot</span> <span class="n">sharerShot</span><span class="p">;</span>
+
+    <span class="n">owner</span><span class="o">-&gt;</span><span class="n">enqueueShot</span><span class="p">();</span>
+    <span class="n">sharer</span><span class="o">-&gt;</span><span class="n">enqueueShot</span><span class="p">();</span>
+
+    <span class="n">owner</span><span class="o">-&gt;</span><span class="n">acquireShot</span><span class="p">(</span><span class="n">ownerShot</span><span class="p">);</span>
+<span class="n">sharer</span><span class="o">-&gt;</span><span class="n">acquireShot</span><span class="p">(</span><span class="n">ownerShot</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">owner</span><span class="o">-&gt;</span><span class="n">stop</span><span class="p">();</span> <span class="c1">// stops the sensor and then the ISP pipeline</span>
+<span class="n">sharer</span><span class="o">-&gt;</span><span class="n">stop</span><span class="p">();</span> <span class="c1">// stops the ISP pipeline</span>
+</pre></div>
+</div>
+<p>In the case of triggering 2 frames for the same Sensor&#8217;s image the low level
+driver does not ensure that both of them will be from the same capture.
+Therefore it is possible that a new frame arrives in between the
+<code class="docutils literal"><span class="pre">owner-&gt;enqueueShot()</span></code> and <code class="docutils literal"><span class="pre">sharer-&gt;enqueueShot()</span></code>. However once several
+shots have been enqueued they should be removed from each pipeline waiting list
+at the same rate.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The same number of frames does not have to be triggered on both sides when
+running against real HW.  However when running against the CSIM the same
+number of frames <strong>HAVE TO</strong> be triggered on both sides (the simulator does
+not handle a frame start signal on an empty linked list).</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Timestamps from the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_shot.html">Shot</a>::_:src:<cite>metadata&lt;Metadata&gt;</cite>::_:src:<cite>timestamps&lt;MC_STATS_TIMEST
+AMP&gt;</cite> can be used to ensure the frames were captured at the same time.
+But the values may be different as the TS values are when the ISP
+started processing the frames (and there is only 1 processing pipe in
+the ISP HW). However knowing the frame rate of the sensor it should be
+possible to determine if 2 timestamps, even if different, are likely to
+be the same sensor frame.</p>
+</div>
+</div>
+</div>
+<div class="section" id="high-level-parameters">
+<span id="isp-ispcl-high-level-parameters"></span><h2>High level parameters<a class="headerlink" href="#high-level-parameters" title="Permalink to this headline">¶</a></h2>
+<p>Many of the classes implemented in the ISPC library make use of the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_parameter_list.html">ParameterList</a> class to load parameters generated externally. All the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_module_base.html">ModuleBase</a> instances must implement a <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_module_e_n_s.html#a561e6831b8e31fac55e1d6504ad6482f">load()</a> function that
+receives a <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_parameter_list.html">ParameterList</a> and makes use of it at its own convenience
+(there is no obligation for any given module to actually make use of external
+parameters).</p>
+<p>A <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_parameter_list.html">ParameterList</a> is just a collection of <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_parameter.html">Parameter</a> objects each
+one being composed by a tag and a set of associated values. Internally both
+the tags and values are stored as strings. It is very common in our test
+applications for a <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_parameter_list.html">ParameterList</a> object to have been generated from
+an external configuration file but the source of the tags/values could be
+another program, a socket, etc.  The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_parameter_list.html">ParameterList</a> allows adding and
+retrieving tags and associated values in a flexible way and also ‘interpret’
+the values associated to a tag as different data types: integer, float,
+boolean or string.  Once a populated <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_parameter_list.html">ParameterList</a> has been received
+it is simple to retrieve values using one of the &#8220;get parameter&#8221; functions.
+Each <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_setup_module.html">SetupModule</a> and <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> contains a set of public
+<a class="reference external" href="../doxygen/struct_i_s_p_c_1_1_param_def.html">ParamDef</a> object which lists the parameter they will try to access in
+the parameter list (but they may also try to access parameters from other
+modules!).</p>
+<p>The get parameter functions, receive as parameters, the tag we are looking for
+(as a string) and the index of the value we want to retrieve. There are also
+versions of the same functions to specify minimum, maximum and default values
+if the parameters are not found and functions to check if a tag is defined or
+not, etc. (see the doxygen documentation for more details).</p>
+<div class="section" id="accessing-parameters">
+<span id="isp-ispcl-accessing-parameters"></span><h3>Accessing parameters<a class="headerlink" href="#accessing-parameters" title="Permalink to this headline">¶</a></h3>
+<p>The following example shows how to check if a parameter exists in the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_parameter_list.html">ParameterList</a> and to retrieve its first value (index 0) if so:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="k">if</span><span class="p">(</span><span class="n">parameters</span><span class="p">.</span><span class="n">exists</span><span class="p">(</span><span class="s">&quot;WB_ESTIMATION_SCALE&quot;</span><span class="p">))</span>
+    <span class="n">estimationScale</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">.</span><span class="n">getParameterFloat</span><span class="p">(</span><span class="s">&quot;WB_ESTIMATION_SCALE&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The following example depicts how to retrieve the second value associated
+to a given tag (index 1) and also defining minimum, maximum and default
+values:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">aInY</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">.</span><span class="n">getParameterFloat</span><span class="p">(</span><span class="s">&quot;TNM_IN_Y&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">127</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span>  <span class="mi">127</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>It is also possible to retrieve parameters using directly the <a class="reference external" href="../doxygen/struct_i_s_p_c_1_1_param_def.html">ParamDef</a>
+objects:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">estimationScale</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">.</span><span class="n">getParameter</span><span class="p">(</span><span class="n">ISPC</span><span class="o">::</span><span class="n">ControlAWB</span><span class="o">::</span><span class="n">AWB_ESTIMATION_SCALE</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="parameter-file-parsing">
+<span id="isp-ispcl-parameter-file-parsing"></span><h3>Parameter File Parsing<a class="headerlink" href="#parameter-file-parsing" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_parameter_file_parser.html">ParameterFileParser</a> has been implemented for being able to parse
+generic high level parameters files in which a list of tags (one per line)
+followed by an arbitrary number of associated values can be specified. The
+format is compatible with the format for Felix setup parameter files used by
+CSIM and the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_parameter_file_parser.html">ParameterFileParser</a> is used for its parsing and
+conversion into a <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_parameter_list.html">ParameterList</a>. Its usage is straightforward as in
+this example:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">ParameterList</span> <span class="n">parameters</span> <span class="o">=</span> <span class="n">ISPC</span><span class="o">::</span><span class="n">ParameterFileParser</span><span class="o">::</span><span class="n">parseFile</span><span class="p">(</span><span class="n">filename</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Once a file has been parsed into a <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_parameter_list.html">ParameterList</a> it can be easily used
+to set up the ISPC modules (see doxygen documentation for more details about
+the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_parameter_list.html">ParameterList</a> and <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_parameter_file_parser.html">ParameterFileParser</a> functionalities).</p>
+</div>
+<div class="section" id="setup-parameters-a-k-a-felix-setup-args">
+<span id="isp-ispcl-setup-parameters"></span><h3>Setup Parameters (a.k.a. Felix Setup Args)<a class="headerlink" href="#setup-parameters-a-k-a-felix-setup-args" title="Permalink to this headline">¶</a></h3>
+<p>The Modules are the input to the HW Pipeline. The high level values are
+transformed to register values within the drivers MC functions.</p>
+<p>The defaults, minimums and maximums can be generated using the
+<a class="reference internal" href="../test_tools/ispc_test.html#isp-ispc-test"><span>ISP Control test: ISPC_test</span></a> application.</p>
+<p>The C Simulator delivered as a HW preview contains an internal driver,
+developed with the aim of testing the HW. The High level parameters used in
+the simulator are mostly compatible with the one in the driver. However when
+differences exists this section will try to highlight them in the modules
+sections.</p>
+<div class="section" id="life-cycle-of-the-information">
+<span id="isp-ispcl-life-cycle"></span><h4>Life-cycle of the information<a class="headerlink" href="#life-cycle-of-the-information" title="Permalink to this headline">¶</a></h4>
+<p>The information loaded as setup parameters usually comes into a text file
+and end up as a register value. The transformation to the register value
+occurs in several stages within the driver libraries.</p>
+<p>This cycle is repeated every time the high level parameters are changed
+(i.e. potentially every frame).</p>
+<div class="figure" id="id5">
+<span id="isp-ispcl-params-lifecycle-fig"></span><a class="reference internal image-reference" href="../_images/life_cycle_params.png"><img alt="../_images/life_cycle_params.png" src="../_images/life_cycle_params.png" style="width: 709px; height: 214px;" /></a>
+<p class="caption"><span class="caption-text">Life-cycle of the parameters</span></p>
+</div>
+<div class="section" id="loading-with-ispc">
+<h5>Loading with ISPC<a class="headerlink" href="#loading-with-ispc" title="Permalink to this headline">¶</a></h5>
+<p>The loading can be done from a text file (<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_parameter_file_parser.html">ISPC::ParameterFileParser</a>)
+but it is possible to implement other ways that populate an
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_parameter_list.html">ISPC::ParameterList</a> object.</p>
+</div>
+<div class="section" id="run-setup-algorithms">
+<h5>Run setup algorithms<a class="headerlink" href="#run-setup-algorithms" title="Permalink to this headline">¶</a></h5>
+<p>The setup algorithms convert the setup modules values into pre-register
+values. These values can contain floating point information.</p>
+<p>The Algorithms are run just before that stage (e.g. auto white balance will
+try to modify the CCM module before it is converted to MC values).</p>
+<p>This is usually done when setup functions are run for a module (e.g.
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html#a484d66a4346a2447bafa06af4cd4b0fb">Camera::setupModules()</a>).</p>
+</div>
+<div class="section" id="convert-pre-register-to-registers">
+<h5>Convert pre-register to registers<a class="headerlink" href="#convert-pre-register-to-registers" title="Permalink to this headline">¶</a></h5>
+<p>This operation is done in 2 steps.</p>
+<p>The first step is to convert the pre-register values to register values.
+That means converting the floating point values to the fixed point the HW is
+expecting. At this stage the values that can be computed from others are
+also done (e.g. the IIF buffer threshold). This is all done in user-space MC
+library and transferred to kernel-space through the CI layer.</p>
+<p>The second step is to write the register values into the correct register
+offsets. This is done by the CI layer in the kernel module.</p>
+<p>Both steps are done when <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_camera.html#a2a1a419493e8719031eb3364bb5a6676">Camera::program()</a> is called.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="performance-measurment">
+<span id="isp-ispcl-perflog"></span><h2>Performance measurment<a class="headerlink" href="#performance-measurment" title="Permalink to this headline">¶</a></h2>
+<p>The ISPC library contains an auxiliary function to log performance measurements.
+This option is disabled by default and the library should be compiled with the
+appropriate CMake flags (see <a class="reference internal" href="../getting_started.html#isp-gsg-ddk-cmake-options"><span>DDK options</span></a>).</p>
+<p>The header <code class="docutils literal"><span class="pre">ispc/PerfTime.h</span></code> allows the creation of a performance stack.
+An element should be registered to the performance stack using one of the
+<a class="reference external" href="../doxygen/namespace_i_s_p_c.html#ae958bdc74d69ac0f4d07a58f175df85d">ISPC::LOG_Perf_Register()</a> function.
+Elements can be added to the stack as an input using <a class="reference external" href="../doxygen/namespace_i_s_p_c.html#af8833fd3cd75fc39e1d12318d4aa29fd">ISPC::LOG_Perf_In()</a>
+(i.e. entry into a function) or as output using <a class="reference external" href="../doxygen/namespace_i_s_p_c.html#a0b127e4ad6a9d74e80921c73d59ac554">ISPC::LOG_Perf_Out()</a>
+(i.e. exit of a function). The average time spent in the function,
+the last time and the number of calls will be monitored and printed when using
+the <a class="reference external" href="../doxygen/namespace_i_s_p_c.html#a2cf01fb17ceba16b957e3ca0e854b540">ISPC::LOG_Perf_Summary()</a>.</p>
+<p>The macros <code class="docutils literal"><span class="pre">LOG_PERF_IN()</span></code> and <code class="docutils literal"><span class="pre">LOG_PERF_OUT()</span></code> can also be used to
+help with the gathering of functions/file/lines.</p>
+<p>When a module is registered as verbose it prints the time when IN/OUT was
+called.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">ISP Control Library</a><ul>
+<li><a class="reference internal" href="#ispc-architecture">ISPC Architecture</a></li>
+<li><a class="reference internal" href="#camera-class">Camera Class</a><ul>
+<li><a class="reference internal" href="#initialisation">Initialisation</a></li>
+<li><a class="reference internal" href="#capture">Capture</a></li>
+<li><a class="reference internal" href="#stopping-the-capture">Stopping the capture</a></li>
+<li><a class="reference internal" href="#buffer-allocation-vs-buffer-importation">Buffer allocation vs buffer importation</a><ul>
+<li><a class="reference internal" href="#buffers-vs-shots">Buffers VS Shots</a></li>
+<li><a class="reference internal" href="#different-output-sizes">Different output sizes</a></li>
+<li><a class="reference internal" href="#allocating-a-pool-or-importing-image-buffers">Allocating a pool or importing image buffers</a></li>
+<li><a class="reference internal" href="#populating-a-specific-buffer-when-enqueuing-shots">Populating a specific Buffer when enqueuing shots</a></li>
+<li><a class="reference internal" href="#lifetime-of-images">Lifetime of images</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#sensor-ownership">Sensor ownership</a><ul>
+<li><a class="reference internal" href="#ownership-usages">Ownership usages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pipeline-and-setupmodule-classes">Pipeline and SetupModule Classes</a><ul>
+<li><a class="reference internal" href="#module-setup-and-update">Module Setup and Update</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#control-and-controlmodule-classes">Control and ControlModule Classes</a><ul>
+<li><a class="reference internal" href="#registering-and-retrieving-a-controlmodule">Registering and Retrieving a ControlModule</a></li>
+<li><a class="reference internal" href="#additional-functionalities">Additional Functionalities</a></li>
+<li><a class="reference internal" href="#implemented-control-modules">Implemented Control Modules</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#sensor-class">Sensor Class</a><ul>
+<li><a class="reference internal" href="#sensor-high-level-parameters">Sensor High-level Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#several-camera-sharing-a-sensor">Several Camera sharing a Sensor</a><ul>
+<li><a class="reference internal" href="#creation-of-the-camera">Creation of the Camera</a></li>
+<li><a class="reference internal" href="#control-modules-ownership">Control Modules ownership</a><ul>
+<li><a class="reference internal" href="#example-controlae-and-controltnm">Example (ControlAE and ControlTNM)</a><ul>
+<li><a class="reference internal" href="#multiple-controltnm">Multiple ControlTNM</a></li>
+<li><a class="reference internal" href="#single-controltnm">Single ControlTNM</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#camera-and-sensor-management">Camera and Sensor management</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#high-level-parameters">High level parameters</a><ul>
+<li><a class="reference internal" href="#accessing-parameters">Accessing parameters</a></li>
+<li><a class="reference internal" href="#parameter-file-parsing">Parameter File Parsing</a></li>
+<li><a class="reference internal" href="#setup-parameters-a-k-a-felix-setup-args">Setup Parameters (a.k.a. Felix Setup Args)</a><ul>
+<li><a class="reference internal" href="#life-cycle-of-the-information">Life-cycle of the information</a><ul>
+<li><a class="reference internal" href="#loading-with-ispc">Loading with ISPC</a></li>
+<li><a class="reference internal" href="#run-setup-algorithms">Run setup algorithms</a></li>
+<li><a class="reference internal" href="#convert-pre-register-to-registers">Convert pre-register to registers</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#performance-measurment">Performance measurment</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../ci/ci_library.html"
+                        title="previous chapter">Capture Interface</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="ispc_modules.html"
+                        title="next chapter">Implemented Setup Modules</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

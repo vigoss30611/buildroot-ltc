@@ -1,0 +1,34 @@
+{
+	"dg": {
+		"ipu": "dg-frame",
+		"args": {
+			"frames": 3,
+			"mode": "yuvfile",
+			"data": "/nfs/nv12.yuv",
+			"nbuffers": 3,
+			"fps": 7
+		},
+		"port": {
+			"out": {
+				"w": 1920,
+				"h": 1088,
+				"pixel": "nv12",
+				"bind": { "display": "osd0","encss0": "frame" }
+			}
+		}
+	},
+	"encss0": { "ipu": "vencoder",
+			"args": {
+				"encode_type": "h264",
+				"mvw": 1920,
+				"mvh": 1088 
+			},
+			"port": {
+				"mv": {
+					"bind": {"mv0": "in"}
+				}
+			}
+	},
+	"mv0": {"ipu": "mvmovement"},
+	"display": { "ipu": "ids", "args": { "no_osd1": 1 }}
+}

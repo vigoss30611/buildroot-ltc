@@ -1,0 +1,17 @@
+config BR2_PACKAGE_APP_LIBRA_DANA
+	bool "app-libra-dana"
+	help
+	  app-libra-dana
+
+	  http://www.infotm.com/
+
+if BR2_PACKAGE_APP_LIBRA_DANA
+menu "options"
+	config  BR2_PACKAGE_APP_LIBRA_DANA_INSTALL_SHARED
+		bool "Install Shared"
+		default y
+		help
+	  		install shared library into target dir
+endmenu
+
+endif

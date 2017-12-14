@@ -1,0 +1,18 @@
+Changes to talmmu for v2 have changed the API in the following ways:
+
+ - All TAL Memspaces are now IMG_HANDLE rather than IMG_UINT32 type.
+
+ - Callback functions no longer return memory space in the integer variable in the callback function but in the void* variable instead.
+
+ 
+ 
+Changes to gzip_fileio
+ 
+- Adding const to have fopen and printf like prototypes and C++ compatibility
+- changing read/write buffers to be void* to allow any buffer input/output
+- changed return code of OpenFile to be either IMG_SUCCESS or IMG_ERROR_COULD_NOT_OBTAIN_RESOURCE (was sometime IMG_ERROR_FATAL when checking FILE* != NULL after fopen)
+- changing the call to free to be IMG_FREE
+- was applying compression string even if non-compressed file used
+- changing asserts to be used only when library is not used correctly (return code otherwise)
+- CMakeLists is using ZLIB_INCLUDE_DIR instead of ZLIB_INCLUDE_DIRS and use ZLIB_DEFINITIONS
+- some casting to gzFile were not done

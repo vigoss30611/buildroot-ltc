@@ -1,0 +1,42 @@
+#
+#  Infotm common drivers
+#
+
+menuconfig INFOTM_DRV_COMMON
+	 tristate  "Infotm common drivers support"
+		depends on INFOTM_SPECIAL 
+	 help  
+			Infotm common drivers  support
+if INFOTM_DRV_COMMON
+source "drivers/infotm/common/adc/Kconfig"
+source "drivers/infotm/common/hwmon/Kconfig"
+source "drivers/infotm/common/items/Kconfig"
+source "drivers/infotm/common/mmc/Kconfig"
+source "drivers/infotm/common/spi_ftl/Kconfig"
+source "drivers/infotm/common/leds/Kconfig"
+source "drivers/infotm/common/rtc/Kconfig"
+source "drivers/infotm/common/i2c/Kconfig"
+source "drivers/infotm/common/pwm/Kconfig"
+source "drivers/infotm/common/display/Kconfig"
+source "drivers/infotm/common/display2/Kconfig"
+source "drivers/infotm/common/backlight/Kconfig"
+source "drivers/infotm/common/touchscreen/Kconfig"
+source "drivers/infotm/common/otg/Kconfig"
+source "drivers/infotm/common/InfotmMedia/Kconfig"
+source "drivers/infotm/common/net/Kconfig"
+source "drivers/infotm/common/sound/Kconfig"
+source "drivers/infotm/common/belt/Kconfig"
+source "drivers/infotm/common/switch/Kconfig"
+source "drivers/infotm/common/sensor/Kconfig"
+source "drivers/infotm/common/camera/Kconfig"
+source "drivers/infotm/common/dvfs/Kconfig"
+source "drivers/infotm/common/dvfs_apollo/Kconfig"
+source "drivers/infotm/common/spi/Kconfig"
+source "drivers/infotm/common/bt/Kconfig"
+source "drivers/infotm/common/fr/Kconfig"
+source "drivers/infotm/common/watchdog/Kconfig"
+source "drivers/infotm/common/env/Kconfig"
+source "drivers/infotm/common/power/Kconfig"
+source "drivers/infotm/common/timer/Kconfig"
+endif
+

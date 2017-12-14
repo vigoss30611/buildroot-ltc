@@ -1,0 +1,12 @@
+config BR2_PACKAGE_LIBGRIDTOOLS
+    bool "libgridtools"
+    default n
+    help
+        fisheye calibration and generate grid data.
+if  BR2_PACKAGE_LIBGRIDTOOLS
+    config BR2_PACKAGE_LIBGRIDTOOLS_SHARED
+        bool "enable shared"
+        default n
+        help 
+            fisheye shared library enable
+endif

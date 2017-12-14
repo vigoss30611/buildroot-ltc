@@ -1,0 +1,16 @@
+menuconfig IMAP_EMIF_HW
+    tristate "imapx800 emif"
+	default n
+	depends on ARCH_IMAPX800 || ARCH_IMAPX15
+	help
+	    for imapx800 emif driver
+
+
+if IMAP_EMIF_HW
+
+config INFOTM_EMIF
+    tristate "Driver for imapx800 emif"
+	help
+
+endif
+

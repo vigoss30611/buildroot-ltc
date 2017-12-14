@@ -1,0 +1,30 @@
+# 2008.3.8 c42025
+# define all global environment for all samples
+#define cross compiler
+
+CHIP_ARCH=Q3
+
+ifeq ($(CHIP_ARCH),Q3)
+export SDK_PATH= $(TOPDIR)/../../../
+export SDK_INC_PATH= $(SDK_PATH)/output/host/usr/arm-buildroot-linux-uclibcgnueabihf/sysroot/usr/include
+export SDK_LIB_PATH= $(SDK_PATH)/output/host/usr/arm-buildroot-linux-uclibcgnueabihf/sysroot/usr/lib
+endif
+
+export CROSS:=$(SDK_PATH)/output/host/usr/bin/arm-buildroot-linux-uclibcgnueabihf-
+export CC:=$(CROSS)gcc
+export AR:=$(CROSS)ar
+export STRIP:=$(CROSS)strip
+export GXX:=$(CROSS)g++
+export RANLIB:=$(CROSS)ranlib
+
+export BASE_PATH = $(TOPDIR)
+export LIBSRC_PATH = $(BASE_PATH)/libsrc
+export LIBINC_PATH = $(BASE_PATH)/libinc
+export LIBS_PATH = $(BASE_PATH)/libs
+export IPC_PATH = $(BASE_PATH)/ipc
+
+export CFLAGS_BASE = -DTL_Q3_PLATFORM -fPIC
+export CFLAGS_BASE += $(QM_CFLAGS)
+
+EXT_DYNAMIC_LIBS += -ldl 
+EXT_DYNAMIC_LIBS += -lvideobox -laudiobox -lqvplay -lcodecs -lupgrade -lsys -ldemux -levent -litems -lfr -L$(SDK_LIB_PATH)

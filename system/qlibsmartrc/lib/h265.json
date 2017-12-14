@@ -1,0 +1,76 @@
+{
+      "args": {
+            "stream-num": 2,
+            "level-num": 5,
+            "time":10,
+            "day-move":1000000,
+            "day-still":500000,
+            "night-move":1000000,
+            "night-still":500000,
+            "threshold_over_numer":4,
+            "threshold_over_denom":3,
+            "threshold_normal_numer":1,
+            "threshold_normal_denom":1
+            },
+	"enc1080p-stream": {
+		"day-move": {
+            "level1": { "bitrate": 1800000, "qp_min": 20, "qp_max": 38,  "qp_delta": -3 },
+            "level2": { "bitrate": 1200000, "qp_min": 20, "qp_max": 38,  "qp_delta": -3 },
+            "level3": { "bitrate": 600000, "qp_min": 20, "qp_max": 42,  "qp_delta": -6 },
+            "level4": { "bitrate": 300000, "qp_min": 20, "qp_max": 42,  "qp_delta": -6 },
+            "level5": { "bitrate": 100000, "qp_min": 30, "qp_max": 51,  "qp_delta": -6 }
+            },
+            "day-still": {
+            "level1": { "bitrate": 1800000, "qp_min": 20, "qp_max": 38,  "qp_delta": -6 },
+            "level2": { "bitrate": 1200000, "qp_min": 20, "qp_max": 38,  "qp_delta": -6 },
+            "level3": { "bitrate": 600000, "qp_min": 20, "qp_max": 42,  "qp_delta": -10 },
+            "level4": { "bitrate": 300000, "qp_min": 20, "qp_max": 42,  "qp_delta": -10 },
+            "level5": { "bitrate": 100000, "qp_min": 30, "qp_max": 51,  "qp_delta": -10 }
+            },
+            "night-move": {
+            "level1": { "bitrate": 1800000, "qp_min": 20, "qp_max": 35,  "qp_delta": -3 },
+            "level2": { "bitrate": 1200000, "qp_min": 20, "qp_max": 35,  "qp_delta": -3 },
+            "level3": { "bitrate": 600000, "qp_min": 20, "qp_max": 39,  "qp_delta": -6 },
+            "level4": { "bitrate": 300000, "qp_min": 20, "qp_max": 39,  "qp_delta": -6 },
+            "level5": { "bitrate": 100000, "qp_min": 30, "qp_max": 51,  "qp_delta": -6 }
+            },
+            "night-still": {
+            "level1": { "bitrate": 1800000, "qp_min": 20, "qp_max": 35,  "qp_delta": -6 },
+            "level2": { "bitrate": 1200000, "qp_min": 20, "qp_max": 35,  "qp_delta": -6 },
+            "level3": { "bitrate": 600000, "qp_min": 20, "qp_max": 39,  "qp_delta": -10 },
+            "level4": { "bitrate": 300000, "qp_min": 20, "qp_max": 39,  "qp_delta": -10 },
+            "level5": { "bitrate": 100000, "qp_min": 30, "qp_max": 51,  "qp_delta": -10 }
+            }
+	},
+	"enc480p-stream": {
+		"day-move": {
+            "level1": { "bitrate": 1000000, "qp_min": 20, "qp_max": 30,  "qp_delta": -3 },
+            "level2": { "bitrate": 600000, "qp_min": 20, "qp_max": 30,  "qp_delta": -3 },
+            "level3": { "bitrate": 400000, "qp_min": 20, "qp_max": 35,  "qp_delta": -6 },
+            "level4": { "bitrate": 100000, "qp_min": 20, "qp_max": 40,  "qp_delta": -6 },
+            "level5": { "bitrate": 50000, "qp_min": 30, "qp_max": 51,  "qp_delta": -6 }
+            },
+            "day-still": {
+            "level1": { "bitrate": 1000000, "qp_min": 20, "qp_max": 30,  "qp_delta": -6 },
+            "level2": { "bitrate": 600000, "qp_min": 20, "qp_max": 30,  "qp_delta": -6 },
+            "level3": { "bitrate": 400000, "qp_min": 20, "qp_max": 30,  "qp_delta": -10 },
+            "level4": { "bitrate": 100000, "qp_min": 20, "qp_max": 35,  "qp_delta": -10 },
+            "level5": { "bitrate": 50000, "qp_min": 30, "qp_max": 51,  "qp_delta": -10 }
+            },
+            "night-move": {
+            "level1": { "bitrate": 1000000, "qp_min": 20, "qp_max": 27,  "qp_delta": -3 },
+            "level2": { "bitrate": 600000, "qp_min": 20, "qp_max": 27,  "qp_delta": -6 },
+            "level3": { "bitrate": 400000, "qp_min": 20, "qp_max": 32,  "qp_delta": -6 },
+            "level4": { "bitrate": 100000, "qp_min": 20, "qp_max": 35,  "qp_delta": -6 },
+            "level5": { "bitrate": 50000, "qp_min": 30, "qp_max": 51,  "qp_delta": -6 }
+            },
+            "night-still": {
+            "level1": { "bitrate": 1000000, "qp_min": 20, "qp_max": 27,  "qp_delta": -6 },
+            "level2": { "bitrate": 600000, "qp_min": 20, "qp_max": 27,  "qp_delta": -6 },
+            "level3": { "bitrate": 400000, "qp_min": 20, "qp_max": 37,  "qp_delta": -10 },
+            "level4": { "bitrate": 100000, "qp_min": 20, "qp_max": 32,  "qp_delta": -10 },
+            "level5": { "bitrate": 50000, "qp_min": 30, "qp_max": 51,  "qp_delta": -10 }
+            }
+	}
+}
+

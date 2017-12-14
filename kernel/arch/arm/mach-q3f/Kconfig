@@ -1,0 +1,67 @@
+#
+#		
+#     Copyright (c) 2009~2014 ShangHai Infotm Ltd all rights reserved.
+#	  Use of Infotm's code is governed by terms and conditions
+#	  stated in the accompanying licensing statement. 
+#	  Author:
+#          ALex Zhang   <tao_zhang@infotm.com>
+#	  Revision History: 
+#		   ----------------
+#		   1.1  16/09/2009  Alex Zhang   
+
+ menu "Q3F Machines"
+
+ config MACH_Q3F
+    bool "Apollo2-Q3F"
+    select CPU_Q3F
+	select ARM_GIC
+    help
+      Say Y here if you are using the Q3F
+
+endmenu
+
+config CPU_Q3F
+    bool
+    depends on ARCH_Q3F
+    help
+      Support for Q3F Infotm Mobile CPU based systems.
+
+
+config Q3F_FPGA_PLATFORM
+    bool "Q3F FPGA TEST"
+    depends on ARCH_Q3F
+    default n
+    help
+       If you are operating on the FPGA platform, set Y here!
+
+config FPGA_CPU_CLK
+    int "FPGA cpu clock configure"
+    depends on Q3F_FPGA_PLATFORM
+    default "40000000"
+
+config FPGA_EXTEND_CLK
+    int "FPGA externel clock configure"
+    depends on Q3F_FPGA_PLATFORM
+    default "40000000"
+
+config FPGA_UART_CLK
+	int "FPGA uart clock configure"
+	depends on Q3F_FPGA_PLATFORM
+	default "40000000"
+
+config Q3F_DMA
+    bool
+    depends on ARCH_Q3F
+    select PL330
+    default y
+    help
+    apollo dma enable
+
+config  FAKE_PM
+        bool "Support for fake power manage"
+        depends on ARCH_Q3F
+        default n
+
+
+
+

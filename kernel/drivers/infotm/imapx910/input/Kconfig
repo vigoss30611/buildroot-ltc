@@ -1,0 +1,15 @@
+ #                                                 
+ #  Input device configuration                     
+ #                                                 
+ #                                                 
+menuconfig IMAPX910_INPUT                            
+        bool "imapx910 input device driver support"  
+        default y                                  
+        help                                       
+               Infotm input device driver suport   
+if IMAPX910_INPUT                                    
+                                                   
+source "drivers/infotm/imapx910/input/keyboard/Kconfig"     
+                                                   
+endif                                              
+

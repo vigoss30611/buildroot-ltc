@@ -1,0 +1,28 @@
+menuconfig BR2_PACKAGE_EFL
+	bool "Enlightenment Foundation Libraries"
+	depends on BR2_USE_WCHAR
+	help
+	  Enlightenment Foundation Libraries
+
+	  http://enlightenment.org
+
+if BR2_PACKAGE_EFL
+
+source "buildroot/package/efl/expedite/Config.in"
+source "buildroot/package/efl/libeina/Config.in"
+source "buildroot/package/efl/libecore/Config.in"
+source "buildroot/package/efl/libeet/Config.in"
+source "buildroot/package/efl/libefreet/Config.in"
+source "buildroot/package/efl/libeio/Config.in"
+source "buildroot/package/efl/libevas/Config.in"
+source "buildroot/package/efl/libevas-generic-loaders/Config.in"
+source "buildroot/package/efl/libembryo/Config.in"
+source "buildroot/package/efl/libedje/Config.in"
+source "buildroot/package/efl/libethumb/Config.in"
+source "buildroot/package/efl/libelementary/Config.in"
+source "buildroot/package/efl/libedbus/Config.in"
+
+endif # BR2_PACKAGE_EFL
+
+comment "EFL needs a toolchain w/ wchar"
+	depends on !BR2_USE_WCHAR

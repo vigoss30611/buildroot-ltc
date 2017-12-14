@@ -1,0 +1,13 @@
+if BR2_PACKAGE_DIRECTFB
+config BR2_PACKAGE_DFBSEE
+	bool "DFBSee"
+	help
+	  DFBSee is an image viewer and video player, the current
+	  version is a quick hack but nice though.
+	  http://www.directfb.org/
+endif
+
+config BR2_PACKAGE_HOST_DIRECTFB
+	bool
+	default y if BR2_PACKAGE_DFBSEE
+	default n

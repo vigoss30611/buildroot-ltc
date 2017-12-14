@@ -1,0 +1,25 @@
+{
+    "v4l2": {
+        "ipu": "v4l2",
+        "args": {
+            "driver":"imapx_camif",
+            "model": "xc9080",
+            "pixfmt": "yuyv"
+        },
+        "port": {
+            "out": {
+                "w": 2160,
+                "h": 1080,
+                "pixel_format": "yuyv",
+                "bind": { "sink": "in" }
+            }
+        }
+    },
+    "sink": {
+        "ipu": "filesink",
+        "args": {
+            "data_path": "/mnt/sd0/camera.raw",
+            "max_save_cnt": 1
+        }
+    }
+}

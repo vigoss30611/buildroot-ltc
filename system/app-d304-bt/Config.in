@@ -1,0 +1,6 @@
+config BR2_PACKAGE_APP_D304_BT
+	bool "app-d304-bt"
+	help
+	  app-d304-main app 
+
+	  http://www.infotm.com/

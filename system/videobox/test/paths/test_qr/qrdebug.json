@@ -1,0 +1,22 @@
+{
+	"isp": {
+		"ipu": "v2500",
+		"args": {
+			"mode": 6,
+			"name": "AR330MIPI",
+			"config": "/root/.ispddk/config-normal.txt"
+		},
+		"port": {
+			"out": {
+				"w": 640,
+				"h": 480,
+				"pixel": "nv21",
+				"bind": { "qr": "in", "display": "osd0" }
+			}
+		}
+	},
+
+	"display": { "ipu": "ids" },
+	"qr": { "ipu": "vaqrscanner"}
+}
+

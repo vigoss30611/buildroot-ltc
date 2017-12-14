@@ -1,0 +1,67 @@
+config BR2_PACKAGE_UBOOT
+	bool "U-Boot"
+	help
+	  Build "Das U-Boot" Boot Monitor
+if BR2_PACKAGE_UBOOT
+config BR2_PACKAGE_UBOOT_LOCAL_SOURCE
+	bool "Local source"
+	help
+	  This option allows to use a local uboot source
+
+config BR2_PACKAGE_UBOOT_LOCAL_PATH
+	string "Local path of uboot source"
+	default "${TOPDIR}/uboot"
+	help
+		use local source for uboot, and build outside of source directory
+
+choice
+	prompt "Boot Device"
+	default BR2_PACKAGE_UBOOT_BOOT_DEVICE_SPI_FLASH
+
+config BR2_PACKAGE_UBOOT_BOOT_DEVICE_SPI_FLASH
+	bool "spi-flash"
+	help
+	  spi flash device
+config BR2_PACKAGE_UBOOT_BOOT_DEVICE_EMMC
+	bool "emmc"
+	help
+	  emmc device
+config BR2_PACKAGE_UBOOT_BOOT_DEVICE_MMC
+	bool "mmc"
+	help
+	  mmc device
+endchoice
+
+config BR2_PACKAGE_UBOOT_BURN_DEVICE_MMC
+	bool "Support SD/TF-card as Burn Source"
+	default y
+	help
+	  This option allows to use sd/tf card to burn
+
+config BR2_PACKAGE_UBOOT_BURN_DEVICE_UDC
+	bool "Support UDC as Burn Source"
+	default n
+	help
+	  This option allows to use USB linkPC to burn
+
+config BR2_PACKAGE_IROM_SKIP_MMC_CHECK
+	bool "Forbid IROM read SD/TF-card"
+	default n
+	help
+	  IROM may get stucked by some bad card, but it is inside the chip and can't be upgraded. This option allow IROM skip checking the card and then we could do all the job in uboot
+
+choice 
+	prompt "Board platform type"
+	default BR2_TARGET_UBOOT_BOOT_PLAT_SOC 
+
+config BR2_TARGET_UBOOT_BOOT_PLAT_FPGA
+	bool "compile for fpga debug"
+	help 
+		for q3f fpga debug
+config BR2_TARGET_UBOOT_BOOT_PLAT_SOC
+	bool "compile for common use"
+	help 
+		for q3f common use
+endchoice
+
+endif

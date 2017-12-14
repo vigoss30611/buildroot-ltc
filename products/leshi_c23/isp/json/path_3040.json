@@ -1,0 +1,82 @@
+{
+    "isp": {
+        "ipu": "v2500",
+        "args": {
+            "flip": 2,
+            "nbuffers": 3
+        },
+        "port": {
+            "out": {
+                "w": 1920,
+                "h": 960,
+                "pixel_format": "nv12",
+                "minfps": 30,
+                "maxfps": 30,
+                "bind": { "ispost": "in" }
+            },
+            "cap": {
+                "w": 3072,
+                "h": 1520,
+                "pip_x": 0,
+                "pip_y": 0,
+                "pip_w": 3040,
+                "pip_h": 1520,
+                "lock_ratio": 1,
+                "pixel_format": "nv12",
+                "bind": { "ispost-snap": "in" }
+            }
+
+        }
+    },
+
+    "ispost": {
+        "ipu": "ispostv2",
+        "args": {
+            "buffers": 3,
+            "fisheye": 1,
+            "fcefile":"/root/.videobox/fcefile_for_blending.json",
+            "dn_enable": 0
+        },
+        "port": {
+            "uo": {
+                "w": 1920,
+                "h": 960,
+                "pixel_format": "nv12",
+                "bind": { "encavc0":"frame", "jpegfull":"in" }
+            }
+        }
+    },
+    "ispost-snap": {
+        "ipu": "ispostv2",
+        "args": {
+            "buffers" : 1,
+            "fcefile":"/root/.videobox/fcefile_for_blending_snap_3040.json",
+            "dn_enable" : 0,
+            "snapmode" : 1,
+            "snapbufmode" : 2
+        },
+        "port": {
+            "in": {
+                "pip_x": 0,
+                "pip_y": 0,
+                "pip_w": 3040,
+                "pip_h": 1520
+            },
+            "uo": {
+                "w": 3040,
+                "h": 1520,
+                "bind": { "jpeg":"in" }
+            }
+        }
+    },
+
+    "encavc0": {
+	 "ipu": "vencoder",
+	 "args": {
+         	"encode_type": "h264"
+         }
+    },
+    "jpeg": { "ipu": "h1jpeg", "args": { "mode": "trigger"}},
+    "jpegfull": { "ipu": "h1jpeg", "args": { "mode": "trigger"}}
+}
+

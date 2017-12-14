@@ -1,0 +1,123 @@
+{
+	"isp": {
+		"ipu": "v2500",
+		"args": {
+			"mode": 4,
+			"name": "AR330MIPI",
+			"config": "/root/.ispddk/config-normal.txt"
+		},
+		"port": {
+			"out": {
+				"w": 1920,
+				"h": 1088,
+				"pixel": "nv12",
+				"bind": { "ispost0": "in" }
+			},
+			"his": {
+				"bind": { "vam": "in" }
+			}
+		}
+	},
+
+	"marker0": {
+		"ipu": "marker",
+		"args": {
+			"mode": 0
+		},
+		"port": {
+			"out": {
+				"w": 800,
+				"h": 64,
+				"pixel": "nv12",
+				"bind": { "ispost0": "ol" }
+			}
+		}
+	},
+
+	"ispost0": {
+		"ipu": "ispost",
+		"args": {
+			"dn_enable":1,
+			"dn_target_index":0,
+			"lc_grid_file_name1":"/root/.ispost/lc_v1_hermite32_1920x1088_scup_0~30.bin" 
+		},
+		"port": {
+			"ol": {
+				"pip_x":576,
+				"pip_y":960
+			},
+			"ss0": {
+				"w": 1280,
+				"h": 720,
+				"pixel": "nv12",
+				"bind": { "enc720p": "frame", "encrecord": "frame" }
+			},
+			"dn": {
+				"w": 1920,
+				"h": 1088,
+				"pixel": "nv12",
+				"bind": { "enc1080p": "frame" }
+			},
+			"ss1":{
+				"w": 640,
+				"h": 360,
+				"pixel": "nv12",
+				"bind": { "encvga": "frame" }
+			}
+		}
+	},
+
+       "dgframe":{
+                "ipu":"dg-frame",
+                "args":{
+			"frames":2,
+                        "data":"/root/.ispost/fisheye_1080x1080.yuv"
+                },
+                "port":{
+                        "out":{
+                                "w":1080,
+                                "h":1080,
+                                "pixel":"nv12",
+                                "bind":{ "ispost":"in" }
+                        }
+                }
+        },
+        "ispost": {
+                "ipu": "ispost",
+                "args": {
+                        "lc_grid_count":99,
+                        "lc_grid_file_name1": "/root/.ispost/lc_v1_hermite32_1080x1080_fisheyes_0~99.bin"
+                },
+                "port": {
+                        "dn": {
+                                "w": 1080,
+                                "h": 1080,
+                                "pixel": "nv12",
+                                "bind": {"display":"osd0"}
+                        }
+                }
+        },
+
+	"enc1080p": { "ipu": "vencoder",
+				"args": {
+					"encode_type": "h265"
+				}
+	},
+	"enc720p": { "ipu": "vencoder",
+				"args": {
+					"encode_type": "h265"
+				}
+	},
+	"encvga": { "ipu": "vencoder",
+				"args": {
+					"encode_type": "h265"
+				}
+	},
+	"encrecord": { "ipu": "vencoder",
+				"args": {
+					"encode_type": "h265"
+				}
+	},
+	"display": { "ipu": "ids"},
+	"vam": { "ipu": "vamovement"}
+}

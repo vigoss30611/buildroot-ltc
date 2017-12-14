@@ -1,0 +1,11 @@
+
+header:
+crypto.h usr/include
+id_rsa.pub usr/include
+
+static:
+.libs/*.a usr/lib
+
+shared:
+.libs/libcrypto_rsa.so* usr/lib
+

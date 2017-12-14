@@ -1,0 +1,44 @@
+{
+    "mode_number": 1,
+    "mode_list0": {
+        "file_number":2,
+        "file_list0": {
+            "file_grid":"/root/.ispost/lc_left_hermite32_1280x720-1280x720_perspective.bin",
+            "file_geo":"/root/.ispost/lc_v1_0-0-0-0_hermite32_640x480-640x480_geo.bin",
+            "outport_number":2,
+            "outport_list0": {
+                "port":"ss0",
+                "x":0,
+                "y":0,
+                "w":640,
+                "h":360
+            },
+            "outport_list1": {
+                "port":"dn",
+                "x":0,
+                "y":0,
+                "w":1280,
+                "h":720
+            }
+        },
+        "file_list1": {
+            "file_grid":"/root/.ispost/lc_right_hermite32_1280x720-1280x720_perspective.bin",
+            "file_geo":"/root/.ispost/lc_v1_0-0-0-0_hermite32_640x480-640x480_geo.bin",
+            "outport_number":2,
+            "outport_list0": {
+                "port":"ss0",
+                "x":640,
+                "y":0,
+                "w":640,
+                "h":360
+            },
+            "outport_list1": {
+                "port":"dn",
+                "x":1280,
+                "y":0,
+                "w":1280,
+                "h":720
+            }
+        }
+    }
+}

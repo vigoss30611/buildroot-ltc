@@ -1,0 +1,17 @@
+diff -ur drivers/staging/android/ion/ion.c drivers/staging/android/ion/ion.c
+--- drivers/staging/android/ion/ion.c	2014-06-30 18:21:43.869534907 +0100
++++ drivers/staging/android/ion/ion.c	2014-06-30 18:21:00.430092188 +0100
+@@ -1570,9 +1570,12 @@
+ 				      unsigned int cmd,
+ 				      unsigned long arg))
+ {
+-	struct ion_device *idev;
++	static struct ion_device *idev;
+ 	int ret;
+ 
++	if (idev)
++		return idev;
++
+ 	idev = kzalloc(sizeof(struct ion_device), GFP_KERNEL);
+ 	if (!idev)
+ 		return ERR_PTR(-ENOMEM);

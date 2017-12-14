@@ -1,0 +1,15 @@
+#! /bin/sh
+
+case "$1" in
+	start|"")
+		#audiobox &
+		;;
+	stop)
+		killall audiobox
+		;;
+	*)
+		echo "Usage: audiobox {start|stop}" >&2
+		exit 1
+		;;
+esac
+

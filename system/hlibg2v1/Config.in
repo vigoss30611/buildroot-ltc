@@ -1,0 +1,17 @@
+config BR2_PACKAGE_HLIBG2V1
+	bool "libhw_vdec_g2"
+
+	help
+		hlibg2v1 library
+		http://www.infotm.com/
+
+if BR2_PACKAGE_HLIBG2V1 
+menu "options"
+	config  BR2_PACKAGE_HLIBG2V1_INSTALL_SHARED
+		bool "Install Shared"
+		default y
+		help
+	  		install shared library into target dir	
+endmenu
+
+endif

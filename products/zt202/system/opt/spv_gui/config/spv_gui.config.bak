@@ -1,0 +1,50 @@
+#current
+current.mode=Video #Video Photo Playback Setup
+current.reverseimage=Off #On Off
+
+#video
+video.resolution=1080FHD #1080FHD (720P 30FPS) WVGA VGA //(720P 60FPS) 
+video.looprecording=1 Minute #Off (1 Minute) (3 Minutes) (5 Minutes) //(10 Minutes)
+video.rearcamera=On #On Off
+video.pip=On #On Off
+video.frontbig=On #On Off
+video.wdr=Off #On Off
+video.ev=0 #+2.0 +1.5 +1.0 +0.5 0 -0.5 -1.0 -1.5 -2.0
+video.recordaudio=On #On Off
+video.datestamp=On #On Off
+video.gsensor=Medium #Off Low Medium High
+video.adas=Off #Off On
+video.platestamp=Off #On Off
+
+#photo
+photo.capturemode=Single #Single (2S Timer) (5S Timer) (10S Timer)
+photo.resolution=2MHD #2MHD VGA 1.3M //12M 10M 8M 5M 3M 
+photo.sequence=Off #On Off
+photo.quality=Fine #Fine Normal Economy
+photo.sharpness=Normal #Strong Normal Soft
+photo.whitebalance=Auto #Auto Daylight Cloudy Tungsten Fluorescent
+photo.color=Color #Color Black&White Sepia
+photo.isolimit=Auto #Auto 800 400 200 100
+photo.ev=0 #+2.0 +1.5 +1.0 +0.5 0 -0.5 -1.0 -1.5 -2.0
+photo.antishaking=Off #On Off
+photo.datestamp=Off #On Off
+
+#playback
+
+#setup
+setup.wifi=On #On Off
+setup.time.syncgps=On #On Off
+setup.autopoweroff=Off #Off (3 Minutes) (5 Minutes) (10 Minutes)
+setup.beepsound=70% #10% 20% 30% 40% 50% 60% 70% 80% 90% 100% 
+setup.keytone=On #On Off 
+setup.language=ZH #EN ZH TW FR ES IT PT DE RU -------- English 简体中文 繁體中文 Français Español Italiano Português Deutsch Русский
+setup.delayedshutdown=10 Seconds #(10 Seconds) (20 Seconds) (30 Seconds) Off
+setup.display.sleep=Off #(3 Minute) (5 Minutes) (10 Minutes) Never
+setup.display.brightness=High #High Medium Low
+setup.tvmode=PAL #NTSC PAL
+setup.parkingguard=Off #On Off
+setup.frequency=50Hz #50Hz 60Hz
+setup.irled=Off #Auto On Off
+setup.imagerotation=Off #On Off
+setup.platenumber=京A00001 #Auto On Off
+

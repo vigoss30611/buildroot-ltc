@@ -1,0 +1,47 @@
+From 8eb4d1b0d33a7f82de179d5770c17180a8c7d88b Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Micha=C5=82=20Lebik?= <michal.lebik@imgtec.com>
+Date: Mon, 17 Nov 2014 11:34:49 +0100
+Subject: [PATCH] Auto loading of Felix.ko at init stage + owner change of
+ /dev/ion
+
+---
+ init.goldfish.rc |    9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/init.goldfish.rc b/init.goldfish.rc
+index 9c08c6e..09c934e 100644
+--- a/init.goldfish.rc
++++ b/init.goldfish.rc
+@@ -12,6 +12,7 @@ on init
+     # Support legacy paths
+     symlink /storage/sdcard /sdcard
+     symlink /storage/sdcard /mnt/sdcard
++    chmod 666 /dev/ion
+ 
+ on boot
+     setsebool in_qemu 1
+@@ -46,7 +47,7 @@ on boot
+ 
+ # enable Google-specific location features,
+ # like NetworkLocationProvider and LocationCollector
+-    setprop ro.com.google.locationfeatures 1
++    setprop ro.com.google.locationfeatures 0
+ 
+ # For the emulator, which bypasses Setup Wizard, you can specify
+ # account info for the device via these two properties.  Google
+@@ -62,7 +63,11 @@ on boot
+ # something else.
+ 
+ on fs
+-        mount_all /fstab.goldfish
++    mount_all /fstab.goldfish
++    chmod 600 /data/Felix.ko
++    insmod /data/Felix.ko
++    chown media media /dev/imgfelix0
++    chown media media /dev/imgfelixDG0
+ 
+ service goldfish-setup /system/etc/init.goldfish.sh
+     user root
+-- 
+1.7.9.5
+

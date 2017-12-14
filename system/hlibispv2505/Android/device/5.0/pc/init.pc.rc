@@ -1,0 +1,93 @@
+import /init.pc_extras_gps.rc
+import /init.pc_extras_wifi.rc
+import /init.pc_extras_wired.rc
+
+on init
+	# SELinux support
+	#setenforce 1
+	#setsebool debugfs 1
+
+    	# See storage config details at http://source.android.com/tech/storage/
+    	mkdir /mnt/shell/emulated 0700 shell shell
+    	mkdir /storage/emulated 0555 root root
+
+    	# Set permissions for persist partition
+    	mkdir /persist 0771 system system
+    	mkdir /firmware 0771 system system
+
+    	export EXTERNAL_STORAGE /storage/emulated/legacy
+    	export EMULATED_STORAGE_SOURCE /mnt/shell/emulated
+    	export EMULATED_STORAGE_TARGET /storage/emulated
+
+    	# Support legacy paths
+    	symlink /storage/emulated/legacy /sdcard
+    	symlink /storage/emulated/legacy /mnt/sdcard
+    	symlink /storage/emulated/legacy /storage/sdcard0
+    	symlink /mnt/shell/emulated/0 /storage/emulated/legacy
+
+on early-fs
+	mount_all /fstab.pc
+
+on post-fs-data
+	# we will remap this as /storage/sdcard0 with the sdcard fuse tool
+	mkdir /data/media 0770 media_rw media_rw
+	setprop vold.post_fs_data_done 1
+
+	# Create the directories used by the Wireless subsystem
+	mkdir /data/misc/wifi 0770 wifi wifi
+	mkdir /data/misc/wifi/sockets 0770 wifi wifi
+	mkdir /data/misc/dhcp 0770 dhcp dhcp
+
+	# to observe dnsmasq.leases file for dhcp information of soft ap.
+	chown dhcp system /data/misc/dhcp
+	chown system wifi /data/misc/wifi/wpa_supplicant.conf
+
+service dhcpcd_eth0 /system/bin/dhcpcd eth0
+	class main
+	disabled
+	oneshot
+
+service iprenew_eth0 /system/bin/dhcpcd -n
+	disabled
+	oneshot
+
+# Override init.rc's mounting of root read-only.
+# If the system is booted over NFS, this will cause /data to be
+# non-writable, which is problematic.
+on post-fs
+	mount rootfs rootfs / rw remount
+	chown dhcp dhcp /system/etc/dhcpcd/dhcpcd-run-hooks
+
+on fs
+	setprop ro.crypto.fuse_sdcard true
+	insmod /system/lib/modules/3.10.0+/extra/imgion.ko enable_system_heap=1 enable_contig_heap=1 carveout_pci_vendor=0x1010 carveout_pci_product=0x1cf2 carveout_pci_bar=2
+	insmod /system/lib/modules/Felix.ko
+	chmod 4666 /sys/bus/pci/devices/0000:01:00.0/resource1
+	chown system system /sys/bus/pci/devices/0000:01:00.0/resource1
+
+# we must stop default console defined in main init.rc
+on property:vendor.stop_console=1
+    stop console
+
+on boot
+	mount debugfs debugfs /sys/kernel/debug mode=755
+
+	# Prevent suspend
+	write /sys/power/wake_lock pvr.keep_alive
+	start dhcpcd_eth0
+	setprop vendor.stop_console 1 
+	start rootconsole
+
+# virtual sdcard daemon running as media_rw (1023)
+service sdcard /system/bin/sdcard -u 1023 -g 1023 -l /data/media /mnt/shell/emulated
+        class main
+
+
+service rootconsole /system/bin/sh
+	class main
+	console
+	disabled
+	user root
+	group log
+
+	

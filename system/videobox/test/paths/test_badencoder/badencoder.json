@@ -1,0 +1,18 @@
+{
+	"dg0": {
+		"ipu": "dg-pixel",
+		"args": {
+			"path": "/root/.ispddk/config-normal.txt"
+		},
+		"port": {
+			"out": {
+				"w": 3840,
+				"h": 2160,
+				"pixel": "nv12",
+				"bind": { "be": "in" }
+			}
+		}
+	},
+
+	"be": { "ipu": "badencoder" }
+}

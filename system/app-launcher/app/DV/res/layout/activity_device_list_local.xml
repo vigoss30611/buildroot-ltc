@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="长按进入设置"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/btn_local_refresh"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.62"
+            android:text="@string/device_search" />
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/lv_local"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:cacheColorHint="@android:color/transparent" />
+
+</LinearLayout>

@@ -1,0 +1,15 @@
+#!/bin/bash
+help(){
+    echo -e "sync rootfs from filelist"
+    echo -e "usage :  must run in qsdk root dir"
+    echo -e "\t app src_dir  des_dir"
+}
+if [[ ! -d tools ]];then
+    help
+    exit 1
+fi
+if [[ $# < 1 ]] ; then
+    help
+    exit 1
+fi
+cp -rf $1/* $2

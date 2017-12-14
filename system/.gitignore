@@ -1,0 +1,21 @@
+*.log
+.deps/
+*.cache/
+*.status
+
+
+#bin file
+*.o
+*.a
+*.so
+*.la
+*.lo
+.libs
+
+
+#vim file
+*.swp
+*.swo
+*.sw*
+tags
+.vscode/

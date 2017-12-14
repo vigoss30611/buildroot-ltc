@@ -1,0 +1,30 @@
+config UBOOT0
+	bool "UBoot0"
+	help
+	  Build "UBoot0" Boot Monitor
+if UBOOT0
+config UBOOT_LOCAL_PATH
+	string "Local path of uboot source"
+	default "${TOPDIR}/uboot0"
+	help
+		use local source for uboot
+
+choice
+	prompt "Boot Mode"
+	default UBOOT_BOOT_DEVICE_SPI_FLASH
+
+config UBOOT_BOOT_DEVICE_SPI_FLASH
+	bool "spi-flash"
+	help
+	  spi flash device
+config UBOOT_BOOT_DEVICE_EMMC
+	bool "emmc"
+	help
+	  emmc device
+endchoice
+endif
+
+config UBOOT1
+	bool "UBoot1"
+	help
+		Build "UBoot1" second Boot Monitor

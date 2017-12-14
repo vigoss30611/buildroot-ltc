@@ -1,0 +1,20 @@
+menuconfig INFOTM_MFD
+  bool "Infotm mfd driver support"
+  help
+    Infotm multi func device driver support
+
+if INFOTM_MFD
+
+config APOLLO_MFD
+ bool "apollo mfd driver support"
+ help
+   apollo multi func device driver support
+
+config PMIC_DEBUG_IF
+ bool "PMIC register debug interface"
+ depends on INFOTM_MFD
+ default n
+ help
+   debug function for PMICs 
+
+endif

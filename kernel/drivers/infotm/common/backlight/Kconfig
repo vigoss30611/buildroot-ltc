@@ -1,0 +1,17 @@
+menuconfig INFOTM_BACKLIGHT
+        bool "Infotm Backlight support"
+        default y
+        help
+        This is the Infotm internal Backlight driver
+
+if INFOTM_BACKLIGHT
+
+
+config BACKLIGHT_IMAPX
+       tristate "iMAPx Backlight driver"
+	   default y
+       help
+        backlight driver for iMAPx.
+endif
+
+

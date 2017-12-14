@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+	android:background="@color/white">
+    <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="设备断开连接"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:padding="10dp"
+        
+        android:background="@color/blue_dark"/>
+    <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="设备断开连接,\n请重新连接设备！"
+        android:textSize="21sp"
+        android:padding="20dp"
+        android:gravity="center"
+         android:textColor="@color/setting_text"/>
+            <TextView
+
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
+        android:background="@color/gray"/>
+    <RelativeLayout
+        android:id="@+id/ok"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:gravity="center"
+        android:background="@drawable/funciont_botton_selector" >
+    
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="确  定"
+        android:gravity="bottom"
+        android:textSize="21sp"
+        android:textColor="@color/setting_text"
+        android:padding="@dimen/padding_default"/>
+</RelativeLayout>
+</LinearLayout>

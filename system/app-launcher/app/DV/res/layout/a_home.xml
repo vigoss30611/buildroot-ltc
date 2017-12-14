@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/btn_remote"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_default_normal_holo_dark"
+            android:gravity="center|left"
+            android:drawableLeft="@drawable/btn_cam_paired"
+            android:text="@string/experience_cam_searching"
+            android:textSize="@dimen/textsize_c2" />
+
+        <ProgressBar
+            android:id="@+id/pb_remote_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+    </FrameLayout>
+    
+    <ImageView 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/localpicbg"
+        android:scaleType="centerCrop"/>
+
+<!--     <include -->
+<!--         android:id="@+id/wrapper_vod" -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="0.0dip" -->
+<!--         android:layout_weight="1.0" -->
+<!--         layout="@layout/include_home_row" /> -->
+
+<!--     <include -->
+<!--         android:id="@+id/wrapper_pod" -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="0.0dip" -->
+<!--         android:layout_weight="1.0" -->
+<!--         layout="@layout/include_home_row" /> -->
+
+<!--     <include -->
+<!--         android:id="@+id/wrapper_roll" -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="0.0dip" -->
+<!--         android:layout_weight="1.0" -->
+<!--         layout="@layout/include_home_row" /> -->
+
+</LinearLayout>

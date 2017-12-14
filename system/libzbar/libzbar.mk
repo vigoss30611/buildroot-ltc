@@ -1,0 +1,27 @@
+# libzbar
+
+LIBZBAR_VERSION = 1.0.0
+LIBZBAR_SOURCE = 
+LIBZBAR_SITE  = 
+
+LIBZBAR_LICENSE = 
+LIBZBAR_LICENSE_FILES = README
+
+LIBZBAR_MAINTAINED = YES
+LIBZBAR_AUTORECONF = YES
+LIBZBAR_INSTALL_STAGING = YES
+LIBZBAR_MAKE = make -s
+LIBZBAR_DEPENDENCIES = host-pkgconf
+
+# install headers
+define LIBZBAR_POST_INSTALL_STAGING_HEADERS
+	mkdir -p $(STAGING_DIR)/usr/include/zbar
+	mkdir -p $(STAGING_DIR)/usr/lib/pkgconfig
+	cp -rfv $(LIBZBAR_SRCDIR)/include/*  $(STAGING_DIR)/usr/include/zbar
+	cp -rfv $(LIBZBAR_SRCDIR)/zbar.pc  $(STAGING_DIR)/usr/lib/pkgconfig/
+endef
+
+LIBZBAR_POST_INSTALL_STAGING_HOOKS  += LIBZBAR_POST_INSTALL_STAGING_HEADERS
+
+$(eval $(cmake-package))
+

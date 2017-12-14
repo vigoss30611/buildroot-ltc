@@ -1,0 +1,116 @@
+config BR2_PACKAGE_HLIBCAMSENSOR
+	
+	bool "hlibcamsensor"
+    default y
+    help
+	    camera sensor hardware abstraction layer. 
+if BR2_PACKAGE_HLIBCAMSENSOR
+menu "select build source codes types"
+	config BUILD_ALL_CAMERA_SENSORS
+	tristate "BUILD_ALL_SENSORS"
+    default y
+    help
+        choice build all camera sensor source codes.
+if [ $BUILD_ALL_CAMERA_SENSORS != 'y' ]
+    config BUILD_SELECTED_SENSOR
+    bool "BUILD_SELECTED_SENSOR" 
+    if [ $BUILD_SELECTED_SENSOR = 'y' ]
+    menu "all sensor list"
+        config IIFDG
+        bool "IIFDG"
+        config AR330_DVP
+        bool "AR330_DVP"
+        config AR330_MIPI
+        bool "AR330_MIPI"
+        config IMX322_DVP
+        bool "IMX322_DVP"
+        config IMX179_MIPI
+        bool "IMX179_MIPI"
+        config OV683_MIPI
+        bool "OV683_MIPI"
+        config OV2710_MIPI
+        bool "OV2710_MIPI"
+        config OV4689
+        bool "OV4689"
+        config OV4688
+        bool "OV4688"
+        config P401
+        bool "P401"
+        config SC2135_DVP
+        bool "SC2135_DVP"
+        config SC2235_DVP
+        bool "SC2235_DVP"
+        config SC1135_DVP
+        bool "SC1135_DVP"
+        config SC3035_DVP
+        bool "SC3035_DVP"
+        config STK3855_DVP
+        bool "STK3855_DVP"
+        config DUAL_BRIDGE
+        bool "DUAL_BRIDGE"
+        config XC9080_MIPI
+        bool "XC9080_MIPI"
+    endmenu
+    endif
+endif
+endmenu
+
+menu "select bridge sensors"
+	config BUILD_ALL_BRIDGE_SENSORS
+	tristate "BUILD_ALL_BRIDGE_SENSORS"
+		default y
+	help
+		choice build all bridge sensors
+
+	if [ $BUILD_ALL_BRIDGE_SENSORS != 'y' ]
+		config BUILD_SELECTED_BRIDGE_SENSOR
+		bool "BUILD_SELECTED_BRIDGE_SENSOR"
+		if [ $BUILD_SELECTED_BRIDGE_SENSOR = 'y' ]
+			menu "all bridge sensors list"
+				config AR330_DUAL_DVP
+					bool "AR330_DUAL_DVP"
+				config NT99142_DUAL_DVP
+					bool "NT99142_DUAL_DVP"
+				config SC3035_DUAL_DVP
+					bool "SC3035_DUAL_DVP"
+				config HM2131_DUAL_MIPI
+					bool "HM2131_DUAL_MIPI"
+				config OV4689_DUAL_MIPI
+					bool "OV4689_DUAL_MIPI"
+				config H65_DUAL_MIPI
+					bool "H65_DUAL_MIPI"
+				config K02_DUAL_MIPI
+					bool "K02_DUAL_MIPI"
+				config IMX291_DUAL_DVP
+					bool "IMX291_DUAL_DVP"
+			endmenu
+		endif
+	endif
+endmenu
+
+menu "select bridge"
+	config BUILD_ALL_BRIDGE
+	tristate "BUILD_ALL_BRIDGE"
+		default y
+	help
+		choice build all bridge
+
+	if [ $BUILD_ALL_BRIDGE != 'y' ]
+		config BUILD_SELECTED_BRIDGE
+		bool "BUILD_SELECTED_BRIDGE"
+		if [ $BUILD_SELECTED_BRIDGE = 'y' ]
+			menu "all bridge  list"
+				config BRIDGE_SX2_DVP
+					bool "BRIDGE_SX2_DVP"
+				config BRIDGE_XC9080_MIPI
+					bool "BRIDGE_XC9080_MIPI"
+				config BRIDGE_OV683_MIPI
+					bool "BRIDGE_OV683_MIPI"
+				config BRIDGE_STK3855_DVP
+					bool "BRIDGE_STK3855_DVP"
+			endmenu
+		endif
+	endif
+endmenu
+
+endif

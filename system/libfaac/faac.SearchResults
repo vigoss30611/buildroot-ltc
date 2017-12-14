@@ -1,0 +1,639 @@
+---- useMidSide Matches (4 in 2 files) ----
+Aacenc.c:    myFormat->allowMidside = useMidSide;
+Main.c (frontend):    unsigned int useMidSide = 1;
+Main.c (frontend):            useMidSide = 0;
+Main.c (frontend):    myFormat->allowMidside = useMidSide;
+---- pcmbuf Matches (16 in 3 files) ----
+Aacenc.c:    pcmbuf = (float *)malloc(samplesInput*sizeof(float));
+Aacenc.c:            samplesRead = wav_read_float32(infile, pcmbuf, samplesInput, chanmap);
+Aacenc.c:                (int32_t *)pcmbuf,
+Aacenc.c:    if (pcmbuf) free(pcmbuf);
+Main.c (frontend):    float *pcmbuf;
+Main.c (frontend):    pcmbuf = (float *)malloc(samplesInput*sizeof(float));
+Main.c (frontend):            samplesRead = wav_read_float32(infile, pcmbuf, samplesInput, chanmap);
+Main.c (frontend):                (int32_t *)pcmbuf,
+Main.c (frontend):    if (pcmbuf) free(pcmbuf);
+Maingui.c (frontend):                int *pcmbuf;
+Maingui.c (frontend):                pcmbuf = (short*)LocalAlloc(0, inputSamples*sizeof(int));
+Maingui.c (frontend):                    bytesInput = wav_read_int24(infile, pcmbuf, inputSamples, NULL) * sizeof(int);
+Maingui.c (frontend):                        pcmbuf,
+Maingui.c (frontend):                if (pcmbuf) LocalFree(pcmbuf);
+---- bitbuf Matches (23 in 5 files) ----
+Aacenc.c:    bitbuf = (unsigned char*)malloc(maxBytesOutput*sizeof(unsigned char));
+Aacenc.c:                bitbuf,
+Aacenc.c:                    fwrite(bitbuf, 1, bytesWritten, outfile);
+Aacenc.c:    if (bitbuf) free(bitbuf);
+Cfaac.cpp (common\cfaac):	FREE_ARRAY(mo->bitbuf)
+Cfaac.cpp (common\cfaac):	if(!(mo->bitbuf=(unsigned char *)malloc(maxBytesOutput*sizeof(unsigned char))))
+Cfaac.cpp (common\cfaac):	if((bytesEncoded=faacEncEncode(mo->hEncoder, (int32_t *)buf, mo->samplesInput, mo->bitbuf, mo->maxBytesOutput))<0)
+Cfaac.cpp (common\cfaac):			if((bytesWritten=fwrite(mo->bitbuf, 1, bytesEncoded, mo->aacFile))!=bytesEncoded)
+Cfaac.cpp (common\cfaac):			if(!(bytesWritten=MP4WriteSample(mo->MP4File, mo->MP4track, (unsigned __int8 *)mo->bitbuf, (DWORD)bytesEncoded, dur, mo->ofs, true) ? bytesEncoded : -1))
+Cfaac.h (common\cfaac):unsigned char	*bitbuf;
+Main.c (frontend):    unsigned char *bitbuf;
+Main.c (frontend):    bitbuf = (unsigned char*)malloc(maxBytesOutput*sizeof(unsigned char));
+Main.c (frontend):                bitbuf,
+Main.c (frontend):                    MP4WriteSample(MP4hFile, MP4track, bitbuf, bytesWritten, dur, ofs, 1);
+Main.c (frontend):                    fwrite(bitbuf, 1, bytesWritten, outfile);
+Main.c (frontend):    if (bitbuf) free(bitbuf);
+Maingui.c (frontend):                unsigned char *bitbuf;
+Maingui.c (frontend):                bitbuf = (unsigned char*)LocalAlloc(0, maxOutputBytes*sizeof(unsigned char));
+Maingui.c (frontend):                        bitbuf,
+Maingui.c (frontend):                    WriteFile(hOutfile, bitbuf, bytesWritten, &numberOfBytesWritten, NULL);
+Maingui.c (frontend):                if (bitbuf) LocalFree(bitbuf);
+---- bitRate Matches (254 in 29 files) ----
+Aacenc.c:  "  -b <bitrate>\tSet average bitrate to x kbps. (ABR, lower quality mode)\n"
+Aacenc.c:  "  -q <quality>\tSet default variable bitrate (VBR) quantizer quality in percent.\n"
+Aacenc.c:  "  -b <bitrate>\tSet average bitrate (ABR) to approximately <bitrate> kbps.\n"
+Aacenc.c:    if (bitRate)
+Aacenc.c:        myFormat->bitRate = bitRate / infile->channels;
+Aacenc.c:    bitRate = myFormat->bitRate;
+Aacenc.c:    if (bitRate)
+Aacenc.c:      fprintf(stderr, "Average bitrate: %d kbps\n",
+Aacenc.c:          (bitRate + 500)/1000*infile->channels);
+Aacenc.c:            fprintf(stderr, "   frame          | bitrate | elapsed/estim | "
+Atom_d263.cpp (common\mp4v2):		u_int32_t avgBitrate;
+Atom_d263.cpp (common\mp4v2):		u_int32_t maxBitrate;
+Atom_d263.cpp (common\mp4v2):		bitrAtom->FindProperty("bitr.avgBitrate",
+Atom_d263.cpp (common\mp4v2):		avgBitrate = pProp->GetValue();
+Atom_d263.cpp (common\mp4v2):		bitrAtom->FindProperty("bitr.maxBitrate",
+Atom_d263.cpp (common\mp4v2):		maxBitrate = pProp->GetValue();
+Atom_d263.cpp (common\mp4v2):		if(!maxBitrate && !avgBitrate) {
+Atom_standard.cpp (common\mp4v2):		new MP4Integer32Property("avgBitrate"));
+Atom_standard.cpp (common\mp4v2):		new MP4Integer32Property("maxBitrate"));
+Atom_standard.cpp (common\mp4v2):    AddProperty( new MP4Integer32Property("avgBitrate"));   /* 1 */
+Atom_standard.cpp (common\mp4v2):    AddProperty( new MP4Integer32Property("maxBitrate"));   /* 2 */
+Atom_standard.cpp (common\mp4v2):    AddProperty(new MP4Integer32Property("maxBitRate")); 
+Atom_standard.cpp (common\mp4v2):    AddProperty(new MP4Integer32Property("avgBitRate")); 
+Atom_standard.cpp (common\mp4v2):    AddProperty(new MP4Integer32Property("slidingAvgBitRate")); 
+Cfaac.cpp (common\cfaac):		cfg->EncCfg.bitRate=reg.GetSetDword(REG_BITRATE,DEF_BITRATE); 
+Cfaac.cpp (common\cfaac):		reg.SetDword(REG_BITRATE,cfg->EncCfg.bitRate);
+Cfaac.cpp (common\cfaac):			CurFormat->bitRate=0;//myFormat->bitRate;
+Cfaac.cpp (common\cfaac):			CurFormat->bitRate=(myFormat->bitRate*1000)/wChannels;
+Cfaac.cpp (common\cfaac):		CurFormat->bitRate=DEF_BITRATE;
+Cfaac.h (common\cfaac):#define REG_BITRATE "BitRate"
+Cfaac.h (common\cfaac):#define DEF_BITRATE 0 /* quality on */
+Cfaad.cpp (common\cfaac):	mi->FindBitrate=FALSE;
+Cfaad.cpp (common\cfaac):int Cfaad::adts_parse(aac_buffer *b, int *bitrate, float *length)
+Cfaad.cpp (common\cfaac):    // Read all frames to ensure correct time and bitrate
+Cfaad.cpp (common\cfaac):    *bitrate = (int)(8. * bytes_per_frame * frames_per_sec + 0.5);
+Cfaad.cpp (common\cfaac):void Cfaad::GetAACInfos(aac_buffer *b, DWORD *header_type, float *song_length, int *pbitrate, long filesize)
+Cfaad.cpp (common\cfaac):int		bitrate=0;
+Cfaad.cpp (common\cfaac):        adts_parse(b, &bitrate, &length);
+Cfaad.cpp (common\cfaac):        bitrate = ((unsigned int)(b->buffer[4 + skip_size] & 0x0F)<<19) |
+Cfaad.cpp (common\cfaac):            length = ((float)length*8.f)/((float)bitrate) + 0.5f;
+Cfaad.cpp (common\cfaac):        bitrate = (int)((float)bitrate/1000.0f + 0.5f);
+Cfaad.cpp (common\cfaac):	*pbitrate=bitrate;
+Cfaad.cpp (common\cfaac):void Cfaad::GetAACInfos(char *Filename, aac_buffer *b, DWORD *header_type, float *song_length, int *pbitrate)
+Cfaad.cpp (common\cfaac):	GetAACInfos(b,header_type,song_length,pbitrate,src_size);
+Cfaad.cpp (common\cfaac):		mi->file_info.bitrate=MP4GetTrackBitRate(mi->mp4File, mi->track);
+Cfaad.cpp (common\cfaac):		GetAACInfos(&b,&headertype,&fLength,&mi->file_info.bitrate,mi->src_size);
+Cfaad.cpp (common\cfaac):		mi->file_info.bitrate*=1024;
+Cfaad.cpp (common\cfaac):		if(!mi->FindBitrate) // open a new instance to get info from decoder
+Cfaad.cpp (common\cfaac):			miTmp->FindBitrate=TRUE;
+Cfaad.cpp (common\cfaac):				mi->file_info.bitrate=miTmp->file_info.bitrate;//*mi->Channels;
+Cfaad.cpp (common\cfaac):				setDefaultFaadCfg(mi->hDecoder,mi->FindBitrate);
+Cfaad.cpp (common\cfaac):		if(mi->FindBitrate) // get info from decoder
+Cfaad.cpp (common\cfaac):			if(mi->file_info.headertype==RAW || !mi->file_info.bitrate)
+Cfaad.cpp (common\cfaac):				mi->file_info.bitrate=(BytesConsumed*8*mi->Samprate)/(Samples*2);
+Cfaad.cpp (common\cfaac):			if(!mi->file_info.bitrate)
+Cfaad.cpp (common\cfaac):				return ERROR_getInfos("Can't determine the bitrate");
+Cfaad.cpp (common\cfaac):		mi->len_ms=(DWORD)((mi->src_size<<3)/(mi->file_info.bitrate>>10));
+Cfaad.cpp (common\cfaac)://		mi->len_ms=(DWORD)((1000*((float)mi->src_size*8))/mi->file_info.bitrate);
+Cfaad.cpp (common\cfaac):			mi->bytes_read=(DWORD)(((float)newpos_ms*mi->file_info.bitrate)/(8*1000));
+Cfaad.h (common\cfaac):    int bitrate;
+Cfaad.h (common\cfaac):	DWORD					BitRate;
+Cfaad.h (common\cfaac):BOOL			FindBitrate;
+Cfaad.h (common\cfaac):	int adts_parse(aac_buffer *b, int *bitrate, float *length);
+Cfaad.h (common\cfaac):	void GetAACInfos(aac_buffer *b, DWORD *header_type, float *song_length, int *pbitrate, long filesize);
+Cfaad.h (common\cfaac)://	virtual void GetAACInfos(char *Filename, aac_buffer *b, DWORD *header_type, float *song_length, int *pbitrate);
+Descriptors.cpp (common\mp4v2):		new MP4Integer32Property("maxBitrate"));
+Descriptors.cpp (common\mp4v2):		new MP4Integer32Property("avgBitrate"));
+Descriptors.cpp (common\mp4v2):		new MP4Integer8Property("instantBitrateLength"));
+EncDialog.cpp (common\cfaac):		dwOptions|=(((DWORD)cfg->EncCfg.bitRate>>1)&0xff)<<16; // [2,512]
+EncDialog.cpp (common\cfaac):	cfg->EncCfg.bitRate=((dwOptions>>16)&0xff)<<1;
+EncDialog.cpp (common\cfaac):	EnableWindow(GetDlgItem(hWndDlg, IDC_CB_BITRATE), Enabled); \
+EncDialog.cpp (common\cfaac):	EnableWindow(GetDlgItem(hWndDlg, IDC_RADIO_BITRATE), Enabled); \
+EncDialog.cpp (common\cfaac):		char *BitRate[]={"Auto","8","16","18","20","24","32","40","48","56","64","80","96","112","128","160","192","224","256","320","384",0};
+EncDialog.cpp (common\cfaac):			INIT_CB(hWndDlg,IDC_CB_BITRATE,BitRate,FillList,0);
+EncDialog.cpp (common\cfaac):				CheckDlgButton(hWndDlg,IDC_RADIO_BITRATE,TRUE);
+EncDialog.cpp (common\cfaac):			switch(cfg.EncCfg.bitRate)
+EncDialog.cpp (common\cfaac):				SendMessage(GetDlgItem(hWndDlg, IDC_CB_BITRATE), CB_SETCURSEL, 0, 0);
+EncDialog.cpp (common\cfaac):				sprintf(buf,"%lu",cfg.EncCfg.bitRate);
+EncDialog.cpp (common\cfaac):				SetDlgItemText(hWndDlg, IDC_CB_BITRATE, buf);
+EncDialog.cpp (common\cfaac):					GetDlgItemText(hWndDlg, IDC_CB_BITRATE, buf, 50);
+EncDialog.cpp (common\cfaac):						cfg.EncCfg.bitRate=0;
+EncDialog.cpp (common\cfaac):						cfg.EncCfg.bitRate=GetDlgItemInt(hWndDlg, IDC_CB_BITRATE, 0, FALSE);
+EncDialog.cpp (common\cfaac):					SetDlgItemInt(hWndDlg, IDC_CB_BITRATE, DEF_BITRATE, FALSE);
+EncDialog.cpp (common\cfaac):						CheckDlgButton(hWndDlg,IDC_RADIO_BITRATE,true);
+EncDialog.cpp (common\cfaac):					switch(DEF_BITRATE)
+EncDialog.cpp (common\cfaac):						SendMessage(GetDlgItem(hWndDlg, IDC_CB_BITRATE), CB_SETCURSEL, 0, 0);
+EncDialog.cpp (common\cfaac)://						SetDlgItemInt(hWndDlg, IDC_CB_BITRATE, 128, FALSE);
+EncDialog.cpp (common\cfaac):						SetDlgItemInt(hWndDlg, IDC_CB_BITRATE, DEF_BITRATE, FALSE);
+Faac.html (docs):	Set average bitrate to approximately X kbps per channel
+Faac.html (docs):<strong>Note:</strong> VBR output bitrate depends on -q
+Faac.html (docs):The ABR setting with -a is an approximate average bitrate that does not use 
+Faac.html (docs):based on FAAC v1.17. The resulting VBR bitrates are referring to an average
+Faac.html (docs):ct_reference.wav in this case. Multiplexing these AAC files to MP4 with e.g. mp4creator will result in a ~3 kbps lower bitrate because of the stripped ADTS headers:<br>
+Faac.html (docs):The added -m 4 switch does not change the bitrate or sound of course,
+FAAC.rc (common\cfaac):    CONTROL         "Bitrate",IDC_RADIO_BITRATE,"Button",BS_AUTORADIOBUTTON,
+FAAC.rc (common\cfaac):    COMBOBOX        IDC_CB_BITRATE,102,97,48,86,CBS_DROPDOWN | WS_VSCROLL | 
+Faaccfg.h (include):    /* bitrate / channel of AAC file */
+Faaccfg.h (include):    unsigned long bitRate;
+Faad.cpp (plugins\cooledit):	sprintf(szString,"MPEG%d - %lu bps\n", mi->file_info.version ? 4 : 2, mi->file_info.bitrate);
+Faad.cpp (plugins\cooledit):	int			bitrate;
+Faad.cpp (plugins\cooledit):		tmp.GetAACInfos(lpstrFilename,&b,&headertype,&fLength,&bitrate);
+Frame.c (libfaac):    /* Check for correct bitrate */
+Frame.c (libfaac):    if (config->bitRate > MaxBitrate(hEncoder->sampleRate))
+Frame.c (libfaac):    if (config->bitRate < MinBitrate())
+Frame.c (libfaac):    if (config->bitRate && !config->bandWidth)
+Frame.c (libfaac):        double tmpbitRate = (double)config->bitRate;
+Frame.c (libfaac):        double tmpbitRate = (double)config->bitRate * 44100 / hEncoder->sampleRate;
+Frame.c (libfaac):			if (rates[i].rate >= tmpbitRate)
+Frame.c (libfaac):        if (tmpbitRate > r1)
+Frame.c (libfaac):            tmpbitRate = r1;
+Frame.c (libfaac):        if (tmpbitRate < r0)
+Frame.c (libfaac):            tmpbitRate = r0;
+Frame.c (libfaac):                    pow((double)tmpbitRate / r1,
+Frame.c (libfaac):		config->bitRate = tmpbitRate * hEncoder->sampleRate / 44100;
+Frame.c (libfaac):    hEncoder->config.bitRate = config->bitRate;
+Frame.c (libfaac):    hEncoder->config.bitRate = 0; /* default bitrate / channel */
+Frame.c (libfaac):    desbits = (int) ((double) numChannels * (hEncoder->config.bitRate * FRAME_LEN)
+Frame.c (libfaac):    /* Adjust quality to get correct average bitrate */
+Frame.c (libfaac):    if (hEncoder->config.bitRate)
+Frame.c (libfaac):		int desbits = numChannels * (hEncoder->config.bitRate * FRAME_LEN)
+Frame.c (libfaac):Allowed independent bitRate and bandWidth setting.
+Frame.c (libfaac):average bitrate control made more stable
+Frame.c (libfaac):more accurate average bitrate control
+Frame.c (libfaac):Updated psymodel call. Updated bitrate/cutoff mapping table.
+Frame.h (libfaac):    /* output bits difference in average bitrate mode */
+Isma.cpp (common\mp4v2):	u_int32_t videoBitrate,
+Isma.cpp (common\mp4v2):	u_int32_t audioBitrate,
+Isma.cpp (common\mp4v2):		    numBytes * 8,		// bitrate
+Isma.cpp (common\mp4v2):			videoBitrate / 8,	// bufferSize
+Isma.cpp (common\mp4v2):			videoBitrate,
+Isma.cpp (common\mp4v2):			audioBitrate / 8, 	// bufferSize
+Isma.cpp (common\mp4v2):			audioBitrate,
+Isma.cpp (common\mp4v2):			numBytes * 8,	// bitrate
+Isma.cpp (common\mp4v2):	u_int32_t bitrate,
+Isma.cpp (common\mp4v2):	if (pEsd->FindProperty("decConfigDescr.maxBitrate", 
+Isma.cpp (common\mp4v2):	  pInt->SetValue(bitrate);
+Isma.cpp (common\mp4v2):	if (pEsd->FindProperty("decConfigDescr.avgBitrate", 
+Isma.cpp (common\mp4v2):	  pInt->SetValue(bitrate);
+Main.c (frontend):  "  -b <bitrate>\tSet average bitrate to x kbps. (ABR, lower quality mode)\n"
+Main.c (frontend):  "  -q <quality>\tSet default variable bitrate (VBR) quantizer quality in percent.\n"
+Main.c (frontend):  "  -b <bitrate>\tSet average bitrate (ABR) to approximately <bitrate> kbps.\n"
+Main.c (frontend):    int bitRate = 0;
+Main.c (frontend):                bitRate = 1000 * i;
+Main.c (frontend):    if (bitRate)
+Main.c (frontend):        myFormat->bitRate = bitRate / infile->channels;
+Main.c (frontend):    bitRate = myFormat->bitRate;
+Main.c (frontend):    if (bitRate)
+Main.c (frontend):      fprintf(stderr, "Average bitrate: %d kbps\n",
+Main.c (frontend):          (bitRate + 500)/1000*infile->channels);
+Main.c (frontend):            fprintf(stderr, "   frame          | bitrate | elapsed/estim | "
+Main.c (frontend):- Bitrate + file format displayed on stderr.
+Main.c (frontend):more accurate average bitrate control
+Main.c (frontend):-b bitrate option replaced with -q quality option
+Main.c (frontend):improved bandwidth/bitrate calculation formula
+Main.c (frontend):automatic bitrate setting
+Mp4.cpp (common\mp4v2):		u_int32_t avgBitrate,
+Mp4.cpp (common\mp4v2):		u_int32_t maxBitrate)
+Mp4.cpp (common\mp4v2):				AddH263VideoTrack(timeScale, sampleDuration, width, height, h263Level, h263Profile, avgBitrate, maxBitrate);
+Mp4.cpp (common\mp4v2):extern "C" void MP4SetH263Bitrates(
+Mp4.cpp (common\mp4v2):		u_int32_t avgBitrate,
+Mp4.cpp (common\mp4v2):		u_int32_t maxBitrate)
+Mp4.cpp (common\mp4v2):				SetH263Bitrates(trackId, avgBitrate, maxBitrate);
+Mp4.cpp (common\mp4v2):extern "C" u_int32_t MP4GetTrackBitRate(
+Mp4.cpp (common\mp4v2):				"mdia.minf.stbl.stsd.*.esds.decConfigDescr.avgBitrate");
+Mp4.cpp (common\mp4v2):		// if we're here, we can't get the bitrate from above - 
+Mp4.cpp (common\mp4v2):	u_int32_t videoBitrate,
+Mp4.cpp (common\mp4v2):	u_int32_t audioBitrate,
+Mp4.cpp (common\mp4v2):			videoBitrate,
+Mp4.cpp (common\mp4v2):			audioBitrate,
+Mp4.h (common\mp4v2):void MP4SetH263Bitrates(
+Mp4.h (common\mp4v2):		u_int32_t avgBitrate,
+Mp4.h (common\mp4v2):		u_int32_t maxBitrate);
+Mp4.h (common\mp4v2):		u_int32_t avgBitrate,
+Mp4.h (common\mp4v2):		u_int32_t maxBitrate);
+Mp4.h (common\mp4v2):u_int32_t MP4GetTrackBitRate(
+Mp4.h (common\mp4v2):	u_int32_t videoBitrate,
+Mp4.h (common\mp4v2):	u_int32_t audioBitrate,
+Mp4file.cpp (common\mp4v2):void MP4File::SetH263Bitrates(
+Mp4file.cpp (common\mp4v2):	u_int32_t avgBitrate,
+Mp4file.cpp (common\mp4v2):	u_int32_t maxBitrate)
+Mp4file.cpp (common\mp4v2):			"mdia.minf.stbl.stsd.s263.d263.bitr.avgBitrate", 
+Mp4file.cpp (common\mp4v2):			avgBitrate);
+Mp4file.cpp (common\mp4v2):			"mdia.minf.stbl.stsd.s263.d263.bitr.maxBitrate",
+Mp4file.cpp (common\mp4v2):			maxBitrate);
+Mp4file.cpp (common\mp4v2):		u_int32_t avgBitrate,
+Mp4file.cpp (common\mp4v2):		u_int32_t maxBitrate)
+Mp4file.cpp (common\mp4v2):			"mdia.minf.stbl.stsd.s263.d263.bitr.avgBitrate", avgBitrate);
+Mp4file.cpp (common\mp4v2):			"mdia.minf.stbl.stsd.s263.d263.bitr.maxBitrate", maxBitrate);
+Mp4file.h (common\mp4v2):	void SetH263Bitrates(
+Mp4file.h (common\mp4v2):			u_int32_t avgBitrate,
+Mp4file.h (common\mp4v2):			u_int32_t maxBitrate);
+Mp4file.h (common\mp4v2):			u_int32_t avgBitrate,
+Mp4file.h (common\mp4v2):			u_int32_t maxBitrate);
+Mp4file.h (common\mp4v2):		u_int32_t videoBitrate,
+Mp4file.h (common\mp4v2):		u_int32_t audioBitrate,
+Mp4file.h (common\mp4v2):		u_int32_t bitrate,
+Mp4info.cpp (common\mp4v2):	u_int32_t avgBitRate =
+Mp4info.cpp (common\mp4v2):		MP4GetTrackBitRate(mp4File, trackId);
+Mp4info.cpp (common\mp4v2):	// type duration avgBitrate samplingFrequency
+Mp4info.cpp (common\mp4v2):		  (avgBitRate + 500) / 1000,
+Mp4info.cpp (common\mp4v2):		  (avgBitRate + 500) / 1000,
+Mp4info.cpp (common\mp4v2):	u_int32_t avgBitRate =
+Mp4info.cpp (common\mp4v2):		MP4GetTrackBitRate(mp4File, trackId);
+Mp4info.cpp (common\mp4v2):	// type duration avgBitrate frameSize frameRate
+Mp4info.cpp (common\mp4v2):		  (avgBitRate + 500) / 1000,
+Mp4info.cpp (common\mp4v2):		  (avgBitRate + 500) / 1000,
+Mp4track.cpp (common\mp4v2):	// record buffer size and bitrates
+Mp4track.cpp (common\mp4v2):	MP4Integer32Property* pBitrateProperty;
+Mp4track.cpp (common\mp4v2):	  "trak.mdia.minf.stbl.stsd.*.esds.decConfigDescr.maxBitrate",
+Mp4track.cpp (common\mp4v2):	  (MP4Property**)&pBitrateProperty)) {
+Mp4track.cpp (common\mp4v2):		pBitrateProperty->SetValue(GetMaxBitrate());
+Mp4track.cpp (common\mp4v2):	  "trak.mdia.minf.stbl.stsd.*.esds.decConfigDescr.avgBitrate",
+Mp4track.cpp (common\mp4v2):	  (MP4Property**)&pBitrateProperty)) {
+Mp4track.cpp (common\mp4v2):		pBitrateProperty->SetValue(GetAvgBitrate());
+Mp4track.cpp (common\mp4v2):u_int32_t MP4Track::GetAvgBitrate()
+Mp4track.cpp (common\mp4v2):u_int32_t MP4Track::GetMaxBitrate()
+Mp4track.h (common\mp4v2):	u_int32_t	GetAvgBitrate();	// in bps
+Mp4track.h (common\mp4v2):	u_int32_t	GetMaxBitrate();	// in bps
+Resource.h (common\cfaac):#define IDC_CB_BITRATE                  1019
+Resource.h (common\cfaac):#define IDC_RADIO_BITRATE               1030
+Rtphint.cpp (common\mp4v2):	m_pMaxBitRate = NULL;
+Rtphint.cpp (common\mp4v2):	m_pAvgBitRate = NULL;
+Rtphint.cpp (common\mp4v2):		m_pMaxBitRate->SetValue(m_pMaxr->GetValue() * 8);
+Rtphint.cpp (common\mp4v2):			m_pAvgBitRate->SetValue(
+Rtphint.cpp (common\mp4v2):	(void)pHmhdAtom->FindProperty("hmhd.maxBitRate", (MP4Property**)&m_pMaxBitRate); 
+Rtphint.cpp (common\mp4v2):	(void)pHmhdAtom->FindProperty("hmhd.avgBitRate", (MP4Property**)&m_pAvgBitRate); 
+Rtphint.h (common\mp4v2):	MP4Integer32Property*	m_pMaxBitRate;
+Rtphint.h (common\mp4v2):	MP4Integer32Property*	m_pAvgBitRate;
+Util.c (libfaac):/* Returns the maximum bitrate per channel for that sampling frequency */
+Util.c (libfaac):unsigned int MaxBitrate(unsigned long sampleRate)
+Util.c (libfaac):/* Returns the minimum bitrate per channel for that sampling frequency */
+Util.c (libfaac):unsigned int MinBitrate()
+Util.c (libfaac):unsigned int MaxBitresSize(unsigned long bitRate, unsigned long sampleRate)
+Util.c (libfaac):    return 6144 - (unsigned int)((double)bitRate/(double)sampleRate*(double)FRAME_LEN);
+Util.h (libfaac):unsigned int MaxBitrate(unsigned long sampleRate);
+Util.h (libfaac):unsigned int MinBitrate();
+Util.h (libfaac):unsigned int MaxBitresSize(unsigned long bitRate, unsigned long sampleRate);
+---- quantqual Matches (41 in 7 files) ----
+Aacenc.c:    if (quantqual > 0)
+Aacenc.c:        myFormat->quantqual = quantqual;
+Aacenc.c:    quantqual = myFormat->quantqual;
+Aacenc.c:    fprintf(stderr, "Quantization quality: %ld\n", quantqual);
+Cfaac.cpp (common\cfaac):		cfg->EncCfg.quantqual=reg.GetSetDword(REG_QUALITY,DEF_QUALITY); 
+Cfaac.cpp (common\cfaac):		reg.SetDword(REG_QUALITY,cfg->EncCfg.quantqual);
+Cfaac.cpp (common\cfaac):			CurFormat->quantqual=myFormat->quantqual;
+Cfaac.cpp (common\cfaac):			CurFormat->quantqual=100;
+Cfaac.cpp (common\cfaac):		CurFormat->quantqual=DEF_QUALITY;
+EncDialog.cpp (common\cfaac):		dwOptions|=(((DWORD)cfg->EncCfg.quantqual>>1)&0xff)<<16; // [2,512]
+EncDialog.cpp (common\cfaac):			switch(cfg.EncCfg.quantqual)
+EncDialog.cpp (common\cfaac):				if(cfg.EncCfg.quantqual<10)
+EncDialog.cpp (common\cfaac):					cfg.EncCfg.quantqual=10;
+EncDialog.cpp (common\cfaac):				if(cfg.EncCfg.quantqual>500)
+EncDialog.cpp (common\cfaac):					cfg.EncCfg.quantqual=500;
+EncDialog.cpp (common\cfaac):				sprintf(buf,"%lu",cfg.EncCfg.quantqual);
+EncDialog.cpp (common\cfaac):						cfg.EncCfg.quantqual=100;
+EncDialog.cpp (common\cfaac):						cfg.EncCfg.quantqual=GetDlgItemInt(hWndDlg, IDC_CB_QUALITY, 0, FALSE);
+Faaccfg.h (include):    unsigned long quantqual;
+Frame.c (libfaac):        config->quantqual = 100;
+Frame.c (libfaac):        config->bandWidth = (config->quantqual - 100) * bwmult + bwbase;
+Frame.c (libfaac):    if (config->quantqual > 500)
+Frame.c (libfaac):		config->quantqual = 500;
+Frame.c (libfaac):    if (config->quantqual < 10)
+Frame.c (libfaac):		config->quantqual = 10;
+Frame.c (libfaac):    hEncoder->config.quantqual = config->quantqual;
+Frame.c (libfaac):    hEncoder->aacquantCfg.quality = config->quantqual;
+Frame.c (libfaac):    hEncoder->config.quantqual = 100;
+Main.c (frontend):    unsigned long quantqual = 0;
+Main.c (frontend):                    quantqual = i;
+Main.c (frontend):    if (quantqual > 0)
+Main.c (frontend):        myFormat->quantqual = quantqual;
+Main.c (frontend):    quantqual = myFormat->quantqual;
+Main.c (frontend):    fprintf(stderr, "Quantization quality: %ld\n", quantqual);
+Maingui.c (frontend):	    config->quantqual = atoi(szTemp);
+Maingui.c (frontend):	    sprintf(szTemp, "%ld", config->quantqual);
+---- samplesRead Matches (8 in 2 files) ----
+Aacenc.c:            samplesRead = wav_read_float32(infile, pcmbuf, samplesInput, chanmap);
+Aacenc.c:                samplesRead,
+Aacenc.c:            if (!samplesRead && !bytesWritten)
+Main.c (frontend):    int samplesRead = 0;
+Main.c (frontend):            samplesRead = wav_read_float32(infile, pcmbuf, samplesInput, chanmap);
+Main.c (frontend):            total_samples += samplesRead / infile->channels;
+Main.c (frontend):                samplesRead,
+Main.c (frontend):            if (!samplesRead && !bytesWritten)
+---- totalBytesWritten Matches (5 in 2 files) ----
+Aacenc.c:                totalBytesWritten += bytesWritten;
+Aacenc.c:                ((double)totalBytesWritten * 8.0 / 1000.0) /
+Main.c (frontend):    unsigned long samplesInput, maxBytesOutput, totalBytesWritten=0;
+Main.c (frontend):        totalBytesWritten += bytesWritten;
+Main.c (frontend):                ((double)totalBytesWritten * 8.0 / 1000.0) /
+---- cutOff Matches (25 in 5 files) ----
+Aacenc.c:"\t\t(max. value 152 kbps/stereo with a 16 kHz cutoff, can be raised\n"
+Aacenc.c:    myFormat->bandWidth = cutOff;
+Aacenc.c:    cutOff = myFormat->bandWidth;
+Aacenc.c:    fprintf(stderr, "Bandwidth: %d Hz\n", cutOff);
+Faac.html (docs):experiment with other cutoff frequencies at a given quality setting.
+FAAC.rc (common\cfaac):    LTEXT           "Cutoff",IDC_STATIC,21,121,20,8
+Frame.c (libfaac):			int cutoff;
+Frame.c (libfaac):		f0 = f1 = rates[0].cutoff;
+Frame.c (libfaac):			f1 = rates[i].cutoff;
+Frame.c (libfaac):changed default cutoff to 16k
+Frame.c (libfaac):Updated psymodel call. Updated bitrate/cutoff mapping table.
+Frame.c (libfaac):modified default cutoff
+Main.c (frontend):"\t\t(max. value 152 kbps/stereo with a 16 kHz cutoff, can be raised\n"
+Main.c (frontend):    int cutOff = -1;
+Main.c (frontend):            { "cutoff", 1, 0, 'c'},
+Main.c (frontend):                cutOff = i;
+Main.c (frontend):    if (cutOff <= 0)
+Main.c (frontend):        if (cutOff < 0) // default
+Main.c (frontend):            cutOff = 0;
+Main.c (frontend):            cutOff = infile->samplerate / 2;
+Main.c (frontend):    if (cutOff > (infile->samplerate / 2))
+Main.c (frontend):        cutOff = infile->samplerate / 2;
+Main.c (frontend):    myFormat->bandWidth = cutOff;
+Main.c (frontend):    cutOff = myFormat->bandWidth;
+Main.c (frontend):    fprintf(stderr, "Bandwidth: %d Hz\n", cutOff);
+---- strcasestr Matches (2 in 2 files) ----
+Mpeg4ip.h (common\mp4v2):char *strcasestr(const char *haystack, const char *needle);
+Mpeg4ip_win32.h (common\mp4v2):char *strcasestr(const char *haystack, const char *needle);
+---- FRAME_LEN Matches (43 in 8 files) ----
+Cfaad.cpp (common\cfaac):    int frames, frame_length;
+Cfaad.cpp (common\cfaac):            frame_length = ((((unsigned int)b->buffer[3] & 0x3)) << 11)
+Cfaad.cpp (common\cfaac):            t_framelength += frame_length;
+Cfaad.cpp (common\cfaac):            if (frame_length > b->bytes_into_buffer)
+Cfaad.cpp (common\cfaac):            advance_buffer(b, frame_length);
+Aacquant.c (libfaac):    double xr_pow[FRAME_LEN];
+Aacquant.c (libfaac):    int xi[FRAME_LEN];
+Aacquant.c (libfaac):    for (i = 0; i < FRAME_LEN; i++) {
+Aacquant.c (libfaac):        for ( i = 0; i < FRAME_LEN; i++ )  {
+Aacquant.c (libfaac):        SetMemory(xi, 0, FRAME_LEN*sizeof(int));
+Aacquant.c (libfaac):    for (j = FRAME_LEN/4 - 1; j >= 0; --j) {
+Aacquant.c (libfaac):    for (j = FRAME_LEN/8; j > 0; --j) {
+Aacquant.c (libfaac):    double xr_tmp[FRAME_LEN];
+Aacquant.c (libfaac):    for (k=0; k<FRAME_LEN; k++){
+Bitstream.c (libfaac):    segment_t segment[FRAME_LEN];
+Bitstream.c (libfaac):    cw_info_t cw_info[FRAME_LEN];
+Bitstream.c (libfaac):    cw_info_t cw_info_preso[FRAME_LEN];
+Bitstream.c (libfaac):                    if (last_sfb < FRAME_LEN) {
+Coder.h (libfaac):# define FRAME_LEN 1024
+Coder.h (libfaac):# define FRAME_LEN 960
+Coder.h (libfaac):# define FRAME_LEN 1024
+Filtbank.c (libfaac):        hEncoder->freqBuff[channel] = (double*)AllocMemory(2*FRAME_LEN*sizeof(double));
+Filtbank.c (libfaac):        hEncoder->overlapBuff[channel] = (double*)AllocMemory(FRAME_LEN*sizeof(double));
+Filtbank.c (libfaac):        SetMemory(hEncoder->overlapBuff[channel], 0, FRAME_LEN*sizeof(double));
+Filtbank.c (libfaac):        memcpy(transf_buf, p_overlap, FRAME_LEN*sizeof(double));
+Filtbank.c (libfaac):        memcpy(transf_buf+BLOCK_LEN_LONG, p_in_data, FRAME_LEN*sizeof(double));
+Filtbank.c (libfaac):        memcpy(p_overlap, p_in_data, FRAME_LEN*sizeof(double));
+Filtbank.c (libfaac):        memcpy(transf_buf, p_in_data, 2*FRAME_LEN*sizeof(double));
+Frame.c (libfaac):    *inputSamples = FRAME_LEN*numChannels;
+Frame.c (libfaac):            for(i = 0; i < FRAME_LEN; i++) {
+Frame.c (libfaac):            for(i = 0; i < FRAME_LEN; i++) {
+Frame.c (libfaac):                hEncoder->ltpTimeBuff[channel][FRAME_LEN + i] =
+Frame.c (libfaac):			hEncoder->sampleBuff[channel] = (double*)AllocMemory(FRAME_LEN*sizeof(double));
+Frame.c (libfaac):            for (i = 0; i < FRAME_LEN; i++)
+Frame.c (libfaac):            for (i = (int)(samplesInput/numChannels); i < FRAME_LEN; i++)
+Frame.c (libfaac):    desbits = (int) ((double) numChannels * (hEncoder->config.bitRate * FRAME_LEN)
+Frame.c (libfaac):		int desbits = numChannels * (hEncoder->config.bitRate * FRAME_LEN)
+Huffman.c (libfaac):        coderInfo[channel].data = (int*)AllocMemory(5*FRAME_LEN*sizeof(int));
+Huffman.c (libfaac):        coderInfo[channel].len = (int*)AllocMemory(5*FRAME_LEN*sizeof(int));
+Huffman.c (libfaac):        coderInfo[channel].num_data_cw = (int*)AllocMemory(FRAME_LEN*sizeof(int));
+Util.c (libfaac):#include "coder.h"  // FRAME_LEN
+Util.c (libfaac):    return (unsigned int)(6144.0 * (double)sampleRate/(double)FRAME_LEN + .5);
+Util.c (libfaac):    return 6144 - (unsigned int)((double)bitRate/(double)sampleRate*(double)FRAME_LEN);
+---- next3SampleBuff Matches (11 in 2 files) ----
+Frame.c (libfaac):		if (hEncoder->next3SampleBuff[channel])
+Frame.c (libfaac):			FreeMemory (hEncoder->next3SampleBuff[channel]);
+Frame.c (libfaac):        hEncoder->next2SampleBuff[channel]	= hEncoder->next3SampleBuff[channel];
+Frame.c (libfaac):		hEncoder->next3SampleBuff[channel]	= tmp;
+Frame.c (libfaac):                hEncoder->next3SampleBuff[channel][i] = 0.0;
+Frame.c (libfaac):							hEncoder->next3SampleBuff[channel][i] = (double)*input_channel;
+Frame.c (libfaac):							hEncoder->next3SampleBuff[channel][i] = (1.0/256) * (double)*input_channel;
+Frame.c (libfaac):							hEncoder->next3SampleBuff[channel][i] = (double)*input_channel;
+Frame.c (libfaac):                hEncoder->next3SampleBuff[channel][i] = 0.0;
+Frame.c (libfaac):					hEncoder->next3SampleBuff[channel], 
+Frame.h (libfaac):    double *next3SampleBuff[MAX_CHANNELS];
+---- 1024 Matches (37 in 14 files) ----
+Aacenc.c:            frames = ((samples + 1023) / 1024) + 1;
+Aacenc.c:                            (1024.0 * currentFrame / samplerate) / timeused,
+Aacenc.c:                            (1024.0 * currentFrame / samplerate) / timeused);
+Aacenc.c:			//usleep(130*1024);
+Mp4file.cpp (common\mp4v2):	char propName[1024];
+Mp4file.cpp (common\mp4v2):	  m_editName = (char *)malloc(1024);
+Mp4file.cpp (common\mp4v2):	snprintf(m_editName, 1024,
+Mp4file.h (common\mp4v2):	char m_trakName[1024];
+Mp4info.cpp (common\mp4v2):			  uint buflen = 4 * 1024;
+Cfaad.cpp (common\cfaac):    frames_per_sec = (float)samplerate/1024.0f;
+Cfaad.cpp (common\cfaac):		mi->file_info.bitrate*=1024;
+Cfaad.h (common\cfaac):// 960 for LD or else 1024 (expanded to 2048 for HE-AAC)
+Resource.h (common\cfaac):#define IDC_BTN_ABOUT                   1024
+Main.c (frontend):    delay_samples = frameSize; // encoder delay 1024 samples
+Main.c (frontend):            frames = ((infile->samples + 1023) / 1024) + 1;
+Main.c (frontend):                            (1024.0 * currentFrame / infile->samplerate) / timeused,
+Main.c (frontend):                            (1024.0 * currentFrame / infile->samplerate) / timeused);
+Maingui.c (frontend):                SendDlgItemMessage(hWnd, IDC_PROGRESS, PBM_SETRANGE, 0, MAKELPARAM(0, 1024));
+Maingui.c (frontend):                    SendDlgItemMessage (hWnd, IDC_PROGRESS, PBM_SETPOS, (unsigned long)((float)totalBytesRead * 1024.0f / (infile->samples*sizeof(int)*numChannels)), 0);
+Coder.h (libfaac):/* Allow encoding of Digital Radio Mondiale (DRM) with transform length 1024 */
+Coder.h (libfaac)://#define DRM_1024
+Coder.h (libfaac):#ifdef DRM_1024
+Coder.h (libfaac):# define FRAME_LEN 1024
+Coder.h (libfaac):# define BLOCK_LEN_LONG 1024
+Coder.h (libfaac):#endif /* DRM_1024 */
+Coder.h (libfaac):# define FRAME_LEN 1024
+Coder.h (libfaac):# define BLOCK_LEN_LONG 1024
+Fft.c (libfaac):#if defined DRM && !defined DRM_1024
+Fft.c (libfaac):#else /* !defined DRM || defined DRM_1024 */
+Fft.c (libfaac):#endif /* defined DRM && !defined DRM_1024 */
+Fft.h (libfaac):#if defined DRM && !defined DRM_1024
+Fft.h (libfaac):#endif /* defined DRM && !defined DRM_1024 */
+Frame.c (libfaac):/* all parameters which are different from the 1024 transform length table are
+Frame.c (libfaac):/* Scalefactorband data table for 1024 transform length */
+Frame.c (libfaac):960 transform length is not yet implemented (TODO)! Use 1024 for encoding and 960 for decoding, resulting in a lot of artefacts
+Kiss_fft.h (libfaac\kiss_fft): *  typical usage:      kiss_fft_cfg mycfg=kiss_fft_alloc(1024,0,NULL,NULL);
+Faad.cpp (plugins\cooledit):		*lChunkSize=(*wBitsPerSample/8)*1024**wChannels*2;
+---- 16000 Matches (10 in 6 files) ----
+Cfaad.cpp (common\cfaac):static int adts_sample_rates[] = {96000,88200,64000,48000,44100,32000,24000,22050,16000,12000,11025,8000,7350,0,0,0};
+DecDialog.cpp (common\cfaac):		char	*SampleRate[]={"6000","8000","16000","22050","32000","44100","48000","64000","88200","96000","192000",0},
+EncDialog.cpp (common\cfaac):		char *BandWidth[]={"Auto","Full","4000","8000","11025","16000","22050","24000","32000","44100","48000",0};
+Faac.html (docs):setting -q 100 -c 16000 if you know what you're doing and/or want to
+Faac.html (docs):-q 100 -c 16000 -m 4 (~129 kbps)<br>
+Frame.c (libfaac):static const int bwbase = 16000;
+Frame.c (libfaac):			{64000, 16000},
+Frame.c (libfaac):    }, { 16000, 42/*x*/, 15,
+Frame.c (libfaac):    }, { 16000, 43, 15,
+Tns.c (libfaac):{ 96000,88200,64000,48000,44100,32000,24000,22050,16000,12000,11025,8000,0 };
+---- sampleRateIdx Matches (9 in 4 files) ----
+Bitstream.c (libfaac):        PutBit(bitStream, hEncoder->sampleRateIdx, 4); /* sampling rate */
+Bitstream.c (libfaac):        printf("hEncoder->sampleRateIdx=%d,hEncoder->numChannels=%d\n",hEncoder->sampleRateIdx,hEncoder->numChannels);
+Frame.c (libfaac):        PutBit(pBitStream, hEncoder->sampleRateIdx, 4);
+Frame.c (libfaac):    hEncoder->sampleRateIdx = GetSRIndex(sampleRate);
+Frame.c (libfaac):    hEncoder->srInfo = &srInfo[hEncoder->sampleRateIdx];
+Frame.c (libfaac):        hEncoder->coderInfo[channel].max_pred_sfb = GetMaxPredSfb(hEncoder->sampleRateIdx);
+Frame.h (libfaac):    unsigned int sampleRateIdx;
+Tns.c (libfaac):    int fsIndex = hEncoder->sampleRateIdx;
+---- BLOCK_LEN_SHORT Matches (57 in 8 files) ----
+Aacquant.c (libfaac):                    xr_tmp[index++] = xr[ii+ sfb_offset[k] + BLOCK_LEN_SHORT*j +group_offset];
+Aacquant.c (libfaac):        group_offset +=  BLOCK_LEN_SHORT*window_group_length[i];
+Coder.h (libfaac):# define BLOCK_LEN_SHORT 128
+Coder.h (libfaac):# define BLOCK_LEN_SHORT 120
+Coder.h (libfaac):# define BLOCK_LEN_SHORT 128
+Coder.h (libfaac):#define SHORT_SQ_OFFSET (BLOCK_LEN_LONG-(BLOCK_LEN_SHORT*4+BLOCK_LEN_SHORT/2))
+Filtbank.c (libfaac):    hEncoder->sin_window_short = (double*)AllocMemory(BLOCK_LEN_SHORT*sizeof(double));
+Filtbank.c (libfaac):    hEncoder->kbd_window_short = (double*)AllocMemory(BLOCK_LEN_SHORT*sizeof(double));
+Filtbank.c (libfaac):    for( i=0; i<BLOCK_LEN_SHORT; i++ )
+Filtbank.c (libfaac):        hEncoder->sin_window_short[i] = sin((M_PI/(2*BLOCK_LEN_SHORT)) * (i + 0.5));
+Filtbank.c (libfaac):    CalculateKBDWindow(hEncoder->kbd_window_short, 6, BLOCK_LEN_SHORT*2);
+Filtbank.c (libfaac):        for ( i = 0 ; i < BLOCK_LEN_SHORT ; i++)
+Filtbank.c (libfaac):            p_out_mdct[i+BLOCK_LEN_LONG+NFLAT_LS] = p_o_buf[i+BLOCK_LEN_LONG+NFLAT_LS] * second_window[BLOCK_LEN_SHORT-i-1];
+Filtbank.c (libfaac):        SetMemory(p_out_mdct+BLOCK_LEN_LONG+NFLAT_LS+BLOCK_LEN_SHORT,0,NFLAT_LS*sizeof(double));
+Filtbank.c (libfaac):        for ( i = 0 ; i < BLOCK_LEN_SHORT ; i++)
+Filtbank.c (libfaac):        memcpy(p_out_mdct+NFLAT_LS+BLOCK_LEN_SHORT,p_o_buf+NFLAT_LS+BLOCK_LEN_SHORT,NFLAT_LS*sizeof(double));
+Filtbank.c (libfaac):            for ( i = 0 ; i < BLOCK_LEN_SHORT ; i++ ){
+Filtbank.c (libfaac):                p_out_mdct[i+BLOCK_LEN_SHORT] = p_o_buf[i+BLOCK_LEN_SHORT] * second_window[BLOCK_LEN_SHORT-i-1];
+Filtbank.c (libfaac):            MDCT( &hEncoder->fft_tables, p_out_mdct, 2*BLOCK_LEN_SHORT );
+Filtbank.c (libfaac):            p_out_mdct += BLOCK_LEN_SHORT;
+Filtbank.c (libfaac):            p_o_buf += BLOCK_LEN_SHORT;
+Filtbank.c (libfaac):            for ( i = 0 ; i < BLOCK_LEN_SHORT ; i++)
+Filtbank.c (libfaac):                o_buf[i+BLOCK_LEN_LONG+NFLAT_LS] = transf_buf[i+BLOCK_LEN_LONG+NFLAT_LS] * second_window[BLOCK_LEN_SHORT-i-1];
+Filtbank.c (libfaac):            SetMemory(o_buf+BLOCK_LEN_LONG+NFLAT_LS+BLOCK_LEN_SHORT,0,NFLAT_LS*sizeof(double));
+Filtbank.c (libfaac):            for ( i = 0 ; i < BLOCK_LEN_SHORT ; i++)
+Filtbank.c (libfaac):                transf_buf[i+BLOCK_LEN_LONG+NFLAT_LS] *= second_window[BLOCK_LEN_SHORT-i-1];
+Filtbank.c (libfaac):            SetMemory(transf_buf+BLOCK_LEN_LONG+NFLAT_LS+BLOCK_LEN_SHORT,0,NFLAT_LS*sizeof(double));
+Filtbank.c (libfaac):        for ( i = 0 ; i < BLOCK_LEN_SHORT ; i++)
+Filtbank.c (libfaac):            for ( i = 0 ; i < BLOCK_LEN_SHORT; i++ )
+Filtbank.c (libfaac):            memcpy(o_buf+BLOCK_LEN_SHORT+NFLAT_LS,transf_buf+BLOCK_LEN_SHORT+NFLAT_LS,NFLAT_LS*sizeof(double));
+Filtbank.c (libfaac):            memcpy(transf_buf,p_in_data,BLOCK_LEN_SHORT*sizeof(double));
+Filtbank.c (libfaac):            IMDCT( &hEncoder->fft_tables, transf_buf, 2*BLOCK_LEN_SHORT );
+Filtbank.c (libfaac):            p_in_data += BLOCK_LEN_SHORT;
+Filtbank.c (libfaac):                for ( i = 0 ; i < BLOCK_LEN_SHORT ; i++){
+Filtbank.c (libfaac):                    fp[i+BLOCK_LEN_SHORT] = transf_buf[i+BLOCK_LEN_SHORT] * second_window[BLOCK_LEN_SHORT-i-1];
+Filtbank.c (libfaac):                fp += BLOCK_LEN_SHORT;
+Filtbank.c (libfaac):                for ( i = 0 ; i < BLOCK_LEN_SHORT ; i++){
+Filtbank.c (libfaac):                    fp[i+BLOCK_LEN_SHORT] *= second_window[BLOCK_LEN_SHORT-i-1];
+Filtbank.c (libfaac):                fp += 2*BLOCK_LEN_SHORT;
+Filtbank.c (libfaac):        SetMemory(o_buf+BLOCK_LEN_LONG+NFLAT_LS+BLOCK_LEN_SHORT,0,NFLAT_LS*sizeof(double));
+Filtbank.c (libfaac):    case BLOCK_LEN_SHORT * 2:
+Filtbank.c (libfaac):    case BLOCK_LEN_SHORT * 2:
+Filtbank.h (libfaac):#define NFLAT_LS (( BLOCK_LEN_LONG - BLOCK_LEN_SHORT ) / 2)
+Frame.c (libfaac):                specFilter(hEncoder->freqBuff[channel]+k*BLOCK_LEN_SHORT,
+Frame.c (libfaac):						sampleRate, bandWidth, BLOCK_LEN_SHORT);
+Ltp.c (libfaac):        flen = BLOCK_LEN_SHORT;
+Psychkni.c (libfaac):    (double *) AllocMemory(2 * BLOCK_LEN_SHORT * sizeof(double));
+Psychkni.c (libfaac):  for (i = 0; i < BLOCK_LEN_SHORT * 2; i++)
+Psychkni.c (libfaac):					      (BLOCK_LEN_SHORT * 2)));
+Psychkni.c (libfaac):  size = BLOCK_LEN_SHORT;
+Psychkni.c (libfaac):  double transBuffS[2 * BLOCK_LEN_SHORT];
+Psychkni.c (libfaac):    memcpy(transBuffS, transBuff + (win * BLOCK_LEN_SHORT) + (BLOCK_LEN_LONG - BLOCK_LEN_SHORT) / 2,
+Tns.c (libfaac):        windowSize = BLOCK_LEN_SHORT;
+Tns.c (libfaac):        windowSize = BLOCK_LEN_SHORT;
+Tns.c (libfaac):        windowSize = BLOCK_LEN_SHORT;
+Tns.c (libfaac):        windowSize = BLOCK_LEN_SHORT;
+---- DRM Matches (107 in 12 files) ----
+Atom_ohdr.cpp (common\mp4v2):class OhdrMP4StringProperty: public MP4StringProperty {
+Atom_ohdr.cpp (common\mp4v2):	OhdrMP4StringProperty(char* name, bool useCountedFormat = false,
+Atom_ohdr.cpp (common\mp4v2):/*! \brief OMA DRM headers atom.
+Atom_ohdr.cpp (common\mp4v2):    Contained in OMA DRM key management atom. It must contain content identifier.
+Atom_ohdr.cpp (common\mp4v2):	AddProperty(new OhdrMP4StringProperty("ContentID"));
+Atom_ohdr.cpp (common\mp4v2):	AddProperty(new OhdrMP4StringProperty("RightsIssuerURL"));
+Atom_ohdr.cpp (common\mp4v2):  ((OhdrMP4StringProperty*)property)->SetFixedLength(
+Atom_ohdr.cpp (common\mp4v2):  ((OhdrMP4StringProperty*)property)->SetFixedLength(
+Mpeg4ip_config.h (common\mp4v2):/* Define if you want to encode for DRM */
+Mpeg4ip_config.h (common\mp4v2):/* #undef DRM */
+Config.h:/* Define if you want to encode for DRM */
+Config.h:/* #undef DRM */
+Aacquant.c (libfaac):#ifdef DRM
+Aacquant.c (libfaac):#ifdef DRM
+Bitstream.c (libfaac):#ifdef DRM
+Bitstream.c (libfaac):#ifndef DRM
+Bitstream.c (libfaac):#ifndef DRM
+Bitstream.c (libfaac):#ifndef DRM
+Bitstream.c (libfaac):#ifndef DRM
+Bitstream.c (libfaac):#ifdef DRM
+Bitstream.c (libfaac):#ifndef DRM
+Bitstream.c (libfaac):#ifndef DRM
+Bitstream.c (libfaac):#ifdef DRM
+Bitstream.c (libfaac):#ifdef DRM
+Bitstream.c (libfaac):#ifndef DRM
+Bitstream.c (libfaac):#ifdef DRM
+Bitstream.c (libfaac):    /* DRM CRC calculation */
+Bitstream.c (libfaac):#ifndef DRM
+Bitstream.c (libfaac):#ifdef DRM
+Bitstream.c (libfaac):#ifndef DRM
+Bitstream.c (libfaac):#ifdef DRM
+Bitstream.h (libfaac):#ifdef DRM
+Coder.h (libfaac):/* Allow encoding of Digital Radio Mondiale (DRM) */
+Coder.h (libfaac)://#define DRM
+Coder.h (libfaac):/* Allow encoding of Digital Radio Mondiale (DRM) with transform length 1024 */
+Coder.h (libfaac)://#define DRM_1024
+Coder.h (libfaac):#ifdef DRM
+Coder.h (libfaac):#ifdef DRM_1024
+Coder.h (libfaac):#endif /* DRM_1024 */
+Coder.h (libfaac):#ifdef DRM
+Fft.c (libfaac):#if defined DRM && !defined DRM_1024
+Fft.c (libfaac):#else /* !defined DRM || defined DRM_1024 */
+Fft.c (libfaac):#endif /* defined DRM && !defined DRM_1024 */
+Fft.h (libfaac):#if defined DRM && !defined DRM_1024
+Fft.h (libfaac):#endif /* defined DRM && !defined DRM_1024 */
+Filtbank.h (libfaac):#ifdef DRM
+Frame.c (libfaac):#ifdef DRM
+Frame.c (libfaac):            /* DRM uses low bit-rates. We've chosen higher bandwidth values and
+Frame.c (libfaac):#ifdef DRM
+Frame.c (libfaac):#ifndef DRM
+Frame.c (libfaac):#ifdef DRM
+Frame.c (libfaac):#ifdef DRM
+Frame.c (libfaac):#ifdef DRM
+Frame.c (libfaac):#ifdef DRM
+Frame.c (libfaac):#ifndef DRM
+Frame.c (libfaac):#ifdef DRM
+Frame.c (libfaac):New bandwidth settings for DRM, improved quantization quality adaptation (almost constant bit-rate now)
+Frame.c (libfaac):made faac compliant with Digital Radio Mondiale (DRM) (DRM macro must be set)
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.c (libfaac):#ifdef DRM
+Huffman.h (libfaac):#ifdef DRM

@@ -1,0 +1,193 @@
+{
+	"isp": {
+		"ipu": "v2500",
+		"args": {
+			"skipframe": 1,
+			"nbuffers": 3
+		},
+
+		"port": {
+			"out": {
+				"w": 1920,
+				"h": 1088,
+				"pixel_format": "nv12",
+				"bind": { "ispost": "in" }
+			}
+		}
+	},
+
+        "marker0": {
+                "ipu": "marker",
+                "args": {
+                        "mode": "nv12"
+                },
+                "port": {
+                        "out": {
+                                "w": 800,
+                                "h": 64,
+                                "pixel_format": "nv12",
+                                "bind": { "ispost": "ov0" }
+                        }
+                }
+        },
+
+        "marker1": {
+                "ipu": "marker",
+                "args": {
+                        "mode": "bit2"
+                },
+                "port": {
+                        "out": {
+                                "w": 200,
+                                "h": 200,
+                                "pixel_format": "bpp2",
+                                "bind": { "ispost": "ov1" }
+                        }
+                }
+        },
+        "marker2": {
+
+                "ipu": "marker",
+                "args": {
+                        "mode": "bit2"
+                },
+                "port": {
+                        "out": {
+                                "w": 200,
+                                "h": 200,
+                                "pixel_format": "bpp2",
+                                "bind": { "ispost": "ov2" }
+                        }
+                }
+        },
+        "marker3": {
+                "ipu": "marker",
+                "args": {
+                        "mode": "bit2"
+                },
+                "port": {
+                        "out": {
+                                "w": 200,
+                                "h": 200,
+                                "pixel_format": "bpp2",
+                                "bind": { "ispost": "ov3" }
+                        }
+                }
+        },
+        "marker4": {
+                "ipu": "marker",
+                "args": {
+                        "mode": "bit2"
+                },
+                "port": {
+                        "out": {
+                                "w": 200,
+                                "h": 200,
+                                "pixel_format": "bpp2",
+                                "bind": { "ispost": "ov4" }
+                        }
+                }
+        },
+        "marker5": {
+                "ipu": "marker",
+                "args": {
+                        "mode": "bit2"
+                },
+                "port": {
+                        "out": {
+                                "w": 200,
+                                "h": 200,
+                                "pixel_format": "bpp2",
+                                "bind": { "ispost": "ov5" }
+                        }
+                }
+        },
+        "marker6": {
+                "ipu": "marker",
+                "args": {
+                        "mode": "bit2"
+                },
+                "port": {
+                        "out": {
+                                "w": 200,
+                                "h": 200,
+                                "pixel_format": "bpp2",
+                                "bind": { "ispost": "ov6" }
+                        }
+                }
+        },
+        "marker7": {
+                "ipu": "marker",
+                "args": {
+                        "mode": "bit2"
+                },
+                "port": {
+                        "out": {
+                                "w": 200,
+                                "h": 200,
+                                "pixel_format": "bpp2",
+                                "bind": { "ispost": "ov7" }
+                        }
+                }
+        },
+	"ispost": {
+		"ipu": "ispostv2",
+		"args": {
+			"lc_grid_file_name1": "/root/.ispost/lc_v1_0-0-0-0_hermite32_1920x1080-1920x1080.bin",
+			"lc_geometry_file_name1": "/root/.ispost/lc_v1_0-0-0-0_hermite32_1920x1080-1920x1080_geo.bin",
+			"dn_enable": 1
+		},
+		"port": {
+			"ov0":{
+                                "pip_x":576,
+                                "pip_y":960
+                        },
+
+			"ov1":{
+                                "pip_x":200,
+                                "pip_y":100
+                        },
+			"ov2":{
+                                "pip_x":800,
+                                "pip_y":100
+                        },
+			"ov3":{
+                                "pip_x":1400,
+                                "pip_y":100
+                        },
+			"ov4":{
+                                "pip_x":200,
+                                "pip_y":400
+                        },
+			"ov5":{
+                                "pip_x":800,
+                                "pip_y":400
+                        },
+			"ov6":{
+                                "pip_x":1400,
+                                "pip_y":400
+                        },
+			"ov7":{
+                                "pip_x":800,
+                                "pip_y":700
+                        },
+			"dn": {
+				"w": 1920,
+				"h": 1080,
+				"pixel_format": "nv12"
+			},
+			"ss0": {
+				"w": 640,
+				"h": 480,
+				"pixel_format": "nv12",
+				"bind": {
+					"display": "osd0"
+				}
+			}
+		}
+	},
+
+
+	"display": { "ipu": "ids"}
+}
+

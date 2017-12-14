@@ -1,0 +1,27 @@
+config BR2_PACKAGE_HLIBH1V6
+	bool "libh1v6"
+
+	help
+		libh1v6 library
+		http://www.infotm.com/
+
+if BR2_PACKAGE_HLIBH1V6
+menu "Options"
+	config  BR2_PACKAGE_HLIBH1V6_GDBDEBUG
+		bool "h1 gdb debug"
+		default n
+		help
+	  		gdb debug support
+	config  BR2_PACKAGE_HLIBH1V6_TESTBENCH
+		bool "h1 testbench"
+		default n
+		help
+	  		enable h2v6 testbench, 264 and jpeg
+	config  BR2_PACKAGE_HLIBH1V6_POLL
+		bool "h1 ewl polling mode"
+		default n
+		help
+	  		enable h1 ewl poll mode
+endmenu
+
+endif

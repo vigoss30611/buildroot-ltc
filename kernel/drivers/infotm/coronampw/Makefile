@@ -1,0 +1,11 @@
+obj-$(CONFIG_INFOTM_DRV_CORONAMPW)   += clk/
+obj-$(CONFIG_INFOTM_DRV_CORONAMPW)   += dpmu/
+obj-$(CONFIG_INFOTM_DRV_CORONAMPW)   += gpio/
+obj-$(CONFIG_INFOTM_DRV_CORONAMPW)   += input/
+obj-$(CONFIG_INFOTM_DRV_CORONAMPW) 	+= display/
+obj-$(CONFIG_INFOTM_DRV_CORONAMPW)	+= emif/
+obj-$(CONFIG_INFOTM_DRV_CORONAMPW)	+= mfd/
+obj-$(CONFIG_INFOTM_DRV_CORONAMPW)	+= regulator/
+obj-$(CONFIG_INFOTM_DRV_CORONAMPW)	+= ispost/
+obj-y				+= efuse/
+obj-y				+= power_domain/

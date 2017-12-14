@@ -1,0 +1,21 @@
+# iuw
+
+IUW_VERSION = 1.0.0
+IUW_SOURCE =
+IUW_SITE  =
+
+IUW_LICENSE =
+IUW_LICENSE_FILES = README
+
+IUW_MAINTAINED = YES
+IUW_AUTORECONF = YES
+IUW_INSTALL_STAGING = YES
+IUW_MAKE = make -s
+IUW_DEPENDENCIES = 
+
+HOST_IUW_SRCDIR = $(shell pwd)/system/iuw
+HOST_IUW_MAINTAINED = YES
+
+$(eval $(cmake-package))
+$(eval $(host-cmake-package))
+

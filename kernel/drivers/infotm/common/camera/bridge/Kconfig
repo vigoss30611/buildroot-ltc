@@ -1,0 +1,30 @@
+
+menuconfig INFOTM_DUAL_BRIDGE
+	bool "Infotm dual dvp bridge"
+	default y
+	help
+		you should select_on all of them
+		
+if INFOTM_DUAL_BRIDGE
+
+config INFOTM_BRIDGE
+	tristate "infotm bridge core"
+	default y
+
+config SX2_BRIDGE
+	tristate "apollo3 sx2 dvp bridge"
+	depends on ARCH_APOLLO3 && INFOTM_BRIDGE
+	default y
+
+config XC9080_BRIDGE
+	tristate "xc9080 mipi bridge"
+	depends on INFOTM_BRIDGE
+	default y
+
+config STK3855_BRIDGE
+	tristate "stk3855 dvp bridge"
+	depends on INFOTM_BRIDGE
+	default y
+
+endif
+

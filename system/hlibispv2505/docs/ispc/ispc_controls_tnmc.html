@@ -1,0 +1,383 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Automatic Tone Mapping Control (TNMC) &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="up" title="ISP Control Library" href="ispc_library.html" />
+    <link rel="next" title="Light Based Control (LBC)" href="ispc_controls_other.html" />
+    <link rel="prev" title="Lens Shading Grid Control" href="ispc_controls_lshc.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="ispc_controls_other.html" title="Light Based Control (LBC)"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="ispc_controls_lshc.html" title="Lens Shading Grid Control"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="ispc_library.html" accesskey="U">ISP Control Library</a> &raquo;</li><li>Automatic Tone Mapping Control (TNMC)</li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="automatic-tone-mapping-control-tnmc">
+<span id="isp-icm-tnmc"></span><h1>Automatic Tone Mapping Control (TNMC)<a class="headerlink" href="#automatic-tone-mapping-control-tnmc" title="Permalink to this headline">¶</a></h1>
+<p>The automatic tone mapping control is in charge of:</p>
+<ul class="simple">
+<li>Dynamically generate a global mapping curve based on previous captures’
+statistics.</li>
+<li>Control the strength of the tone mapped module (TNM) so tone mapping strength
+is reduced when the sensor is setup in a way which may produce noisy images
+(basically when Sensor’s gain value is high).</li>
+</ul>
+<p>The global curve generation is based in the histogram generated in the pipeline
+corresponding to a previously captured shot. The algorithm generates a mapping
+curve from such histogram and programs it to be applied in subsequent captures.
+The mapping curve is updated by merging the new curve with the previous one, in
+order to provide smooth transitions. There are a number of parameters to guide
+the curve generation which are basically analogous to the ones used in the tone
+mapping curve generation standalone tool. See
+<a class="reference internal" href="#isp-tnmc-curve-generation"><span>Global curve generation</span></a> below for more details.</p>
+<p>There is another aspect of the tone mapping control which is to modify the
+strength of the tone mapping applied according to the sensor settings. For more
+details see <a class="reference internal" href="#isp-tnmc-dynamic-strength"><span>Dynamic Tone Mapping Strength</span></a>.</p>
+<div class="section" id="global-curve-generation">
+<span id="isp-tnmc-curve-generation"></span><h2>Global curve generation<a class="headerlink" href="#global-curve-generation" title="Permalink to this headline">¶</a></h2>
+<p>The curve generation is based on the accumulation of the histogram obtained
+from a previous shot. This is a common technique for histogram equalization
+which increases the contrast in the output image by maximizing the usage of the
+output range and &#8216;assigning&#8217; a larger range to more frequent pixel values in
+the original image.</p>
+<p>However the histogram accumulation technique can easily produce undesired
+effects and artefacts in the output image so it is necessary to post-process
+the input image histogram to avoid such effects. The controls in the global
+tone mapping generation drive such process.  The curve generation process is as
+follows:</p>
+<ul class="simple">
+<li>Histogram is clipped between the min and max histogram clipping values. To
+clip high histogram values helps to prevent too steep mapping curves, which
+might produce exaggerated contrast enhancement in the output. The min clip
+value assures a minimum value in all the histogram bins to avoid that too
+large ranges of the input image values are ‘removed’ to allow the expansion
+of other more frequent value ranges.</li>
+<li>Histogram is smoothed.</li>
+<li>Histogram is tempered, flattening it, so the closer it gets to a flat
+histogram (a histogram with the same value in all bins) the closer the
+output mapping curve will get to an identity function (which would make the
+output = input).</li>
+<li>Histogram normalization.</li>
+<li>Mapping curve generation.</li>
+</ul>
+</div>
+<div class="section" id="dynamic-tone-mapping-strength">
+<span id="isp-tnmc-dynamic-strength"></span><h2>Dynamic Tone Mapping Strength<a class="headerlink" href="#dynamic-tone-mapping-strength" title="Permalink to this headline">¶</a></h2>
+<p>The Automatic Tone mapping control module includes a mechanism to prevent the
+tone mapping module to apply strong tone mapping when the capture settings are
+likely to produce noisy images. There is an adaptiveStrength attribute which is
+only maximum (1.0) when the ISO value set up in the sensor is 100 or below. For
+higher ISO values the <code class="docutils literal"><span class="pre">adaptiveStrength</span></code> value is proportionally reduced:</p>
+<div class="math">
+\[\begin{split}\text{adaptiveStrength} &amp;= \frac{100}{\text{ISO}} \\
+\text{adaptiveStrength} &amp;= \frac{1.0}{\text{sensor gain}}\end{split}\]</div>
+<p>The <code class="docutils literal"><span class="pre">adaptiveStrength</span></code> value will control both the local tone mapping and
+global tone mapping.  A 1.0 value will represent full strength while a value of
+0.0 implies no local tone mapping and identity global mapping curve.</p>
+<div class="math">
+\[\begin{split}\text{localStrength} = \text{localStrength} \cdot
+                       \text{adaptiveStrength} \\
+\text{outCurve}[i] = \text{globalCurve}[i+1] \cdot
+                     \Big(\frac{i+1}{\text{TNMC_N_CURVE}}\Big) \cdot
+                     (1.0 - \text{adaptiveStrength})\end{split}\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal"><span class="pre">TNMC_N_CURVE</span></code> is the number of elements in the curve (65).</p>
+</div>
+</div>
+<div class="section" id="code-organization">
+<span id="isp-tnmc-code"></span><h2>Code Organization<a class="headerlink" href="#code-organization" title="Permalink to this headline">¶</a></h2>
+<p>The tone mapping automatic control is implemented in the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_t_n_m.html">ControlTNM</a>
+class which, as the rest of the control modules, inherits from the
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_module.html">ControlModule</a> class. The entry point is the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_t_n_m.html#aca77eae42ad55bfe58c6be1d24fefd24">ControlTNM::update()</a>
+function. Under normal running conditions, the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_t_n_m.html#aca77eae42ad55bfe58c6be1d24fefd24">ControlTNM::update()</a>
+function for every control module registered in the pipeline is called once for
+every captured shot.</p>
+<p>The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_t_n_m.html#aca77eae42ad55bfe58c6be1d24fefd24">ControlTNM::update()</a> function in <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_t_n_m.html">ControlTNM</a> first calculates
+the value for the adaptiveStrength and then loads the histogram from the
+metadata in the call to the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_t_n_m.html#acc3efc473f156f5e35c65c165682968d">loadHistogram()</a> function. After that the
+global tone mapping curve is generated in the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_t_n_m.html#a891180b1247a50b974ab2e7abb820cfe">generateMappingCurve()</a>
+function (as described in section above) which uses the following set of
+parameters:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">histMin</span></code>, <code class="docutils literal"><span class="pre">histMan</span></code>: For histogram clipping use the
+<code class="docutils literal"><span class="pre">TNMC_HIST_CLIP_MIN</span></code> and <code class="docutils literal"><span class="pre">TNMC_HIST_CLIP_MAX</span></code> parameters.</li>
+<li><code class="docutils literal"><span class="pre">smoothing</span></code>: Smoothing histogram value configurable using
+<code class="docutils literal"><span class="pre">TNMC_SMOOTHING</span></code> parameter.</li>
+<li><code class="docutils literal"><span class="pre">tempering</span></code>: tempering histogram value configurable using
+<code class="docutils literal"><span class="pre">TNMC_TEMPERING</span></code> parameter.</li>
+<li><code class="docutils literal"><span class="pre">updateSpeed</span></code>: Parameter to control the speed of the global tone mapping
+update.  Use <code class="docutils literal"><span class="pre">TNMC_UPDATE_SPEED</span></code> parameter to control the value.</li>
+</ul>
+<p>The local tone mapping parameters are not modified by the tone mapping control
+module with the exception of the local tone mapping strength value, which is
+used to enable/disable and dynamically control local tone mapping strength. The
+rest of the local tone mapping settings are left with whatever values they
+previously had. To control the local tone mapping the function
+<a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_t_n_m.html#a5259b0a85e898662be6f7bf88cd2dece">enableLocalTNM()</a> as well as the <code class="docutils literal"><span class="pre">TNMC_LOCALSTRENGTH</span></code> parameter can be
+used to control the characteristics of the local tone mapping.</p>
+<p>Regarding the automatic tone mapping strength control it can be enabled or
+disabled with the <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_t_n_m.html#a58266f7fe6ae94a7e820eab99e652954">enableAdaptiveTNM()</a> function.</p>
+</div>
+<div class="section" id="tnmc-high-level-parameters">
+<span id="isp-tnmc-hlp"></span><h2>TNMC High Level Parameters<a class="headerlink" href="#tnmc-high-level-parameters" title="Permalink to this headline">¶</a></h2>
+<p>This Control Module computes the TNM global curve and the strength of the
+local curve based on the global HIS statistics and the strength of the
+sensor’s gain.</p>
+<p>More information about the algorithm is available in the <a class="reference internal" href="#isp-icm-tnmc"><span>Automatic Tone Mapping Control (TNMC)</span></a>
+section.</p>
+<div class="section" id="tnmc-generic-parameters">
+<span id="isp-tnmc-hlp-generic"></span><h3>TNMC Generic parameters<a class="headerlink" href="#tnmc-generic-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>TNMC_UPDATE_SPEED:</dt>
+<dd><p class="first"><strong>Format:</strong> float range [0,1]</p>
+<p><strong>Defaults:</strong> 0.5</p>
+<p class="last">Update speed for application of the newly generated global curves. (0=no
+update, 1.0=instant update).</p>
+</dd>
+<dt>TNMC_ADAPTIVE:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Uses 1/(sensor gain) information to limit the strength of the tone
+mapping (both local and global) when sensor has high gains.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="tnmc-global-curve-parameters">
+<span id="isp-tnmc-hlp-curve"></span><h3>TNMC Global Curve parameters<a class="headerlink" href="#tnmc-global-curve-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>TNMC_HIST_CLIP_MIN:</dt>
+<dd><p class="first"><strong>Format:</strong> float range [0,1]</p>
+<p><strong>Defaults:</strong> 0.035</p>
+<p class="last">Histogram clipping min value for global tone mapping curve generation.</p>
+</dd>
+<dt>TNMC_HIST_CLIP_MAX:</dt>
+<dd><p class="first"><strong>Format:</strong> float range [0,1]</p>
+<p><strong>Defaults:</strong> 0.25</p>
+<p class="last">Histogram clipping maximum value for global tone mapping curve generation.</p>
+</dd>
+<dt>TNMC_SMOOTHING:</dt>
+<dd><p class="first"><strong>Format:</strong> float range [0,1]</p>
+<p><strong>Defaults:</strong> 0.4</p>
+<p class="last">Smoothing value from 0.0 (no smoothing) to 1.0 (max smoothing) for the
+global mapping curve generation.</p>
+</dd>
+<dt>TNMC_TEMPERING:</dt>
+<dd><p class="first"><strong>Format:</strong> float range [0,1]</p>
+<p><strong>Defaults:</strong> 0.2</p>
+<p class="last">Tempering value between 0.0 (no tempering) to 1.0 (max tempering) for
+the global mapping curve genration. More tempering produces more gentle
+mapping curves.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="tnmc-local-tone-mapping-parameters">
+<span id="isp-tnmc-hlp-local"></span><h3>TNMC Local Tone Mapping parameters<a class="headerlink" href="#tnmc-local-tone-mapping-parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>TNMC_LOCAL:</dt>
+<dd><p class="first"><strong>Format:</strong> bool range {0,1}</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Enable the local tone mapping.</p>
+</dd>
+<dt>TNMC_LOCALSTRENGTH:</dt>
+<dd><p class="first"><strong>Format:</strong> float range [0,1]</p>
+<p><strong>Defaults:</strong> 0</p>
+<p class="last">Replaces the local weight parameter of the TNM Module (see
+<a class="reference internal" href="ispc_modules.html#isp-ispc-tnm"><span>Tone Mapper (TNM)</span></a>) (affected by the sensor’s gain too).</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="tnmc-parameters-modified">
+<span id="isp-tnmc-hlp-modified"></span><h3>TNMC Parameters modified<a class="headerlink" href="#tnmc-parameters-modified" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_t_n_m.html">ControlTNM</a> module loading those parameters will use them to
+modify only: TNM_CURVE and TNM_WEIGHT_LOCAL. The other parameters
+described in <a class="reference internal" href="ispc_modules.html#isp-ispc-tnm"><span>Tone Mapper (TNM)</span></a> should not be altered.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">It is important to point out that the tone mapper range defined by the
+<code class="docutils literal"><span class="pre">TNM_IN_Y</span></code> parameter must be properly aligned with the histogram
+generated in the HIS statistics module. Otherwise the global curve
+generated will not match properly the image characteristics.</p>
+</div>
+</div>
+</div>
+<div class="section" id="statistics-configuration">
+<span id="isp-tnmc-statistics"></span><h2>Statistics Configuration<a class="headerlink" href="#statistics-configuration" title="Permalink to this headline">¶</a></h2>
+<p>The Auto TNM module also has the ability to configure the HIS it uses if
+another module did not configure it already (the choice has to be done when
+instenciating the control algorithms).</p>
+<p>The <a class="reference external" href="../doxygen/class_i_s_p_c_1_1_control_t_n_m.html">ControlTNM</a> module relies in the HIS statistics extraction for
+proper behaviour. The configuration of the HIS statistics is exactly the
+same as required by the AE module (see
+<a class="reference internal" href="ispc_controls_ae.html#isp-ae-statistics"><span>Statistics Configuration</span></a>). It is expected that the
+histogram range goes from the black level to the white level in the
+pipeline. By default those values would range between -64 and 64 (assuming a
+s8.x precision pipeline). The TNM range must be configured in such a way
+that it covers exactly the same range as the extracted histogram.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Automatic Tone Mapping Control (TNMC)</a><ul>
+<li><a class="reference internal" href="#global-curve-generation">Global curve generation</a></li>
+<li><a class="reference internal" href="#dynamic-tone-mapping-strength">Dynamic Tone Mapping Strength</a></li>
+<li><a class="reference internal" href="#code-organization">Code Organization</a></li>
+<li><a class="reference internal" href="#tnmc-high-level-parameters">TNMC High Level Parameters</a><ul>
+<li><a class="reference internal" href="#tnmc-generic-parameters">TNMC Generic parameters</a></li>
+<li><a class="reference internal" href="#tnmc-global-curve-parameters">TNMC Global Curve parameters</a></li>
+<li><a class="reference internal" href="#tnmc-local-tone-mapping-parameters">TNMC Local Tone Mapping parameters</a></li>
+<li><a class="reference internal" href="#tnmc-parameters-modified">TNMC Parameters modified</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#statistics-configuration">Statistics Configuration</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="ispc_controls_lshc.html"
+                        title="previous chapter">Lens Shading Grid Control</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="ispc_controls_other.html"
+                        title="next chapter">Light Based Control (LBC)</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

@@ -1,0 +1,671 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>CI Appendix: Frame Size Computation &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="next" title="CI Appendix: System calls mapping" href="ci_appendix_ioctl.html" />
+    <link rel="prev" title="CI Appendix: Adding a new DebugFS counter" href="ci_appendix.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="ci_appendix_ioctl.html" title="CI Appendix: System calls mapping"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="ci_appendix.html" title="CI Appendix: Adding a new DebugFS counter"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li><li>CI Appendix: Frame Size Computation</li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="ci-appendix-frame-size-computation">
+<span id="isp-ci-frame-size-computation"></span><h1>CI Appendix: Frame Size Computation<a class="headerlink" href="#ci-appendix-frame-size-computation" title="Permalink to this headline">¶</a></h1>
+<p>This section will describe the arithmetic behind the frame sizes computation
+done by the FelixCommon functions:</p>
+<ul class="simple">
+<li><a class="reference external" href="../doxygen/group___c_i___a_l_l_o_c.html#gaeff0899305c689f034fe0e7d33d54763">CI_ALLOC_RGBSizeInfo()</a></li>
+<li><a class="reference external" href="../doxygen/group___c_i___a_l_l_o_c.html#ga9e50c50c1d21771a528707b63478cd09">CI_ALLOC_Raw2DSizeInfo()</a></li>
+<li><a class="reference external" href="../doxygen/group___c_i___a_l_l_o_c.html#ga1c618117534c3b6300740922c236c840">CI_ALLOC_YUVSizeInfo()</a></li>
+</ul>
+<p>This section assumes that the reader is aware of the different pixel formats
+that the ISP can generated (see <a class="reference internal" href="ci_library.html#isp-ci-output-formats"><span>Output Formats and sizes</span></a> or
+<a class="reference internal" href="../ispc/ispc_modules.html#isp-ispc-out"><span>Output formats (OUT)</span></a>) and for the tiling section aware of the HW limitations
+(see <a class="reference internal" href="ci_library.html#isp-ci-tiling-information"><span>MMU Tiling information</span></a>).</p>
+<p>The FelixCommon library and the CI layer use a common structure to represent
+the information about a pixel format. These fields are the same regardless
+of the format (see <a class="reference external" href="../doxygen/struct_p_i_x_e_l_t_y_p_e.html">PIXELTYPE</a> struct)</p>
+<p>For example here is an extract of the structure relevant for the size
+computation:</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="k">typedef</span> <span class="k">struct</span> <span class="n">PIXELTYPE</span> <span class="p">{</span>
+    <span class="cm">/** @brief horizontal subsampling */</span>
+    <span class="n">IMG_UINT8</span> <span class="n">ui8HSubsampling</span><span class="p">;</span>
+    <span class="cm">/** @brief vertical subsampling */</span>
+    <span class="n">IMG_UINT8</span> <span class="n">ui8VSubsampling</span><span class="p">;</span>
+
+    <span class="cm">/** @brief number of elements represented */</span>
+    <span class="n">IMG_UINT8</span> <span class="n">ui8PackedElements</span><span class="p">;</span>
+    <span class="cm">/** @brief in Bytes */</span>
+    <span class="n">IMG_UINT8</span> <span class="n">ui8PackedStride</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">PIXELTYPE</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>These fields will be used in the following sections to explain the size
+computation.</p>
+<p>The unit of allocation is a block-of-pixel (bop) that covers PackedElements
+pixels of the buffer and needs PackedStride Bytes of allocation. For example
+our YUV 10b formats have a bop of 3 elements in 6 Bytes which means we need to
+round up the width to multiple of 3 and each bop of 3 pixels need 6 Bytes of
+memory.</p>
+<p>The ISP hardware needs all allocation strides to be multiples of
+<a class="reference external" href="../doxygen/group___f_e_l_i_x___h_w___i_n_f_o.html#gae200565607aa51601f0af0afb282f6c9">SYSMEM_ALIGNMENT</a> which is 64 Bytes. All of our strides <strong>have to</strong> to
+comply with that rule with the exception of the TIFF formats which are Byte
+addressable by definition. In the following sections the pseudo-code function
+<code class="docutils literal"><span class="pre">round_up_sysmem()</span></code> is used to perform the rounding up to the nearest 64B
+multiple.</p>
+<div class="section" id="bayer-output-rggb">
+<span id="isp-ci-frame-size-bayer"></span><h2>Bayer output (RGGB)<a class="headerlink" href="#bayer-output-rggb" title="Permalink to this headline">¶</a></h2>
+<p>All the Bayer outputs do not have subsampling horizontally or vertically (i.e.
+the value is 1). A block of pixel (bop) is one line of CFA pattern (one line of
+RG or GB pattern). The size a the output of the imager interface is used to
+compute the allocation for data-extraction Bayer formats
+(<a class="reference external" href="../doxygen/struct_c_i___m_o_d_u_l_e___i_i_f.html#a7a4ced77b43c8f8182eeb938d834731e">CI_MODULE_IIF::ui16ImagerSize</a>).</p>
+<p>The details can be found for each format in
+<a class="reference external" href="../doxygen/group___f_e_l_i_x___c_o_m_m_o_n.html#ga26dc50c76560e29367d28ef8cb4ba616">PixelTransformBayer()</a> (format list <a class="reference internal" href="ci_library.html#isp-ci-data-extraction-output"><span>Data Extraction formats (Bayer)</span></a>):</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="31%" />
+<col width="31%" />
+<col width="38%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Format</td>
+<td>Elements</td>
+<td>Stride (B)</td>
+</tr>
+<tr class="row-even"><td>BAYER_8</td>
+<td>4</td>
+<td>4</td>
+</tr>
+<tr class="row-odd"><td>BAYER_10</td>
+<td>3</td>
+<td>4</td>
+</tr>
+<tr class="row-even"><td>BAYER_12</td>
+<td>16</td>
+<td>24</td>
+</tr>
+</tbody>
+</table>
+<p>The allocation follows the following algorithm, which is the same for RGB
+outputs (see <a class="reference external" href="../doxygen/group___c_i___a_l_l_o_c.html#gaeff0899305c689f034fe0e7d33d54763">CI_ALLOC_RGBSizeInfo()</a>):</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="n">bop</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">width</span><span class="o">/</span><span class="n">packedElements</span><span class="p">);</span>
+<span class="n">stride</span> <span class="o">=</span> <span class="n">bop</span><span class="o">*</span><span class="n">packedStride</span><span class="p">;</span>
+<span class="n">stride</span> <span class="o">=</span> <span class="n">round_up_sysmem</span><span class="p">(</span><span class="n">stride</span><span class="p">);</span>  <span class="c1">// 64B</span>
+
+<span class="c1">// apply tiling here if RGB</span>
+
+<span class="n">alloc</span> <span class="o">=</span> <span class="n">off</span> <span class="o">+</span> <span class="n">stride</span><span class="o">*</span><span class="n">height</span><span class="p">;</span>  <span class="c1">// height in lines not in CFA pattern</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>Unlike RGB, Bayer formats cannot be tiled.</p>
+<p class="last">The HW could generated tiled data extraction but the SW chose to limit
+tiled output to processed images.</p>
+</div>
+</div>
+<div class="section" id="bayer-tiff-output">
+<span id="isp-ci-frame-size-tiff"></span><h2>Bayer TIFF output<a class="headerlink" href="#bayer-tiff-output" title="Permalink to this headline">¶</a></h2>
+<p>The TIFF format is extracted in the RAW2D part of the pipeline. It is a Bayer
+format organised in MSB order rather the LSB of other formats. It is Byte
+packed and Byte aligned unlike other formats which are burst aligned (i.e.
+other formats need alignment to the <a class="reference external" href="../doxygen/group___f_e_l_i_x___h_w___i_n_f_o.html#gae200565607aa51601f0af0afb282f6c9">SYSMEM_ALIGNMENT</a> but not TIFF
+formats). As a Bayer format they do not support subsampling. The size a the
+output of the imager interface is used to compute the allocation for
+data-extraction Bayer formats (<a class="reference external" href="../doxygen/struct_c_i___m_o_d_u_l_e___i_i_f.html#a7a4ced77b43c8f8182eeb938d834731e">CI_MODULE_IIF::ui16ImagerSize</a>).</p>
+<p>The information about the formats are available in the same function that other
+bayer formats (<a class="reference external" href="../doxygen/group___f_e_l_i_x___c_o_m_m_o_n.html#ga26dc50c76560e29367d28ef8cb4ba616">PixelTransformBayer()</a> - for the list of formats is
+available in see <a class="reference internal" href="ci_library.html#isp-ci-raw2d-output"><span>Raw 2D Extraction (TIFF)</span></a>):</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%" />
+<col width="36%" />
+<col width="36%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Format</td>
+<td>Elements</td>
+<td>Stride (B)</td>
+</tr>
+<tr class="row-even"><td>TIFF_10</td>
+<td>4 (in MSB)</td>
+<td>5</td>
+</tr>
+<tr class="row-odd"><td>TIFF_12</td>
+<td>2 (in MSB)</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<p>The allocation follows the following algorithm (see
+<a class="reference external" href="../doxygen/group___c_i___a_l_l_o_c.html#ga9e50c50c1d21771a528707b63478cd09">CI_ALLOC_Raw2DSizeInfo()</a>):</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="n">bop</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">width</span><span class="o">/</span><span class="n">packedElements</span><span class="p">);</span>
+<span class="n">stride</span> <span class="o">=</span> <span class="n">bop</span><span class="o">*</span><span class="n">packedStride</span><span class="p">;</span>
+<span class="c1">// no rounding to system alignment!</span>
+
+<span class="c1">// no tiling!</span>
+
+<span class="n">alloc</span> <span class="o">=</span> <span class="n">stride</span><span class="o">*</span><span class="n">height</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">TIFF formats are access by Bytes and cannot be tiled.</p>
+</div>
+</div>
+<div class="section" id="rgb-input-output">
+<span id="isp-ci-frame-size-rgb"></span><h2>RGB input/output<a class="headerlink" href="#rgb-input-output" title="Permalink to this headline">¶</a></h2>
+<p>The RGB outputs can be at HDR extraction or Display output as shown in
+<a class="reference internal" href="ci_library.html#isp-ci-hdr-output"><span>HDR Extraction</span></a> and <a class="reference internal" href="ci_library.html#isp-ci-display-output"><span>Display pipeline formats (RGB)</span></a>. The input can be
+used to insert frames at HDR insertion point.</p>
+<p>As for the Bayer formats the HDR formats use the size at the output of the
+imager interface as allocation size (<a class="reference external" href="../doxygen/struct_c_i___m_o_d_u_l_e___i_i_f.html#a7a4ced77b43c8f8182eeb938d834731e">CI_MODULE_IIF::ui16ImagerSize</a>). The
+display output will use the maximum size of the scaler output defined in
+<span>CI_PIPELINE::ui16MaxDispOutWidth</span> and
+<span>CI_PIPELINE::ui16MaxDispOutHeight</span>.</p>
+<p>The information about the formats is available in <a class="reference external" href="../doxygen/group___f_e_l_i_x___c_o_m_m_o_n.html#gacaa902589aa089578248eaab09852b23">PixelTransformRGB()</a>:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="45%" />
+<col width="25%" />
+<col width="30%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Formats</td>
+<td>Elements</td>
+<td>Stride (B)</td>
+</tr>
+<tr class="row-even"><td><p class="first">RGB_888_24 or</p>
+<p class="last">BGR_888_24</p>
+</td>
+<td>1</td>
+<td>3</td>
+</tr>
+<tr class="row-odd"><td><p class="first">RGB_888_32 or</p>
+<p class="last">BGR_888_32</p>
+</td>
+<td>1</td>
+<td>4</td>
+</tr>
+<tr class="row-even"><td><p class="first">RGB_101010_32 or</p>
+<p class="last">BGR_101010_32</p>
+</td>
+<td>1</td>
+<td>4</td>
+</tr>
+<tr class="row-odd"><td>BGR_161616_64</td>
+<td>1</td>
+<td>8</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Display pipeline output in HW is by default RGB (i.e. B in LSB) but use of
+the R2Y and Y2R block allow the change to BGR when using the ISPC library.</p>
+<p>BGR 10b in 32 Bytes cannot be obtained as RGB when using HDR extraction as
+it extracted from the HW before the convertion blocks.</p>
+<p class="last">BGR 16b in 64 Bytes cannot be used as output - it is the HDR insertion
+format.</p>
+</div>
+<p>The algorithm followed to allocate is the same than Bayer formats.</p>
+</div>
+<div class="section" id="yuv-output">
+<span id="isp-ci-frame-size-yuv"></span><h2>YUV output<a class="headerlink" href="#yuv-output" title="Permalink to this headline">¶</a></h2>
+<p>YUV output is a scaled output. It therefore uses the
+<span>CI_PIPELINE::ui16MaxEncOutWidth</span> as <code class="docutils literal"><span class="pre">width</span></code> and
+<span>CI_PIPELINE::ui16MaxEncOutHeight</span> as <code class="docutils literal"><span class="pre">height</span></code>.</p>
+<p>Available formats (see <a class="reference internal" href="ci_library.html#isp-ci-encoder-output"><span>Encoder pipeline formats (YUV)</span></a> and
+<a class="reference external" href="../doxygen/group___f_e_l_i_x___c_o_m_m_o_n.html#ga6af1827825420938a912c43f7ec4b5e9">PixelTransformYUV()</a>):</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="13%" />
+<col width="13%" />
+<col width="23%" />
+<col width="27%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>&nbsp;</td>
+<td>H Sub</td>
+<td>V Sub</td>
+<td>Elements</td>
+<td>Stride (B)</td>
+</tr>
+<tr class="row-even"><td><p class="first">NV21 8b or</p>
+<p class="last">NV12 8b</p>
+</td>
+<td>2</td>
+<td>2</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="row-odd"><td><p class="first">NV21 10b or</p>
+<p class="last">NV12 10b</p>
+</td>
+<td>2</td>
+<td>2</td>
+<td>3</td>
+<td>6</td>
+</tr>
+<tr class="row-even"><td><p class="first">NV61 8b or</p>
+<p class="last">NV16 8b</p>
+</td>
+<td>2</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="row-odd"><td><p class="first">NV61 10b or</p>
+<p class="last">NV16 10b</p>
+</td>
+<td>2</td>
+<td>1</td>
+<td>3</td>
+<td>6</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The encoder pipeline is output YVU by default. But the usage of the Y2R
+allow the high level to revert the matrix to allow an output of YUV.</p>
+</div>
+<p>The allocation follows the following algorithm, which is slightly different
+from the Bayer/RGB allocation (see <a class="reference external" href="../doxygen/group___c_i___a_l_l_o_c.html#ga1c618117534c3b6300740922c236c840">CI_ALLOC_YUVSizeInfo()</a>):</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="n">bop</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">width</span><span class="o">/</span><span class="n">packedElements</span><span class="p">);</span>
+<span class="n">YStride</span> <span class="o">=</span> <span class="n">bop</span><span class="o">*</span><span class="n">packedStride</span><span class="p">;</span>
+<span class="n">YStride</span> <span class="o">=</span> <span class="n">round_up_sysmem</span><span class="p">(</span><span class="n">YStride</span><span class="p">);</span>  <span class="c1">// 64B</span>
+
+<span class="c1">// 2*width because UV interleaved in chroma</span>
+<span class="n">CWidth</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">width</span><span class="o">/</span><span class="n">HSubsampling</span><span class="p">;</span>
+<span class="n">bop</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">Cwidth</span><span class="o">/</span><span class="n">PackedElements</span><span class="p">);</span>
+<span class="n">CStride</span> <span class="o">=</span> <span class="n">bop</span><span class="o">*</span><span class="n">PackedStride</span><span class="p">;</span>
+<span class="n">CStride</span> <span class="o">=</span> <span class="n">round_up_sysmem</span><span class="p">(</span><span class="n">CStride</span><span class="p">);</span>  <span class="c1">// 64B</span>
+
+<span class="c1">// apply tiling stride here</span>
+
+<span class="c1">// coff being the offset between luma and chroma</span>
+<span class="c1">// not the offset at which chroma starts</span>
+<span class="c1">// offsets HAVE to be multiple of 64 Bytes too</span>
+<span class="n">alloc</span> <span class="o">=</span> <span class="n">yoff</span> <span class="o">+</span> <span class="n">YStride</span><span class="o">*</span><span class="n">height</span>
+    <span class="o">+</span> <span class="n">coff</span> <span class="o">+</span> <span class="n">CStride</span><span class="o">*</span><span class="n">height</span><span class="o">/</span><span class="n">VSubsampling</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The CI test application has several parameters (see
+<a class="reference internal" href="../test_tools/driver_test.html#isp-driver-test-allocations"><span>Allocation size options</span></a>) to change the allocation size, strides
+and offsets. The chroma offset asked is the <strong>offset at which chroma
+starts</strong> (<code class="docutils literal"><span class="pre">cbcroff</span></code>) not the distance between luma and chroma.</p>
+<p>In that case the needed allocation is: <span class="math">\(alloc = cbcroff + CStride*\frac{height}{VSubsampling}\)</span></p>
+<p class="last">This also involves the verification that <span class="math">\(cbcroff &gt; yoff + YStride*height\)</span>.</p>
+</div>
+</div>
+<div class="section" id="tiled-output">
+<span id="isp-ci-frame-size-tiled"></span><h2>Tiled output<a class="headerlink" href="#tiled-output" title="Permalink to this headline">¶</a></h2>
+<p>As per HW limitations the tiling stride has to be a power of 2 and the same
+<strong>for all tiled buffers</strong> for a given context. This limitation is applied to
+both YStride and CStride for YUV buffers.</p>
+<p>The tiling stride has to be a multiple of the chosen tiling scheme which is
+an insmod parmeter. The tiling stride can be forced using an insmod parameter
+as well to ensure that all tiled buffer use at least that stride (see
+<a class="reference internal" href="../getting_started.html#isp-gsg-insmod-options"><span>V2500 Insertion options</span></a>).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The allocation size is usually the same for physical and virtual addresses.
+However in the tiling case we need to allocate a bit more virtual address
+as the first address of the buffer has to be aligned as explained in
+<a class="reference internal" href="ci_library.html#isp-ci-tiling-information"><span>MMU Tiling information</span></a>.</p>
+</div>
+</div>
+<div class="section" id="output-sizes-examples">
+<span id="isp-ci-frame-size-examples"></span><h2>Output sizes examples<a class="headerlink" href="#output-sizes-examples" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="x1088-nv61-10bit-output">
+<span id="isp-ci-frame-example-yuv"></span><h3>1920x1088 NV61-10bit output<a class="headerlink" href="#x1088-nv61-10bit-output" title="Permalink to this headline">¶</a></h3>
+<p>Simple example to show how to round up the height to a multiple of 16
+(often needed for encoders).</p>
+<p>Following the computation section, the stride should be (10b formats are
+packed 3 elements in 6 Bytes as shown in previous table):</p>
+<div class="math">
+\[\begin{split}bop_{Y} &amp;= \frac{1,920}{3} = 640 \\
+stride_{Y} &amp;= bop_{Y} \times 6 \\
+    &amp;= 3,840 \text{ Bytes}\end{split}\]</div>
+<p><span class="math">\(stride_{Y}\)</span> is therefore 3840 Bytes (stride is a multiple of 64).</p>
+<p><span class="math">\(stride_{C}\)</span> should be the same because:</p>
+<div class="math">
+\[width_{C} = 2 \times \frac{1,920}{2} = 1,920\]</div>
+<p>NV61 is a 4:2:2 format therefore the total allocation size is:</p>
+<div class="math">
+\[\begin{split}allocation_{YUV} &amp;= stride_{Y} \times height_{YUV} + 2 \times stride_{C} \times \frac{height_{YUV}}{1}  \\
+    &amp;= 3,840 \times 1,088 + 2 \times 3,840 \times \frac{1,088}{1} \\
+    &amp;= 8,355,840 \text{ Bytes}\end{split}\]</div>
+</div>
+<div class="section" id="x720-nv21-output-containing-2-frames-one-next-to-each-other">
+<span id="isp-ci-frame-example-2frames"></span><h3>1080x720 NV21 output containing 2 frames one next to each other<a class="headerlink" href="#x720-nv21-output-containing-2-frames-one-next-to-each-other" title="Permalink to this headline">¶</a></h3>
+<p>This scenario assumes that we want to capture 2 interleave frames A and B
+(for example from 2 different sensors) following the layout bellow:</p>
+<div class="code highlight-python"><div class="highlight"><pre>+-------+-------+
+|  Ay   |  By   |
+|       |       |
++-------+-------+
+| ACbCr | BCbCr |
++-------+-------+
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The DDK does not support this scenario by default with a single context.
+But the buffers could be imported and triggered with different offsets
+on each contexts.</p>
+</div>
+<p>Following the previous section, allocation for the A frame should be:</p>
+<ul class="simple">
+<li><span class="math">\(stride_{Y}\)</span> of 1088 Bytes (1080 is not a multiple of 64).</li>
+<li><span class="math">\(stride_{C}\)</span> of 1088 Bytes (420 makes the <span class="math">\(width_{C} = 2
+\times \frac{width_{YUV}}{2}\)</span> so the chroma bop is the same than the luma).</li>
+</ul>
+<p>Therefore we can use those strides as offsets for the B frame. Which will
+result in the following:</p>
+<div class="math">
+\[off_{Y} = 1,088 \text{ Bytes}\]\[off_{C} = 1,088 \text{ Bytes}\]\[\begin{split}off_{CbCr} &amp;= stride_{Y} \times height_{YUV} + off_{C} \\
+        &amp;= 783,360 + 1,088 \\
+        &amp;= 784,448 \text{ Bytes}\end{split}\]</div>
+<p>The allocation to contain the 2 frame should therefore be have a double stride
+for luma and chroma (to skip the other frame&#8217;s location) and the needed offset
+depending on which image we want to capture.</p>
+<p>For both frames:</p>
+<div class="math">
+\[stride_{Y} = stride_{C} = 2,176 \text{ Bytes}\]</div>
+<p>For frame A:</p>
+<div class="math">
+\[A\_off_{Y} = 0\]\[A\_off_{C} = 0\]\[A\_off_{CbCr} = 783,360 \text{ Bytes}\]</div>
+<p>For frame B:</p>
+<div class="math">
+\[B\_off_{Y} = 1,088 \text{ Bytes}\]\[B\_off_{C} = 1,088 \text{ Bytes}\]\[B\_off_{CbCr} = 784,448 \text{ Bytes}\]</div>
+<p>Therefore the frame B needs the biggest allocation. To cope with both the
+buffers should allocate:</p>
+<div class="math">
+\[\begin{split}allocation_{YUV} &amp;= B\_off_{CbCr} + stride_{C} \times \frac{height_{YUV}}{Subs_{V}} \\
+           &amp;= 784,448 + 2,176 \times \frac{720}{2} \\
+           &amp;= 784,448 + 783,360 \\
+           &amp;= 1,567,808 \text{ Bytes}\end{split}\]</div>
+</div>
+<div class="section" id="x2160-nv21-and-1920x1080-rgb888-32">
+<span id="isp-ci-frame-example-yuv-and-rgb"></span><h3>4096x2160 NV21 and 1920x1080 RGB888_32<a class="headerlink" href="#x2160-nv21-and-1920x1080-rgb888-32" title="Permalink to this headline">¶</a></h3>
+<p>This is a typical example of getting a full resolution YUV output and a
+scaled down RGB output to display on a screen.</p>
+<p>This example is not using tiling therefore each output can be considered
+individually.</p>
+<p>NV21 is 4:2:0 and we can follow similar steps than for previous examples to
+compute the allocation sizes:</p>
+<div class="math">
+\[\begin{split}stride_{Y} &amp;= 4,096 \text{ Bytes} \\
+stride_{C} &amp;= 4,096 \text{ Bytes} \\
+allocation_{YUV} &amp;= 4,096 \times 2,160 + 4,096 \times \frac{2,160}{2} \\
+    &amp;= 3,271,040 \text{ Bytes}\end{split}\]</div>
+<p>The RGB 8b in 32 Bytes allocation will produce:</p>
+<div class="math">
+\[\begin{split}bop_{RGB} &amp;= \frac{1,920}{1} \\
+stride_{RGB} &amp;= bop_{RGB} \times 3 \\
+    &amp;= 5,760 \text{ Bytes}\end{split}\]</div>
+<p>The stride is a multiple of the system alignment therefore the total
+allocation is:</p>
+<div class="math">
+\[\begin{split}allocation_{RGB} &amp;= stride_{RGB} \times height_{RGB} \\
+    &amp;= 5,760 \times 1,080 \\
+    &amp;= 6,220,800 \text{ Bytes}\end{split}\]</div>
+<p>The final allocation should therefore be <span class="math">\(3,271,040 \text{ Bytes}\)</span> for
+YUV frames and <span class="math">\(6,220,800 \text{ Bytes}\)</span> for RGB frames.</p>
+</div>
+<div class="section" id="x2160-nv21-tiled-and-1920x1080-rgb888-32-tiled">
+<span id="isp-ci-frame-example-yuv-and-rgb-tiled"></span><h3>4096x2160 NV21 tiled and 1920x1080 RGB888_32 tiled<a class="headerlink" href="#x2160-nv21-tiled-and-1920x1080-rgb888-32-tiled" title="Permalink to this headline">¶</a></h3>
+<p>This example is the same than the previous one but using tiled output.</p>
+<p>Tiling involves that all tiled output share the same tiling stride. This
+means we have to compute the which one of all the tiled output has the
+biggest stride (as a power of 2) and use that as the stride for all
+tiled outputs.</p>
+<p>The width and height have to be rounded up to cover the tiling scheme.
+Let&#8217;s assume that we are using the 256x16 scheme.</p>
+<p>The YUV output is 4096x2160 which is 16 horizontal tile, 135 vertical
+tiles. Therefore the resolution does not need to change. The computed
+stride of 4096 is a power of 2 therefore can be used as the tiling stride
+for YUV outputs.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">A <span class="math">\(stride_{Y}\)</span> and <span class="math">\(stride_{C}\)</span> of 4096 Bytes is not final
+because RGB may have a bigger stride!</p>
+</div>
+<p>The RGB output is 1920x1080 which 7.5 horizontal tiles (need to round up to
+8) and 67.5 vertical tiles (need to round up to 68). The stride computation
+therefore becomes based on:</p>
+<div class="math">
+\[\begin{split}width_{RGB} &amp;= 8 \times 256 = 2,048 \\
+height_{RGB} &amp;= 68 \times 16 = 1,088 \\
+\\
+bop_{RGB} &amp;= \frac{2,048}{1} \\
+stride_{RGB} &amp;= 2,048 \times 3 \\
+    &amp;= 6,144 \text{ Bytes}\end{split}\]</div>
+<p>However 6144 is not a power of two, the closest power of 2 is 8192.</p>
+<p>The found tiling stride for YUV is 4096 and the tiling stride found for RGB
+is 8192. Because of the HW limitation both should use the biggest: 8192.
+The allocation should therefore be:</p>
+<div class="math">
+\[\begin{split}allocation_{YUV} &amp;= 8,192 \times 2,160 + 8,192 \times \frac{2,160}{2} \\
+    &amp;= 26,542,080 \text{ Bytes} \\
+\\
+allocation_{RGB} &amp;= 8,192 \times 1,088 \\
+    &amp;= 8,912,896 \text{ Bytes}\end{split}\]</div>
+</div>
+<div class="section" id="x1080-12b-bayer-and-raw-2d-12b-extraction">
+<span id="isp-ci-frame-example-bayer"></span><h3>1920x1080 12b Bayer and RAW 2D 12b extraction<a class="headerlink" href="#x1080-12b-bayer-and-raw-2d-12b-extraction" title="Permalink to this headline">¶</a></h3>
+<p>This example will cover the allocation for a Bayer output at 1080p using both
+data-extraction scheme: the DE point and the RAW 2D points.</p>
+<p>The 12b Bayer allocation will be:</p>
+<blockquote>
+<div><div class="math">
+\[\begin{split}bop_{Bayer} &amp;= \frac{width_{IIF}}{16} = \frac{1,920}{16} \\
+    &amp;= 120 \\
+stride_{Bayer} &amp;= bop_{Bayer} \times 24 \\
+    &amp;= 2,880 \text{ Bytes} \\\end{split}\]</div>
+</div></blockquote>
+<p>The block of pixel of 120 is a multiple of the number of elements (16)
+therefore no rounding is needed for that example. Same goes for the
+<span class="math">\(stride_{Bayer}\)</span> which is a multiple of the system alignment of 64 Bytes.
+The allocation size is therefore:</p>
+<blockquote>
+<div><div class="math">
+\[\begin{split}allocation_{Bayer} &amp;= stride_{Bayer} \times height_{IIF} \\
+    &amp;= 2,880 \times 1,080 \\
+    &amp;= 3,110,400 \text{ Bytes}\end{split}\]</div>
+</div></blockquote>
+<p>The 12b Tiff allocation will be:</p>
+<blockquote>
+<div><div class="math">
+\[\begin{split}bop_{Tiff} &amp;= \frac{width_{IIF}}{2} = 960 \\
+stride_{Tiff} &amp;= bop_{Tiff} \times 5 \\
+    &amp;= 4,800 \text{ Bytes}\end{split}\]</div>
+</div></blockquote>
+<p>The size of the input is a multiple of 2 (always, as Bayer formats supported
+by the ISP have a 2x2 mosaic) so no rounding is needed.
+In this particular example the <span class="math">\(stride_{Tiff}\)</span> is a multiple of the
+system alignment but for other resolutions it does not have to be. The total
+allocation is:</p>
+<blockquote>
+<div><div class="math">
+\[\begin{split}allocation_{Tiff} &amp;= stride_{Tiff} \times height_{IIF} \\
+    &amp;= 4,800 \times 1,080 \\
+    &amp;= 5,184,000 \text{ Bytes}\end{split}\]</div>
+</div></blockquote>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">CI Appendix: Frame Size Computation</a><ul>
+<li><a class="reference internal" href="#bayer-output-rggb">Bayer output (RGGB)</a></li>
+<li><a class="reference internal" href="#bayer-tiff-output">Bayer TIFF output</a></li>
+<li><a class="reference internal" href="#rgb-input-output">RGB input/output</a></li>
+<li><a class="reference internal" href="#yuv-output">YUV output</a></li>
+<li><a class="reference internal" href="#tiled-output">Tiled output</a></li>
+<li><a class="reference internal" href="#output-sizes-examples">Output sizes examples</a><ul>
+<li><a class="reference internal" href="#x1088-nv61-10bit-output">1920x1088 NV61-10bit output</a></li>
+<li><a class="reference internal" href="#x720-nv21-output-containing-2-frames-one-next-to-each-other">1080x720 NV21 output containing 2 frames one next to each other</a></li>
+<li><a class="reference internal" href="#x2160-nv21-and-1920x1080-rgb888-32">4096x2160 NV21 and 1920x1080 RGB888_32</a></li>
+<li><a class="reference internal" href="#x2160-nv21-tiled-and-1920x1080-rgb888-32-tiled">4096x2160 NV21 tiled and 1920x1080 RGB888_32 tiled</a></li>
+<li><a class="reference internal" href="#x1080-12b-bayer-and-raw-2d-12b-extraction">1920x1080 12b Bayer and RAW 2D 12b extraction</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="ci_appendix.html"
+                        title="previous chapter">CI Appendix: Adding a new DebugFS counter</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="ci_appendix_ioctl.html"
+                        title="next chapter">CI Appendix: System calls mapping</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

@@ -1,0 +1,23 @@
+menuconfig INFOTM_I2C
+        bool "Infotm I2C support"
+        default y
+        help
+        This is the Infotm internal I2C driver
+
+if INFOTM_I2C
+
+
+config I2C_IMAPX
+       tristate "iMAPx I2C driver"
+        default y
+       help
+        I2C driver for iMAPx
+
+config I2C_SLAVE_IMAPX
+	tristate "iMAPx I2C Slave driver"
+	default y
+	help
+        I2C as slave driver for iMAPx
+endif
+
+

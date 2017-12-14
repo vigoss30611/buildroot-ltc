@@ -1,0 +1,89 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices..Light.DarkActionBar
+    -->
+<!--     android:Theme.Holo0000000000000000000000000000000000000000000000 -->
+   <style name="CalendarTitle">
+     <item name="android:textSize">@dimen/calendar_text_medium</item>
+     <item name="android:textStyle">bold</item>
+    
+    </style>
+    <style name="CalendarCell"><item name="android:gravity">center</item>
+        <item name="android:layout_width">0.0dip</item>
+        <item name="android:layout_weight">1.0</item>
+   <!--       <item name="android:windowSplitActionBar">4</item> -->
+        
+    </style>
+     <style name="CalendarCell.DayHeader" parent="@style/CalendarCell">
+            <item name="android:textSize">@dimen/calendar_text_small</item>
+            
+     </style>
+     <style name="CalendarCell.CalendarDate" parent="@style/CalendarCell">
+                <item name="android:textSize">@dimen/calendar_text_medium</item>
+                <item name="android:textStyle">bold</item>
+                <item name="android:clickable">true</item>
+                
+     </style>
+                
+    <style name="AppBaseTheme" parent="android:Theme.Holo">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item> 
+    </style>
+    
+    
+    
+    
+    <style name="TextViewBase" parent="android:Widget.Holo.TextView" />
+    <style name="SmartySettingRow" parent="@style/TextViewBase">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/setting_text</item>
+    </style>
+    
+    <style name="SmartyTextAppearanceBold" parent="@android:style/TextAppearance">
+        <item name="android:textStyle">bold</item>
+<!--         <item name="android:fontPath">fonts/PFDinTextPro-Medium.ttf</item> -->
+    </style>
+    
+    
+<!--     android:style/Theme.Holo -->
+    <style name="SmartyTheme" parent="AppBaseTheme">
+<!--         <item name="android:buttonStyle">@style/SmartyTheme.Widget.Button</item> -->
+<!--         <item name="android:buttonStyleToggle">@style/SmartyTheme.Widget.ToggleButton</item> -->
+        <item name="android:windowBackground">@color/white</item>
+<!--         <item name="android:textViewStyle">@style/SmartyTheme.Widget.TextView</item> -->
+<!--         <item name="android:actionBarStyle">@style/SmartyActionBar</item> -->
+<!--         <item name="android:activatedBackgroundIndicator">@drawable/bg_thumbnail</item> -->
+    </style>
+    <style name="SmartyTheme.StandardBg" parent="@style/SmartyTheme">
+        <item name="android:windowBackground">@color/blue_dark</item>
+    </style>
+    <style name="SmartyProgressBar">
+        <item name="android:windowBackground">@color/shade_black</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:padding">@dimen/padding_progress_spinner</item>
+    </style>
+    
+    <style name="ModePopupList" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/expand</item>
+        <item name="android:windowExitAnimation">@anim/shrink</item>
+    </style>
+    <style name="ModePopupDetail" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/mode_enter_detail</item>
+        <item name="android:windowExitAnimation">@anim/mode_exit_detail</item>
+    </style>
+
+    
+</resources>

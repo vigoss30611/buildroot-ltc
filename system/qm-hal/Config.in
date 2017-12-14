@@ -1,0 +1,35 @@
+
+if BR2_PACKAGE_QM
+	
+config BR2_PACKAGE_QM_HAL
+	bool "qm-hal"
+	help
+	  Build QM_HAL
+
+if BR2_PACKAGE_QM_HAL 
+	config  BR2_QM_HAL_QIPC_38F
+		bool "qm hal qipc 38f support"
+		default n
+		help
+	  		enable qipc_38f qm hal
+
+	config  BR2_QM_HAL_QIPC_38I
+		bool "qm hal qipc 38i support"
+		default n
+		help
+	  		enable qipc_38i qm hal
+
+	config  BR2_QM_HAL_QIPC_Q3520E_SINGLE
+		bool "qm hal qipc q3520e single support"
+		default n
+		help
+	  		enable qipc_q3520e qm hal
+	
+	config BR2_QM_HAL_SYS_DUMP
+		bool "qm hal sys no special chip support"
+		default n
+		help
+				enable dump qm hal
+endif
+
+endif

@@ -1,0 +1,18 @@
+#
+# infotm led driver
+#
+
+
+menuconfig INFOTM_LEDS
+	bool "Infotm leds SUPPORT"
+	default n
+	select LEDS_CLASS
+        help
+		This is leds driver
+if INFOTM_LEDS
+config LEDS_IMAPX
+        tristate "iMAPx leds driver"
+        default n
+	help
+		LED driver for iMAPx
+endif

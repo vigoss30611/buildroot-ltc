@@ -1,0 +1,54 @@
+menu "Toolchain"
+
+# Should be selected for glibc or eglibc
+config BR2_TOOLCHAIN_USES_GLIBC
+	bool
+	select BR2_LARGEFILE
+	select BR2_INET_IPV6
+	select BR2_USE_WCHAR
+	select BR2_ENABLE_LOCALE
+	select BR2_TOOLCHAIN_HAS_THREADS
+	select BR2_TOOLCHAIN_HAS_THREADS_DEBUG
+	select BR2_TOOLCHAIN_HAS_SHADOW_PASSWORDS
+	select BR2_TOOLCHAIN_HAS_SSP
+
+config BR2_TOOLCHAIN_USES_UCLIBC
+	bool
+
+config BR2_TOOLCHAIN_USES_MUSL
+	bool
+	select BR2_LARGEFILE
+	select BR2_INET_IPV6
+	select BR2_USE_WCHAR
+	select BR2_ENABLE_LOCALE
+	select BR2_TOOLCHAIN_HAS_THREADS
+	select BR2_TOOLCHAIN_HAS_THREADS_DEBUG
+
+choice
+	prompt "Toolchain type"
+	help
+	  Select whether to use the toolchain provided by buildroot
+	  or an external toolchain.
+
+	  Some vendors provide toolchains in binary form, some in
+	  source form.
+
+config BR2_TOOLCHAIN_BUILDROOT
+	bool "Buildroot toolchain"
+	depends on !BR2_aarch64 && !BR2_nios2
+	select BR2_TOOLCHAIN_HAS_SHADOW_PASSWORDS
+
+config BR2_TOOLCHAIN_EXTERNAL
+	bool "External toolchain"
+	help
+	  Select if you want to use an existing cross-compiling
+	  toolchain. Buildroot can either download automatically a
+	  toolchain, or use an already installed toolchain.
+
+endchoice
+
+source "buildroot/toolchain/toolchain-buildroot/Config.in"
+source "buildroot/toolchain/toolchain-external/Config.in"
+source "buildroot/toolchain/toolchain-common.in"
+
+endmenu

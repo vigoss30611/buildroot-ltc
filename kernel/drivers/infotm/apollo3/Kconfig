@@ -1,0 +1,19 @@
+ menuconfig INFOTM_DRV_APOLLO3
+     bool "Infotm APOLLO3 Series Support"
+     depends on ARCH_APOLLO3 && INFOTM_SPECIAL
+     help
+         Infotm APOLLO3 Series support
+
+if INFOTM_DRV_APOLLO3
+source "drivers/infotm/apollo3/clk/Kconfig"
+source "drivers/infotm/apollo3/gpio/Kconfig"
+source "drivers/infotm/apollo3/input/Kconfig"
+source "drivers/infotm/apollo3/display/Kconfig"
+source "drivers/infotm/apollo3/dpmu/Kconfig"
+source "drivers/infotm/apollo3/emif/Kconfig"
+source "drivers/infotm/apollo3/mfd/Kconfig"
+source "drivers/infotm/apollo3/regulator/Kconfig"
+source "drivers/infotm/apollo3/ispost/Kconfig"
+source "drivers/infotm/apollo3/power_domain/Kconfig"
+endif
+

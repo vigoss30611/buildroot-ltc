@@ -1,0 +1,2 @@
+obj-$(CONFIG_APOLLO3_MFD_IP6313)      += ip6313.o
+obj-$(CONFIG_APOLLO3_MFD_IP6303)      += ip6303.o

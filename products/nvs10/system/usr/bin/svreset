@@ -1,0 +1,7 @@
+#!/bin/sh
+
+killall eventd theone
+sleep 1
+eventd &
+theone &
+

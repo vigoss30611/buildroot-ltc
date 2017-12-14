@@ -1,0 +1,61 @@
+#! /bin/sh
+
+check_config_partition()
+{
+    loop=0
+    FSCKRET=1
+    while [ $loop -lt 4 ]
+    do
+        fsck.fat -a /dev/spiblock2
+        echo "fsck config partition, times---$loop"
+        if [ $? = 0 ]; then
+            FSCKRET=0
+            break
+        fi
+    done
+    if [ $FSCKRET = 1 ]; then
+        echo "recheck config partition failed-----, format it"
+        mkfs.vfat /dev/spiblock2
+        fsck.fat -a /dev/spiblock2
+    fi
+
+    mount /dev/spiblock2 /mnt/config
+    if [ $? != 0 ]; then
+        echo "mount config failed, we need to format it"
+        mkfs.vfat /dev/spiblock2
+        fsck.fat -a /dev/spiblock2
+        mount /dev/spiblock2 /mnt/config
+    fi
+}
+
+case "$1" in
+    start|"")
+        if [ ! -d /config ];then
+            mkdir -p /config
+        fi
+        ln -s /config /mnt/
+        check_config_partition
+        mount -a
+        if [ ! -d /config/wifi ];then
+            mkdir -p /config/wifi
+            cp /wifi/*.conf /config/wifi
+        fi
+        if [ ! -d /config/bt ];then
+            mkdir -p /config/bt
+        fi
+        mkdir -p /mnt/http/mmc/
+        ln -s /mnt/sd0/DCIM /mnt/http/mmc/
+        #for calibration data
+        ln -s /mnt/config/calibration.data /mnt/http/mmc/calibration.data
+        #for pcb test file
+        if [ -f "/mnt/config/pcb_test.data" ]; then
+            echo -e "FF FF FF FF FF FF FF FF\n" > /mnt/config/pcb_test.data
+        fi
+        ;;
+    stop)
+        ;;
+    *)
+        echo "Usage: initdir {start|stop}" >&2
+        exit 1
+        ;;
+esac

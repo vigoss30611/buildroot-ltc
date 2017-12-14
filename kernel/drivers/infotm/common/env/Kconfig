@@ -1,0 +1,10 @@
+#
+# Modules base on InfoTM
+#
+
+config INFOTM_ENV
+	tristate "Infotm uboot env"
+	default y
+	help
+	  Say Y to init uboot env. User layer programs can access env through this interface.
+

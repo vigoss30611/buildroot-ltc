@@ -1,0 +1,3 @@
+<resources>
+    <dimen name="dynamic_grid_search_bar_max_width">2000dp</dimen>
+</resources>

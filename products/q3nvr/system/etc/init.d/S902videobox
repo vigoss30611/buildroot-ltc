@@ -1,0 +1,17 @@
+#! /bin/sh
+
+case "$1" in
+	start|"")
+		modprobe vdec_g1
+		modprobe vdec_g2
+		videoboxd
+		;;
+	stop)
+		killall videoboxd
+		;;
+	*)
+		echo "Usage: videobox {start|stop}" >&2
+		exit 1
+		;;
+esac
+

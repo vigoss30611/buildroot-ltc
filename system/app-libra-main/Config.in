@@ -1,0 +1,107 @@
+config BR2_PACKAGE_APP_LIBRA_MAIN
+	bool "libra main"
+	help
+	  Osa communication lib
+
+	  http://www.infotm.com/osa/
+
+if BR2_PACKAGE_APP_LIBRA_MAIN
+menu "Options"
+	config BR2_INFOTM_BOARD_PATTERN
+		string "Board pattern"
+		default "cardv"
+		help
+		  Board pattern: cardv sportdv
+	
+	config BR2_INFOTM_CAMERA_REAR_ENABLE
+		bool "Rear camera enable"
+		default y
+		help
+		 Rear camera enable 
+	
+	config BR2_INFOTM_CAMERA_PIP_ENABLE
+		bool "Rear camera pip enable"
+		default y
+		help
+		 Rear camera pip enable 
+	
+	config BR2_INFOTM_LCD_ORIENTATION
+		string "LCD orientation"
+		default "landscape"
+		help
+		 LCD orientation: landscape portrait 
+	
+	config BR2_INFOTM_WIFI_ENABLE
+		bool "Wifi enable"
+		default n
+		help
+		 Wifi enable 
+	
+	config BR2_INFOTM_WIFI_MODEL
+		string "Wifi model"
+		default "bcm6212"
+		help
+		 Wifi model: bcm6212 rtl8189ES 
+	
+	config BR2_INFOTM_GPS_ENABLE
+		bool "GPS enable"
+		default y
+		help
+		 GPS enable 
+	
+	config BR2_INFOTM_RESOLUTION_SWITCH_MODULE
+		string "Video resolution switch module"
+		default "isp"
+		help
+		 Video resolution switch module, currently supported: postisp pp sensor isp 
+	
+	config BR2_INFOTM_VIDEO_WIFI_PREVIEW
+		bool "Encoding another video stream for wifi apps"
+		default "y"
+		help
+		 Encoding another video stream for wifi apps 
+	
+	config BR2_INFOTM_ADAS_ENABLE
+		bool "ADAS enable"
+		default y
+		help
+		 ADAS enable 
+	
+	config BR2_INFOTM_GUI_STYLE
+		string "GUI style"
+		default "large"
+		help
+		 GUI style: small large 
+	
+	config BR2_INFOTM_GUI_SHOW_STATUS_BAR
+		bool "GUI show black status bar"
+		default y
+		help
+		 GUI show black status bar 
+	
+	config BR2_INFOTM_GUI_AUTO_PLAY_ENABLE
+		bool "GUI automatically play next video"
+		default y
+		help
+		 GUI automatically play next video 
+	
+	config BR2_INFOTM_GUI_TIMER_RESET
+		bool "GUI video loop recording time reset"
+		default y
+		help
+		 GUI video loop recording time reset 
+	
+	config BR2_INFOTM_GUI_DEBUG_ENABLE
+		bool "GUI debug info"
+		default y
+		help
+		 GUI debug info 
+	
+	config BR2_INFOTM_EVENT_HTTP_ENABLE
+		bool "GUI event http support"
+		default n
+		help
+		 GUI event http support 
+	
+endmenu
+endif

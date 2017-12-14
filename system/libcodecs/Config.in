@@ -1,0 +1,14 @@
+config BR2_PACKAGE_LIBCODECS
+	bool "libcodecs"
+	help 
+	  codec enable you to encode or decode audio file
+
+if BR2_PACKAGE_LIBCODECS
+menu "Options"
+	config BR2_PACKAGE_LIBCODECS_DSP_SUPPORT
+		bool "dsp enable"
+		default n
+		help
+			say y if you want to support dsp encode for aac
+endmenu
+endif

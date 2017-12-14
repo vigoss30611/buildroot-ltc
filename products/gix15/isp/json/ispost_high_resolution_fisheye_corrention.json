@@ -1,0 +1,116 @@
+{
+	"isp": {
+		"ipu": "v2500",
+		"args": {
+			"skipframe": 1,
+			"nbuffers": 3
+		},
+
+		"port": {
+			"out": {
+				"w": 2560,
+				"h": 720,
+				"pixel": "nv12",
+				"bind": { "ispost": "in" }
+            },
+
+			"cap": {
+				"w": 2560,
+				"h": 720,
+				"pixel": "nv12",
+				"bind": { "ispost-snap": "in" }
+			}
+		}
+	},
+
+   	"marker0": {
+		"ipu": "marker",
+		"args": {
+			"mode": "nv12"
+		},
+		"port": {
+			"out": {
+				"w": 800,
+				"h": 64,
+				"pixel": "nv12",
+				"bind": { "ispost": "ov0" }
+			}
+		}
+	},
+
+	"ispost": {
+		"ipu": "ispostv2",
+		"args": {
+			"buffers": 3,
+			"fcefile":"/root/.videobox/fcefile-preview.json", 
+			"dn_enable": 1
+		},
+		"port": {
+			"ov0":{
+				"pip_x":576,
+				"pip_y":960
+			},
+
+			"dn": {
+				"w": 2560,
+				"h": 720,
+				"pixel": "nv12"
+			},
+			"ss0": {
+				"w": 1280,
+				"h": 360,
+				"pixel": "nv12",
+				"bind": {
+					"display": "osd0", "h265":"frame"
+				}
+			}
+		}
+	},
+
+	"ispost-snap": {
+		"ipu": "ispostv2",
+		"args": {
+			"buffers" : 1,
+			"fcefile":"/root/.videobox/fcefile-snap.json",
+			"dn_enable" : 0,
+			"snapmode" : 1,
+			"snapbufmode" : 2
+		},
+		"port": {
+
+			"uo": {
+				"w": 4096,
+				"h": 1152,
+				"bind": {
+					"jpeg":"in"
+				}
+			}
+		}
+	},
+
+	"h265":{
+		"ipu":"h2",
+		"port":{
+			"stream":{
+				"bind":{ "filesink":"in" }
+			}
+		}
+	},
+
+	"filesink":{
+		"ipu":"filesink",
+		"args":{
+			"path":"/mnt/sd0/h264Test.h264"
+		}
+	},
+
+	"jpeg": {
+		"ipu": "jenc", 
+		"args": { 
+			"mode": "trigger" 
+		}
+	},
+	"display": { "ipu": "ids"}
+}
+
+

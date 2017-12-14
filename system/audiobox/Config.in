@@ -1,0 +1,18 @@
+config BR2_PACKAGE_AUDIOBOX
+	bool "Audiobox"
+	default y
+	select BR2_PACKAGE_ALSA_LIB
+	select BR2_PACKAGE_HLIBVCP7G
+	help
+	  Audiobox deal with QSDK audio issues
+
+if BR2_PACKAGE_AUDIOBOX
+    menu "boot speed config"
+        config BR2_PACKAGE_AUDIOBOX_OPTIMIZATION
+        bool "Optimize audiobox boot speed"
+        default n
+        help
+            Optimize audiobox's speed by method staticfy its dependency library.when selected, complier will use
+            static lib as possible, and if only dynamic lib exits, complier will use dynamic lib.
+    endmenu
+endif

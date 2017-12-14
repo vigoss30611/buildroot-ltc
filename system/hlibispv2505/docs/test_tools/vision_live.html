@@ -1,0 +1,1179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>VisionLive and ISPC_tcp v1 (obsolete) &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="../index.html" />
+    <link rel="up" title="Test Tools" href="test_tools.html" />
+    <link rel="next" title="User Tuning Guide" href="../tuning/user_tuning_guide.html" />
+    <link rel="prev" title="VisionTuning" href="vision_tuning.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="../index.html"><img src="../_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="../index.html">Documents</a></li>
+        <li><a href="../index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="../index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="../index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="../index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="../index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="../index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../tuning/user_tuning_guide.html" title="User Tuning Guide"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="vision_tuning.html" title="VisionTuning"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Home</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="test_tools.html" accesskey="U">Test Tools</a> &raquo;</li><li>VisionLive and ISPC_tcp v1 (obsolete)</li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="visionlive-and-ispc-tcp-v1-obsolete">
+<span id="isp-visionlive"></span><h1>VisionLive and ISPC_tcp v1 (obsolete)<a class="headerlink" href="#visionlive-and-ispc-tcp-v1-obsolete" title="Permalink to this headline">¶</a></h1>
+<p>The live tuning tool is designed to allow the ISP to be fully
+embedded in the target device whilst allowing the tuning tool to run
+on a system with a large screen and a rich GUI environment. For this
+reason the tools are split into the ISPC_tcp component, which runs
+on the target device and the VisionLive component which runs on a
+PC. The communication occurs on the network through TCP/IP. The
+VisionLive application starts with default parameters as well as
+ISPC_tcp application so there is no need for preparing parameter
+file to run the application. After the application has been run the
+parameter file can always be loaded using &#8220;File/Load configuration&#8221;
+option. The parameters adjusted in VisionLive are transmitted to the
+ISPC_tcp application which applies these to the ISP. The resulting
+image can be observed in the &#8220;<a class="reference internal" href="#isp-vl-livefeed"><span>LiveFeed</span></a>&#8221; window that opens
+after successful connection to ISPC_tcp. Due to limitations of the
+network bandwidth FPS ratio will be very low. To increase FPS ratio
+one can try switching from RGB to YUV format and/or decreasing image
+size. Frames can also be captured using the capture buttons (see
+<a class="reference internal" href="#isp-vl-output-tab"><span>Output Tab</span></a> details). The captured frames can be used
+for offline analysis/calibration or viewing. The user is expected to use
+VisionLive to capture the frames for tuning, using <a class="reference internal" href="vision_tuning.html#isp-visiontuning"><span>VisionTuning</span></a>
+part. The ISPC_tcp application is very similar to the
+ISPControl_loop application detailed in the
+<a class="reference internal" href="../getting_started.html#isp-getting-started-guide"><span>Getting Started Guide</span></a> of the DDK. At any point in time
+the current configuration can be saved as a Felix Setup Args file
+(see the <a class="reference internal" href="../ispc/ispc_library.html#isp-ispcl-high-level-parameters"><span>High level parameters</span></a> documents for details)
+using the &#8220;File/Save&#8221; configuration option. The version of the tool
+used is available in the About/About Vision Live menu.</p>
+<div class="section" id="running-steps">
+<span id="isp-vl-running-steps"></span><h2>Running steps<a class="headerlink" href="#running-steps" title="Permalink to this headline">¶</a></h2>
+<p>The first step is to launch the GUI application. This provides the
+settings that will be used by the ISPC_tcp application. There are no
+parameters required so simply run VisionLive (see Figure 11). The
+GUI has a number of tabs which allow a user to tune various aspects
+of the ISP, these should be familiar to an experienced ISP engineer.
+Once the GUI starts up a connection should be open, so that the
+ISPC_tcp can connect to the GUI to receive the configuration. Use the
+&#8220;Connection/Connect&#8221; option to start one (see
+<a class="reference internal" href="#isp-vl-new-connection-fig"><span>Start connection dialog</span></a>) and select the desired port. Be
+aware that VisionLive uses 2 separate ports for connection. One
+for sending commands to ISPC_tcp and second (selected port + 1) to
+receive frames for &#8220;<a class="reference internal" href="#isp-vl-livefeed"><span>LiveFeed</span></a>&#8221;. If there is problem in
+connecting be sure that both port numbers are free. After accepting
+connection settings awaiting connection from ISPC_tcp window will
+popup (see <a class="reference internal" href="#isp-vl-awaiting-connection-fig"><span>Awaiting connection dialog</span></a>).</p>
+<div class="figure align-center" id="id1">
+<span id="isp-vl-new-connection-fig"></span><a class="reference internal image-reference" href="../_images/VL_new_connection.PNG"><img alt="../_images/VL_new_connection.PNG" src="../_images/VL_new_connection.PNG" style="width: 216.0px; height: 128.0px;" /></a>
+<p class="caption"><span class="caption-text">Start connection dialog</span></p>
+</div>
+<div class="figure align-center" id="id2">
+<span id="isp-vl-awaiting-connection-fig"></span><a class="reference internal image-reference" href="../_images/VL_awaiting_connection.PNG"><img alt="../_images/VL_awaiting_connection.PNG" src="../_images/VL_awaiting_connection.PNG" style="width: 324.0px; height: 130.0px;" /></a>
+<p class="caption"><span class="caption-text">Awaiting connection dialog</span></p>
+</div>
+<p>Once the GUI is waiting for a connection the ISPC_tcp should be
+started. See section <a class="reference internal" href="#isp-vl-ispc-tcp-options"><span>ISPC_tcp options</span></a> for details. For
+example</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>./ISPC_tcp –sensor AR330 –setupIP localhost –setupPort 2346
+</pre></div>
+</div>
+</div>
+<div class="section" id="ispc-tcp-options">
+<span id="isp-vl-ispc-tcp-options"></span><h2>ISPC_tcp options<a class="headerlink" href="#ispc-tcp-options" title="Permalink to this headline">¶</a></h2>
+<p>The ISPC_tcp options are very similar to the ones described in the
+<a class="reference internal" href="test_tools.html#isp-test-tools"><span>Test Tools</span></a> document for the
+<a class="reference internal" href="ispc_loop.html#isp-ispc-loop"><span>ISPControl_loop</span></a> with the addition of the
+connection information. It is important that the sensor has been
+ported in the sensor API to be used with that tool. Please refer to
+the Sensor API doxygen documentation in the DDK and the
+<a class="reference internal" href="../integration/platform.html#isp-platform-integration-guide"><span>Platform Integration Guide</span></a> for more information on how to
+add a sensor. It is possible to run the ISPC_tcp using the external
+Data Generator if your platform supports it, but it isn’t possible
+to run that tool against the simulator for latency reasons.</p>
+<p>The parameters can be given by command line or in a configuration file.</p>
+<p>The parameter types are:</p>
+<ul class="simple">
+<li><cite>Bool</cite>: a Boolean value of either 0 or 1</li>
+<li><cite>Int</cite>/<cite>UInt</cite>: an integer (signed or unsigned is parameter specific)</li>
+<li><cite>Cmd</cite>: command that act as a Boolean of value 1 if present, of value 0 if
+not found</li>
+<li><cite>Str</cite>: string or path</li>
+<li><cite>Float</cite>: floating point number</li>
+</ul>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-source</span></code>:</dt>
+<dd>Provide a file to parse for command line parameters. The latest given
+parameter is used as the value for the option.</dd>
+<dt><code class="docutils literal"><span class="pre">-h</span></code>:</dt>
+<dd>Display the help and exit.</dd>
+</dl>
+<div class="section" id="sensor-controls">
+<span id="isp-vl-ispc-tcp-options-sensor-controls"></span><h3>Sensor controls<a class="headerlink" href="#sensor-controls" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-sensor</span></code>: Str</dt>
+<dd><p class="first">Sensor to use. Available sensors are:</p>
+<ul class="simple">
+<li>&#8220;External Datagen&#8221;</li>
+<li>&#8220;IIF Datagen&#8221;</li>
+<li>AR330</li>
+<li>P401</li>
+<li>OV4688</li>
+</ul>
+<p>Obviously this needs the actual sensor to be present. The
+<a class="reference internal" href="../integration/platform.html#isp-platform-integration-guide"><span>Platform Integration Guide</span></a> has more details about adding
+support for more sensors.</p>
+<p class="last">If using either data-generator the <code class="docutils literal"><span class="pre">–DG_inputFLX</span></code> should specified the
+source file.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-sensorMode</span></code>: UInt</dt>
+<dd><p class="first">The mode to run for the selected sensor. Each sensor can have several
+modes (e.g. to have different resolution or speed). Refer to the Sensor
+API documentation for more details.</p>
+<p class="last">Default 0.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-sensorFlip</span></code>: Bool [x2]</dt>
+<dd><p class="first">Flip the sensor horizontally and vertically. Not all sensors and modes
+support flipping.</p>
+<p class="last">If only 1 value is given it is assumed to be a horizontal flip.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="data-generator-parameters">
+<span id="isp-vl-ispc-tcp-options-data-generator-controls"></span><h3>Data Generator Parameters<a class="headerlink" href="#data-generator-parameters" title="Permalink to this headline">¶</a></h3>
+<p>If using either data generator these parameters can be used.</p>
+<p>The internal or external data-generator choice is made with the <code class="docutils literal"><span class="pre">-sensor</span></code>
+value.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-DG_inputFLX</span></code>: Str</dt>
+<dd>If using either Datagen sensors it is the path to the FLX input file to
+use. Similar to <code class="docutils literal"><span class="pre">-DGX_inputFLX</span></code> and <code class="docutils literal"><span class="pre">-IntDGX_inputFLX</span></code> in
+<a class="reference internal" href="ispc_test.html#isp-ispc-test-parameters"><span>ISPC_test</span></a>.</dd>
+<dt><code class="docutils literal"><span class="pre">-DG_gasket</span></code>: Str</dt>
+<dd>Gasket to use with the data-generator. Similar to <code class="docutils literal"><span class="pre">-IntDGX_gasket</span></code> or DG
+number in <a class="reference internal" href="ispc_test.html#isp-ispc-test-parameters"><span>ISPC_test</span></a>.</dd>
+<dt><code class="docutils literal"><span class="pre">-DG_blanking</span></code>: UInt [x2]</dt>
+<dd><p class="first">Horizontal and vertical blanking in pixels for the data-generator.
+Similar to <code class="docutils literal"><span class="pre">–DGX_blanking</span></code> or <code class="docutils literal"><span class="pre">–IntDGX_blanking</span></code> in
+<a class="reference internal" href="ispc_test.html#isp-ispc-test-parameters"><span>ISPC_test</span></a>.</p>
+<p class="last">If only 1 value is specified it is assumed to be the horizontal blanking.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="fake-interface-only">
+<span id="isp-vl-ispc-tcp-options-fake-driver-controls"></span><h3>Fake interface only<a class="headerlink" href="#fake-interface-only" title="Permalink to this headline">¶</a></h3>
+<p>These parameters are related to the CSIM or functionalities available to the
+fake driver only.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-simIP</span></code>: Str</dt>
+<dd><p class="first">Simulator IP address when using the Fake interface with TCP/IP.</p>
+<p class="last">Default is localhost.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-simPort</span></code>: UInt</dt>
+<dd><p class="first">Simulator port when using Fake interface with TCP/IP.</p>
+<p class="last">Default is 2345.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="v2500-controls">
+<span id="isp-vl-ispc-tcp-options-v2500-controls"></span><h3>V2500 controls<a class="headerlink" href="#v2500-controls" title="Permalink to this headline">¶</a></h3>
+<p>These controls are the same as the <a class="reference internal" href="ispc_loop.html#isp-ispc-loop"><span>ISPC_loop</span></a>
+V2500 controls with the exception of the setupFile which will be
+replaced by connection controls.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-nBuffers</span></code>: UInt</dt>
+<dd><p class="first">Number of pre-allocated buffers to run with. Also used as the number of
+data-generator buffers. Similar to <code class="docutils literal"><span class="pre">-CTX_nBuffers</span></code> in
+<a class="reference internal" href="ispc_test.html#isp-ispc-test-parameters"><span>ISPC_test</span></a>.</p>
+<p class="last">Default is 2.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="connection-controls">
+<span id="isp-vl-ispc-tcp-options-connection-controls"></span><h3>Connection controls<a class="headerlink" href="#connection-controls" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-setupIP</span></code>: Str</dt>
+<dd>IP of the computer running the VisionLive tool.</dd>
+<dt><code class="docutils literal"><span class="pre">-setupPort</span></code>: UInt</dt>
+<dd>Port open by the VisionLive when starting the connection.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="tabs-descriptions">
+<span id="isp-vl-tabs-descriptions"></span><h2>Tabs descriptions<a class="headerlink" href="#tabs-descriptions" title="Permalink to this headline">¶</a></h2>
+<p>This section will provide a general overview of all the tabs that
+are available in the VisionLive tool.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">GUI does not send every update to the ISPC_tcp right away. It is
+that the configuration is &#8220;updated&#8221; using the &#8220;Connection-&gt;Apply configuration&#8221; option or by using &#8220;Ctrl+Shift+A&#8221; shortcut.</p>
+</div>
+<div class="section" id="output-tab">
+<span id="isp-vl-output-tab"></span><h3>Output Tab<a class="headerlink" href="#output-tab" title="Permalink to this headline">¶</a></h3>
+<p>This tab lets a user to control size and format of the output images
+of tree different pipeline points. The displayed options are similar to the
+one available using the <a class="reference internal" href="../ispc/ispc_modules.html#isp-ispc-out-hlp"><span>OUT High Level Parameters</span></a>.</p>
+<p>More importantly it allows the selection of the Bayer extraction (data
+extraction) which will need to be &#8220;DE1: before BLC&#8221; to capture images for
+calibration.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">Output</span> <span class="pre">sizes</span></code></dt>
+<dd>The size of the output in pixels and lines. A value of 0x0 means output
+of the whole available image, if other sizes are provided the image will
+be scaled and the output image size will be reduced.</dd>
+<dt><code class="docutils literal"><span class="pre">Output</span> <span class="pre">format</span></code></dt>
+<dd><p class="first">This will capture an image in the format and extraction point selected.</p>
+<div class="last admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">It is important to note that when using extraction points the display
+pipeline will be disabled and <em>vice versa</em> (the DDK is enforcing the HW
+limitations).</p>
+</div>
+</dd>
+</dl>
+<p>This tab has buttons that can be used to capture a frame and display it
+&#8220;<a class="reference internal" href="#isp-vl-frame-preview"><span>Frame preview</span></a>&#8221; window.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Be aware that only &#8220;Capture YUV/RGB/Bayer&#8221; actions are applied
+automatically. The rest of the controls have to be applied using &#8220;Connection-&gt;Apply configuration&#8221; option or by using &#8220;Ctrl+Shift+A&#8221; shortcut.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Know that these tab settings also apply to the image showing in
+&#8220;<a class="reference internal" href="#isp-vl-livefeed"><span>LiveFeed</span></a>&#8221; window.</p>
+</div>
+<div class="figure align-center" id="id3">
+<span id="isp-vl-output-tab-fig"></span><a class="reference internal image-reference" href="../_images/VL_Output_tab.PNG"><img alt="../_images/VL_Output_tab.PNG" src="../_images/VL_Output_tab.PNG" style="width: 571.2px; height: 501.0px;" /></a>
+<p class="caption"><span class="caption-text">Output Tab</span></p>
+</div>
+</div>
+<div class="section" id="exposure-tab">
+<span id="isp-vl-exposure-tab"></span><h3>Exposure Tab<a class="headerlink" href="#exposure-tab" title="Permalink to this headline">¶</a></h3>
+<p>This tab gives a user control over sensor parameters like &#8220;Exposure&#8221; and
+&#8220;Gain&#8221; which can be set manually.</p>
+<p>VisionLive provides several controls to tune AE control module which are
+associated with <a class="reference internal" href="../ispc/ispc_controls_ae.html#isp-ae-hlp"><span>AE High Level Parameters</span></a>.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">Auto</span></code></dt>
+<dd>Enable/disable the automatic exposure.</dd>
+<dt><code class="docutils literal"><span class="pre">Flicker</span> <span class="pre">Rejection</span></code></dt>
+<dd>Enables/disables flicker rejection option and frequency to reject.
+If enabled the exposure should move in step with the relevant flicker
+frequency.</dd>
+<dt><code class="docutils literal"><span class="pre">Brightness</span></code></dt>
+<dd><p class="first">The <strong>target brightness</strong> sets a target that the AE needs to achieve in
+[-1,+1]. A bigger value increases the exposure while reducing it should
+reduce the output brightness. It is expected that a brightness of 0 is
+balanced but the target brightness is scene dependent.</p>
+<p class="last">The <strong>measured brightness</strong> is reported by the AE using statistics from
+the ISP.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">Bracket</span> <span class="pre">Size</span></code></dt>
+<dd>Margin around target brightness which we will consider as proper exposure.</dd>
+<dt><code class="docutils literal"><span class="pre">Update</span> <span class="pre">Speed</span></code></dt>
+<dd>Update speed for the new exposure to be applied on the sensor in range of [0,1].
+Bigger values make the algorithm apply the changes faster while values
+closer to 0 ensure a smoother transition between the parameters and the application.</dd>
+<dt><code class="docutils literal"><span class="pre">Sensor</span> <span class="pre">exposure</span></code></dt>
+<dd>The amount of sensor exposure time the AE is using.</dd>
+<dt><code class="docutils literal"><span class="pre">Sensor</span> <span class="pre">gain</span></code></dt>
+<dd>The amount of sensor gain the AE is using as a multiplier.</dd>
+<dt><code class="docutils literal"><span class="pre">Set</span> <span class="pre">exposure</span></code></dt>
+<dd>When the AE is turned off the user can program the sensor exposure
+independently, this is necessary for taking calibration images and when
+debugging.</dd>
+<dt><code class="docutils literal"><span class="pre">Set</span> <span class="pre">gain</span></code></dt>
+<dd>When the AE is turned off the user can program the sensor gain
+independently, this is necessary for taking calibration images and when
+debugging.</dd>
+</dl>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Be aware that only the <code class="docutils literal"><span class="pre">Auto</span></code> option is applied automatically. The
+rest of the controls have to be applied using &#8220;Connection-&gt;Apply configuration&#8221; option or by
+using &#8220;Ctrl+Shift+A&#8221; shortcut.</p>
+</div>
+<div class="figure align-center" id="id4">
+<span id="isp-vl-exposure-tab-fig"></span><a class="reference internal image-reference" href="../_images/VL_Exposure_tab.PNG"><img alt="../_images/VL_Exposure_tab.PNG" src="../_images/VL_Exposure_tab.PNG" style="width: 670.8px; height: 501.0px;" /></a>
+<p class="caption"><span class="caption-text">Exposure Tab</span></p>
+</div>
+</div>
+<div class="section" id="focus-tab">
+<span id="isp-vl-focus-tab"></span><h3>Focus Tab<a class="headerlink" href="#focus-tab" title="Permalink to this headline">¶</a></h3>
+<p>This tab gives the user control over sensor focus distance which can
+be set manually. The user can also set the &#8220;Auto&#8221; option to enable
+AF control module and press the &#8220;Search&#8221; button to run through the whole
+sensor distance range and find the best focus distance.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">Auto</span></code></dt>
+<dd><p class="first">Enable the auto-focus algorithm.</p>
+<div class="last admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Doest NOT trigger the focus search.</p>
+</div>
+</dd>
+<dt><code class="docutils literal"><span class="pre">Search</span></code></dt>
+<dd>Triggers the search for the sharpest focus position.</dd>
+<dt><code class="docutils literal"><span class="pre">State</span> <span class="pre">and</span> <span class="pre">Scan</span> <span class="pre">State</span></code></dt>
+<dd>Feedback on progress of AF.</dd>
+<dt><code class="docutils literal"><span class="pre">Distance</span></code></dt>
+<dd><p class="first">Current distance displays the current focus as reported by the sensor.</p>
+<p class="last">If auto-focus is disabled the distance can be set manually.</p>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Be aware that only the &#8220;Auto&#8221; option and &#8220;Search&#8221; action are applied
+automatically. The rest of the controls have to be applied using &#8220;Connection-&gt;Apply configuration&#8221; option or by using &#8220;Ctrl+Shift+A&#8221; shortcut.</p>
+</div>
+<div class="figure align-center" id="id5">
+<span id="isp-vl-focus-tab-fig"></span><a class="reference internal image-reference" href="../_images/VL_Focus_tab.PNG"><img alt="../_images/VL_Focus_tab.PNG" src="../_images/VL_Focus_tab.PNG" style="width: 670.8px; height: 501.0px;" /></a>
+<p class="caption"><span class="caption-text">Focus Tab</span></p>
+</div>
+</div>
+<div class="section" id="blc-tab-black-level-correction">
+<span id="isp-vl-blc-tab"></span><h3>BLC Tab (Black Level Correction)<a class="headerlink" href="#blc-tab-black-level-correction" title="Permalink to this headline">¶</a></h3>
+<p>This tab allows the BLC configuration to be modified while running. The
+result can be previewed using Bayer capture (with selected DE point after
+LSH). The associated parameters are described in <a class="reference internal" href="../ispc/ispc_modules.html#isp-ispc-blc-hlp"><span>BLC High Level Parameters</span></a>.</p>
+<p>Calibration of the BLC is explained in <a class="reference internal" href="../tuning/user_tuning_guide.html#isp-utg-blc"><span>Sensor BLC tuning</span></a>.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">Sensor</span> <span class="pre">black</span> <span class="pre">level</span></code></dt>
+<dd>This is the amount of black level that need subtracted from the sensor
+signal. This would be one of the first operations to be done in the ISP.</dd>
+<dt><code class="docutils literal"><span class="pre">System</span> <span class="pre">black</span> <span class="pre">level</span></code></dt>
+<dd><p class="first">This is the value that the system black level is set to.</p>
+<div class="last admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The value is 64 and should not be changed (expected when requested
+for tuning purposes).</p>
+</div>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Be aware that all the controls have to be applied using &#8220;Connection-&gt;Apply configuration&#8221;
+option or by using the &#8220;Ctrl+Shift+A&#8221; shortcut.</p>
+</div>
+<div class="figure align-center" id="id6">
+<span id="isp-vl-blc-tab-fig"></span><a class="reference internal image-reference" href="../_images/VL_BLC_tab.PNG"><img alt="../_images/VL_BLC_tab.PNG" src="../_images/VL_BLC_tab.PNG" style="width: 670.8px; height: 501.0px;" /></a>
+<p class="caption"><span class="caption-text">BLC Tab</span></p>
+</div>
+</div>
+<div class="section" id="lsh-tab-lens-shading">
+<span id="isp-vl-lsh-tab"></span><h3>LSH Tab (Lens Shading)<a class="headerlink" href="#lsh-tab-lens-shading" title="Permalink to this headline">¶</a></h3>
+<p>This tab provides possibility to enable/ disable lens shading grid. The
+associated high level parameters are described in the <a class="reference internal" href="../ispc/ispc_modules.html#isp-ispc-lsh-hlp"><span>LSH High Level Parameters</span></a>
+section.</p>
+<p>The LSH grid file has to be previously created using VisionTunning tool.</p>
+<p>Tuning for the LSH is explained in section <a class="reference internal" href="../tuning/user_tuning_guide.html#isp-utg-lsh"><span>Sensor Lens Shading Tuning</span></a>.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">Browse</span></code></dt>
+<dd>LSH grid filename can be read from a loaded configuration. If not, use
+the &#8220;Browse&#8221; button to select a file manually.</dd>
+<dt><code class="docutils literal"><span class="pre">Apply</span></code></dt>
+<dd>When the file is selected use &#8220;Apply&#8221; button to update the grid on
+ISPC_tcp side.</dd>
+<dt><code class="docutils literal"><span class="pre">Enable</span> <span class="pre">use</span> <span class="pre">of</span> <span class="pre">lens</span> <span class="pre">shading</span> <span class="pre">grid</span></code></dt>
+<dd>Once the grid is updated &#8220;Enable use of lens shading grid&#8221; option will
+be available for the user to enable.</dd>
+</dl>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Be aware that only the &#8220;Apply&#8221; action is applied automatically. The rest
+of the controls have to be applied using &#8220;Connection-&gt;Apply configuration&#8221; option or by using
+&#8220;Ctrl+Shift+A&#8221; shortcut.</p>
+</div>
+<div class="figure align-center" id="id7">
+<span id="isp-vl-lsh-tab-fig"></span><a class="reference internal image-reference" href="../_images/VL_LSH_tab.PNG"><img alt="../_images/VL_LSH_tab.PNG" src="../_images/VL_LSH_tab.PNG" style="width: 670.8px; height: 501.0px;" /></a>
+<p class="caption"><span class="caption-text">LSH Tab</span></p>
+</div>
+</div>
+<div class="section" id="wbc-tab-white-balance-and-colour-correction">
+<span id="isp-vl-wbc-tab"></span><h3>WBC Tab (White Balance and Colour Correction)<a class="headerlink" href="#wbc-tab-white-balance-and-colour-correction" title="Permalink to this headline">¶</a></h3>
+<p>This tab allows user to apply different CCM configurations. User can
+also set one of the &#8220;Auto Mode&#8221; options to let AWB control module do
+automatic adjustments CCM configuration. This is using the high level setup
+described in <a class="reference internal" href="../ispc/ispc_controls_awb.html#isp-icm-awb"><span>Automatic White Balance (AWB)</span></a>.</p>
+<p>Description on how to tune the CCM for white balance correction is available
+in the <a class="reference internal" href="../tuning/user_tuning_guide.html#isp-utg-wbc"><span>White Balance Correction Tuning</span></a>.</p>
+<p>VisionLive provides some information from the AWB control module:</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">Auto</span> <span class="pre">mode</span></code></dt>
+<dd><p class="first">This is a choice between disabled (AWB off), Average Colour, White
+Point, High illuminant white and combined.</p>
+<p class="last">The current recommendation is combined, however it is advised that
+customer does relevant testing and make their own choice.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">Measured</span> <span class="pre">Temperature</span></code></dt>
+<dd>Currently measured image temperature</dd>
+<dt><code class="docutils literal"><span class="pre">Gains,</span> <span class="pre">Clips,</span> <span class="pre">CCM</span></code></dt>
+<dd>current states of white balance and colour corrections</dd>
+</dl>
+<p>This tab also provides option of using multiple CCM configurations. The
+first tab <code class="docutils literal"><span class="pre">CCM</span></code> is the default CCM used (using <a class="reference internal" href="../ispc/ispc_modules.html#isp-ispc-ccm-hlp"><span>CCM High Level Parameters</span></a>)
+while the others are the ones used by the AWB algorithm.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">Promote</span> <span class="pre">to</span> <span class="pre">Multi</span> <span class="pre">CCM</span></code></dt>
+<dd>Adds a CCM configuration to the Multi CCM set.</dd>
+<dt><code class="docutils literal"><span class="pre">Return</span> <span class="pre">to</span> <span class="pre">Identity</span></code></dt>
+<dd>Turns a CCM configuration to its default state.</dd>
+</dl>
+<p>The CCM used by the AWB have additional features:</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">Temperature</span></code></dt>
+<dd>Is the temperature of light they are correcting. This will be used by the
+AWB to know which CCM to interpolate from when running.</dd>
+<dt><code class="docutils literal"><span class="pre">Use</span> <span class="pre">when</span> <span class="pre">applying</span></code></dt>
+<dd>If un-ticked this CCM will be ignored when the configuration is apply to
+the ISP.</dd>
+<dt><code class="docutils literal"><span class="pre">Set</span> <span class="pre">as</span> <span class="pre">default</span></code></dt>
+<dd>To override the default CCM with the values of the current CCM.</dd>
+<dt><code class="docutils literal"><span class="pre">Remove</span></code></dt>
+<dd>To delete this CCM from the list.</dd>
+</dl>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Be aware that only the &#8220;Auto Mode&#8221; option is applied automatically. The
+rest of the controls have to be applied using &#8220;Connection-&gt;Apply configuration&#8221; option or by
+using &#8220;Ctrl+Shift+A&#8221; shortcut. Know that only CCM configurations with
+&#8220;Use when Applying&#8221; option checked will be applied.</p>
+</div>
+<div class="figure align-center" id="id8">
+<span id="isp-vl-wbc-tab-fig"></span><a class="reference internal image-reference" href="../_images/VL_WBC_tab.PNG"><img alt="../_images/VL_WBC_tab.PNG" src="../_images/VL_WBC_tab.PNG" style="width: 670.8px; height: 501.0px;" /></a>
+<p class="caption"><span class="caption-text">WBC Tab</span></p>
+</div>
+</div>
+<div class="section" id="noise-tab">
+<span id="isp-vl-noise-tab"></span><h3>Noise Tab<a class="headerlink" href="#noise-tab" title="Permalink to this headline">¶</a></h3>
+<p>This tab allows the user to modify the high level parameters of the
+V2500 denoise and sharpening modules.</p>
+<p>Information on how to tune the noise is available in the
+<a class="reference internal" href="../tuning/user_tuning_guide.html#isp-utg-dns"><span>Primary Denoiser Tuning</span></a> and <a class="reference internal" href="../tuning/user_tuning_guide.html#isp-utg-sha-dn2"><span>Sharpening and Secondary denoiser Tuning</span></a>.</p>
+<p>It contains the control for the <em>auto denoiser</em> which is the simplest
+algorithm in ISPC (gathers gain from the sensor and adapts the associated
+DNS parameter).</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">Auto</span></code></dt>
+<dd>Control the automatic gathering of the DNS sensor gain parameter.</dd>
+</dl>
+<p>Controls for the Primary denoiser are done using high level parameters
+described in <a class="reference internal" href="../ispc/ispc_modules.html#isp-ispc-dns1-hlp"><span>Primary denoiser (DNS)</span></a>.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">Strength</span></code></dt>
+<dd>Is how much correction the primary denoiser should apply to the image.</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The parameters detailed in <a class="reference internal" href="../ispc/ispc_modules.html#isp-ispc-dns1-hlp"><span>Primary denoiser (DNS)</span></a> contain several other
+parameters which are mostly provided by the sensor (e.g. sensor bitdepth).
+Therefore it is important when porting a sensor to provide accurate
+information for the denoiser to perform correctly.</p>
+</div>
+<p>The Sharpening module is situated after the Tone Mapper module and prior to
+the Encode and Display Scalers. It consists of a sharpening sub-block and a
+denoising sub-block which operate in parallel, sharing an edge detection
+pre-filter. The final output of the module is the sum of the edge
+enhancement signal produced by the sharpening logic, and the denoised pixel
+generated by the denoising logic.</p>
+<p>The module has number of controls available in <a class="reference internal" href="../ispc/ispc_modules.html#isp-ispc-sha-hlp"><span>SHA High Level Parameters</span></a>, only a
+subset will need tuned.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">Radius</span></code></dt>
+<dd><p class="first">This is the radius in pixels that sharpening will be applied to.</p>
+<p class="last">Any value over 5 would be meaningless, if blur is spread over 5 pixels
+then it will only have a small impact. Typical values for modern small
+pixel sensors would be in the range of [1.5, 2.5],</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">Strength</span></code></dt>
+<dd>Correction strength.</dd>
+<dt><code class="docutils literal"><span class="pre">Threshold</span></code></dt>
+<dd>Should stay at 0.</dd>
+<dt><code class="docutils literal"><span class="pre">Detail</span></code></dt>
+<dd>This parameter will determine what gets sharpened (0 for only edges, 1
+for everything).</dd>
+</dl>
+<p>Finally the secondary denoiser allows some further refinement of the noise
+after sharpening was applied (using secondary denoiser parameters from
+<a class="reference internal" href="../ispc/ispc_modules.html#isp-ispc-dns2-hlp"><span>Secondary Denoiser (part of SHA in HW)</span></a>):</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">Edge</span> <span class="pre">avoidance</span></code></dt>
+<dd><p class="first">As this is increased more edge avoidance will occur.</p>
+<p class="last">This is called Tau multiplier in the parameters.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">Strength</span></code></dt>
+<dd><p class="first">As this is increased more noise will be suppressed.</p>
+<p class="last">This is called Sigma multiplier in the parameters.</p>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Be aware that only the &#8220;Auto&#8221; option is applied automatically. The rest
+of the controls have to be applied using &#8220;Connection-&gt;Apply configuration&#8221; option or by using
+&#8220;Ctrl+Shift+A&#8221; shortcut.</p>
+</div>
+<div class="figure align-center" id="id9">
+<span id="isp-vl-noise-tab-fig"></span><a class="reference internal image-reference" href="../_images/VL_Noise_tab.PNG"><img alt="../_images/VL_Noise_tab.PNG" src="../_images/VL_Noise_tab.PNG" style="width: 670.8px; height: 501.0px;" /></a>
+<p class="caption"><span class="caption-text">Noise Tab</span></p>
+</div>
+</div>
+<div class="section" id="dpf-tab-defective-pixel-fix">
+<span id="isp-vl-dpf-tab"></span><h3>DPF Tab (Defective Pixel Fix)<a class="headerlink" href="#dpf-tab-defective-pixel-fix" title="Permalink to this headline">¶</a></h3>
+<p>The DPF does live defect fixing by detecting pixels that have values that
+appear incorrect in comparison to the pixels immediately around them, and
+correcting the values using interpolation of the local pixels. The GUI is
+using the <a class="reference internal" href="../ispc/ispc_modules.html#isp-ispc-dpf-hlp"><span>DPF High Level Parameters</span></a> to control the module.
+Information about tuning this module is available in the <a class="reference internal" href="../tuning/user_tuning_guide.html#isp-utg-dpf"><span>Defective Pixels Tuning</span></a>
+section.</p>
+<p>If a defect map is available, this can be used instead of, or together with,
+the live detection.</p>
+<p>Live defect detection is applied to the current frame without reference to
+historical data. As the DPF follows the main denoiser, the random sensor
+noise will have been substantially reduced, and the defective pixels are
+either stuck pixels that don’t have a normal photometric response, or normal
+pixels carrying random noise that exceeded the denoiser threshold (e.g. 4
+sigma).</p>
+<p>The DPF is located after the primary denoiser, before the LCA correction and
+the demosaicer, in white balanced Bayer space.</p>
+<p>The GUI is split into controls and statistics information:</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">HW</span> <span class="pre">Detection</span></code></dt>
+<dd>Will control the live detection. When enabled the <em>fixed pixel</em> should be
+updated.</dd>
+<dt><code class="docutils literal"><span class="pre">Threshold</span></code></dt>
+<dd>The detection threshold.</dd>
+<dt><code class="docutils literal"><span class="pre">Weight</span></code></dt>
+<dd>The detection MAD (Median of Absolute Deviation) weigth.</dd>
+<dt><code class="docutils literal"><span class="pre">Output</span> <span class="pre">Map</span></code></dt>
+<dd>Allows the detected pixels to be saved to memory. When enabled <em>written
+to map</em> and <em>dropping from writing</em> should be enabled.</dd>
+<dt><code class="docutils literal"><span class="pre">Input</span> <span class="pre">Map</span></code></dt>
+<dd>Allows usage of previously stored DPF map to be taken
+into account when correcting defective pixels.</dd>
+<dt><code class="docutils literal"><span class="pre">Load</span></code></dt>
+<dd>Use to load previously saved DPF map.</dd>
+<dt><code class="docutils literal"><span class="pre">Select</span> <span class="pre">Confidence</span> <span class="pre">Range</span> <span class="pre">and</span> <span class="pre">Select</span> <span class="pre">S</span></code></dt>
+<dd>These parameters are used to filter loaded DPF map.</dd>
+<dt><code class="docutils literal"><span class="pre">Apply</span></code></dt>
+<dd>Applys loaded DPF map.</dd>
+</dl>
+<p>The statistics display basic information about the detected pixels:</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">Fixed</span> <span class="pre">pixels</span></code></dt>
+<dd>Is the number of defects the HW detected with live detection.</dd>
+<dt><code class="docutils literal"><span class="pre">Written</span> <span class="pre">to</span> <span class="pre">map</span></code></dt>
+<dd>Is the number of defects the HW wrote to the defect map. This can be less
+than the number of detected pixels as the map has a finite size and a limit
+per line.</dd>
+<dt><code class="docutils literal"><span class="pre">Dropped</span> <span class="pre">from</span> <span class="pre">writing</span></code></dt>
+<dd>The number of pixels that were detected but not written to the output map.
+This can happen because the output map is too small to store all detected
+pixels or because the number of defects was to high for the HW internal
+defect buffer as explained in the HW TRM.</dd>
+</dl>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Be aware that all the controls have to be applied using
+&#8220;Connection-&gt;Apply configuration&#8221; option or by using &#8220;Ctrl+Shift+A&#8221;
+shortcut.</p>
+</div>
+<div class="figure align-center" id="id10">
+<span id="isp-vl-dpf-tab-fig"></span><a class="reference internal image-reference" href="../_images/VL_DPF_tab.PNG"><img alt="../_images/VL_DPF_tab.PNG" src="../_images/VL_DPF_tab.PNG" style="width: 670.8px; height: 501.0px;" /></a>
+<p class="caption"><span class="caption-text">DPF Tab</span></p>
+</div>
+</div>
+<div class="section" id="r2y-tab-rgb-to-yuv">
+<span id="isp-vl-r2y-tab"></span><h3>R2Y Tab (RGB to YUV)<a class="headerlink" href="#r2y-tab-rgb-to-yuv" title="Permalink to this headline">¶</a></h3>
+<p>This tab allows some control over the R2Y module of the pipeline. It
+is not expected that a customer will have to modify these values but
+it can be used to saturate/desaturate images before the image
+enhancement modules (MIE and TNM).</p>
+<p>The R2Y block is a CSC that will convert RGB to YCbCr after the Gamma was
+applied.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">Brightness</span></code></dt>
+<dd>Global brightness offset (-0.5, 0.5)</dd>
+<dt><code class="docutils literal"><span class="pre">Contrast</span></code></dt>
+<dd>Global contrast (luma gain) control (0.1, 10.0)</dd>
+<dt><code class="docutils literal"><span class="pre">Saturation</span></code></dt>
+<dd>Global saturation (chroma gain) control (0.1, 10.0)</dd>
+<dt><code class="docutils literal"><span class="pre">Hue</span></code></dt>
+<dd>Global hue control (rotation in degrees) (-30, 30)</dd>
+<dt><code class="docutils literal"><span class="pre">Conversion</span> <span class="pre">matrix</span></code></dt>
+<dd>Choice conversion matrix format (BT709 or BT601).</dd>
+<dt><code class="docutils literal"><span class="pre">Range</span> <span class="pre">multiplier</span></code></dt>
+<dd>Are gain multipliers for each YUV channels.</dd>
+</dl>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Be aware that all the controls have to be applied using
+&#8220;Connection-&gt;Apply configuration&#8221; option or by using &#8220;Ctrl+Shift+A&#8221;
+shortcut.</p>
+</div>
+<div class="figure align-center" id="id11">
+<span id="isp-vl-r2y-tab-fig"></span><a class="reference internal image-reference" href="../_images/VL_R2Y_tab.PNG"><img alt="../_images/VL_R2Y_tab.PNG" src="../_images/VL_R2Y_tab.PNG" style="width: 670.8px; height: 501.0px;" /></a>
+<p class="caption"><span class="caption-text">R2Y Tab</span></p>
+</div>
+</div>
+<div class="section" id="mie-tab-main-image-enhancer">
+<span id="isp-vl-mie-tab"></span><h3>MIE Tab (Main Image Enhancer)<a class="headerlink" href="#mie-tab-main-image-enhancer" title="Permalink to this headline">¶</a></h3>
+<p>This tab gives control over the Memory Colour part of the MIE block
+of the V2500 HW. The MIE block has 3 memory colours that can be
+enhanced. The import button can be used to import a set of YUV
+values to automatically set the Y slices and CbCr centre but the
+user is expected to have to calibrate the other options. Figure 20
+shows an example of calibration that will transform some blues to
+purples.</p>
+<p>The details about the MIE block is available in the
+<a class="reference internal" href="../ispc/ispc_modules.html#isp-ispc-mie-algorithm"><span>Algorithm overview</span></a> section. Tuning information is available in the
+<a class="reference internal" href="../tuning/user_tuning_guide.html#isp-utg-mie"><span>Image Enhancer Tuning</span></a> section.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">Enable</span> <span class="pre">MC</span></code></dt>
+<dd>Tick to enable the associated memory colour parameters. If disabled the
+parameters are ignored.</dd>
+<dt><code class="docutils literal"><span class="pre">Import</span> <span class="pre">value</span></code></dt>
+<dd>Can be used to import the values to the luma slice and CbCr center for the
+current memory colour tab.</dd>
+</dl>
+<p>For each memory colour tab:</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">Slice</span> <span class="pre">selection</span> <span class="pre">radio</span> <span class="pre">button</span></code></dt>
+<dd>Allow to highlight in red the selected slice in the luma slices and the
+diamond Chroma view. This is only visual.</dd>
+<dt><code class="docutils literal"><span class="pre">Luma</span> <span class="pre">slide</span> <span class="pre">min/max</span></code></dt>
+<dd>Luma values computed for the colour being selected.</dd>
+<dt><code class="docutils literal"><span class="pre">Luma</span> <span class="pre">gain</span> <span class="pre">controls</span></code></dt>
+<dd>Strength of the modification per slice. Should add up to 1.</dd>
+<dt><code class="docutils literal"><span class="pre">Cb/Cr</span> <span class="pre">center</span></code></dt>
+<dd><p class="first">The value in Cb/Cr space of the colour that should be changed.</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This is the <em>input</em> of the MIE block therefore to see the value in the
+preview MIE <strong>and</strong> TNM should be turned off.</p>
+</div>
+</dd>
+<dt><code class="docutils literal"><span class="pre">Aspect</span></code></dt>
+<dd>Changes the shape of the Chroma diamond.</dd>
+<dt><code class="docutils literal"><span class="pre">Rotation</span></code></dt>
+<dd>Rotation of the colour diamond.</dd>
+<dt><code class="docutils literal"><span class="pre">Extent</span> <span class="pre">control</span></code></dt>
+<dd>How big the colour selection diamond will be for each slice. The smaller
+will make a focussed colour space, if the value is too big then it turns
+into a global operator.</dd>
+<dt><code class="docutils literal"><span class="pre">Show</span> <span class="pre">selected</span> <span class="pre">colours</span></code></dt>
+<dd>If ticked the brightness is forced to -1 to display selected colours as
+black pixels on the preview.</dd>
+<dt><code class="docutils literal"><span class="pre">Output</span> <span class="pre">HSBC</span></code></dt>
+<dd>The <em>hue</em>, <em>saturation</em>, <em>brightness</em> and <em>contrast</em>  modifiers to apply
+on the selected pixels.</dd>
+</dl>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Be aware that all the controls have to be applied using
+&#8220;Connection-&gt;Apply configuration&#8221; option or by using &#8220;Ctrl+Shift+A&#8221;
+shortcut.</p>
+</div>
+<div class="figure align-center" id="id12">
+<span id="isp-vl-mie-tab-fig"></span><a class="reference internal image-reference" href="../_images/VL_MIE_tab.PNG"><img alt="../_images/VL_MIE_tab.PNG" src="../_images/VL_MIE_tab.PNG" style="width: 670.8px; height: 501.0px;" /></a>
+<p class="caption"><span class="caption-text">MIE Tab</span></p>
+</div>
+</div>
+<div class="section" id="tnm-tab-tone-mapping">
+<span id="isp-vl-tnm-tab"></span><h3>TNM Tab (Tone Mapping)<a class="headerlink" href="#tnm-tab-tone-mapping" title="Permalink to this headline">¶</a></h3>
+<p>This tab allows control over the auto tone mapping curve computation and the
+preview of the applied result. It also gives control over the local tone
+mapping. The user can also set the &#8220;Auto&#8221; option to let TNM control module
+do automatic adjustments of those parameters.</p>
+<p>Information about the algorithm is available in <a class="reference internal" href="../ispc/ispc_modules.html#isp-ispc-tnm-algorithm"><span>Algorithm overview</span></a>
+and tuning in <a class="reference internal" href="../tuning/user_tuning_guide.html#isp-utg-tnm"><span>Tone-mapping Tuning</span></a>.</p>
+<p>VisionLive provides several controls to tune Auto TNM control module using
+the <a class="reference internal" href="../ispc/ispc_controls_tnmc.html#isp-icm-tnmc"><span>Automatic Tone Mapping Control (TNMC)</span></a> parameters:</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">Auto</span></code></dt>
+<dd>Enable/disable the control module.</dd>
+<dt><code class="docutils literal"><span class="pre">Adaptive</span></code></dt>
+<dd>Enable/disable adaptive tone mapping strength control</dd>
+<dt><code class="docutils literal"><span class="pre">Hist.</span> <span class="pre">Min,</span> <span class="pre">Hist.</span> <span class="pre">Max</span></code></dt>
+<dd>Histogram clipping range for global tone mapping curve generation</dd>
+<dt><code class="docutils literal"><span class="pre">Tempering</span></code></dt>
+<dd>Tempering value for global tone mapping curve generation, more
+tempering produces more gentle mapping curves.</dd>
+<dt><code class="docutils literal"><span class="pre">Smoothing</span></code></dt>
+<dd>Smoothing value for global tone mapping curve generation.</dd>
+<dt><code class="docutils literal"><span class="pre">Local</span> <span class="pre">TNM</span></code></dt>
+<dd>Enable/disable local tone mapping.</dd>
+<dt><code class="docutils literal"><span class="pre">Local</span> <span class="pre">Strength</span></code></dt>
+<dd>local tone mapping strength</dd>
+<dt><code class="docutils literal"><span class="pre">Update</span> <span class="pre">Speed</span></code></dt>
+<dd>update speed for application of newly generated global curves</dd>
+</dl>
+<p>It also provides controls to the normal tone mapping parameters
+<a class="reference internal" href="../ispc/ispc_modules.html#isp-ispc-tnm-hlp"><span>TNM High Level Parameters</span></a>:</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">Luma</span> <span class="pre">range</span></code></dt>
+<dd><p class="first">Luma range that the tone mapper considers as input.</p>
+<p class="last">It is recommended to never change this value from -64, 64.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">Bypass</span> <span class="pre">TNM</span></code></dt>
+<dd>Disables the tone mapping. The luma range is still applied.</dd>
+</dl>
+<p>The other parameters are explained in the tuning section <a class="reference internal" href="../tuning/user_tuning_guide.html#isp-utg-tnm"><span>Tone-mapping Tuning</span></a>.</p>
+<p>The GUI also allows the live preview of the applied curve and allow to modify
+the curve manually.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">Editable</span></code></dt>
+<dd><p class="first">Make the curve preview points movable vertically.</p>
+<div class="last admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">When editing the curve manually it is important to know that the curve
+must be increasing (i.e. every point has to be higher than the previous
+one). If the curve becomes invalid it will turn red.</p>
+</div>
+</dd>
+<dt><code class="docutils literal"><span class="pre">Interpolate</span> <span class="pre">forward</span></code></dt>
+<dd>All points after the moving ones are interpolated to create a linear curve
+to 1.</dd>
+<dt><code class="docutils literal"><span class="pre">Interpolate</span> <span class="pre">backward</span></code></dt>
+<dd>All points before the moving ones are interpolated to create a linear curve
+from the 0.</dd>
+<dt><code class="docutils literal"><span class="pre">Reset</span></code></dt>
+<dd>Resets to the last applied curve.</dd>
+<dt><code class="docutils literal"><span class="pre">To</span> <span class="pre">identity</span></code></dt>
+<dd>Regenerate the default curve for the TNM (identity from 0 to 1).</dd>
+</dl>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Be aware that only the &#8220;Auto&#8221; option is applied automatically. The rest
+of controls has to be applied using &#8220;Connection-&gt;Apply configuration&#8221; option or by using &#8220;Ctrl+Shift+A&#8221; shortcut.</p>
+</div>
+<div class="figure align-center" id="id13">
+<span id="isp-vl-tnm-tab-fig"></span><a class="reference internal image-reference" href="../_images/VL_TNM_tab.PNG"><img alt="../_images/VL_TNM_tab.PNG" src="../_images/VL_TNM_tab.PNG" style="width: 670.8px; height: 501.0px;" /></a>
+<p class="caption"><span class="caption-text">TNM Tab</span></p>
+</div>
+</div>
+<div class="section" id="vib-tab-vibrancy">
+<span id="isp-vl-vib-tab"></span><h3>VIB Tab (Vibrancy)<a class="headerlink" href="#vib-tab-vibrancy" title="Permalink to this headline">¶</a></h3>
+<p>This tab enables manipulation on saturation curve used by the MIE HW
+block. The saturation curve is converted to vibrancy gains for
+specific colour by the driver.</p>
+<p>This is performed using the <a class="reference internal" href="../ispc/ispc_modules.html#isp-ispc-vib-hlp"><span>VIB High Level Parameters</span></a>. Details about the
+algorithm is also available in the section <a class="reference internal" href="../ispc/ispc_modules.html#isp-ispc-vib"><span>Vibrancy (VIB)</span></a>.</p>
+<p>The user can either drag and drop the two points of the curve or set the
+position with the spinboxes for more precision.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Be aware that all the controls have to be applied using
+&#8220;Connection-&gt;Apply configuration&#8221; option or by using &#8220;Ctrl+Shift+A&#8221;
+shortcut.</p>
+</div>
+<div class="figure align-center" id="id14">
+<span id="isp-vl-vib-tab-fig"></span><a class="reference internal image-reference" href="../_images/VL_VIB_tab.PNG"><img alt="../_images/VL_VIB_tab.PNG" src="../_images/VL_VIB_tab.PNG" style="width: 670.8px; height: 501.0px;" /></a>
+<p class="caption"><span class="caption-text">VIB Tab</span></p>
+</div>
+</div>
+<div class="section" id="lbc-tab-light-based-controls">
+<span id="isp-vl-lbc-tab"></span><h3>LBC Tab (Light Based Controls)<a class="headerlink" href="#lbc-tab-light-based-controls" title="Permalink to this headline">¶</a></h3>
+<p>This tab allows a user to create light based configurations for
+specific image light levels for use by LBC control module.</p>
+<p>Users can
+enable/disable LBC control module using &#8220;Auto&#8221; option. When LBC in
+enabled it will extrapolate between provided configurations to find
+values (brightness, contrast, saturation, sharpness) for currently
+detected light level.</p>
+<p>VisionLive provides several controls to tune LBC control module:</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">Update</span> <span class="pre">Speed</span></code></dt>
+<dd>speed at which light metering is done so there is smooth
+transition between configurations</dd>
+</dl>
+<p>VisionLive provides some information from LBC control module:</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">Measured</span> <span class="pre">Light</span> <span class="pre">Level</span></code></dt>
+<dd>currently calculated image light level (combination of exposure,
+gain and brightness)</dd>
+<dt><code class="docutils literal"><span class="pre">Current</span> <span class="pre">Configuration</span></code></dt>
+<dd>currently used configuration (extrapolated based on provided
+configurations and  Measured Light Level)</dd>
+</dl>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Be aware that only &#8220;Auto&#8221; option is applied automatically. The rest
+of the controls have to be applied using &#8220;Connection-&gt;Apply configuration&#8221; option or by using &#8220;Ctrl+Shift+A&#8221; shortcut.</p>
+</div>
+<div class="figure align-center" id="id15">
+<span id="isp-vl-lbc-tab-fig"></span><a class="reference internal image-reference" href="../_images/VL_LBC_tab.PNG"><img alt="../_images/VL_LBC_tab.PNG" src="../_images/VL_LBC_tab.PNG" style="width: 670.8px; height: 501.0px;" /></a>
+<p class="caption"><span class="caption-text">LBC Tab</span></p>
+</div>
+</div>
+<div class="section" id="mgm-tab-main-gamut-mapper">
+<span id="isp-vl-mgm-tab"></span><h3>MGM Tab (Main Gamut Mapper)<a class="headerlink" href="#mgm-tab-main-gamut-mapper" title="Permalink to this headline">¶</a></h3>
+<p>This tab allows users to tune Main Gamut Mapper module parameters.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Be aware that all of the controls have to be applied using
+&#8220;Connection-&gt;Apply configuration&#8221; option or by using
+&#8220;Ctrl+Shift+A&#8221; shortcut.</p>
+</div>
+<div class="figure align-center" id="id16">
+<span id="isp-vl-mgm-tab-fig"></span><a class="reference internal image-reference" href="../_images/VL_MGM_tab.PNG"><img alt="../_images/VL_MGM_tab.PNG" src="../_images/VL_MGM_tab.PNG" style="width: 670.8px; height: 501.0px;" /></a>
+<p class="caption"><span class="caption-text">MGM Tab</span></p>
+</div>
+</div>
+<div class="section" id="dgm-tab-display-gamut-mapper">
+<span id="isp-vl-dgm-tab"></span><h3>DGM Tab (Display Gamut Mapper)<a class="headerlink" href="#dgm-tab-display-gamut-mapper" title="Permalink to this headline">¶</a></h3>
+<p>This tab allows users to tune Display Gamut Mapper module parameters.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Be aware that all of the controls have to be applied using
+&#8220;Connection-&gt;Apply configuration&#8221; option or by using
+&#8220;Ctrl+Shift+A&#8221; shortcut.</p>
+</div>
+<div class="figure align-center" id="id17">
+<span id="isp-vl-dgm-tab-fig"></span><a class="reference internal image-reference" href="../_images/VL_DGM_tab.PNG"><img alt="../_images/VL_DGM_tab.PNG" src="../_images/VL_DGM_tab.PNG" style="width: 670.8px; height: 501.0px;" /></a>
+<p class="caption"><span class="caption-text">DGM Tab</span></p>
+</div>
+</div>
+<div class="section" id="ens-tab-encoder-statistics">
+<span id="isp-vl-ens-tab"></span><h3>ENS Tab (Encoder Statistics)<a class="headerlink" href="#ens-tab-encoder-statistics" title="Permalink to this headline">¶</a></h3>
+<p>This tab allows users to enable generation of encoder statistics.
+The tab also gives information about expected statistics size.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Be aware that all of the controls have to be applied using
+&#8220;Connection-&gt;Apply configuration&#8221; option or by using
+&#8220;Ctrl+Shift+A&#8221; shortcut.</p>
+</div>
+<div class="figure align-center" id="id18">
+<span id="isp-vl-ens-tab-fig"></span><a class="reference internal image-reference" href="../_images/VL_ENS_tab.PNG"><img alt="../_images/VL_ENS_tab.PNG" src="../_images/VL_ENS_tab.PNG" style="width: 540.0px; height: 501.6px;" /></a>
+<p class="caption"><span class="caption-text">ENS Tab</span></p>
+</div>
+</div>
+<div class="section" id="gma-tab-gamma-lut">
+<span id="isp-visionlive-gma"></span><h3>GMA Tab (Gamma LUT)<a class="headerlink" href="#gma-tab-gamma-lut" title="Permalink to this headline">¶</a></h3>
+<p>The GMA tab gives users the ability to view and create new gamma look up tables
+to perform gamma correction. On start up there are two loaded gamma LUT&#8217;s
+(BT709 and sRGB). These standard gamma curves can be exported to create new
+(editable) gamma LUT&#8217;s. All created gamma LUT&#8217;s can be exported as pseudo
+code to a .txt file to be used later (compiled in code as explained in the
+<a class="reference internal" href="../ci/ci_library.html#isp-ci-gamma-lut-customisation"><span>Gamma Look-Up table customisation</span></a> section). Gamma LUT&#8217;s can be presented
+(and exported) as register values (integers of range &lt;0-4095&gt;) or preview
+values (doubles of range &lt;0-255&gt;). User has also ability to change Gamma
+LUT while running VisionLive observe image change online.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Be aware that &#8220;Change Gamma LUT&#8221; option is applied automatically.</p>
+</div>
+<div class="figure align-center" id="id19">
+<span id="isp-vl-gma-tab-fig"></span><a class="reference internal image-reference" href="../_images/VL_GMA_tab.PNG"><img alt="../_images/VL_GMA_tab.PNG" src="../_images/VL_GMA_tab.PNG" style="width: 540.0px; height: 501.6px;" /></a>
+<p class="caption"><span class="caption-text">GMA Tab</span></p>
+</div>
+</div>
+<div class="section" id="y2r-tab-yuv-to-rgb">
+<span id="isp-vl-y2r-tab"></span><h3>Y2R Tab (YUV to RGB)<a class="headerlink" href="#y2r-tab-yuv-to-rgb" title="Permalink to this headline">¶</a></h3>
+<p>This tab allows some control over the Y2R module of the pipeline. It
+is not expected that a customer will have to modify these values but
+it can be used to saturate/desaturate images just before display
+gamut mapper (DGM).</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Be aware that all the controls have to be applied using
+&#8220;Connection-&gt;Apply configuration&#8221; option or by using &#8220;Ctrl+Shift+A&#8221;
+shortcut.</p>
+</div>
+<div class="figure align-center" id="id20">
+<span id="isp-vl-y2r-tab-fig"></span><a class="reference internal image-reference" href="../_images/VL_Y2R_tab.PNG"><img alt="../_images/VL_Y2R_tab.PNG" src="../_images/VL_Y2R_tab.PNG" style="width: 540.0px; height: 501.6px;" /></a>
+<p class="caption"><span class="caption-text">Y2R Tab</span></p>
+</div>
+</div>
+</div>
+<div class="section" id="frame-preview">
+<span id="isp-vl-frame-preview"></span><h2>Frame preview<a class="headerlink" href="#frame-preview" title="Permalink to this headline">¶</a></h2>
+<p>When previewing a frame a new window opens containing the captured
+image (see <a class="reference internal" href="#isp-vl-rgb-preview-fig"><span>RGB preview</span></a>). The image is clickable
+and will give pixel information about the clicked location. The
+statistics tab will provide some channel histograms depending on the
+format (see <a class="reference internal" href="#isp-vl-histogram-tab-fig"><span>Histogram Tab</span></a>). The histogram value at
+a particular point is displayed by mouse over and precise value can
+be obtained with the arrow keys after a click. The Parameter tab is
+a list of parameters like the FelixSetupArgs used for the capture.
+Among them are the &#8220;SENSOR_XXXXX&#8221; parameters which displays
+information about the sensor sent from the ISPC_tcp application. The
+images can be saved to disk by right clicking and choosing the
+appropriate option.</p>
+<div class="figure align-center" id="id21">
+<span id="isp-vl-rgb-preview-fig"></span><a class="reference internal image-reference" href="../_images/VL_RGB_preview.PNG"><img alt="../_images/VL_RGB_preview.PNG" src="../_images/VL_RGB_preview.PNG" style="width: 249.6px; height: 220.8px;" /></a>
+<p class="caption"><span class="caption-text">RGB preview</span></p>
+</div>
+<div class="figure align-center" id="id22">
+<span id="isp-vl-histogram-tab-fig"></span><a class="reference internal image-reference" href="../_images/VL_histogram_tab.PNG"><img alt="../_images/VL_histogram_tab.PNG" src="../_images/VL_histogram_tab.PNG" style="width: 300.6px; height: 366.0px;" /></a>
+<p class="caption"><span class="caption-text">Histogram Tab</span></p>
+</div>
+</div>
+<div class="section" id="livefeed">
+<span id="isp-vl-livefeed"></span><h2>LiveFeed<a class="headerlink" href="#livefeed" title="Permalink to this headline">¶</a></h2>
+<p>&#8220;LiveFeed&#8221; window provides a &#8220;live&#8221; output image to observe changes in
+the image after adjusting parameters provided by the VisionLive
+application. This window pops up after a successful connection to
+ISPC_tcp and can’t be closed by the user manually. The window will
+close by itself after disconnecting. &#8220;LiveFeed&#8221; also provides
+changing output image format, information about current FPS ratio,
+number of already received frames and number of missed frames that
+have been provided by the sensor but haven’t been acquired by
+ISPC_tcp. &#8220;Pause&#8221; button will stop sending frames from ISPC_tcp to
+&#8220;LiveFeed&#8221; but they will be captured on the ISPC_tcp side. This will
+provide faster control algorithms image processing than with
+&#8220;LiveFeed&#8221; running but the user will not be able to see the changes
+live. This option is useful when the user wants to speed up the control
+algorithms effect on the output image. When the control algorithms
+stabilise the user can press &#8220;Resume&#8221; to receive the live image again.</p>
+<div class="figure align-center" id="id23">
+<span id="isp-vl-livefeed-fig"></span><a class="reference internal image-reference" href="../_images/VL_LiveFeed.PNG"><img alt="../_images/VL_LiveFeed.PNG" src="../_images/VL_LiveFeed.PNG" style="width: 346.8px; height: 373.8px;" /></a>
+<p class="caption"><span class="caption-text">LiveFeed</span></p>
+</div>
+</div>
+<div class="section" id="aquire-images-for-calibration">
+<span id="isp-vl-aquire-image"></span><h2>Aquire images for calibration<a class="headerlink" href="#aquire-images-for-calibration" title="Permalink to this headline">¶</a></h2>
+<p>The information needed to acquire images to start using
+<a class="reference internal" href="vision_tuning.html#isp-visiontuning"><span>VisionTuning</span></a> to capture images and
+calibrate for a particular sensor is very minimal:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Estimate of the black level of the sensor per channel (e.g. 15)</li>
+<li>Desired system black level (typically 64)</li>
+</ul>
+</div></blockquote>
+<div class="section" id="using-visionlive">
+<span id="isp-vl-aquire-image-using-visionlive"></span><h3>Using VisionLive<a class="headerlink" href="#using-visionlive" title="Permalink to this headline">¶</a></h3>
+<p>A minimal felix setup to start BLC calibration contains:</p>
+<div class="highlight-python"><div class="highlight"><pre>BLC_SENSOR_BLACK 15 15 15 15
+BLC_SYS_BLACK 64
+</pre></div>
+</div>
+<p>Run VisionLive with this file. Calibrate the correct Sensor black
+using the BLC tab and the Bayer preview (one can play with the DE
+point to see the effect of the configured BLC). Once BLC is
+calibrated it is possible to capture the images needed for the CCM,
+LSH and LCA calibration of <a class="reference internal" href="vision_tuning.html#isp-visiontuning"><span>VisionTuning</span></a>.</p>
+</div>
+<div class="section" id="other-ways">
+<span id="isp-vl-aquire-image-other-ways"></span><h3>Other ways<a class="headerlink" href="#other-ways" title="Permalink to this headline">¶</a></h3>
+<p>If you need to calibrate the sensor prior to its support in the
+Sensor API the calibration images should be acquired using other
+tools and converted to Bayer FLX files. Use one of the images
+without black correction and the Data Generator to find the BLC spot
+per channel (e.g. using <a class="reference internal" href="#isp-visionlive"><span>VisionLive</span></a> DG or
+using the CSIM package). The denoiser expects some information about
+the sensor to work correctly. These are exported from the Sensor
+API, the minimal file used for tuning may also need some additional
+parameters for the desired sensor. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre>DNS_READ_NOISE 5
+DNS_SENSOR_BITDEPTH 10
+DNS_WELL_DEPTH 7500
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="first-calibrate-using-visiontuning">
+<span id="isp-vl-calibration"></span><h2>First: calibrate using VisionTuning<a class="headerlink" href="#first-calibrate-using-visiontuning" title="Permalink to this headline">¶</a></h2>
+<p>Take the BLC values and captured images from
+<a class="reference internal" href="#isp-visionlive"><span>VisionLive</span></a> and use them with
+<a class="reference internal" href="vision_tuning.html#isp-visiontuning"><span>VisionTuning</span></a> to calibrate CCM, LSH and LCA.
+Save the result.</p>
+</div>
+<div class="section" id="second-tune-using-visionlive">
+<span id="isp-vl-tuning"></span><h2>Second: tune using VisionLive<a class="headerlink" href="#second-tune-using-visionlive" title="Permalink to this headline">¶</a></h2>
+<p>The other modules can be calibrated using
+<a class="reference internal" href="#isp-visionlive"><span>VisionLive</span></a> and the file generated in the
+previous step. If a sensor that isn’t supported by the Sensor API
+has to be used and the external data generator is not present this
+step cannot be done.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">VisionLive and ISPC_tcp v1 (obsolete)</a><ul>
+<li><a class="reference internal" href="#running-steps">Running steps</a></li>
+<li><a class="reference internal" href="#ispc-tcp-options">ISPC_tcp options</a><ul>
+<li><a class="reference internal" href="#sensor-controls">Sensor controls</a></li>
+<li><a class="reference internal" href="#data-generator-parameters">Data Generator Parameters</a></li>
+<li><a class="reference internal" href="#fake-interface-only">Fake interface only</a></li>
+<li><a class="reference internal" href="#v2500-controls">V2500 controls</a></li>
+<li><a class="reference internal" href="#connection-controls">Connection controls</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tabs-descriptions">Tabs descriptions</a><ul>
+<li><a class="reference internal" href="#output-tab">Output Tab</a></li>
+<li><a class="reference internal" href="#exposure-tab">Exposure Tab</a></li>
+<li><a class="reference internal" href="#focus-tab">Focus Tab</a></li>
+<li><a class="reference internal" href="#blc-tab-black-level-correction">BLC Tab (Black Level Correction)</a></li>
+<li><a class="reference internal" href="#lsh-tab-lens-shading">LSH Tab (Lens Shading)</a></li>
+<li><a class="reference internal" href="#wbc-tab-white-balance-and-colour-correction">WBC Tab (White Balance and Colour Correction)</a></li>
+<li><a class="reference internal" href="#noise-tab">Noise Tab</a></li>
+<li><a class="reference internal" href="#dpf-tab-defective-pixel-fix">DPF Tab (Defective Pixel Fix)</a></li>
+<li><a class="reference internal" href="#r2y-tab-rgb-to-yuv">R2Y Tab (RGB to YUV)</a></li>
+<li><a class="reference internal" href="#mie-tab-main-image-enhancer">MIE Tab (Main Image Enhancer)</a></li>
+<li><a class="reference internal" href="#tnm-tab-tone-mapping">TNM Tab (Tone Mapping)</a></li>
+<li><a class="reference internal" href="#vib-tab-vibrancy">VIB Tab (Vibrancy)</a></li>
+<li><a class="reference internal" href="#lbc-tab-light-based-controls">LBC Tab (Light Based Controls)</a></li>
+<li><a class="reference internal" href="#mgm-tab-main-gamut-mapper">MGM Tab (Main Gamut Mapper)</a></li>
+<li><a class="reference internal" href="#dgm-tab-display-gamut-mapper">DGM Tab (Display Gamut Mapper)</a></li>
+<li><a class="reference internal" href="#ens-tab-encoder-statistics">ENS Tab (Encoder Statistics)</a></li>
+<li><a class="reference internal" href="#gma-tab-gamma-lut">GMA Tab (Gamma LUT)</a></li>
+<li><a class="reference internal" href="#y2r-tab-yuv-to-rgb">Y2R Tab (YUV to RGB)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#frame-preview">Frame preview</a></li>
+<li><a class="reference internal" href="#livefeed">LiveFeed</a></li>
+<li><a class="reference internal" href="#aquire-images-for-calibration">Aquire images for calibration</a><ul>
+<li><a class="reference internal" href="#using-visionlive">Using VisionLive</a></li>
+<li><a class="reference internal" href="#other-ways">Other ways</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#first-calibrate-using-visiontuning">First: calibrate using VisionTuning</a></li>
+<li><a class="reference internal" href="#second-tune-using-visionlive">Second: tune using VisionLive</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="vision_tuning.html"
+                        title="previous chapter">VisionTuning</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../tuning/user_tuning_guide.html"
+                        title="next chapter">User Tuning Guide</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="../index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

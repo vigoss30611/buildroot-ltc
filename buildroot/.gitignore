@@ -1,0 +1,9 @@
+output/
+.ccache/
+*.tmp
+*.old
+*.bak
+.buildroot-ccache/
+.config
+.br-external
+

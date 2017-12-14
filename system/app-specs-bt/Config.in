@@ -1,0 +1,6 @@
+config BR2_PACKAGE_APP_SPECS_BT
+	bool "app-specs-bt"
+	help
+	  app-specs-main app 
+
+	  http://www.infotm.com/

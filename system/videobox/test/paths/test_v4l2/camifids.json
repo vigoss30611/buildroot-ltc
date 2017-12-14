@@ -1,0 +1,19 @@
+{
+	"v4l2": {
+		"ipu": "v4l2",
+		"args": {
+			"driver":"imapx_camif",
+			"model": "gc0308_demo",
+			"pixfmt": "nv12"
+		},
+		"port": {
+			"out": {
+				"w": 640,
+				"h": 480,
+				"pixel": "nv12",
+				"bind": { "display": "osd0"}
+			}
+		}
+	},
+	"display": { "ipu": "ids"}
+}

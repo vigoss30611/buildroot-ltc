@@ -1,0 +1,24 @@
+#
+# IMAP GMAC ETHERNET CONFIGURATION
+#
+
+menuconfig IMAP_GMAC_ETHERNET
+	tristate "Imap Gmac Ethernet"
+	default n
+	---help---
+	  IMAP Supporting for GMAC chipset
+	  
+	  To compile this driver as a module, choose [M] here. The module
+	  will be called imap_eth.
+
+if IMAP_GMAC_ETHERNET
+choice
+	bool "if you went to choose omc300 eth phy, you need choose codec ip2906 first"
+
+config OMC300_ETH_PHY
+	tristate "OMC300 ETH PHY"
+	depends on SND_SOC_IP2906
+	help
+		This enables support omc300 eth phy driver
+endchoice
+endif

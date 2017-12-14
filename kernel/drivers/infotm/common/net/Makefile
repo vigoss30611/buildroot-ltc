@@ -1,0 +1,9 @@
+obj-$(CONFIG_IMAP_GMAC_ETHERNET) += imap_gmac_ethernet/
+obj-$(CONFIG_RTL8188EUS_WIFI) += rtl8188EUS_wifi/
+obj-$(CONFIG_RTL8189ES_WIFI) += rtl8189ES_wifi/
+obj-$(CONFIG_MTK7601U_WIFI) += mtk7601U_wifi/
+obj-$(CONFIG_BCMDHD_6212)    += bcmdhd6212/
+obj-$(CONFIG_DHD_USE_STATIC_BUF)    += bcmdhd6212_prealloc/
+obj-$(CONFIG_ESP8089) += esp8089/linux_sdio/
+obj-$(CONFIG_ESP8089_PREALLOC) += esp8089/esp_prealloc_V2.4/
+obj-$(CONFIG_RTL8188EU) += rtl8188EUS_rtl8189ES_linux_v4.3.15_13239.20150112/

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <EditText
+            android:id="@+id/et_add_device_ssid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="SSID"
+            android:singleLine="true" />
+
+        <EditText
+            android:id="@+id/et_add_device_pwd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="密码"
+            android:inputType="textPassword"
+            android:singleLine="true" />
+
+        <EditText
+            android:id="@+id/et_add_device_encrypt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:editable="false"
+            android:focusable="true"
+            android:hint="加密方式"
+            android:singleLine="true"
+            android:text="WPA2_AES" />
+
+        <CheckBox
+            android:id="@+id/cb_add_device_hdcp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DHCP" />
+
+        <EditText
+            android:id="@+id/et_add_device_ip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:digits="0123456789."
+            android:hint="IP地址"
+            android:singleLine="true" />
+
+        <EditText
+            android:id="@+id/et_add_device_subnet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:digits="0123456789."
+            android:hint="子网掩码"
+            android:singleLine="true" />
+
+        <EditText
+            android:id="@+id/et_add_device_gateway"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:digits="0123456789."
+            android:hint="网关地址"
+            android:singleLine="true" />
+
+        <EditText
+            android:id="@+id/et_add_device_dns1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:digits="0123456789."
+            android:hint="主DNS"
+            android:singleLine="true" />
+
+        <EditText
+            android:id="@+id/et_add_device_dns2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:digits="0123456789."
+            android:hint="辅助DNS"
+            android:singleLine="true" />
+
+        <Button
+            android:id="@+id/btn_add_device_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="请将手机靠近设备的麦克风,发送音频" />
+    </LinearLayout>
+
+</ScrollView>

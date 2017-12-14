@@ -1,0 +1,16 @@
+config BR2_PACKAGE_QLIBSYS
+	bool "qlibsys"
+	help
+	  system interface lib
+
+	  http://www.infotm.com/
+if BR2_PACKAGE_QLIBSYS
+menu "options"
+	config  BR2_PACKAGE_QLIBSYS_INSTALL_SHARED
+		bool "Install Shared"
+		default y
+		help
+	  		install shared library into target dir	
+endmenu
+
+endif

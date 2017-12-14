@@ -1,0 +1,13 @@
+menuconfig INFOTM_POWER
+	bool "InfoTM power driver support"
+	default n
+	help
+	 INFOTM power driver support
+
+if INFOTM_POWER
+config BATTERY_IMAPX
+	bool "iMAPx battery driver"
+	default n
+	help
+	  battery driver for iMAPx
+endif

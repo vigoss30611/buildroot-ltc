@@ -1,0 +1,26 @@
+config BR2_PACKAGE_UBOOT1
+	bool "UBoot1"
+	help
+	  Build "UBoot1" second Boot Monitor
+
+if BR2_PACKAGE_UBOOT1
+
+choice
+	prompt "cpu id"
+	default BR2_PACKAGE_UBOOT1_Q3
+config BR2_PACKAGE_UBOOT1_APOLLO3
+	bool "Apollo-eco"
+	help 
+		apollo3 uboot1
+
+config BR2_PACKAGE_UBOOT1_Q3F
+	bool "Apollo-2"
+	help
+	  q3f uboot1
+config BR2_PACKAGE_UBOOT1_Q3
+	bool "Apollo"
+	help
+	  q3 uboot1
+endchoice
+
+endif

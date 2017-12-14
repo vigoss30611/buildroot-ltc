@@ -1,0 +1,15 @@
+#! /bin/sh
+
+case "$1" in
+	start|"")
+		wifi &
+		;;
+	stop)
+		killall wifi
+		;;
+	*)
+		echo "Usage: wifi {start|stop}" >&2
+		exit 1
+		;;
+esac
+

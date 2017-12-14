@@ -1,0 +1,12 @@
+
+header:
+source/inc/* usr/include/hlibg1v6
+source/h264high/h264decapi.h usr/include/hlibg1v6
+*.h usr/include/hlibg1v6
+
+static:
+.libs/*.a usr/lib
+
+shared:
+.libs/*.so usr/lib
+

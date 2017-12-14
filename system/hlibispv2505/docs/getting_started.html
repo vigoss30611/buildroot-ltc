@@ -1,0 +1,1390 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Getting Started Guide &mdash; ISP DDK 2.8.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/fonts/open-sans/open-sans-font.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.8.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/img.ico"/>
+    <link rel="top" title="ISP DDK 2.8.4 documentation" href="index.html" />
+    <link rel="next" title="Platform Integration Guide" href="integration/platform.html" />
+    <link rel="prev" title="Dictionary" href="dictionary.html" /> 
+  </head>
+  <body role="document">
+<div id="HeaderContainer">
+    <div id="Header">
+        <div id="HeaderContent">
+            <div id="HeaderLogo">
+                <a href="index.html"><img src="_static/images/doc-logo.png" /></a>
+            </div>
+            <div id="ProjectName">
+                ISP DDK
+            </div>
+        </div>
+        <div id="searchbox">
+            <form class="search" action="search.html" method="get">
+              <input type="text" name="q" size="12" />
+              <input type="submit" value="">
+            </form>
+        </div>
+      <div class="clearer"></div>
+    </div>
+</div>
+<div id="NavContainer">
+<nav>
+    <ul>
+        <li id="NavCurrent"><a href="index.html">Documents</a></li>
+        <li><a href="index/../doxygen/index.html">Source</a>
+        <ul>
+          <li><a href="index/../doxygen/pages.html">Related pages</a></li>
+          <li><a href="index/../doxygen/modules.html">Modules</a></li>
+          <li><a href="index/../doxygen/namespaces.html">Namespaces</a></li>
+          <li><a href="index/../doxygen/annotated.html">Data structures</a></li>
+          <li><a href="index/../doxygen/files.html">Files</a></li>
+        </ul>
+        </li>
+    </ul>
+</nav>
+
+<div class="clearer"></div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="integration/platform.html" title="Platform Integration Guide"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="dictionary.html" title="Dictionary"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Home</a> &raquo;</li><li>Getting Started Guide</li>
+      </ul>
+    </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="getting-started-guide">
+<span id="isp-getting-started-guide"></span><h1>Getting Started Guide<a class="headerlink" href="#getting-started-guide" title="Permalink to this headline">¶</a></h1>
+<p>This chapter aims to describe the steps to follow to compile and run a simple
+test using the V2500 DDK sources.</p>
+<p>This guide is intended for people who have basic knowledge about what is an
+ISP. It is also assumed that the reader will have read the V2500 Product
+Overview and have some early understanding of what the IP is providing in
+Hardware and Software. The reader without such knowledge may refer to the
+Product Overview delivered with the Hardware package.</p>
+<p>The customer reading this chapter is expected to know which platform they are
+targetting and details about such platform (e.g. IP location, is the memory
+shared with other IPs, etc). Knowledge about using the Linux kernel module and
+CMake would also be of great help to understand all the details of the steps.
+More details about how to run the test tools can be found in the
+<a class="reference internal" href="test_tools/test_tools.html#isp-test-tools"><span>Test Tools</span></a> section. More details about how to use the GUIs
+specifically can be found in the <a class="reference internal" href="test_tools/test_tools.html#isp-tt-gui-tools"><span>GUI tools applications user guide</span></a> section.</p>
+<p>Building the Android package is detailed in the
+<a class="reference internal" href="android/hal_build_instructions.html#isp-android-build-instructions"><span>Android Build Instructions</span></a> section and the
+<a class="reference internal" href="integration/platform.html#isp-platform-integration-guide"><span>Platform Integration Guide</span></a> details modification the customer are
+expected to on the DDK to support their system.</p>
+<p>For advanced users the <a class="reference internal" href="ci/ci_library.html#isp-capture-interface"><span>Capture Interface</span></a> section has additional
+information about the low-level driver used. The
+<a class="reference internal" href="ispc/ispc_library.html#isp-isp-control-library"><span>ISP Control Library</span></a> provide more information about the ISP
+Control layer and the <a class="reference internal" href="ispc/ispc_modules.html#isp-ispc-setup-modules"><span>Implemented Setup Modules</span></a>,
+<a class="reference internal" href="ispc/ispc_statistics.html#isp-ispc-statistics-modules"><span>Implemented Statistics Modules</span></a> and <a class="reference internal" href="ispc/ispc_library.html#isp-ispc-control-modules"><span>Implemented Control Modules</span></a>
+provide descriptions of the ISPC Modules.</p>
+<div class="section" id="v2500-software">
+<span id="isp-gsg-v2500-software"></span><h2>V2500 Software<a class="headerlink" href="#v2500-software" title="Permalink to this headline">¶</a></h2>
+<p>The V2500 Software libraries organisation is described in Figure
+<a class="reference internal" href="#isp-gsg-v2500-apis-fig"><span>V2500 Software APIs</span></a> and is composed of the following libraries:</p>
+<ul class="simple">
+<li>Android Camera HAL - responsible of HW abstraction layer for Android porting.</li>
+<li>ISP Control - responsible for setting up the pipeline to produce a good
+looking picture and handle AAA algorithms (Auto exposure, Auto white
+balance, Auto focus)</li>
+<li>Sensor API - responsible to implement sensor controls</li>
+<li>Capture Interface (CI) - responsible for managing the ISP HW and providing
+user-space abstraction for all other elements to use.</li>
+</ul>
+<div class="figure" id="id10">
+<span id="isp-gsg-v2500-apis-fig"></span><a class="reference internal image-reference" href="_images/V2500APIs.png"><img alt="_images/V2500APIs.png" src="_images/V2500APIs.png" style="width: 415px; height: 365px;" /></a>
+<p class="caption"><span class="caption-text">V2500 Software APIs</span></p>
+</div>
+</div>
+<div class="section" id="v2500-hardware">
+<span id="isp-gsg-v2500-hardware"></span><h2>V2500 Hardware<a class="headerlink" href="#v2500-hardware" title="Permalink to this headline">¶</a></h2>
+<p>Information about the V2500 hardware (HW) should be available in the Technical
+Reference Manual (TRM) of the HW delivery. However this section highlights some
+basic information and definitions about the HW.</p>
+<p>The HW Pipeline modules order and their acronyms is available in the
+<a class="reference internal" href="dictionary.html#isp-dictionary-v2500-modules"><span>V2500 modules</span></a> section.</p>
+<div class="figure" id="id11">
+<a class="reference internal image-reference" href="_images/HW_pipeline_2.png"><img alt="_images/HW_pipeline_2.png" src="_images/HW_pipeline_2.png" style="width: 914px; height: 834px;" /></a>
+<p class="caption"><span class="caption-text">HW Pipeline modules (source: HW Technical Reference Manual).</span></p>
+</div>
+<p>To understand the basis of the HW we need to describe 3 elements of the ISP:</p>
+<ul class="simple">
+<li>The HW context (a unit that processes the image - can have multiple instances
+and run in parallel)</li>
+<li>The HW imager (not provided by Imagination - it is the actual “camera” part of
+the ISP)</li>
+<li>The HW gasket (converts the imager’s data to a common format that the HW context
+can understand)</li>
+</ul>
+<p>The Figure <a class="reference internal" href="#isp-gsg-hw-v2-organisation-fig"><span>V2500 HW Organisation</span></a> illustrates how those
+elements interact in the V2500 IP. The number of Gaskets and Contexts
+are configured and have to be chosen when selecting the HW capabilities.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The HW also contains a single IIF Datagen (Imager Interface
+Data-generator) which can replace a gasket&#8217;s data to insert frames from
+memory instead.</p>
+</div>
+<div class="figure" id="id12">
+<span id="isp-gsg-hw-v2-organisation-fig"></span><a class="reference internal image-reference" href="_images/hw_2.png"><img alt="_images/hw_2.png" src="_images/hw_2.png" style="width: 548px; height: 277px;" /></a>
+<p class="caption"><span class="caption-text">V2500 HW Organisation</span></p>
+</div>
+<div class="section" id="the-context">
+<span id="isp-gsg-context"></span><h3>The Context<a class="headerlink" href="#the-context" title="Permalink to this headline">¶</a></h3>
+<p>The Context is the main block of the ISP. It is the block that the driver
+configures the most as it applies image modifications. The input data is
+always Raw in Bayer format and its output can be of several types (see TRM).
+The IP can contain several contexts which can process images in parallel
+from a different gasket or the same gasket.</p>
+<p>The HW implement the multiple context using a shared processing
+pipeline which is shared between all the capturing HW contexts. Each HW
+context therefore has 2 sets of registers:</p>
+<ul class="simple">
+<li>unique set per context (non-swappable)</li>
+<li>swappable set for the processing pipeline</li>
+</ul>
+<p>As explained in the TRM the non-swappable registers usually contain
+information about the frame&#8217;s sizes.</p>
+</div>
+<div class="section" id="the-gasket">
+<span id="isp-gsg-gasket"></span><h3>The Gasket<a class="headerlink" href="#the-gasket" title="Permalink to this headline">¶</a></h3>
+<p>The Gasket is responsible for transforming the Imager&#8217;s data into an Imagination format
+that the context can understand (similar to parallel format). A gasket can
+either be of MIPI CSI-2 or Parallel format (see TRM for details) and is defined
+by customer’s choices. Each gasket is attached to a single imager but
+broadcasts the data it receives to all contexts. Each context can choose which
+gasket they acquire data from.</p>
+<div class="section" id="internal-data-generator-special-case">
+<span id="isp-gsg-internal-data-generator"></span><h4>Internal Data Generator special case<a class="headerlink" href="#internal-data-generator-special-case" title="Permalink to this headline">¶</a></h4>
+<p>The internal data generator is a block that can replace a gasket’s data
+using frame information from memory. It is therefore useful to either
+re-process data or at calibration time.</p>
+</div>
+</div>
+<div class="section" id="the-imager">
+<span id="isp-gsg-imager"></span><h3>The Imager<a class="headerlink" href="#the-imager" title="Permalink to this headline">¶</a></h3>
+<p>The Imager is whatever is providing data to the gasket. A single imager is
+usually attached to a single gasket. Imagination does not provide imagers (or
+sensors) therefore it is the customer&#8217;s responsibility to follow the HW
+Core Integration Guide document to integrate their Imager.</p>
+<div class="section" id="the-external-data-generator-special-case">
+<span id="isp-gsg-external-data-generator"></span><h4>The External Data Generator special case<a class="headerlink" href="#the-external-data-generator-special-case" title="Permalink to this headline">¶</a></h4>
+<p>When providing the C Simulator package, or using the internal Imagination
+Technologies FPGA image, an external Data Generator is also available. This
+block can be considered as an imager - outside of the IP - that can generate
+either MIPI or Parallel data for a gasket.</p>
+</div>
+</div>
+</div>
+<div class="section" id="c-simulator-csim">
+<span id="isp-gsg-c-simulator"></span><h2>C Simulator (CSIM)<a class="headerlink" href="#c-simulator-csim" title="Permalink to this headline">¶</a></h2>
+<p>The C Simulator is designed to be a bit accurate simulator of the V2500 HW. It
+can be provided as an evaluation kit that is used internally for early validation.
+The driver can be built to communicate with the simulator using the &#8220;fake&#8221;
+mode. It will not produce any kernel-side code and have a TCP/IP connection
+with the simulator. As it is 100% software the CSIM is very slow and does not
+contain real imagers (but it contains external data generators to replace
+them).</p>
+<p>Information about the &#8220;fake&#8221; driver is available in
+<a class="reference internal" href="ci/ci_library.html#isp-ci-fake-implementation"><span>Fake Implementation</span></a>.</p>
+</div>
+<div class="section" id="system-requirements">
+<span id="isp-gsg-system-requirements"></span><h2>System Requirements<a class="headerlink" href="#system-requirements" title="Permalink to this headline">¶</a></h2>
+<p>Non-provided software tools required:</p>
+<ul class="simple">
+<li>CMake &gt;= 3.2</li>
+<li>GNU Compiler Collection &gt;= 4.X (gcc, g++)</li>
+<li>GNU/Linux kernel sources &gt;= 3.4</li>
+<li>Qt &gt;= 5.4 if building GUIs. Does not need Qt Multimedia</li>
+<li>OpenCV 2.4.9 if building GUIs - EXACT VERSION NEEDED</li>
+<li>If using IMG SCB block: i2c-driver should be available in the GNU/Linux
+kernel</li>
+</ul>
+<p>Provided external libraries:</p>
+<ul class="simple">
+<li>Gtest 1.6.0 - used for unit-testing</li>
+<li>Qwt 6.1.0 - used with Qt when building GUIs</li>
+<li>Mxml 2.7 - used for internal libraries when using the fake build to run
+against C simulator</li>
+<li>Zlib 1.2.7 - used for internal libraries when using the fake build to run
+against C simulator</li>
+</ul>
+<p>Optional software tools:</p>
+<ul class="simple">
+<li>Doxygen - used to generate the code’s documentation (version &gt;= 1.8
+recomended)</li>
+</ul>
+</div>
+<div class="section" id="deliverables">
+<span id="isp-gsg-deliverables"></span><h2>Deliverables<a class="headerlink" href="#deliverables" title="Permalink to this headline">¶</a></h2>
+<p>This section details what is produced when building the DDK. The referred names
+are available when calling <code class="docutils literal"><span class="pre">make</span> <span class="pre">help</span></code>, and target names in CMake. For each
+deliverable the installation location is relative to the
+<code class="docutils literal"><span class="pre">CMAKE_INSTALL_PREFIX</span></code> given at CMake time. Libraries and executables not
+described in this section are internal and not considered deliverables.</p>
+<div class="section" id="main-libraries">
+<span id="isp-gsg-main-libraries"></span><h3>Main Libraries<a class="headerlink" href="#main-libraries" title="Permalink to this headline">¶</a></h3>
+<p>The kernel-module is treated as if it is a library by CMake.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The libraries are not installed by the <code class="docutils literal"><span class="pre">make</span> <span class="pre">install</span></code> step unless
+specified.</p>
+</div>
+<dl class="docutils">
+<dt>CI_User:</dt>
+<dd>Capture Interface - user side library
+Low Level HW driver communicating with kernel-side.</dd>
+<dt>CI_Kernel_KO, CI_Kernel:</dt>
+<dd>The kernel-module for the low level driver when using the real driver
+(output is Felix.ko)
+Or the library of the low level HW driver when using the fake interface (C
+Simulator).
+Installed in km/ when building kernel module.</dd>
+<dt>DG_User:</dt>
+<dd>Low level External Data Generator driver - user side library
+Optional, only if trying to use external data generator.</dd>
+<dt>DG_Kernel:</dt>
+<dd>Library of the low level Data Generator driver when using the fake
+interface.
+It is included in CI_Kernel_KO when building the real driver (e.g. for the
+Imagination FPGA image which contains the external datagen).</dd>
+<dt>ISPC:</dt>
+<dd>Image Signal Processor Control (uses CI_User and sensor API)
+High level driver library. Control of the image.</dd>
+<dt>sensorapi:</dt>
+<dd>Sensor driver API
+Library use to control the sensor using the IMG SCB block. Should be
+modified by the client to supports its own sensors.</dd>
+<dt>FelixCommon:</dt>
+<dd>Library that contains information about pixel formats and allocation sizes.
+Used by CI_User and kernel module. Should also be used by external
+applications that intent to import buffers (to compute the sizes of the
+buffers in the shared allocator).</dd>
+</dl>
+</div>
+<div class="section" id="command-line-binaries">
+<span id="isp-gsg-command-line-binaries"></span><h3>Command line binaries<a class="headerlink" href="#command-line-binaries" title="Permalink to this headline">¶</a></h3>
+<p>This list does not include the unit test executables that can be found using the
+information in <a class="reference internal" href="#isp-gsg-unit-tests-location"><span>Unit tests location</span></a>.
+These executable behaviour and user-guide are available in the
+<a class="reference internal" href="test_tools/test_tools.html#isp-tt-application-usage"><span>Command line application user guide</span></a> section.</p>
+<dl class="docutils">
+<dt>driver_test:</dt>
+<dd><p class="first">Low level driver application.</p>
+<p>A different version is compiled when using the fake interface or the real
+driver (to fake insmod).</p>
+<p><code class="docutils literal"><span class="pre">CI_User</span></code> library is used.</p>
+<p>Installed in <code class="docutils literal"><span class="pre">CI/</span></code></p>
+<p class="last">Uses either External or Internal Data Generator.</p>
+</dd>
+<dt>dpf_conv:</dt>
+<dd><p class="first">Utility tool to convert output DPF binary files (HW format) to input DPF
+binary files (HW format).</p>
+<p class="last">Installed in <code class="docutils literal"><span class="pre">utils/</span></code></p>
+</dd>
+<dt>ISPC_test:</dt>
+<dd><p class="first">High level driver test application to run with data generator for a
+specified amount of frames.</p>
+<p>A different version is compiled when using the fake interface or the real
+driver (to fake insmod).</p>
+<p><code class="docutils literal"><span class="pre">ISPC</span></code> library is used.</p>
+<p>Installed in <code class="docutils literal"><span class="pre">ISPC/</span></code></p>
+<p class="last">Uses either External or Internal Data Generator.</p>
+</dd>
+<dt>ISPC_loop:</dt>
+<dd><p class="first">High level driver application running with the sensor continuously. Can be
+used with data-generator as well.</p>
+<p><code class="docutils literal"><span class="pre">ISPC</span></code> library is used.</p>
+<p class="last">Installed in <code class="docutils literal"><span class="pre">ISPC/</span></code></p>
+</dd>
+<dt>ISPC_tcp:</dt>
+<dd><p class="first">High level application similar to ISPC_loop but used to run against
+VisionLive GUI.</p>
+<p><code class="docutils literal"><span class="pre">ISPC</span></code> library is used.</p>
+<p>Installed in <code class="docutils literal"><span class="pre">ISPC/</span></code></p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Information on how to use ISPC_tcp is available in the
+<a class="reference internal" href="test_tools/test_tools.html#isp-tt-gui-tools"><span>GUI tools applications user guide</span></a> document.</p>
+</div>
+</dd>
+<dt>ISPC_capture:</dt>
+<dd><p class="first">Simple application that can be used to capture videos. Accumulates a given
+number of frames to memory before saving them to disk (designed to avoid
+memory access latency that may exist on some test systems). Cannot be used
+with data-generators.</p>
+<p><code class="docutils literal"><span class="pre">ISPC</span></code> library is used.</p>
+<p class="last">Installed in <code class="docutils literal"><span class="pre">ISPC/</span></code></p>
+</dd>
+<dt>sensor_test:</dt>
+<dd><p class="first">Simple application that allow us to run an implementation of sensor only
+enabling the gasket and the selected sensor.</p>
+<p><code class="docutils literal"><span class="pre">CI</span></code> and <code class="docutils literal"><span class="pre">sensorapi</span></code> libraries are used.</p>
+<p class="last">Installed in <code class="docutils literal"><span class="pre">utils/</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="gui-binaries">
+<span id="isp-gsg-gui-binaries"></span><h3>GUI binaries<a class="headerlink" href="#gui-binaries" title="Permalink to this headline">¶</a></h3>
+<p>These executables are only built when using the GUI options.
+Detailed information and user-guide are available in <a class="reference internal" href="test_tools/test_tools.html#isp-tt-gui-tools"><span>GUI tools applications user guide</span></a>.</p>
+<dl class="docutils">
+<dt>VisionTuning:</dt>
+<dd><p class="first">Offline calibration tool (does not need to connect to device).</p>
+<p class="last">Installed in <code class="docutils literal"><span class="pre">GUI/VisionTuning/</span></code></p>
+</dd>
+<dt>VisionLive:</dt>
+<dd><p class="first">Live calibration tool (connects to device using <code class="docutils literal"><span class="pre">ISPC_tcp</span></code>)</p>
+<p class="last">Installed in <code class="docutils literal"><span class="pre">GUI/VisionLive/</span></code></p>
+</dd>
+</dl>
+<p>Information on how to run the GUI tools is available in the
+<a class="reference internal" href="test_tools/test_tools.html#isp-tt-gui-tools"><span>GUI tools applications user guide</span></a> section.</p>
+</div>
+</div>
+<div class="section" id="driver-build-steps">
+<span id="isp-gsg-driver-build-steps"></span><h2>Driver build steps<a class="headerlink" href="#driver-build-steps" title="Permalink to this headline">¶</a></h2>
+<p>This section details how to build the drivers on a GNU/Linux machine. In the
+following steps it is assumed that the DDK sources are present in a folder
+similar to:</p>
+<div class="highlight-python"><div class="highlight"><pre>~/workspace/ISPDDK_1.2.3/
+ \- Android - source directory for Android
+ \- DDKSource - source directory of the DDK
+ |
+ \- cmake - directory used for out of source building, can be deleted
+ \- install - directory used to store the install files, can be deleted
+</pre></div>
+</div>
+<p>When building the user is expected to already be in the <code class="docutils literal"><span class="pre">cmake</span></code> folder.
+The advantage of CMake is that the actual build directory can be anywhere as
+long as the path to the sources is known. It is expected that the <code class="docutils literal"><span class="pre">Unix</span>
+<span class="pre">Makefile</span></code> generator is used. If it is not the case one can compile using
+the command <code class="docutils literal"><span class="pre">cmake</span> <span class="pre">--build</span> <span class="pre">.</span></code> from the build directory.</p>
+<p>Any files generated in the <code class="docutils literal"><span class="pre">cmake</span></code> or <code class="docutils literal"><span class="pre">install</span></code> directory can be safely
+removed but may have to be regenerated running the cmake or build step.
+CMake generates a list of dependencies between targets therefore the build
+result described in this section may be different when ran from other
+computers. Obviously before anything has run both folders are empty.</p>
+<p>More options can be given to the build system than the one presented here,
+refer to the <a class="reference internal" href="#isp-gsg-build-gui"><span>GUI build steps</span></a> for more details.</p>
+<p>In this whole Section a command line will always be prefixed by a <code class="docutils literal"><span class="pre">$</span></code>
+sign, other text in blocks are results from commands or informative.</p>
+<div class="section" id="choosing-a-build-variant">
+<span id="isp-gsg-choosing-build-variant"></span><h3>Choosing a build variant<a class="headerlink" href="#choosing-a-build-variant" title="Permalink to this headline">¶</a></h3>
+<p>The driver comes with several build variants, which have to be chosen at CMake
+time:</p>
+<ul class="simple">
+<li>Building the driver to run against the CSIM in user mode (fake interface):
+see <a class="reference internal" href="#isp-gsg-build-fake-interface"><span>Fake interface (Simulator/unit tests)</span></a></li>
+<li>Building the driver to run against real HW in kernel space and user space.
+There are several variations of this <a class="reference internal" href="#isp-gsg-build-kernel-module"><span>Kernel-module build (GNU/Linux)</span></a> or
+<a class="reference internal" href="#isp-gsg-kernel-module-android"><span>Kernel module build for Android</span></a>.</li>
+</ul>
+<p>As the build is done using CMake it is possible to have 1 CMake folder per
+configuration, for example <code class="docutils literal"><span class="pre">cmake_fake</span></code>, <code class="docutils literal"><span class="pre">cmake_linux</span></code> that use the same
+source folder but have different build parameters. In this document we will
+always refer to them as the cmake folder.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The external Data Generator option is available for all platforms but
+the External Data Generator&#8217;s HW is not present on real chip (but it is
+on Imagination FPGA images and in the C simulator).</p>
+</div>
+<div class="section" id="platform-choice">
+<span id="isp-gsg-platform-choice"></span><h4>Platform choice<a class="headerlink" href="#platform-choice" title="Permalink to this headline">¶</a></h4>
+<p>The kernel is constructed in a way so that the <em>platform</em> it is built for is
+chosen at compilation time. A platform is a combination of:</p>
+<ul class="simple">
+<li>A device implementation responsible for discovering the device and storing
+information about it</li>
+<li>A memory allocator implementation responsible for allocating the physical
+memory for the device</li>
+</ul>
+<p>The following examples of devices integration are provided in the
+<a class="reference internal" href="integration/platform.html#isp-platform-integration-guide"><span>Platform Integration Guide</span></a>:</p>
+<ul class="simple">
+<li>&#8220;PCI&#8221; device to discover and use on Imagination FPGA systems</li>
+<li>&#8220;Memory Mapped device&#8221; as an untested example</li>
+</ul>
+<p>and memory allocators:</p>
+<ul class="simple">
+<li>&#8220;Page allocator&#8221; which allocates system memory pages directly</li>
+<li>&#8220;Carved-out memory&#8221; (where memory is reserved for a device, for example PCI
+memory on the chip or reserved band of system memory at Linux boot)</li>
+<li>&#8220;ION allocator&#8221; for Android which is a special case (it implements a special
+version of carved-out or page allocator) which is turned on when compiling
+for Android.</li>
+</ul>
+<p>For more details on the CMake options please see <a class="reference internal" href="#isp-gsg-kernel-module-platform-choice"><span>the list of
+available options for the Linux build</span></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">IMG Video is an additional platform using the <cite>imgvideo</cite> module used by
+other teams. The ISP DDK can be compiled following the
+documentation provided with IMG Video and the minimal steps to run cmake
+are provided in the section <a class="reference internal" href="#isp-gsg-imgvideo-support"><span>IMGVideo Support</span></a>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="generic-steps">
+<span id="isp-gsg-generic-build-steps"></span><h3>Generic steps<a class="headerlink" href="#generic-steps" title="Permalink to this headline">¶</a></h3>
+<p>Regardless of the build options a successful build will always have results
+similar to the following.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>cmake &lt;path to <span class="nb">source</span>&gt; <span class="o">[</span>options<span class="o">]</span>
+</pre></div>
+</div>
+<p>A successful CMake run should finish with an output similar to:</p>
+<div class="highlight-python"><div class="highlight"><pre>-- Configuring done
+-- Generating done
+-- Build files have been written to: ~/workspace/cmake
+</pre></div>
+</div>
+<p>Build step</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>make
+</pre></div>
+</div>
+<p>A successful build should finish with a similar output to:</p>
+<div class="highlight-python"><div class="highlight"><pre>Linking CXX executable driver_test
+[100%] Built target driver_test
+</pre></div>
+</div>
+<p>Install step</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>make install
+</pre></div>
+</div>
+<p>This should result in files being copied over in <code class="docutils literal"><span class="pre">~/workspace/install</span></code>. The
+output should look similar to:</p>
+<div class="highlight-python"><div class="highlight"><pre>Install the project...
+-- Install configuration: “Release”
+-- Installing: ~/workspace/install/km/Felix.ko
+</pre></div>
+</div>
+</div>
+<div class="section" id="fake-interface-simulator-unit-tests">
+<span id="isp-gsg-build-fake-interface"></span><h3>Fake interface (Simulator/unit tests)<a class="headerlink" href="#fake-interface-simulator-unit-tests" title="Permalink to this headline">¶</a></h3>
+<p>To run against the simulator we need to enable the Fake interface. This mainly
+concerns the CI component. The <code class="docutils literal"><span class="pre">BUILD_UNIT_TESTS</span></code> flag can be added to
+generate the unit test executables (it is optional).</p>
+<div class="section" id="cmake-step">
+<span id="isp-gsg-fake-interface-cmake"></span><h4>CMake step<a class="headerlink" href="#cmake-step" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>cmake ../DDKSource -DCI_BUILD_KERNEL_MODULE<span class="o">=</span>OFF <span class="se">\</span>
+-DCI_EXT_DATA_GENERATOR<span class="o">=</span>ON -DBUILD_UNIT_TESTS<span class="o">=</span>ON <span class="se">\</span>
+-DCMAKE_INSTALL_PREFIX<span class="o">=</span>~/workspace/install -DCMAKE_BUILD_TYPE<span class="o">=</span>Release
+</pre></div>
+</div>
+<p>The <a class="reference internal" href="#isp-gsg-generic-build-steps"><span>generic steps</span></a> can now be
+followed to build the DDK.</p>
+</div>
+<div class="section" id="running-against-the-simulator">
+<span id="isp-gsg-running-against-simulator"></span><h4>Running against the simulator<a class="headerlink" href="#running-against-the-simulator" title="Permalink to this headline">¶</a></h4>
+<p>Even if it is possible to run against the simulator using the Internal
+Data Generator it would be very limiting (only 1 input possible -
+testing of parallel computing would not be possible). It is therefore
+recommended to use the External Data generator support if running
+against CSIM.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Information on how to run test applications, such as driver_test or
+ISPC_test, can be found in the <a class="reference internal" href="test_tools/test_tools.html#isp-test-tools"><span>Test Tools</span></a> document.</p>
+</div>
+</div>
+<div class="section" id="running-unit-tests">
+<span id="isp-gsg-running-unit-tests"></span><h4>Running unit tests<a class="headerlink" href="#running-unit-tests" title="Permalink to this headline">¶</a></h4>
+<p>CMake provides an easy way to run all unit tests:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ctest
+</pre></div>
+</div>
+<p>A successful run produces an output similar to:</p>
+<div class="highlight-python"><div class="highlight"><pre>100% tests passed, 0 tests failed out of 9
+
+Total test time (real) = 2.37 sec
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="kernel-module-build-gnu-linux">
+<span id="isp-gsg-build-kernel-module"></span><h3>Kernel-module build (GNU/Linux)<a class="headerlink" href="#kernel-module-build-gnu-linux" title="Permalink to this headline">¶</a></h3>
+<p>The kernel build creates a kernel module and mainly concerns the CI component.
+We will assume that the Linux kernel to use is located in
+<code class="docutils literal"><span class="pre">/usr/src/linux-kernel</span></code>. If the build should use the current kernel then the
+<code class="docutils literal"><span class="pre">LINUX_KERNEL_BUILD_DIR</span></code> option does not have to be used. The kernel folder
+used for building should contain the kernel <code class="docutils literal"><span class="pre">Makefile</span></code> used to build modules
+(<code class="docutils literal"><span class="pre">cmake/CI/felix/felix_lib/km</span></code>).</p>
+<div class="section" id="choosing-what-platform-to-use">
+<span id="isp-gsg-kernel-module-platform-choice"></span><h4>Choosing what platform to use<a class="headerlink" href="#choosing-what-platform-to-use" title="Permalink to this headline">¶</a></h4>
+<p>The CMake options to choose the platform are <code class="docutils literal"><span class="pre">-DCI_DEVICE=&lt;device&gt;</span>
+<span class="pre">-DCI_ALLOC=&lt;allocator&gt;</span></code> The details can be found in:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">DDKSource</span><span class="o">/</span><span class="n">CI</span><span class="o">/</span><span class="n">felix</span><span class="o">/</span><span class="n">felix_lib</span><span class="o">/</span><span class="n">kernel</span><span class="o">/</span><span class="n">build_kernel</span><span class="o">.</span><span class="n">cmake</span>
+</pre></div>
+</div>
+<p>The device options are:</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-DCI_DEVICE=MEMMAPPED</span></code>:</dt>
+<dd>Compiles a Memory Mapped device. This is the default if no options are
+given.</dd>
+<dt><code class="docutils literal"><span class="pre">-DCI_DEVICE=PCI</span></code>:</dt>
+<dd>Compiles the PCI device for IMG FPGA</dd>
+<dt><code class="docutils literal"><span class="pre">-DCI_DEVICE=ANDROID_EMULATOR</span></code>:</dt>
+<dd>Test environment for android (use our CSIM as a library in a QEMU virtual
+machine)</dd>
+</dl>
+<p>The allocator options are:</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-DCI_ALLOC=CARVEOUT</span></code>:</dt>
+<dd>Compiles an allocator that assumes that the memory offset given by the
+device is a reserved band of memory to be used (e.g. memory on a PCI chip).
+This is the default if no options are given.</dd>
+<dt><code class="docutils literal"><span class="pre">-DCI_ALLOC=PAGEALLOC</span></code>:</dt>
+<dd>Compiles an allocator that will allocate system memory pages for the
+device. This is not supported by the driver yet.</dd>
+<dt><strong>[OBSOLETE]</strong> <code class="docutils literal"><span class="pre">-DCI_ALLOC=ION</span></code>:</dt>
+<dd>Now obsolete, the ION allocator is used if the build is an Android build
+and the ION implementation will have a different configuration depending of
+the CI_ALLOC choice.</dd>
+</dl>
+</div>
+<div class="section" id="isp-gsg-kernel-module-cmake">
+<span id="id1"></span><h4>CMake step<a class="headerlink" href="#isp-gsg-kernel-module-cmake" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>cmake ../DDKSource <span class="se">\</span>
+-DLINUX_KERNEL_BUILD_DIR<span class="o">=</span>/usr/src/linux-headers <span class="se">\</span>
+-DCI_DEVICE<span class="o">=</span>&lt;device&gt; -DCI_ALLOC<span class="o">=</span>&lt;allocator&gt; -DCMAKE_BUILD_TYPE<span class="o">=</span>Release
+</pre></div>
+</div>
+<p>The <a class="reference internal" href="#isp-gsg-generic-build-steps"><span>the build steps</span></a> can now be used to
+build the DDK. Information on how to instantiate the kernel module is
+available in <a class="reference internal" href="#isp-gsg-run-kernel-module"><span>run the drivers</span></a>. If the path
+to the kernel headers is not specified the currently running kernel is used.</p>
+</div>
+</div>
+<div class="section" id="kernel-module-build-for-android">
+<span id="isp-gsg-kernel-module-android"></span><h3>Kernel module build for Android<a class="headerlink" href="#kernel-module-build-for-android" title="Permalink to this headline">¶</a></h3>
+<p>Building the kernel module for Android is described in detail in the
+<a class="reference internal" href="android/hal_build_instructions.html#isp-android-build-instructions"><span>Android Build Instructions</span></a>. The basic steps are to use the right
+tool-chain for the platform you are building on and to set the Linux kernel
+root to be the Android Linux kernel root.</p>
+</div>
+<div class="section" id="run-a-kernel-module">
+<span id="isp-gsg-run-kernel-module"></span><h3>Run a kernel-module<a class="headerlink" href="#run-a-kernel-module" title="Permalink to this headline">¶</a></h3>
+<p>This Section details how to run the kernel-module driver. If the driver was
+compiled with the Fake interface to run against the simulator these operations
+are not needed.</p>
+<div class="section" id="img-scb-driver-i2c-driver">
+<span id="isp-gsg-i2c-driver"></span><h4>IMG SCB driver (I2C driver)<a class="headerlink" href="#img-scb-driver-i2c-driver" title="Permalink to this headline">¶</a></h4>
+<p>If using IMG SCB block, or any standard i2c driver, the i2c-driver should be
+present in the Linux kernel. If compiled as a module it should be inserted
+for the i2c device to be detected by the driver. The can be inserted as:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>insmod /lib/modules/<span class="sb">`</span>uname -r<span class="sb">`</span>/kernel/drivers/i2c/i2c-dev.ko
+</pre></div>
+</div>
+<p>After both the V2500 and <code class="docutils literal"><span class="pre">i2c-dev</span></code> modules are inserted a new device should
+appear. To be able to read/write I2C device without root privileges, below
+command should be executed:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>chmod <span class="m">0666</span> /dev/i2c-detected_id
+</pre></div>
+</div>
+<p>It’s possible to give read/write permissions to other users during system
+startup automatically:</p>
+<ol class="arabic simple">
+<li>Android - edit init.rc file and add below line in “on init” section:</li>
+</ol>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>chmod <span class="m">0666</span> /dev/i2c-*
+</pre></div>
+</div>
+<ol class="arabic" start="2">
+<li><p class="first">Linux - add udev rule, creating new file <code class="docutils literal"><span class="pre">70-i2c.rules</span></code> in
+<code class="docutils literal"><span class="pre">/etc/udev/rules.d/</span></code> with below content</p>
+<blockquote>
+<div><div class="highlight-linux-config"><div class="highlight"><pre>KERNEL==&quot;i2c-[1-9]*&quot;, GROUP=&quot;i2c&quot;, MODE=&quot;0666&quot;
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</div>
+<div class="section" id="insert-v2500-module">
+<span id="isp-gsg-insert-module"></span><h4>Insert V2500 module<a class="headerlink" href="#insert-v2500-module" title="Permalink to this headline">¶</a></h4>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">If using IMG SCB the i2c driver, it should be inserted before the steps stated above!</p>
+</div>
+<p>Before running the user application the Felix driver must be inserted in the
+kernel using <code class="docutils literal"><span class="pre">insmod</span></code> (as root):</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>insmod install/km/Felix.ko
+</pre></div>
+</div>
+<p>A valid insertion should display no message on the console. But one can also
+check the system log using <code class="docutils literal"><span class="pre">dmesg</span></code> to get more information (and have a result
+similar to):</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>dmesg
+<span class="o">[</span>16735.653265<span class="o">]</span> FELIX driver initialisation...
+<span class="o">[</span>16735.661450<span class="o">]</span> FELIX Main MMU pre-configured <span class="o">(</span>ext address range 1<span class="o">)</span>
+<span class="o">[</span>16735.678301<span class="o">]</span> FELIX DG MMU pre-configured <span class="o">(</span>ext address range 1<span class="o">)</span>
+</pre></div>
+</div>
+<p>A successful insertion should result in the module being listed in the list of
+active modules:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>lsmod <span class="p">|</span> grep Felix
+Felix     <span class="m">227325</span>  0
+</pre></div>
+</div>
+<p>Devices should also have been created:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ls /dev/img*
+/dev/imgfelix0
+</pre></div>
+</div>
+<p>The driver will also have some registered elements in the system:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ls /sys/class/misc/img*
+/sys/class/misc/imgfelix0
+</pre></div>
+</div>
+<p>If the driver was compiled with <code class="docutils literal"><span class="pre">CI_DEBUG_FUNCTIONS</span></code> then some debugFS files
+are created as well (as root, assuming debugFS is mounted <a class="footnote-reference" href="#id6" id="id2">[1]</a>):</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ls /sys/kernel/debug/imgfelix
+DriverCTX0Active DriverCTX0Int_DoneAll DriverCTX0Triggered DriverNConnections ...
+</pre></div>
+</div>
+<p>A list of the debugFS files is available in the <a class="reference internal" href="ci/ci_library.html#isp-capture-interface"><span>Capture Interface</span></a>
+document. All parameters given to insmod should be accessible in :</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ls /sys/module/Felix/parameters/
+frametimeout mmucontrol tilingScheme
+</pre></div>
+</div>
+<p>See the <a class="reference internal" href="building_errors.html#isp-bet-ko"><span>Kernel module insertion errors</span></a> for helps on potential insertion errors.</p>
+</div>
+<div class="section" id="v2500-insertion-options">
+<span id="isp-gsg-insmod-options"></span><h4>V2500 Insertion options<a class="headerlink" href="#v2500-insertion-options" title="Permalink to this headline">¶</a></h4>
+<p>The driver is compiled with a few insmod options:</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">tilingScheme=&lt;mode&gt;</span></code>:</dt>
+<dd><code class="docutils literal"><span class="pre">mode</span></code> is 256 or 512. If your device supports tiling changes the MMU
+tiling scheme for 256Bx16 or 512Bx8 schemes.</dd>
+<dt><code class="docutils literal"><span class="pre">tilingStride=&lt;stride&gt;</span></code>:</dt>
+<dd>If non-0 used as common stride when tiled buffers are used. This has to be
+a power of 2 and has to be big enough for all enabled output (even
+non-tiled ones that could be tiled).</dd>
+<dt><code class="docutils literal"><span class="pre">frametimeout=&lt;time</span> <span class="pre">in</span> <span class="pre">ms&gt;</span></code>:</dt>
+<dd>Changes the amount of time the driver will wait when acquiring a captured
+frame. Once that time has passed the kernel module will return an error and
+the user-side has to choose what to do (e.g. try again or restart the
+sensor)</dd>
+<dt><code class="docutils literal"><span class="pre">mmucontrol=&lt;mode&gt;</span></code>:</dt>
+<dd><p class="first">Controls the way the IMG MMU is used. It is not recommended to use this
+parameter (default is mode=2 use MMU HW in 40b mode).</p>
+<div class="last admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">If using mmucontrol=0 the MMU HW will be setup to not use virtual
+memory. The used memory allocator <strong>HAS TO SUPPORT</strong> contiguous memory
+allocation.</p>
+</div>
+</dd>
+<dt><code class="docutils literal"><span class="pre">gammaCurve=&lt;curve&gt;</span></code>:</dt>
+<dd>Choose which Gamma Look Up curve to use when running the driver. It is
+not recommended to use this parameter (it is better to change the
+default to the desired standard). See the <a class="reference internal" href="ci/ci_library.html#isp-ci-gamma-lut-customisation"><span>Capture
+Interface</span></a> on details for default value
+and how to add other curves.</dd>
+<dt><code class="docutils literal"><span class="pre">extDGPLL=&lt;mult,div&gt;</span></code></dt>
+<dd><p class="first">When using the external data-generator can be used to change the speed of
+processing. Provide the multiplier and divider to the test IO bank (<strong>not
+part of the ISP IP</strong>) - both values need to be specified.</p>
+<p>If 0 is given (default) then the data-generator driver computes the
+default PLL
+<span class="math">\(\frac{\text{parallesim } \times 10}{\text{parallesim } \times 10}\)</span></p>
+<div class="last admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>If incorrect values are provided the PLL may not lock up and the FPGA
+will need to be reprogrammed.</p>
+<p class="last">If given values are too high the test may not generate frames because
+the input rate will be too high for the ISP to handle.</p>
+</div>
+</dd>
+<dt><code class="docutils literal"><span class="pre">ciLogLevel=&lt;level&gt;</span></code>:</dt>
+<dd>Define the runtime value for the log level of the kernel module. Values
+are from 0 to 4, each level includes the lower values: 0 none, 1
+<code class="docutils literal"><span class="pre">CI_FATAL()</span></code>, 2 <code class="docutils literal"><span class="pre">CI_WARNING()</span></code>, 3 <code class="docutils literal"><span class="pre">CI_INFO()</span></code>, 4 <code class="docutils literal"><span class="pre">CI_DEBUG()</span></code>
+(very verbose). Default is computed by cmake and given at build time as
+pre-processor value <code class="docutils literal"><span class="pre">CI_LOG_LEVEL</span></code> and is 1 for Release and 3 for Debug.</dd>
+</dl>
+<p>Details are available in:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">DDKSource</span><span class="o">/</span><span class="n">CI</span><span class="o">/</span><span class="n">felix</span><span class="o">/</span><span class="n">felix_lib</span><span class="o">/</span><span class="n">kernel</span><span class="o">/</span><span class="n">kernel_src</span><span class="o">/</span><span class="n">ci_init_km</span><span class="o">.</span><span class="n">c</span>
+</pre></div>
+</div>
+<p>Example, change timeout to be 2 seconds:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>insmod Felix.ko <span class="nv">frametimeout</span><span class="o">=</span>2000
+</pre></div>
+</div>
+</div>
+<div class="section" id="removing-module">
+<span id="isp-gsg-remove-module"></span><h4>Removing module<a class="headerlink" href="#removing-module" title="Permalink to this headline">¶</a></h4>
+<p>Simply run (as root):</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>rmmod Felix
+</pre></div>
+</div>
+<p>If an application is currently running using the Felix kernel module this
+operation may fail. Stop or kill the application to be able to remove the
+module. A valid removal should produce no message on the console but dmseg
+should show something similar to:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>dmseg
+<span class="o">[</span>17008.502019<span class="o">]</span> FELIX shutting down HW
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="imgvideo-support">
+<span id="isp-gsg-imgvideo-support"></span><h2>IMGVideo Support<a class="headerlink" href="#imgvideo-support" title="Permalink to this headline">¶</a></h2>
+<p>IMG Video is the common kernel libraries used by various Imagination IP.
+The ISP DDK being a more independent IP the usage of the common
+module is optional. It is however possible for a customer to compile the
+device memory abstraction implementation if they possess a
+compatible IMGVideo source code.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>Continuing on this section it is assumed that the customer has:</p>
+<ul class="last simple">
+<li>ISP DDK package</li>
+<li>a compatible IMGVideo package (not provided by ISP DDK)</li>
+<li>documentation for the IMGVideo package</li>
+<li>read IMGVideo documentation to know how to port to their memory interface</li>
+</ul>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">IMGVideo is delivered with every release of the Encoder or Decoder.
+Compatibility with the ISP is not ensured unless delivered as the same
+package. Customers that are integrating both ISP and Encoder/Decoder
+should ensure a compatible IMGVideo package is delivered by asking
+their contact at Imagination.</p>
+</div>
+<p>The IMGVideo supports allows a central memory management to be used but the
+platform discovery and handling is done following the usual way for the ISP
+(as described in the <a class="reference internal" href="integration/platform.html#isp-platform-integration-guide"><span>Platform Integration Guide</span></a>).</p>
+<p>The ISP DDK integrates with IMGVideo cmake structure:</p>
+<div class="highlight-python"><div class="highlight"><pre>video
+ |
+ \--imgvideo
+ |
+ \--vdec (optional)
+ \--encode (optional)
+ |
+ \--isp (ISP-DDK folder)
+     |
+     \--DDKSource
+</pre></div>
+</div>
+<p>The cmake can be run the same way than any other IMGVideo cmake by adding
+the relevant CI options (see <a class="reference internal" href="#isp-gsg-standard-cmake-options"><span>Standard CMake options</span></a>).</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>mkdir build
+<span class="nv">$ </span><span class="nb">cd </span>build
+<span class="nv">$ </span>cmake ../video -DPLATFORM<span class="o">=</span>&lt;platform&gt; &lt;other imgvideo options&gt; <span class="se">\</span>
+-DCI_DEVICE<span class="o">=</span>MEMMAPPED -DCI_ALLOC<span class="o">=</span>IMGVIDEO &lt;other CI options <span class="k">if</span> needed&gt; <span class="se">\</span>
+&lt;other options - e.g. -DENABLE_3_9_CONFIG_ALL<span class="o">=</span>TRUE <span class="k">for</span> encoder&gt; <span class="se">\</span>
+-DCMAKE_INSTALL_PREFIX<span class="o">=</span>../install
+<span class="nv">$ </span>make
+</pre></div>
+</div>
+<p>The other possible IMGVideo options can be:</p>
+<ul>
+<li><p class="first">If using carveout memory:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="o">-</span><span class="n">DPORTFWRK_SYSMEM_CARVEOUT</span><span class="o">=</span><span class="n">TRUE</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">If using page allocation:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="o">-</span><span class="n">DPORTFWRK_SYSMEM_UNIFIED</span><span class="o">=</span><span class="n">TRUE</span> <span class="o">-</span><span class="n">DPORTFWRK_MEMALLOC_UNIFIED_VMALLOC</span><span class="o">=</span><span class="n">TRUE</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">If using ION allocation (untested as the ISP has its own ion support):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="o">-</span><span class="n">DION_BUFFERS</span><span class="o">=</span><span class="n">TRUE</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Support for allocation and import of dma-buf : carveout</p>
+<p>Enables build of <code class="docutils literal"><span class="pre">dmabuf_exporter.ko</span></code> kernel module and adds a imgvideo
+heap suitable for importing externally allocated dma-buf buffers.</p>
+<div class="highlight-bash"><div class="highlight"><pre>-DDMABUF_EXPORTER<span class="o">=</span>TRUE
+-DPORTFWRK_SYSMEM_DMABUF<span class="o">=</span>TRUE
+-DSYSMEM_DMABUF_IMPORT<span class="o">=</span>TRUE
+</pre></div>
+</div>
+</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The <code class="docutils literal"><span class="pre">dmabuf_exporter.ko</span></code> module supports following load time parameters:</p>
+<ul class="simple">
+<li><strong>carveout_phys_base</strong> - base physical address. if 0 (default), then
+use pci vendor/product) (ulong)</li>
+<li><strong>carveout_size</strong> - carveout size in bytes. if 0 (default) and
+phys_base is also 0, then use all PCI memory (ulong)</li>
+<li><strong>carveout_offset</strong> - offset from carveout_phys_base. default: 0 (ulong)</li>
+<li><strong>carveout_pci_vendor</strong> - carveout PCI vendor id (uint)</li>
+<li><strong>carveout_pci_product</strong> - carveout PCI product id (uint)</li>
+<li><strong>carveout_pci_bar</strong> - carveout PCI BAR (uint)</li>
+<li><strong>use_carveout</strong> - use carveout memory (default : 0, to use coherent)
+(int)</li>
+</ul>
+<p class="last">By using these parameters, the user can limit the available memory for
+dmabuf allocations.</p>
+</div>
+<ul>
+<li><p class="first">Support for allocation and import of dma-buf : coherent</p>
+<p>Same as former config but <code class="docutils literal"><span class="pre">dmabuf_exporter.ko</span></code> should be insmodded with <code class="docutils literal"><span class="pre">use_carveout=0</span></code>
+parameter in order of using coherent allocator.</p>
+<div class="highlight-bash"><div class="highlight"><pre>-DDMABUF_EXPORTER<span class="o">=</span>TRUE
+-DPORTFWRK_SYSMEM_DMABUF<span class="o">=</span>TRUE
+-DSYSMEM_DMABUF_IMPORT<span class="o">=</span>TRUE
+</pre></div>
+</div>
+</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Felix source tree contains an implementation of <code class="docutils literal"><span class="pre">dmabuf</span></code> userspace
+library required for user side image buffer allocations using
+<code class="docutils literal"><span class="pre">dmabuf_exporter.ko</span></code>. For testing purposes, <code class="docutils literal"><span class="pre">ISPC_loop</span></code> can be
+configured to use this library for allocations of  external image buffers.
+It is then possible to import the buffers to ISP MMU using
+<code class="docutils literal"><span class="pre">CI_PipelineImportBuffer()</span></code> (for more info refer
+<a class="reference internal" href="ci/ci_library.html#isp-ci-creation-of-buffers"><span>Creation of Buffers</span></a> in <a class="reference internal" href="ci/ci_library.html#isp-capture-interface"><span>Capture Interface</span></a>).</p>
+<p>To facilitate this functionality, the test application CMake should check if
+<code class="docutils literal"><span class="pre">SYSMEM_DMABUF_IMPORT</span></code> is defined and will allow the use of the run time
+<code class="docutils literal"><span class="pre">-importBuffers</span></code> parameter to be used if it is present.</p>
+<p class="last">More on building and execution of <code class="docutils literal"><span class="pre">ISPC_loop</span></code> see <a class="reference internal" href="test_tools/ispc_loop.html#isp-ispc-loop"><span>ISPC loop application: ISPC_loop</span></a>.</p>
+</div>
+<div class="section" id="example-building-imgvideo-for-imagination-s-fpga">
+<span id="isp-gsg-imgvideo-example-fpga"></span><h3>Example: building IMGVideo for Imagination&#8217;s FPGA<a class="headerlink" href="#example-building-imgvideo-for-imagination-s-fpga" title="Permalink to this headline">¶</a></h3>
+<p>For this example we chose to present building CI with the external data
+generator (which is not present on the IP or outside IMG) and the DebugFS
+support merely as example of CI options.</p>
+<p>Using carveout memory (typical FPGA usage):</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>cmake ../video -DPLATFORM<span class="o">=</span>img_fpga -DPORTFWRK_SYSMEM_CARVEOUT<span class="o">=</span>TRUE <span class="se">\</span>
+-DCI_DEVICE<span class="o">=</span>PCI -DCI_ALLOC<span class="o">=</span>IMGVIDEO <span class="se">\</span>
+-DCI_EXT_DATA_GENERATOR<span class="o">=</span>ON -DCI_DEBUG_FUNCTIONS<span class="o">=</span>ON <span class="se">\</span>
+-DCMAKE_INSTALL_PREFIX<span class="o">=</span>../install
+</pre></div>
+</div>
+<p>Building to use page-alloc (direct access of memory through PCI also called
+bus-mastering):</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>cmake ../video -DPLATFORM<span class="o">=</span>img_fpga -DPORTFWRK_SYSMEM_UNIFIED<span class="o">=</span>TRUE <span class="se">\</span>
+-DPORTFWRK_MEMALLOC_UNIFIED_VMALLOC<span class="o">=</span>TRUE -DFPGA_BUS_MASTERING<span class="o">=</span>ON <span class="se">\</span>
+-DCI_DEVICE<span class="o">=</span>PCI -DCI_ALLOC<span class="o">=</span>IMGVIDEO <span class="se">\</span>
+-DCI_EXT_DATA_GENERATOR<span class="o">=</span>ON -DCI_DEBUG_FUNCTIONS<span class="o">=</span>ON <span class="se">\</span>
+-DCMAKE_INSTALL_PREFIX<span class="o">=</span>../install
+</pre></div>
+</div>
+<p>Using Android ion allocator, FPGA on PCI, built against Android kernel located
+in <code class="docutils literal"><span class="pre">$ANDROID_BUILD_TOP/kernel/common</span></code>:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>cmake ../video -DPLATFORM<span class="o">=</span>img_fpga -DANDROID<span class="o">=</span>ON -DION_BUFFERS<span class="o">=</span>ON <span class="se">\</span>
+-DPORTFWRK_MEMALLOC_UNIFIED_VMALLOC<span class="o">=</span>TRUE -DFPGA_BUS_MASTERING<span class="o">=</span>ON <span class="se">\</span>
+-DCI_DEVICE<span class="o">=</span>PCI -DCI_ALLOC<span class="o">=</span>IMGVIDEO <span class="se">\</span>
+-DLINUX_KERNEL_BUILD_DIR<span class="o">=</span><span class="nv">$ANDROID_BUILD_TOP</span>/kernel/common <span class="se">\</span>
+-DCMAKE_INSTALL_PREFIX<span class="o">=</span>../install
+<span class="nv">$ </span>make modules
+</pre></div>
+</div>
+</div>
+<div class="section" id="imgvideo-recovering-results">
+<span id="isp-gsg-imgvideo-recovering-result"></span><h3>IMGVIdeo recovering results<a class="headerlink" href="#imgvideo-recovering-results" title="Permalink to this headline">¶</a></h3>
+<p>When building with IMGVideo support some of the source is compiled into the
+source tree. The kernel modules are available in:</p>
+<ul class="simple">
+<li>video/imgvideo/imgvideo.ko</li>
+<li>video/isp_km/Felix.ko</li>
+</ul>
+<p>Or if CMAKE_INSTALL_PREFIX was given and <code class="docutils literal"><span class="pre">make</span> <span class="pre">install</span></code> run the ISP DDK
+is available normally. IMGVideo should install its kernel modules under the
+top level <code class="docutils literal"><span class="pre">km</span></code> folder.</p>
+</div>
+</div>
+<div class="section" id="hdr-libraries-support">
+<span id="isp-gsg-hdrlibs-support"></span><h2>HDR Libraries support<a class="headerlink" href="#hdr-libraries-support" title="Permalink to this headline">¶</a></h2>
+<p>The package delivered does not contain the HDRLibs archive and will
+not build the HDR libraries support. These libraries are internal to
+Imagination and the applications making use of them detail how to replace
+them if necessary.</p>
+<blockquote>
+<div></div></blockquote>
+</div>
+<div class="section" id="gui-build-steps">
+<span id="isp-gsg-build-gui"></span><h2>GUI build steps<a class="headerlink" href="#gui-build-steps" title="Permalink to this headline">¶</a></h2>
+<p>The tuning tools GUIs are delivered as part of the DDK sources but can be built
+separately (e.g. build driver for an android phone but build tuning tools for
+GNU/Linux system). There are 2 tools used for tuning:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">VisionTuning</span></code> used for offline calibrations (does not need an actual
+device to run). For example this is used to generate the deshading matrix.</li>
+<li><code class="docutils literal"><span class="pre">VisionLive</span></code> used for dynamic calibrations (connects to the device and
+see the result of calibration live). For example this is used to calibration
+the tone mapping curve.</li>
+</ul>
+<div class="section" id="build-steps">
+<span id="isp-gsg-gui-build-steps"></span><h3>Build steps<a class="headerlink" href="#build-steps" title="Permalink to this headline">¶</a></h3>
+<p>As for the driver part, CMake needs to be run. It does not have to be in a
+separated folder.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>cmake ../DDKSource -DBUILD_GUI<span class="o">=</span>ON
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="building_errors.html#isp-bet-gui-build"><span>Building GUI tools: troubleshooting</span></a> and <a class="reference internal" href="building_errors.html#isp-bet-gui-run"><span>Running the GUI: troubleshooting</span></a> for the help on errors.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The DDK does not support windows in any other mode than the Fake driver to
+communicate with CSIM.
+The GUI tools can however be built on windows but <strong>ONLY</strong> support Visual
+Studio.</p>
+<p class="last">It is usually needed to specify both <cite>QT_BINARY_DIR</cite> and <cite>OpenCV_DIR</cite> cmake
+variable to compile the GUI on windows
+(see <a class="reference internal" href="#isp-gsg-standard-cmake-options"><span>Standard CMake options</span></a>).</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>It is imperative to use the same compiler for the GUI tools than was used
+to compile the Qt library.</p>
+<p class="last">The GUI tools only support Visual Studio, ensure the Qt library are
+installed for the appropriate VS version.</p>
+</div>
+<p>The run steps are detailed in the <a class="reference internal" href="test_tools/test_tools.html#isp-tt-gui-tools"><span>GUI tools applications user guide</span></a> document.</p>
+</div>
+</div>
+<div class="section" id="build-system-details">
+<span id="isp-gsg-build-system-details"></span><h2>Build System details<a class="headerlink" href="#build-system-details" title="Permalink to this headline">¶</a></h2>
+<p>This section aims to list all of the CMake options that an advanced user may
+consider when customising the build of the V2500 driver.</p>
+<p>The V2500 DDK is built using CMake. CMake generates Makefiles (or project files
+for editors such as Eclipse or Code::Blocks) that are then used to build the
+various libraries and executables.</p>
+<div class="section" id="standard-cmake-options">
+<span id="isp-gsg-standard-cmake-options"></span><h3>Standard CMake options<a class="headerlink" href="#standard-cmake-options" title="Permalink to this headline">¶</a></h3>
+<p>One might consider changing the following CMake options (that are standard to
+any CMake script):</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">CMAKE_INSTALL_PREFIX</span></code> (Path):</dt>
+<dd>Location where package is installed if the install target is run (e.g. when
+doing make install).</dd>
+<dt><code class="docutils literal"><span class="pre">QT_BINARY_DIR</span></code> (Path):</dt>
+<dd><p class="first">Path to the installation of the Qt library. May be needed when building
+GUIs and the Qt library cannot be found on the system.
+We also added QT_LIBRARY_CMAKE_DIR (which is not standard) to help find the
+cmake configuration file of Qt5.
+If the following Path are not defined QT_LIBRARY_CMAKE_DIR will be used to
+guess them, otherwise they can be manually defined one at a time:</p>
+<ul class="simple">
+<li>Qt5Widgets_DIR</li>
+<li>Qt5Test_DIR</li>
+<li>Qt5PrintSupport_DIR</li>
+<li>Qt5Concurrent_DIR</li>
+<li>Qt5Help_DIR</li>
+</ul>
+<p class="last">Some more may be needed depending on compilation options.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">OpenCV_DIR</span></code> (Path):</dt>
+<dd>Path to the installation of the OpenCV library. May be needed when
+building GUIs and the OpenCV library cannot be found on the system.</dd>
+<dt><code class="docutils literal"><span class="pre">CMAKE_BUILD_TYPE</span></code> (String):</dt>
+<dd>To control the build of Debug or Release. Useful when building against
+libraries that have different behaviour in release/debug. E.g. GUIs
+against Qt and OpenCV</dd>
+</dl>
+<p>More variables can be found in CMake documentation <a class="footnote-reference" href="#id7" id="id3">[2]</a>.</p>
+</div>
+<div class="section" id="ddk-options">
+<span id="isp-gsg-ddk-cmake-options"></span><h3>DDK options<a class="headerlink" href="#ddk-options" title="Permalink to this headline">¶</a></h3>
+<p>These options are global to the Felix DDK libraries. They define the behaviour
+of the build system and often what flavour of the driver to build.</p>
+<div class="section" id="components-choice">
+<span id="isp-gsg-ddk-cmake-component-choice"></span><h4>Components choice<a class="headerlink" href="#components-choice" title="Permalink to this headline">¶</a></h4>
+<p>Choosing which components are built, from low level to higher level. By default
+all components except the GUI are built. This information is stored in the
+top-level <code class="docutils literal"><span class="pre">CMakeLists.txt</span></code>.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">BUILD_CAPTUREINTERFACE</span></code> [ON]:</dt>
+<dd>Build the Capture Interface (CI) - Felix low level HW driver</dd>
+<dt><code class="docutils literal"><span class="pre">BUILD_ISPCONTROL</span></code> [ON]:</dt>
+<dd>Build the ISP Control (ISPC) - Imager parameter control.
+Depends on the Capture Interface</dd>
+<dt><code class="docutils literal"><span class="pre">BUILD_SENSORAPI</span></code> [ON]:</dt>
+<dd>Build the Sensor API - control of the camera sensors
+Depends on the Capture Interface</dd>
+<dt><code class="docutils literal"><span class="pre">BUILD_GUI</span></code> [OFF]:</dt>
+<dd>Build the provided GUIs for parameter tuning and demonstration</dd>
+<dt><code class="docutils literal"><span class="pre">BUILD_SCB_DRIVER</span></code> [ON]:</dt>
+<dd>Build the IMG SCB driver as part of the CI (kernel side). May not be
+available on all HW versions.</dd>
+<dt><code class="docutils literal"><span class="pre">BUILD_UNIT_TESTS</span></code> [OFF]:</dt>
+<dd>Will build all libraries unit-tests. Note that some unit tests may be
+disabled if building the kernel module.</dd>
+<dt><code class="docutils literal"><span class="pre">BUILD_TEST_APPS</span></code> [ON]:</dt>
+<dd>If disabled the test applications are not built.</dd>
+<dt><code class="docutils literal"><span class="pre">ANDROID_BUILD</span></code> [OFF]:</dt>
+<dd>Choose to build kernel-side for android.</dd>
+</dl>
+</div>
+<div class="section" id="global-options">
+<h4>Global options<a class="headerlink" href="#global-options" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">ENABLE_GPROF</span></code> [OFF]:</dt>
+<dd>Enable the GProf support when using GCC. May need special toolchain
+adjustments to locate library at linking time.</dd>
+<dt><code class="docutils literal"><span class="pre">QT_LIBRARY_CMAKE_DIR</span></code> [QT_BINARY_DIR/../lib/cmake/]</dt>
+<dd>Location of the library folder in Qt5. The folder should contain the
+several modules that can be searched for when using Qt. Used as a root
+(see other Qt variables in standard CMake variable section).</dd>
+<dt><code class="docutils literal"><span class="pre">DEBUG_MODULES</span></code> [OFF]:</dt>
+<dd>Display CMake debug information</dd>
+</dl>
+</div>
+<div class="section" id="ci-options">
+<span id="isp-gsg-ddk-cmake-ci-options"></span><h4>CI options<a class="headerlink" href="#ci-options" title="Permalink to this headline">¶</a></h4>
+<p>Configure some of the low level driver options. This information is taken from
+<code class="docutils literal"><span class="pre">CI/felix/project.cmake</span></code>.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">CI_BUILD_KERNEL_MODULE</span></code> [ON]:</dt>
+<dd><p class="first">Chose to build the kernel module or the fake interface (to use with the
+simulator).</p>
+<p class="last">On windows this is forced to OFF.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">LINUX_KERNEL_BUILD_DIR</span></code>:</dt>
+<dd>Path to the Linux kernel to use. If none is provided uses the current
+kernel.</dd>
+<dt><code class="docutils literal"><span class="pre">LINUX_KERNEL_SOURCE_DIR</span></code>:</dt>
+<dd>Path to the Linux kernel source directory. Used by Android builds when
+some headers are not availabled in the build directory otherwise do not use.
+(see <a class="reference internal" href="android/hal_build_instructions.html#isp-android-configure-kernel-module-using-cmake"><span>Configure V2500 Module using CMake</span></a>).</dd>
+<dt><code class="docutils literal"><span class="pre">CI_DEVICE</span></code>:</dt>
+<dd><a class="reference internal" href="#isp-gsg-kernel-module-platform-choice"><span>Choose device</span></a> to build for
+real driver.</dd>
+<dt><code class="docutils literal"><span class="pre">CI_ALLOC</span></code>:</dt>
+<dd><a class="reference internal" href="#isp-gsg-kernel-module-platform-choice"><span>Choose allocator</span></a> to build for
+real driver.</dd>
+<dt><code class="docutils literal"><span class="pre">FORCE_32BIT_BUILD</span></code> [OFF]:</dt>
+<dd>Force 32b build even if system is 64b. The system needs the 32b libraries
+installed.</dd>
+<dt><code class="docutils literal"><span class="pre">CI_EXT_DATA_GENERATOR</span></code> [ON]:</dt>
+<dd>External Data Generator low-level driver</dd>
+<dt><code class="docutils literal"><span class="pre">CI_DEBUG_FUNCTIONS</span></code> [OFF]:</dt>
+<dd><p class="first">Build the CI debug capabilities.
+Using fake device it include debug functions.
+Using kernel module it produces debugfs files and read/write to registers
+from user-space CI.</p>
+<div class="last admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Because this option allows user-space to read/write any registers it
+is recommended to not compile production drivers with the debug
+functions enabled or to manually comment the kernel-space function
+that allows access to registers. See the
+<a class="reference internal" href="ci/ci_appendix_ioctl.html#isp-ci-ioctl-driver-commands"><span>Driver commands</span></a> section for details about the
+register access through IOCTL.</p>
+</div>
+</dd>
+<dt><code class="docutils literal"><span class="pre">CI_HW_REF_CLK</span></code> (Int):</dt>
+<dd>Reference HW clock in MHz - for the moment only stored in CI_HWINFO
+Defined in <code class="docutils literal"><span class="pre">CI/felix/felix_lib/kernel/CMakeLists.txt</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">CI_MEMSET_ALLOCATED_MEMORY</span></code> [OFF]:</dt>
+<dd>Enable the memset of device memory to 0x0 (may slow down allocation).</dd>
+<dt><code class="docutils literal"><span class="pre">CI_MEMSET_ADDITIONAL_MEMORY</span></code> [ON]:</dt>
+<dd><p class="first">Enables the memset of additional device memory to 0xAA (allocations to
+nearest page size).</p>
+<p class="last">Turning off may reduce the out2.prm size when generating pdumps with
+Fake driver and speed up allocation when using real driver.</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">CROSS_COMPILE</span></code>:</dt>
+<dd><p class="first">Can be defined to specify a cross compiler root that will be used by
+both the top level CMakeList to define the C and C++ compiler and by
+the used in build_kernel.cmake to generate the kernel module makefile
+(using the CROSS_COMPILE variable used by the kernel Makefile).</p>
+<p>The top level CMakeLists can be modified to specify additional
+C and C++ flags too but GenKernel will not necessarily take them
+in account.</p>
+<p class="last">E.g. use /home/felix/uclibc/bin/arm-buildroot-linux-uclibcgnueabihf-
+to use arm-buildroot-linux-uclibcgnueabihf-gcc and
+arm-buildroot-linux-uclibcgnueabihf-g++ as compilers.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="ispc-options">
+<h4>ISPC options<a class="headerlink" href="#ispc-options" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">ISPC_PERFLOG</span></code>: [OFF]</dt>
+<dd>Enable the usage of the performance measurement code in ISPC.
+See <a class="reference internal" href="ispc/ispc_library.html#isp-ispcl-perflog"><span>Performance measurment</span></a> for details.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="unit-tests-location">
+<span id="isp-gsg-unit-tests-location"></span><h3>Unit tests location<a class="headerlink" href="#unit-tests-location" title="Permalink to this headline">¶</a></h3>
+<p>Several of the libraries in the DDK include unit tests. In the unlikely event
+of a test failing one can run the test independently in order to produce more
+detailed results (or read the xml file generated). This section describes where
+to locate the executable or output file using the same assumptions than used in
+<a class="reference internal" href="#isp-gsg-fake-interface-cmake"><span>CMake step</span></a>. Refer to the same section to know how to
+build the unit tests. All of the filenames generated when running CTest should
+be formatted like <code class="docutils literal"><span class="pre">xunit_&lt;testname&gt;.xml</span></code>. Most of the provided unit tests are
+using Google Test framework. The Google Test documentation <a class="footnote-reference" href="#id8" id="id4">[3]</a> may be an
+interesting read when considering running a sub-set of tests.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">CaptureInterface</span></code>:</dt>
+<dd>CI/felix/felix_lib/test</dd>
+<dt><code class="docutils literal"><span class="pre">DynamicCommandLine</span></code>:</dt>
+<dd>common/dyncmd/test</dd>
+<dt><code class="docutils literal"><span class="pre">FelixCommon</span></code>:</dt>
+<dd>common/felixcommon/tests</dd>
+<dt><code class="docutils literal"><span class="pre">GZipFileIO</span></code>:</dt>
+<dd>CI/imglib/libraries/gzip_fileio/test</dd>
+<dt><code class="docutils literal"><span class="pre">IMGIncludes</span></code>:</dt>
+<dd>common/img_includes/test</dd>
+<dt><code class="docutils literal"><span class="pre">ISPControl</span></code>:</dt>
+<dd>ISP_Control/ISPC_lib/test</dd>
+<dt><code class="docutils literal"><span class="pre">LinkedList</span></code>:</dt>
+<dd>common/linkedlist/test</dd>
+<dt><code class="docutils literal"><span class="pre">MMULib</span></code>:</dt>
+<dd>CI/imgmmu/test</dd>
+<dt><code class="docutils literal"><span class="pre">sensorapi</span></code>:</dt>
+<dd>sensorapi/tests</dd>
+<dt><code class="docutils literal"><span class="pre">SimImage</span></code>:</dt>
+<dd>common/sim_image/test</dd>
+<dt><code class="docutils literal"><span class="pre">TAL_Test</span></code>:</dt>
+<dd>CI/target/test</dd>
+<dt><code class="docutils literal"><span class="pre">VisionTuning</span></code>:</dt>
+<dd>GUI/tuning/test</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="doxygen-documentation">
+<span id="isp-gsg-doxygen-documentation"></span><h2>Doxygen documentation<a class="headerlink" href="#doxygen-documentation" title="Permalink to this headline">¶</a></h2>
+<p>The source code is commented in such a way to allow the generation of
+structured documentation of the code. This includes information on how to
+create and include a new camera sensor driver. To generate the documentation
+make sure you have Doxygen installed on your system. If you have to install it
+then you must re-run CMake as described in the steps above. Then when you do
+your make step you can also do</p>
+<div class="highlight-bash"><div class="highlight"><pre>make doc
+</pre></div>
+</div>
+<p>This will generate html documentation under <code class="docutils literal"><span class="pre">doc/V2500</span></code> of your build folder.
+Open the file index.html to start using the documentation.</p>
+<p><strong>What if the doc target does not exists:</strong></p>
+<p>It is possible that your doxygen installation is not picked up by CMake when
+generating the target. The doxyfile will be generated regardless of the
+presence of Doxygen on the system as <code class="docutils literal"><span class="pre">doc/V2500_API.Doxyfile</span></code> in your build
+folder.</p>
+<p><strong>What if different outputs are needed (e.g. LaTeX):</strong></p>
+<p>The documentation is optimised to be generated as HTML but is possible to
+modify the desired outputs. The doxyfile template can be found under
+<code class="docutils literal"><span class="pre">DDKSource/build/DoxyfileHTMLTemplate.cmakein</span></code>. This file is used as in input
+to the configure_file() <a class="footnote-reference" href="#id9" id="id5">[4]</a> CMake function.</p>
+<hr class="docutils" />
+<p class="rubric">Footnotes</p>
+<table class="docutils footnote" frame="void" id="id6" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[1]</a></td><td><a class="reference external" href="http://www.linuxforu.com/2010/10/debugging-linux-kernel-with-debugfs/">http://www.linuxforu.com/2010/10/debugging-linux-kernel-with-debugfs/</a>
+(accessible on 22/08/2013)</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id7" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[2]</a></td><td><a class="reference external" href="http://www.cmake.org/cmake/help/v2.8.8/cmake.html#section_VariablesThatChangeBehavior">http://www.cmake.org/cmake/help/v2.8.8/cmake.html#section_VariablesThatChangeBehavior</a>
+(accessible on 14/07/2014)</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id8" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[3]</a></td><td><a class="reference external" href="http://code.google.com/p/googletest/wiki/Documentation">http://code.google.com/p/googletest/wiki/Documentation</a>
+(accessible on 14/07/2014)</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id9" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id5">[4]</a></td><td><a class="reference external" href="http://www.cmake.org/cmake/help/v2.8.8/cmake.html#command:configure_file">http://www.cmake.org/cmake/help/v2.8.8/cmake.html#command:configure_file</a>
+(accessible on 14/07/2014)</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Getting Started Guide</a><ul>
+<li><a class="reference internal" href="#v2500-software">V2500 Software</a></li>
+<li><a class="reference internal" href="#v2500-hardware">V2500 Hardware</a><ul>
+<li><a class="reference internal" href="#the-context">The Context</a></li>
+<li><a class="reference internal" href="#the-gasket">The Gasket</a><ul>
+<li><a class="reference internal" href="#internal-data-generator-special-case">Internal Data Generator special case</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#the-imager">The Imager</a><ul>
+<li><a class="reference internal" href="#the-external-data-generator-special-case">The External Data Generator special case</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#c-simulator-csim">C Simulator (CSIM)</a></li>
+<li><a class="reference internal" href="#system-requirements">System Requirements</a></li>
+<li><a class="reference internal" href="#deliverables">Deliverables</a><ul>
+<li><a class="reference internal" href="#main-libraries">Main Libraries</a></li>
+<li><a class="reference internal" href="#command-line-binaries">Command line binaries</a></li>
+<li><a class="reference internal" href="#gui-binaries">GUI binaries</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#driver-build-steps">Driver build steps</a><ul>
+<li><a class="reference internal" href="#choosing-a-build-variant">Choosing a build variant</a><ul>
+<li><a class="reference internal" href="#platform-choice">Platform choice</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#generic-steps">Generic steps</a></li>
+<li><a class="reference internal" href="#fake-interface-simulator-unit-tests">Fake interface (Simulator/unit tests)</a><ul>
+<li><a class="reference internal" href="#cmake-step">CMake step</a></li>
+<li><a class="reference internal" href="#running-against-the-simulator">Running against the simulator</a></li>
+<li><a class="reference internal" href="#running-unit-tests">Running unit tests</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#kernel-module-build-gnu-linux">Kernel-module build (GNU/Linux)</a><ul>
+<li><a class="reference internal" href="#choosing-what-platform-to-use">Choosing what platform to use</a></li>
+<li><a class="reference internal" href="#isp-gsg-kernel-module-cmake">CMake step</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#kernel-module-build-for-android">Kernel module build for Android</a></li>
+<li><a class="reference internal" href="#run-a-kernel-module">Run a kernel-module</a><ul>
+<li><a class="reference internal" href="#img-scb-driver-i2c-driver">IMG SCB driver (I2C driver)</a></li>
+<li><a class="reference internal" href="#insert-v2500-module">Insert V2500 module</a></li>
+<li><a class="reference internal" href="#v2500-insertion-options">V2500 Insertion options</a></li>
+<li><a class="reference internal" href="#removing-module">Removing module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#imgvideo-support">IMGVideo Support</a><ul>
+<li><a class="reference internal" href="#example-building-imgvideo-for-imagination-s-fpga">Example: building IMGVideo for Imagination&#8217;s FPGA</a></li>
+<li><a class="reference internal" href="#imgvideo-recovering-results">IMGVIdeo recovering results</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#hdr-libraries-support">HDR Libraries support</a></li>
+<li><a class="reference internal" href="#gui-build-steps">GUI build steps</a><ul>
+<li><a class="reference internal" href="#build-steps">Build steps</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#build-system-details">Build System details</a><ul>
+<li><a class="reference internal" href="#standard-cmake-options">Standard CMake options</a></li>
+<li><a class="reference internal" href="#ddk-options">DDK options</a><ul>
+<li><a class="reference internal" href="#components-choice">Components choice</a></li>
+<li><a class="reference internal" href="#global-options">Global options</a></li>
+<li><a class="reference internal" href="#ci-options">CI options</a></li>
+<li><a class="reference internal" href="#ispc-options">ISPC options</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#unit-tests-location">Unit tests location</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#doxygen-documentation">Doxygen documentation</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="dictionary.html"
+                        title="previous chapter">Dictionary</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="integration/platform.html"
+                        title="next chapter">Platform Integration Guide</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<div class="footer">
+        &copy; Imagination Technologies
+    - Strictly Confidential - External
+    <br>
+     Built on Fri, 05 Aug 2016 13:03:49
+    - Revision: <a href="#">4173926</a>
+    - <a href="index/../_pdf/manual.pdf">Printable version</a>
+</div>
+
+<!-- Embed tables in a scroller-div -->
+<script type="text/javascript">
+    $( "table.docutils" ).wrap( "<div class='docutils-scroller'></div>" );
+</script>
+<!-- End Embed tables in a scroller-div -->
+
+<!-- Back-to-top -->
+<a href="#" class="back-to-top">&#8593; TOP</a>
+<script>            
+    jQuery(document).ready(function() {
+    var offset = 220;
+        var duration = 500;
+        jQuery(window).scroll(function() {
+            if (jQuery(this).scrollTop() > offset) {
+                jQuery('.back-to-top').fadeIn(duration);
+            } else {
+                jQuery('.back-to-top').fadeOut(duration);
+            }
+        });
+
+        jQuery('.back-to-top').click(function(event) {
+            event.preventDefault();
+            jQuery('html, body').animate({scrollTop: 0}, duration);
+            return false;
+        })
+    });
+</script>
+<!-- End Back-to-top -->
+  </body>
+</html>

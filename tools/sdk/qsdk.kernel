@@ -1,0 +1,79 @@
+#!/bin/bash
+if [[ ! -d kernel || ! -d tools ]]; then 
+    echo -e "please run me in qsdk root dir"
+    exit 1
+fi
+source tools/qsdk.env
+help(){
+    echo -e "usage :  must run in qsdk root dir"
+    echo -e "\t app target_rootfs config config_file"
+    echo -e "\t app target_rootfs make"
+    echo -e "\t app target_rootfs install"
+    echo -e "\t app target_rootfs clean"
+}
+
+kernel_config(){
+    echo -e "-->config kernel"
+    if [[ ! -f $1 ]];then
+        echo -e "config file is not exist"
+        exit 1
+    fi
+    cp $1 ${WORKSPACE}/kernel/arch/arm/configs/tempsdk_defconfig
+    make -j6 ARCH=arm  CROSS_COMPILE="${CROSS_COMPILE}"  -C ${WORKSPACE}/kernel tempsdk_defconfig
+    #make -j6 ARCH=arm  CROSS_COMPILE="${CROSS_COMPILE}"  -C ${WORKSPACE}/kernel  oldconfig
+    rm -rf ${WORKSPACE}/kernel/arch/arm/configs/tempsdk_defconfig
+}
+kernel_menuconfig(){
+    echo -e "-->menuconfig kernel"
+    make  ARCH=arm  CROSS_COMPILE="${CROSS_COMPILE}"   -C ${WORKSPACE}/kernel  menuconfig
+}
+kernel_make(){
+    echo -e "-->make kernel"
+    PATH=${HOST_BIN_DIR}:$PATH make -j6 ARCH=arm  CROSS_COMPILE="${CROSS_COMPILE}"  -C ${WORKSPACE}/kernel
+	if [[ $? -ne 0 ]];then
+		exit -1
+	fi
+}
+kernel_install(){
+    echo -e "-->install kernel"
+    cp -fv ${WORKSPACE}/kernel/arch/arm/boot/*mage   ${OUTPUT_DIR}/images/
+    find ${WORKSPACE}/kernel/ -name "*.ko"  |xargs -i cp -fv {} ${OUTPUT_DIR}/system/lib/modules/
+}
+kernel_clean(){
+    echo -e "-->clean kernel"
+    make ARCH=arm  CROSS_COMPILE="${CROSS_COMPILE}"  -C ${WORKSPACE}/kernel clean
+}
+kernel_distclean(){
+    echo -e "-->clean kernel"
+    make ARCH=arm  CROSS_COMPILE="${CROSS_COMPILE}"  CONFIG_PREFIX="${target_rootfs}"   -C ${WORKSPACE}/kernel  distclean
+    make ARCH=arm  CROSS_COMPILE="${CROSS_COMPILE}"  CONFIG_PREFIX="${target_rootfs}"   -C ${WORKSPACE}/kernel  mrproper
+}
+if [[ ! -d tools ]];then
+    help
+    exit 1
+fi
+target_rootfs=`pwd`/$1
+
+case $1 in
+    config )
+        kernel_config  $2
+        ;;
+    menuconfig )
+        kernel_menuconfig
+        ;;
+    make )
+        kernel_make
+        ;;
+    install )
+        kernel_install 
+        ;;
+    clean )
+        kernel_clean
+        ;;
+    distclean )
+        kernel_distclean
+        ;;
+    * )
+        help
+        ;;
+esac

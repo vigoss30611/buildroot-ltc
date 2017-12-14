@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <EditText 
+        android:id="@+id/et_begin_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="请输入开始时间,格式为hh:mm:ss,如00:00:00"/>
+    
+     <EditText 
+        android:id="@+id/et_end_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="请输入结束时间,格式为hh:mm:ss,如00:00:00"/>
+     
+ 	<TextView 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="请选择计划的星期"/>
+ 	
+ 	<LinearLayout 
+ 	    android:layout_width="match_parent"
+ 	    android:layout_height="wrap_content"
+ 	    android:padding="10dp"
+ 	    android:orientation="horizontal">
+ 	    <CheckBox 
+		    android:id="@+id/cb_sunday"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:text="周日"/>
+ 	    <CheckBox 
+		    android:id="@+id/cb_monday"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:text="周一"/>
+ 	    <CheckBox 
+		    android:id="@+id/cb_tuesday"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:text="周二"/>
+ 	    <CheckBox 
+		    android:id="@+id/cb_wednesday"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:text="周三"/>
+ 	</LinearLayout>
+ 	<LinearLayout 
+ 	    android:layout_width="match_parent"
+ 	    android:layout_height="wrap_content"
+ 	    android:padding="10dp"
+ 	    android:orientation="horizontal">
+ 	    <CheckBox 
+		    android:id="@+id/cb_thursday"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:text="周四"/>
+ 	    <CheckBox 
+		    android:id="@+id/cb_friday"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:text="周五"/>
+ 	    <CheckBox 
+		    android:id="@+id/cb_saturday"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:text="周六"/>
+ 	</LinearLayout>
+ 	
+</LinearLayout>

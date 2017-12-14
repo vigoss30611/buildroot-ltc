@@ -1,0 +1,23 @@
+menuconfig APOLLO_CPUFREQ
+       bool "Apollo cpu cpufreq support"
+       default n
+       help
+               Say Y to select the apollo cpufreq drivers if CPUFREQ is needed
+if APOLLO_CPUFREQ      
+
+config APOLLO_VOL_FIT
+		tristate "apollo manual freq scaling policy"
+		depends on APOLLO_CPUFREQ
+		default y
+		help
+		This driver is designed for apollo manual freq scaling function.
+
+config APOLLO_CPU_FIT
+		tristate "apollo cpu hotplug policy"
+		depends on APOLLO_CPUFREQ
+		default y
+		help
+		This driver is designed for apollo cpu function.
+endif
+
+

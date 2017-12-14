@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list android:oneshot="false"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+<!--     <item android:duration="100" android:drawable="@drawable/power_on_wifi_1" /> -->
+<!--     <item android:duration="100" android:drawable="@drawable/power_on_wifi_2" /> -->
+<!--     <item android:duration="100" android:drawable="@drawable/power_on_wifi_3" /> -->
+<!--     <item android:duration="100" android:drawable="@drawable/power_on_wifi_4" /> -->
+<!--     <item android:duration="100" android:drawable="@drawable/power_on_wifi_5" /> -->
+<!--     <item android:duration="100" android:drawable="@drawable/power_on_wifi_6" /> -->
+<!--     <item android:duration="100" android:drawable="@drawable/power_on_wifi_7" /> -->
+<!--     <item android:duration="100" android:drawable="@drawable/power_on_wifi_8" /> -->
+<!--     <item android:duration="100" android:drawable="@drawable/power_on_wifi_9" /> -->
+<!--     <item android:duration="100" android:drawable="@drawable/power_on_wifi_10" /> -->
+<!--     <item android:duration="100" android:drawable="@drawable/power_on_wifi_11" /> -->
+<!--     <item android:duration="100" android:drawable="@drawable/power_on_wifi_12" /> -->
+<!--     <item android:duration="100" android:drawable="@drawable/power_on_wifi_13" /> -->
+</animation-list>

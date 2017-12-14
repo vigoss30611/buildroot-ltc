@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/chrome_icons"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="top"
+    android:layout_marginTop="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/padding_default"
+    android:paddingRight="@dimen/padding_default" >
+
+    <LinearLayout
+        android:id="@+id/wrapper_mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:gravity="left"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/txt_res_frame_fov"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:textSize="28sp"
+            android:textColor="@android:color/white"
+            android:text="1080P/60fps"
+            android:visibility="gone" />
+
+        <LinearLayout 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:visibility="gone">
+            
+            <ImageView 
+                android:id="@+id/img_advance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="30dp"
+                android:src="@drawable/advance"/>
+            
+            <ImageView 
+                android:id="@+id/img_lowlight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/lowlight"/>
+        </LinearLayout>
+        
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/bv_status_battery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/margin_left_header_sub_item"
+        android:src="@drawable/level_battery" />
+
+    <ImageView
+        android:id="@+id/img_status_wifi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/margin_left_header_sub_item"
+        android:layout_toLeftOf="@id/bv_status_battery"
+        android:src="@drawable/level_wifi" />
+
+    <TextView
+        android:id="@+id/txt_dual"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/margin_left_header_sub_item"
+        android:layout_toLeftOf="@id/img_status_wifi"
+        android:text="tttxet_dual"
+        android:visibility="gone" />
+
+</RelativeLayout>

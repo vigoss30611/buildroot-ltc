@@ -1,0 +1,10 @@
+ #                                                 
+ #  Clock device configuration                     
+ #                                                 
+ #                                                 
+menuconfig IMAPX15_CLK                           
+        bool "imapx15 clock driver support"
+		depends on COMMON_CLK
+        default n                                  
+        help                                       
+               Infotm input device driver suport   

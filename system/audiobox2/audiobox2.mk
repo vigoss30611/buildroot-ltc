@@ -1,0 +1,35 @@
+# audiobox
+
+AUDIOBOX2_VERSION = 1.0.0
+AUDIOBOX2_SOURCE = 
+AUDIOBOX2_SITE  = 
+
+AUDIOBOX2_LICENSE = 
+AUDIOBOX2_LICENSE_FILES = README
+
+AUDIOBOX2_MAINTAINED = YES
+AUDIOBOX2_AUTORECONF = YES
+AUDIOBOX2_INSTALL_STAGING = YES
+AUDIOBOX2_DEPENDENCIES = host-pkgconf hlibfr eventhub alsa-lib hlibvcp7g libcodecs
+
+ifeq ($(BR2_PACKAGE_HLIBVCP7G_DSP_SUPPORT),y)
+AUDIOBOX2_DEPENDENCIES += hlibdsp
+AUDIOBOX2_DEPENDENCIES += libcodecs
+#AUDIOBOX2_CONF_OPT += -DCOMPILE_IPU_DGOV=yes
+endif
+
+ifeq ($(BR2_PACKAGE_HLIBVCP7G_ARM_SUPPORT),y)
+AUDIOBOX2_DEPENDENCIES += libcodecs
+endif
+
+define AUDIOBOX2_POST_INSTALL_STAGING_HEADERS
+	mkdir -p $(STAGING_DIR)/usr/include/qsdk
+	mkdir -p $(STAGING_DIR)/usr/lib/pkgconfig
+	cp -rfv $(@D)/include/audiobox2.h  $(STAGING_DIR)/usr/include/qsdk
+	cp -rfv $(@D)/audiobox2.pc  $(STAGING_DIR)/usr/lib/pkgconfig/
+endef
+
+AUDIOBOX2_POST_INSTALL_STAGING_HOOKS += AUDIOBOX2_POST_INSTALL_STAGING_HEADERS
+
+$(eval $(autotools-package))
+

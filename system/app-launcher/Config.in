@@ -1,0 +1,212 @@
+config BR2_PACKAGE_APP_LAUNCHER
+	bool "launcher"
+	help
+	  launcher app
+
+	  http://www.infotm.com/osa/
+
+if BR2_PACKAGE_APP_LAUNCHER
+choice
+	prompt "Product select"
+	default BR2_INFOTM_PRODUCT_DEFAULT
+	help
+	  Select the product to be used, which will affect the keys
+
+config BR2_INFOTM_PRODUCT_DEFAULT
+	bool "default"
+	help
+	  default product.
+
+config BR2_INFOTM_PRODUCT_Q360
+	bool "Q360"
+	help
+	  Q360 product.
+
+config BR2_INFOTM_PRODUCT_LESHI_C23
+	bool "leshi C23"
+	help
+	  Q360 product.
+endchoice
+
+config BR2_INFOTM_PRODUCT
+	string
+	default "default"     if BR2_INFOTM_PRODUCT_DEFAULT
+	default "Q360"        if BR2_INFOTM_PRODUCT_Q360
+	default "leshi C23"   if BR2_INFOTM_PRODUCT_LESHI_C23
+
+menu "Options"
+	config BR2_INFOTM_GUI_ENABLE
+		bool "GUI needed"
+		default n
+		help
+		  Board pattern: screen ui enabled
+
+	config BR2_INFOTM_P2P_DANA_ENABLE
+		bool "p2p dana needed"
+		default n
+		help
+		  Board pattern: p2p dana enabled
+	
+	config BR2_INFOTM_BOARD_PATTERN
+		string "Board pattern"
+		default "cardv"
+		help
+		  Board pattern: cardv sportdv
+	
+	config BR2_INFOTM_CAMERA_REAR_ENABLE
+		bool "Rear camera enable"
+		default y
+		help
+		 Rear camera enable 
+	
+	config BR2_INFOTM_CAMERA_PIP_ENABLE
+		bool "Rear camera pip enable"
+		default y
+		help
+		 Rear camera pip enable 
+	
+	config BR2_INFOTM_LCD_ORIENTATION
+		string "LCD orientation"
+		default "landscape"
+		help
+		 LCD orientation: landscape portrait 
+
+	config BR2_INFOTM_NETWORK_ENABLE
+		bool "network enable"
+		default y
+		help
+		 Network enable 
+	
+	config BR2_INFOTM_WIFI_ENABLE
+		bool "Wifi enable"
+		default n
+		help
+		 Wifi enable 
+	
+	config BR2_INFOTM_WIFI_MODEL
+		string "Wifi model"
+		default "bcm6212"
+		help
+		 Wifi model: bcm6212 rtl8189ES 
+	
+	config BR2_INFOTM_GPS_ENABLE
+		bool "GPS enable"
+		default y
+		help
+		 GPS enable 
+	
+	config BR2_INFOTM_RESOLUTION_SWITCH_MODULE
+		string "Video resolution switch module"
+		default "isp"
+		help
+		 Video resolution switch module, currently supported: postisp pp sensor isp 
+	
+	config BR2_INFOTM_VIDEO_WIFI_PREVIEW
+		bool "Encoding another video stream for wifi apps"
+		default "y"
+		help
+		 Encoding another video stream for wifi apps 
+	
+	config BR2_INFOTM_ADAS_ENABLE
+		bool "ADAS enable"
+		default y
+		help
+		 ADAS enable 
+	
+	config BR2_INFOTM_TIRED_ALARM
+		bool "tired alarm enable"
+		default n
+		help
+		 tired alarm enable
+	
+	config BR2_INFOTM_GUI_STYLE
+		string "GUI style"
+		default "large"
+		help
+		 GUI style: small large 
+	
+	config BR2_INFOTM_GUI_SHOW_STATUS_BAR
+		bool "GUI show black status bar"
+		default y
+		help
+		 GUI show black status bar 
+	
+	config BR2_INFOTM_GUI_AUTO_PLAY_ENABLE
+		bool "GUI automatically play next video"
+		default y
+		help
+		 GUI automatically play next video 
+	
+	config BR2_INFOTM_GUI_TIMER_RESET
+		bool "GUI video loop recording time reset"
+		default y
+		help
+		 GUI video loop recording time reset 
+	
+	config BR2_INFOTM_GUI_DEBUG_ENABLE
+		bool "GUI debug info"
+		default y
+		help
+		 GUI debug info 
+	
+	config BR2_INFOTM_EVENT_HTTP_ENABLE
+		bool "GUI event http support"
+		default n
+		help
+		 GUI event http support 
+
+	config BR2_INFOTM_PLAYBACK_ENABLE
+		bool "GUI playback support"
+		default n
+		help
+		 GUI playback support 
+
+	config BR2_INFOTM_SOUND_OUTPUT
+		string "Sound output device"
+		default "speaker"
+		help
+		  Sound output device: speaker or buzzer
+	
+	config BR2_INFOTM_Q360_UPGRADE_ENABLE
+		bool "Q360 upgrade support"
+		default n
+		help
+		 Q360 upgrade support 
+
+	config BR2_INFOTM_MARKER_ENABLE
+		bool "marker enable"
+		default y
+		help
+		  Enable marker
+
+	config BR2_INFOTM_PREVIEW_SECOND_WAY
+		bool "wifi preview encode the second stream"
+		default y
+		help
+		  Enable wifi preivew second stream
+
+	config BR2_INFOTM_UVC_ENABLE
+		bool "uvc enable"
+		default n
+		help
+		  Enable uvc function
+
+	config BR2_INFOTM_DOUBLE_CLICK_ENABLE
+		bool "enable double click for keys"
+		default n
+		help
+		  Enable double click
+	config BR2_INFOTM_FULL_RESOLUTION_PHOTO_ENABLE
+		bool "enable full resolution photo"
+		default n
+		help
+		  Enable full resolution photo
+	config BR2_INFOTM_DEFAULT_MODE_PHOTO
+		bool "set default mode to photo mode"
+		default n
+		help
+		  set default mode to photo mode
+
+
+endmenu
+endif

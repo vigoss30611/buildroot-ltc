@@ -1,0 +1,114 @@
+{
+	"isp": {
+		"ipu": "v2500",
+		"args": {
+			"mode": 4,
+			"name": "AR330MIPI",
+			"config": "/root/.ispddk/config-normal.txt"
+		},
+		"port": {
+			"out": {
+				"w": 1920,
+				"h": 1088,
+				"pixel": "nv12",
+				"fps":15
+			},
+			"his": {
+				"bind": { "vam": "in" }
+			}
+		}
+	},
+	
+	"marker0": {
+		"ipu": "marker",
+		"args": {
+			"mode": 1
+		},
+		"port": {
+			"out": {
+				"w": 960,
+				"h": 80,
+				"pixel": "nv12",
+				"bind": { "softlayer0": "ol0" }
+			}
+		}
+	},
+	
+	"softlayer0":{
+		"ipu": "softlayer",
+		"port": {
+			"ol0": {
+				"pip_x":480,
+				"pip_y":800
+			},
+			"out": {
+				"w": 1920,
+				"h": 1088,
+				"pixel": "nv12",
+				"bind": { "ispost0": "in" },
+				"embezzle": {"isp": "out"}
+			}
+		}
+	},
+
+	"ispost0": {
+		"ipu": "ispost",
+		"args":{
+			"lc_enable":1,
+			"lc_cbcr_swap":1,
+			"lc_cache_mode_ctrl_config":4,
+			"lc_fill_y":255,
+			"lc_fill_cb":175,
+			"lc_fill_cr":85,
+			"lc_grid_line_buf_enable":0,
+			"lc_grid_size":2,
+			"lc_grid_target_index":4,
+			"lc_scan_mode_scan_w":2,
+			"lc_scan_mode_scan_h":2,
+			"lc_scan_mode_scan_m":0,
+			"lc_grid_file_name1":"/root/.ispost/lc_v1_hermite32_1920x1088_scup_0~30.bin"
+		},
+		"port": {
+			"dn": {
+				"w": 1920,
+				"h": 1088,
+				"pixel": "nv12",
+				"bind": { "enc1080p": "frame" }
+			},
+			"ss0":{
+				"w":1280,
+				"h":720,
+				"pixel":"nv12",
+				"bind":{ "display":"osd0", "enc720p":"frame" }
+			}
+		}
+	},
+
+	"enc1080p":{ "ipu": "vencoder",
+				"args": {
+					"encode_type": "h265"
+				}
+	 },
+
+	"enc720p": {
+		"ipu": "vencoder",
+        "args": {
+            "encode_type": "h265"
+        },
+		"port":{
+			"stream":{
+				"bind":{ "filesink":"in" }
+			}
+		}
+	},
+
+	"filesink":{
+		"ipu":"filesink",
+		"args":{
+			"data_path":"/etc/Test.h265"
+		}
+	},
+
+	"vam": { "ipu": "vamovement"},
+	"display":{ "ipu":"ids" }
+}

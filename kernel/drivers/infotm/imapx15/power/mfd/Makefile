@@ -1,0 +1,1 @@
+obj-$(CONFIG_IMAP_TPS65910)	+= tps65910.o

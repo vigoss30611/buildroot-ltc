@@ -1,0 +1,18 @@
+#
+# GPIO system
+#
+#
+
+menuconfig INFOTM_GPIO_CHIP
+  bool "Infotm gpio chip driver support"
+  help
+    Infotm gpio chip driver support
+
+if INFOTM_GPIO_CHIP
+
+config APOLLO3_GPIO_CHIP
+ bool "APOLLO3 gpio chip driver support"
+ help
+   apollo3 gpio chip driver support
+
+endif

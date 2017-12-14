@@ -1,0 +1,10 @@
+
+menuconfig Q3F_DSP
+	bool "Q3F dsp driver support"
+	default n
+	help
+		Infotm dsp driver support
+
+if Q3F_DSP
+source drivers/infotm/q3f/char/dsp/Kconfig
+endif

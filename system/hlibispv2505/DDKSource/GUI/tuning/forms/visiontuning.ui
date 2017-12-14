@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>VisionTuning</class>
+ <widget class="QMainWindow" name="VisionTuning">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1000</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Vision Tuning</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QTabWidget" name="moduleTabs"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1000</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="view_menu">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <addaction name="view_result_action"/>
+    <addaction name="view_log_action"/>
+   </widget>
+   <widget class="QMenu" name="file_menu">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <addaction name="file_save_action"/>
+   </widget>
+   <widget class="QMenu" name="help_menu">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="help_about_action"/>
+   </widget>
+   <widget class="QMenu" name="action_menu">
+    <property name="title">
+     <string>Action</string>
+    </property>
+    <widget class="QMenu" name="menuIntegrate_to_VisionLive">
+     <property name="title">
+      <string>Integrate to VisionLive</string>
+     </property>
+     <addaction name="actionBLC"/>
+     <addaction name="actionLSH"/>
+     <addaction name="actionLCA"/>
+     <addaction name="actionCCM"/>
+     <addaction name="actionAll"/>
+    </widget>
+    <addaction name="actionAdd_CCM_Tab"/>
+    <addaction name="separator"/>
+    <addaction name="menuIntegrate_to_VisionLive"/>
+   </widget>
+   <addaction name="file_menu"/>
+   <addaction name="view_menu"/>
+   <addaction name="action_menu"/>
+   <addaction name="help_menu"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QDockWidget" name="resultDock">
+   <property name="floating">
+    <bool>false</bool>
+   </property>
+   <property name="features">
+    <set>QDockWidget::AllDockWidgetFeatures</set>
+   </property>
+   <property name="windowTitle">
+    <string>Preview</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_2">
+    <layout class="QVBoxLayout" name="verticalLayout_2"/>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="logDock">
+   <property name="windowTitle">
+    <string>Log</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>8</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <layout class="QVBoxLayout" name="verticalLayout_3">
+     <item>
+      <widget class="QPlainTextEdit" name="logTabText">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <action name="actionShow_Result_dock">
+   <property name="text">
+    <string>Show &amp;Result dock</string>
+   </property>
+  </action>
+  <action name="view_log_action">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>View &amp;Log dock</string>
+   </property>
+  </action>
+  <action name="view_result_action">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>View &amp;Preview dock</string>
+   </property>
+  </action>
+  <action name="file_save_action">
+   <property name="text">
+    <string>&amp;Save All</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="help_about_action">
+   <property name="text">
+    <string>&amp;About Vision Tuning</string>
+   </property>
+  </action>
+  <action name="actionAdd_CCM_Tab">
+   <property name="text">
+    <string>Add CCM Tab</string>
+   </property>
+  </action>
+  <action name="actionRemove_CCM_Tab">
+   <property name="text">
+    <string>Remove CCM Tab</string>
+   </property>
+  </action>
+  <action name="actionBLC">
+   <property name="text">
+    <string>BLC</string>
+   </property>
+  </action>
+  <action name="actionLSH">
+   <property name="text">
+    <string>LSH</string>
+   </property>
+  </action>
+  <action name="actionLCA">
+   <property name="text">
+    <string>LCA</string>
+   </property>
+  </action>
+  <action name="actionCCM">
+   <property name="text">
+    <string>CCM</string>
+   </property>
+  </action>
+  <action name="actionAll">
+   <property name="text">
+    <string>All</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
