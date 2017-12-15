@@ -1,0 +1,313 @@
+#!/bin/bash
+
+LOG_FILE="/var/log/monitordcdc.log"
+
+INTERVAL=5
+THRESHOLD=4
+IOUT_THRESHOLD_AMPS=5
+DEFAULT_MHZ=300
+
+while [ ! -f /config/cgminer.conf ]; do
+	sleep 1
+done
+
+echo [$(date +"%F %T")] Start >> $LOG_FILE
+
+NC="timeout -t 15 nc localhost 4028"
+if [ -f /sys/class/gpio/gpio69/value ]; then
+	echo "beagle bone board detected"
+	BOARD_TYPE="bbone"
+elif [ -f /sys/class/gpio/gpio21/value ]; then
+	echo "raspberry pi board detected"
+	BOARD_TYPE="rpi"
+	NC="timeout 15 nc localhost 4028"
+else
+	echo "ERROR: Unknown controller board"
+	exit 1
+fi
+
+reset_die() {
+	lchannel=$1
+	ldie=$2
+
+	waas -s "${lchannel}:${ldie}" 2>/dev/null >> $LOG_FILE
+	cmd="procset|0,die,ASIC:${lchannel};DIE:${ldie};MODE:RECONFIGURE"
+	response=$(echo $cmd | $NC 2>/dev/null)
+	if ! echo $response | grep 'STATUS=S' >/dev/null 2>&1 ; then
+		echo "No answer to API $cmd" >> $LOG_FILE
+		# Timeout or error while processing command (e.g. command not implemented)
+		# Check that miner is running, if not then restart it
+		response=$(echo -n summary | $NC 2>/dev/null)
+		if ! echo $response | grep 'STATUS=S' >/dev/null 2>&1 ; then
+			echo "No answer to API summary. Miner will be restarted." >> $LOG_FILE
+			restart_miner=1
+		fi
+	else
+		echo $response >> $LOG_FILE
+	fi
+
+	echo [$(date +"%F %T")] Die $lchannel-$ldie restarted >> $LOG_FILE
+}
+
+detect_dcdcs() {
+	lchannel=$1
+	ldie=$2
+
+	if [ "$BOARD_TYPE" = "bbone" ]; then
+		lbus=$((lchannel+3))
+	elif [ "$BOARD_TYPE" = "rpi" ]; then
+		lbus=$((lchannel+2))
+	fi
+
+	ldcdc1=$((ldie*2))
+	ldcdc2=$((ldcdc1+1))
+
+	i2cget -y $lbus 0x1$ldcdc1 >/dev/null 2>&1
+	ldcdc1_present=$?
+	i2cget -y $lbus 0x1$ldcdc2 >/dev/null 2>&1
+	ldcdc2_present=$?
+
+	if [ "x${ldcdc1_present}" = "x0" -o "x${ldcdc2_present}" = "x0" ] ; then
+		echo 0
+	else
+		# If the die answers, then DC/DCs are alive and provide power
+		asic info $lchannel $ldie >/dev/null 2>&1
+		echo $?
+	fi
+}
+
+iout_dcdc() {
+	lbus=$1
+	ldcdc=$2
+
+	ltemp=$(i2cget -y $lbus 0x1$ldcdc 0x8c w 2>/dev/null)
+	lexp=$(( 2**(32 - ((ltemp >> 11) & 0x1F)) ))
+	lmant=$(( ltemp & 0x7FF ))
+	if [ $lexp -gt 0 ] ; then
+		iout=$((lmant/lexp))
+	else
+		iout=0
+	fi
+}
+
+for channel in 0 1 2 3 4 5 ; do
+	if [ "$BOARD_TYPE" = "bbone" ]; then
+		bus=$((channel+3))
+	elif [ "$BOARD_TYPE" = "rpi" ]; then
+		bus=$((channel+2))
+	fi
+
+	# Try detect EEPROM
+	dd if=/sys/bus/i2c/devices/${bus}-0050/eeprom of=/dev/null bs=1 count=1 1>/dev/null 2>&1
+	if [[ "$?" = "0" ]] ; then
+		good=1
+	else
+		good=0
+	fi
+	for q in 0 1 2 3 ; do
+		if [ "x$good" != "x1" ] ; then
+			echo 1000 > /var/run/die${channel}${q}
+		else
+			detected=$(detect_dcdcs $channel $q)
+			if [[ "x${detected}" = "x0" ]] ; then
+				echo 0 > /var/run/die${channel}${q}
+			else
+				echo 1000 > /var/run/die${channel}${q}
+			fi
+		fi
+	done
+done
+echo 0 > /var/run/tm
+
+while true; do
+	hardware_changed=
+	miner_cmds=
+	for channel in 0 1 2 3 4 5; do
+		if [ "$BOARD_TYPE" = "bbone" ]; then
+			bus=$((channel+3))
+		elif [ "$BOARD_TYPE" = "rpi" ]; then
+			bus=$((channel+2))
+		fi
+
+		asic=$((channel+1))
+
+		# Try detect EEPROM
+		asic_present=
+		dd if=/sys/bus/i2c/devices/${bus}-0050/eeprom of=/dev/null bs=1 count=1 1>/dev/null 2>&1
+		if [[ "$?" = "0" ]] ; then
+			asic_present=1
+		fi
+
+		if [[ ${asic_present} ]] ; then
+			for q in 0 1 2 3; do
+				cnt=$(cat /var/run/die${channel}${q} 2>/dev/null)
+				if [ -z "$cnt" ] ; then
+					cnt=0
+				fi
+				detected=$(detect_dcdcs $channel $q)
+				if [ $cnt -ge 1000 ] ; then
+					if [[ "x${detected}" = "x0" ]] ; then
+						echo 0 > /var/run/die${channel}${q}
+						hardware_changed=1
+						echo [$(date +"%F %T")] Die $channel-$q came UP >> $LOG_FILE
+						miner_cmds="$miner_cmds procset|0,die,ASIC:${channel};DIE:${q};MODE:ENABLE"
+					fi
+				else
+					if [[ "x${detected}" != "x0" ]] ; then
+						echo 1000 > /var/run/die${channel}${q}
+						hardware_changed=1
+						echo [$(date +"%F %T")] Die $channel-$q came DOWN >> $LOG_FILE
+						miner_cmds="$miner_cmds procset|0,die,ASIC:${channel};DIE:${q};MODE:DISABLE"
+					fi
+				fi
+			done
+		else
+			for q in 0 1 2 3; do
+				cnt=$(cat /var/run/die${channel}${q} 2>/dev/null)
+				if [ -z "$cnt" ] ; then
+					cnt=0
+				fi
+				if [ $cnt -lt 1000 ] ; then
+					echo 1000 > /var/run/die${channel}${q}
+					hardware_changed=1
+					echo [$(date +"%F %T")] Die $channel-$q came DOWN '(ASIC not present)' >> $LOG_FILE
+					miner_cmds="$miner_cmds procset|0,die,ASIC:${channel};DIE:${q};MODE:DISABLE"
+				fi
+			done
+		fi
+
+		for q in 0 1 2 3; do
+			fail=
+			cnt=$(cat /var/run/die${channel}${q} 2>/dev/null)
+			if [ -z "$cnt" ] ; then
+				cnt=0
+			fi
+			for d in $((2*q)) $((2*q+1)) ; do
+				iout_dcdc $bus $d
+				sleep 1
+				if [ $iout -lt $IOUT_THRESHOLD_AMPS ]; then
+					fail=1
+					break
+				fi
+			done
+			if [[ $fail ]] ; then
+				cnt=$((cnt+1))
+			fi
+			echo $cnt > /var/run/die${channel}${q}
+		done
+	done
+
+	restart_miner=
+	if [[ ${hardware_changed} ]] ; then
+		for cmd in $miner_cmds ; do
+			response=$(echo $cmd | $NC 2>/dev/null)
+			echo $response >> $LOG_FILE
+			if ! echo $response | grep 'STATUS=S' >/dev/null 2>&1 ; then
+				# Timeout or error while processing command (e.g. command not implemented)
+				# Restart miner in either case
+				restart_miner=1
+				break
+			fi
+		done
+		if [[ ${restart_miner} ]] ; then
+			echo [$(date +"%F %T")] Restarting bfgminer >> $LOG_FILE
+			/etc/init.d/bfgminer.sh restart
+		fi
+	fi
+
+	tm=$(cat /var/run/tm 2>/dev/null)
+	if [ -z "$tm" ] ; then
+		tm=0
+	fi
+	tm=$((tm+1))
+	if [ $tm -lt $INTERVAL ] ; then
+		echo $tm > /var/run/tm
+		sleep 4
+		continue
+	fi
+	echo 0 > /var/run/tm
+
+	restart_miner=
+	for channel in 0 1 2 3 4 5; do
+		if [ "$BOARD_TYPE" = "bbone" ]; then
+			bus=$((channel+3))
+		elif [ "$BOARD_TYPE" = "rpi" ]; then
+			bus=$((channel+2))
+		fi
+
+		failed0=0
+		failed1=0
+		failed2=0
+		failed3=0
+
+		for q in 0 1 2 3; do
+			cnt=$(cat /var/run/die${channel}${q} 2>/dev/null)
+			if [ -z "$cnt" ] ; then
+				cnt=0
+			fi
+			if [ $cnt -ge 1000 ] ; then
+				echo 1000 > /var/run/die${channel}${q}
+				continue
+			fi
+			echo 0 > /var/run/die${channel}${q}
+				if [ $cnt -lt $THRESHOLD ] ; then
+				continue
+			fi
+			d=$((q*2))
+			d1=$((d+1))
+			bad_iout=0
+			iout_dcdc $bus $d
+			if [ $iout -lt $IOUT_THRESHOLD_AMPS ]; then
+				bad_iout=1
+			fi
+			iout_dcdc $bus $d1
+			if [ $iout -lt $IOUT_THRESHOLD_AMPS ]; then
+				bad_iout=1
+			fi
+			if [ "$bad_iout" = "0" ]; then
+				continue
+			fi
+			# Die failed
+			if [ "$q" = "0" ] ; then
+				failed0=1
+			fi
+			if [ "$q" = "1" ] ; then
+				failed1=1
+			fi
+			if [ "$q" = "2" ] ; then
+				failed2=1
+			fi
+			if [ "$q" = "3" ] ; then
+				failed3=1
+			fi
+		done
+		# restart die
+		if [ "$failed0" = "1" ] ; then
+			# reset_die $channel 0
+			echo [$(date +"%F %T")] Die ${channel}-0 requires restart >> $LOG_FILE
+			reset_die $channel 0
+		fi
+		if [ "$failed1" = "1" ] ; then
+			# reset_die $channel 1
+			echo [$(date +"%F %T")] Die ${channel}-1 requires restart >> $LOG_FILE
+			reset_die $channel 1
+		fi
+		if [ "$failed2" = "1" ] ; then
+			# reset_die $channel 2
+			echo [$(date +"%F %T")] Die ${channel}-2 requires restart >> $LOG_FILE
+			reset_die $channel 2
+		fi
+		if [ "$failed3" = "1" ] ; then
+			# reset_die $channel 3
+			echo [$(date +"%F %T")] Die ${channel}-3 requires restart >> $LOG_FILE
+			reset_die $channel 3
+		fi
+	done
+
+	if [[ ${restart_miner} ]] ; then
+		echo [$(date +"%F %T")] Restarting bfgminer >> $LOG_FILE
+		/etc/init.d/bfgminer.sh restart
+	fi
+
+	sleep 4
+done

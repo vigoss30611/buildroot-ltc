@@ -31,7 +31,7 @@ INCLUDE += -I$(LIBSRC_PATH)/NetWork/inc
 
 INCLIBS := -lpthread -lrt -lcrypt -lstdc++ -ldl -lm
 #INCLIBS += -lmediabuffer -L$(LIBS_PATH)/$(CHIP_ARCH)/libmediabuffer
-INCLIBS += -lvideobox -laudiobox -lcodecs -lupgrade -lsys -ldemux -levent -litems -lfr -lwifi -L$(SDK_LIB_PATH)
+INCLIBS += -lvideobox -laudiobox -lcodecs -lupgrade -lsys -ldemux -leventhub -litems -lfr -lwifi -L$(SDK_LIB_PATH)
 INCLIBS += -lQMHAL
 
 OBJECTS :=

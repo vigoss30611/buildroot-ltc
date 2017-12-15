@@ -12,7 +12,7 @@ INCLUDE := -I./include
 
 CFLAGS += -Wall -Werror -O2 $(INCLUDE)
 LDFLAGS := -lpthread
-LDFLAGS += -laudiobox -lupgrade -lsys -lcodecs -ldemux -lfr -levent -litems 
+LDFLAGS += -laudiobox -lupgrade -lsys -lcodecs -ldemux -lfr -leventhub -litems 
 
 all: $(TARGET)
 $(TARGET):src/Deamon_msg_s.c

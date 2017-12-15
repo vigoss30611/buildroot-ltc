@@ -7,4 +7,4 @@ Name: qvplay
 Description: qlibvplay API lib
 Version: 1.0.0
 Requires:
-Libs: -L${libdir} -lqvplay -lfr -levent  -lavformat -lavcodec -lavutil -lswresample -ldemux -lcodecs -lh264bitstream
+Libs: -L${libdir} -lqvplay -lfr -leventhub  -lavformat -lavcodec -lavutil -lswresample -ldemux -lcodecs -lh264bitstream

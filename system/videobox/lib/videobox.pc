@@ -7,4 +7,4 @@ Name: videobox
 Description: videobox API lib
 Version: 1.0.0
 Requires:
-Libs: -L${libdir} -lvideobox -lfr -levent
+Libs: -L${libdir} -lvideobox -lfr -leventhub

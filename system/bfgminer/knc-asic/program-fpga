@@ -1,0 +1,77 @@
+#!/bin/sh
+
+PATH="${PATH}:."
+
+if [ -f /sys/class/gpio/gpio69/value ]; then
+# beaglebone
+nCONFIG="/sys/class/gpio/gpio67/value"
+CONFIG_DONE="/sys/class/gpio/gpio66/value"
+nSTATUS="/sys/class/gpio/gpio69/value"
+SPI="/dev/spidev1.0"
+CODE="${1:-spimux.rbf}"
+MUX=2-0070
+elif [ -f /sys/class/gpio/gpio21/value ]; then
+# raspberry pi
+nCONFIG="/sys/class/gpio/gpio13/value"
+CONFIG_DONE="/sys/class/gpio/gpio26/value"
+nSTATUS="/sys/class/gpio/gpio21/value"
+SPI="/dev/spidev0.0"
+CODE="${1:-spimux-titan.rbf}"
+MUX=0-0070
+else
+echo "ERROR: Unknown controller board"
+exit 1
+fi
+
+ioget() {
+	eval cat \$$1
+}
+
+ioset() {
+	eval "echo $2 >\$$1"
+}
+
+iocheck() {
+	sig=$1
+	value=$2
+	shift
+	shift
+	if [ $(ioget $sig) != $value ]; then
+		echo "ERROR: $sig != $value $@" >&2
+		exit 1
+	fi
+}
+
+# Remove I2C MUX if present
+echo $MUX > /sys/bus/i2c/drivers/pca954x/unbind 2>/dev/null
+
+# Configure SPI parameters
+spi-test -C -s 5000000 -b 8 -D $SPI -q 00
+
+# Reset FPGA
+ioset nCONFIG 0
+iocheck CONFIG_DONE 0 when nCONFIG is LOW
+iocheck nSTATUS 0 when nCONFIG is LOW
+
+# Start programming FPGA
+ioset nCONFIG 1
+
+iocheck CONFIG_DONE 0 when nCONFIG is HIGH
+iocheck nSTATUS 1 when nCONFIG is HIGH
+
+dd if=$CODE of=$SPI bs=4K
+
+#sleep 1
+
+iocheck CONFIG_DONE 1 when nCONFIG is HIGH
+
+
+# Enable i2c MUX
+echo $MUX > /sys/bus/i2c/drivers_probe
+
+# Configure LCD
+lcd-message --init -l 2 $(basename $CODE .rbf | sed -e 's/_bitrev//' -e 's/_pad//' ) 2>/dev/null
+
+
+# Allow user access to needed devices
+chmod a+rw $SPI /dev/i2c-* /sys/bus/i2c/devices/*/eeprom

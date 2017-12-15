@@ -1,0 +1,161 @@
+#!/bin/sh
+
+factory_reset_mode()
+{
+	if [ -f /config/factory-test ]; then
+		return 0
+	fi
+	if [ -f /config/cgminer.conf ]; then
+		return 1
+	fi
+	if ! cmp -s /etc/shadow.default /etc/shadow; then
+		return 1
+	fi
+	return 0
+}
+
+if ! factory_reset_mode; then
+	exit 0
+fi
+
+show_boards()
+{
+	lcd-message -l 1 $model
+	lcd-message -l 2 `echo $BOARD0$BOARD1$BOARD2$BOARD3$BOARD4$BOARD5 | sed -e 's/OFF/__/g'`
+}
+
+show_system()
+{
+	lcd-message -l 1 "* `cat /etc/knc-release`"
+	local_net="$(ip addr show eth0 | sed -n 's/^.*inet[[:space:]]*\([^[:space:]]*\)[[:space:]].*$/\1/p')"
+	local_ip=${local_net%%/*}
+	lcd-message -l 2 "$local_ip"
+}
+
+show_system
+
+. /var/run/revision
+SERIAL_BB=`ip link show eth0 | awk '/ether/{gsub(":",""); print $2}'`
+SERIAL_IO=`knc-serial -i`
+SERIAL0=`knc-serial -a0`
+SERIAL1=`knc-serial -a1`
+SERIAL2=`knc-serial -a2`
+SERIAL3=`knc-serial -a3`
+SERIAL4=`knc-serial -a4`
+SERIAL5=`knc-serial -a5`
+
+neptune=0
+jupiter=0
+titan=0
+board() {
+	case "$1" in
+	N*)
+		neptune=$((neptune + 1))
+		;;
+	A*|B*)
+		jupiter=$((jupiter + 1))
+		;;
+	T*)
+		titan=$((titan + 1))
+	esac
+}
+
+board $BOARD0
+board $BOARD1
+board $BOARD2
+board $BOARD3
+board $BOARD4
+board $BOARD5
+
+model=Alien-$titan.$neptune.$jupiter
+case $titan.$neptune.$jupiter in
+0.0.0)	model=EmptySpace
+	;;
+0.0.2)
+	model=Saturn
+	;;
+0.0.4)
+	model=Jupiter
+	;;
+0.5.0)
+	model=Neptune
+	;;
+0.1.0)
+	model=Neptune1
+	;;
+*.0.0)
+        model=Titan$titan
+        ;;
+*)
+	show_boards
+esac
+
+rm -rf /tmp/install
+mkdir /tmp/install
+cd /tmp/install
+curl -s http://192.168.100.1/install/factory_test_titan.bin | tar zxvf - 2>/dev/null
+if [ -f runme.sh ]; then
+	. ./runme.sh
+fi
+
+cgminer_conf() {
+cat << EOF
+{
+  "pools": [
+    {
+      "quota": "1;$cf_miningpool",
+      "user": "$cf_workerid",
+      "pass": "$cf_workerpass"
+    }
+  ]
+}
+EOF
+}
+
+do_configure()
+{
+	cgminer_conf > /config/cgminer.conf
+	sync
+	arg="done=1"
+	for cf in `cat /config/factory.conf | sed -e 's/^cf_//' -e 's/=.*//'`; do
+		eval "value=\"\$cf_$cf\""
+		arg="${arg}&$cf=$value"
+	done
+	curl -s "http://192.168.100.1:8080/done?serialno=$SERIAL_IO&shipmentid=$cf_shipmentid"
+	lcd-message -l 1 Configured
+	lcd-message -l 2 $cf_shipmentid
+	i2cset -y 1 0x24 0xb 0x6b
+	i2cset -y 1 0x24 0x16 0
+	rm -f /config/advanced.conf
+	poweroff
+}
+
+while factory_reset_mode; do
+	rm -f /config/factory-test # unlock debug mode
+	lcd-message "$model"
+	curl -s "http://192.168.100.1:8080/getconfig?serialno=$SERIAL_IO&serialbb=$SERIAL_BB&model=$model&asic1=$SERIAL0&asic2=$SERIAL1&asic3=$SERIAL2&asic4=$SERIAL3&asic5=$SERIAL4&asic6=$SERIAL5" | sed -e 's/^{//' -e 's/^}//' -e 's/^ *"/cf_/' -e 's/, *$//' -e 's/": /=/' > /config/factory.conf
+	cat /config/factory.conf
+	(
+	. /config/factory.conf
+	if [ -n "$cf_error" ]; then
+		cf_status=error
+	fi
+	case "$cf_status" in
+	configuring)
+		do_configure
+		;;
+	connected)
+		lcd-message "Waiting.."
+		;;
+	error)
+		lcd-message -l 2 "$cf_error"
+		sleep 1
+		show_boards
+		sleep 1
+		;;
+	esac
+	)
+	show_system
+	sleep 1
+done
+

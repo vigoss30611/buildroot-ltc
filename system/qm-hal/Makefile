@@ -37,9 +37,9 @@ INCLUDE += -I$(SDK_INC_PATH)
 #INCLUDE += -I$(LIBINC_PATH)/libqmapi
 #INCLUDE += -I$(LIBINC_PATH)/libQMHAL/inc
 
-INCLIBS += -lvideobox -laudiobox -lcodecs -lupgrade -lsys -ldemux -levent -litems -lfr -L$(SDK_LIB_PATH)
+INCLIBS += -lvideobox -laudiobox -lcodecs -lupgrade -lsys -ldemux -leventhub -litems -lfr -L$(SDK_LIB_PATH)
 
-#INCLIBS += -lvideobox -laudiobox -lcodecs -lupgrade -lsys -ldemux -levent -litems -lsensor -lfr -L$(SDK_LIB_PATH)
+#INCLIBS += -lvideobox -laudiobox -lcodecs -lupgrade -lsys -ldemux -leventhub -litems -lsensor -lfr -L$(SDK_LIB_PATH)
 
 
 CFLAGS += -Wall -O2 -fPIC

@@ -1,0 +1,32 @@
+#!/bin/bash
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+LOG_FILE="/var/log/monitordcdc.log"
+WAAS_ASIC_INFO_TMP="/var/run/.waas_asic_info_tmp$$"
+WAAS_CACHE_TMP="/var/run/.waas_cache$$"
+WAAS_CACHE="/var/run/.waas_cache"
+
+fail=0
+while true ; do
+  sleep 10
+
+  /usr/bin/waas -g all-asic-info >$WAAS_ASIC_INFO_TMP 2>/dev/null
+  cat /var/run/revision >> $WAAS_ASIC_INFO_TMP 2>/dev/null
+  cat $WAAS_CACHE >> $WAAS_ASIC_INFO_TMP 2>/dev/null
+  /usr/bin/asic_data_cache.awk $WAAS_ASIC_INFO_TMP >$WAAS_CACHE_TMP 2>/dev/null
+  # now atomically move file
+  mv $WAAS_CACHE_TMP $WAAS_CACHE
+
+  # Monitor I2C bus health
+  if i2cget -f -y 0 0x70 >/dev/null 2>/dev/null ; then
+    fail=0
+  else
+    fail=$((fail+1))
+    echo [$(date +"%F %T")] I2C lock failure '#'$fail >> $LOG_FILE
+  fi
+
+  if [[ $fail -ge 3 ]]; then
+    echo [$(date +"%F %T")] Rebooting due to I2C lock >> $LOG_FILE
+    reboot
+  fi
+done

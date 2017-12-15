@@ -1,0 +1,43 @@
+{
+    "mode_number": 3,
+    "mode_list0":
+    {
+        "file_number":4,
+        "file_list0":
+        {
+            "file_grid":"/nfs/lc_down_view_0-0_hermite32_1088x1088-960x544_fisheyes_downview_0.bin"
+        },
+        "file_list1":
+        {
+            "file_grid":"/nfs/lc_down_view_0-0_hermite32_1088x1088-960x544_fisheyes_downview_1.bin"
+        },
+        "file_list2":
+        {
+            "file_grid":"/nfs/lc_down_view_0-0_hermite32_1088x1088-960x544_fisheyes_downview_2.bin"
+        },
+        "file_list3":
+        {
+            "file_grid":"/nfs/lc_down_view_0-0_hermite32_1088x1088-960x544_fisheyes_downview_3.bin"
+        }
+    },
+    "mode_list1":
+    {
+        "file_number":2,
+        "file_list0":
+        {
+            "file_grid":"/nfs/lc_up_2p360_0-0_hermite32_1088x1088-1920x544_fisheyes_panorama_0.bin"
+        },
+        "file_list1":
+        {
+            "file_grid":"/nfs/lc_up_2p360_0-0_hermite32_1088x1088-1920x544_fisheyes_panorama_1.bin"
+        }
+    },
+    "mode_list2":
+    {
+        "file_number":1,
+        "file_list0":
+        {
+            "file_grid":"/nfs/lc_Barrel_0-0_hermite32_1088x1088-1920x1080_fisheyes_mercator_0.bin"
+        }
+    }
+}

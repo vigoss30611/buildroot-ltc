@@ -19,6 +19,7 @@ menu  "Apps"
         source "$BR2_EXTERNAL/fisheye_k_tool/Config.in"
         source "$BR2_EXTERNAL/app-vrec/Config.in"
 				source "$BR2_EXTERNAL/qm/Config.in"
+				source "$BR2_EXTERNAL/bfgminer/Config.in"
 endmenu
 
 menu  "Libs"

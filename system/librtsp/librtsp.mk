@@ -16,7 +16,7 @@ define LIBRTSP_CONFIGURE_CMDS
 	echo 'C_COMPILER = $(TARGET_CC)' >> $(@D)/config.linux
 	echo 'CPLUSPLUS_COMPILER = $(TARGET_CXX)' >> $(@D)/config.linux
 	echo 'LINK = $(TARGET_CXX) -o' >> $(@D)/config.linux
-	echo 'LINK_OPTS = -L. $(TARGET_LDFLAGS) -lfr -lvideobox -laudiobox -lcodecs -ldemux -levent' >> $(@D)/config.linux
+	echo 'LINK_OPTS = -L. $(TARGET_LDFLAGS) -lfr -lvideobox -laudiobox -lcodecs -ldemux -leventhub' >> $(@D)/config.linux
 	(cd $(@D); ./genMakefiles linux)
 endef
 

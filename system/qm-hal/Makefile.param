@@ -26,4 +26,4 @@ export IPC_PATH = $(BASE_PATH)/ipc
 export CFLAGS_BASE = -DTL_Q3_PLATFORM -fPIC
 
 EXT_DYNAMIC_LIBS += -ldl 
-EXT_DYNAMIC_LIBS += -lvideobox -laudiobox -lcodecs -lupgrade -lsys -ldemux -levent -litems -lfr -L$(SDK_LIB_PATH)
+EXT_DYNAMIC_LIBS += -lvideobox -laudiobox -lcodecs -lupgrade -lsys -ldemux -leventhub -litems -lfr -L$(SDK_LIB_PATH)

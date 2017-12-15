@@ -1,0 +1,27 @@
+#!/bin/sh
+if [ -f /sys/class/gpio/gpio69/value ]; then
+# beaglebone
+I2CBUS="${I2CBUS:-3}"
+elif [ -f /sys/class/gpio/gpio21/value ]; then
+# raspberry pi
+I2CBUS="${I2CBUS:-2}"
+else
+echo "ERROR: Unknown controller board"
+exit 1
+fi
+
+PATH="${PATH}:/usr/sbin"
+channel=${1:-5}
+shift
+slot="${@}"
+slot="${slot:-0 1 2 3 4 5 6 7}"
+bus=`expr $channel + $I2CBUS`
+# Clear and power off
+for i in $slot; do
+	i2cset -y $bus 0x1$i 0x03
+	i2cset -y $bus 0x1$i 0x01 0x00
+done
+# Power on
+for i in $slot; do
+	i2cset -y $bus 0x1$i 0x01 0x80
+done

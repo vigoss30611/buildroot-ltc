@@ -1,0 +1,8 @@
+/var/log/monitordcdc.log
+{
+	rotate 4
+	weekly
+	missingok
+	compress
+	delaycompress
+}

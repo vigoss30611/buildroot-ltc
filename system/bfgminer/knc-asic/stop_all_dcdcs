@@ -1,0 +1,5 @@
+#!/bin/sh
+
+for a in 0 1 2 3 4 5; do
+	/home/pi/knc-asic/dcdcpmbusoff $a
+done

@@ -1,0 +1,74 @@
+#!/bin/sh
+
+PROGNAME=$(basename "$0")
+LOCKFILE=/var/lock/$PROGNAME.lock
+LOCK_SLEEP_USECS=333333
+LOCK_SLEEP_SECS=0.333333
+LOCK_SLEEP_PERIODS=15
+PATH="${PATH}:/usr/sbin"
+
+if [ -f /sys/class/gpio/gpio69/value ]; then
+# beaglebone
+I2CBUS="${I2CBUS:-3}"
+elif [ -f /sys/class/gpio/gpio21/value ]; then
+# raspberry pi
+I2CBUS="${I2CBUS:-2}"
+else
+echo "ERROR: Unknown controller board"
+exit 1
+fi
+
+
+# Make sure we have the lock
+if false && [ "$FLOCKER" != "$0" ]; then
+	i=0
+	# A little dance to implement timeout, missing in busybox flock
+	while true; do
+		if env FLOCKER="$0" flock -x -n $LOCKFILE $0 "$@"; then
+			exit 0
+		fi 
+		i=$((i+1))
+		usleep $LOCK_SLEEP_USECS 2>/dev/null || sleep $LOCK_SLEEP_SECS
+	done
+	echo "Failed to aquuire lock on $LOCKFILE"
+	exit 1
+fi
+
+if [ "x$1" = "x--init" ]; then
+	shift
+	# Comm setup
+	i2cset -y ${I2CBUS} 0x3e 0x00 0x38 b
+
+	# Select IS=1
+	i2cset -y ${I2CBUS} 0x3e 0x00 0x39 b
+
+	# Configure display to reset state
+	i2cset -y ${I2CBUS} 0x3e 0x00 0x17 0x78 0x5e 0x6d 0x0c 0x01 0x06 i
+
+	# Clear display
+	i2cset -y ${I2CBUS} 0x3e 0x00 0x01
+
+	# KnCMiner
+	i2cset -y ${I2CBUS} 0x3e 0x40 0x4b 0x6e 0x43 0x4d 0x69 0x6e 0x65 0x72 i
+fi
+
+if [ $# = 0 ]; then
+	exit 0
+fi
+
+line=1
+if [ "x$1" = "x-l" ]; then
+	line=$2
+	shift
+	shift
+fi
+
+i2cset -y ${I2CBUS} 0x3e 0x00 $((line * 40 - 40 + 0x80))
+text="`echo "$@                                        " | cut -c-40`"
+while [ "$text" != "" ]; do
+	frag="`echo "$text" | cut -c-30`"
+	text="`echo "$text" | cut -c31-`"
+	i2cset -y ${I2CBUS} 0x3e 0x40 `echo -n "$frag" | hexdump -v -e '/1 "%u "'` i
+done
+
+rm -f $LOCKFILE

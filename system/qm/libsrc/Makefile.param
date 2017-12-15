@@ -27,4 +27,4 @@ export CFLAGS_BASE = -DTL_Q3_PLATFORM -fPIC
 export CFLAGS_BASE += $(QM_CFLAGS)
 
 EXT_DYNAMIC_LIBS += -ldl 
-EXT_DYNAMIC_LIBS += -lvideobox -laudiobox -lqvplay -lcodecs -lupgrade -lsys -ldemux -levent -litems -lfr -L$(SDK_LIB_PATH)
+EXT_DYNAMIC_LIBS += -lvideobox -laudiobox -lqvplay -lcodecs -lupgrade -lsys -ldemux -leventhub -litems -lfr -L$(SDK_LIB_PATH)
